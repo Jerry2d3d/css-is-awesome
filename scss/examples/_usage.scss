@@ -1,0 +1,314 @@
+// ============================================================================
+// EXAMPLES - Icon Systems + Core Mixins
+// ============================================================================
+@use '../mixins' as m;
+@use '../icons' as i;
+@use '../theme' as t;
+
+// ============================================================================
+// SVG ICONS - Folder Based (No Config Needed!)
+// ============================================================================
+// Just drop .svg files into your $icon-path folder
+// Filename = icon name
+//
+// Folder: /assets/icons/
+//   arrow.svg      → @include i.svg(arrow)
+//   search.svg     → @include i.svg(search)
+//   my-custom.svg  → @include i.svg(my-custom)
+//
+// That's it. No map to update. Just add files and rebuild.
+// ============================================================================
+
+// Basic icons - uses filename directly
+.icon-search { @include i.svg(search); }
+.icon-arrow { @include i.svg(arrow); }
+.icon-menu { @include i.svg(menu, 28px); }
+.icon-close { @include i.svg(close, 20px, m.color(text-muted)); }
+
+// Custom size and color
+.icon-large { @include i.svg(settings, 48px, m.color(brand-primary)); }
+
+// Multi-color SVG (as background, not colorable)
+.logo { @include i.svg-bg(logo, 120px); }
+
+// Icon with text (buttons, links)
+.btn-download { @include i.svg-text(download); }
+.btn-next { @include i.svg-text(arrow-right, $position: after); }
+
+// ALIASING (optional - only when filename ≠ desired name)
+// In _theme.scss:
+//   $icon-svg-alias: (
+//     delete: 'trash',    // @include i.svg(delete) → uses trash.svg
+//     close: 'x',         // @include i.svg(close) → uses x.svg
+//   );
+//
+// Most of the time you don't need aliases.
+// Just name your SVG files what you want to call them.
+
+// ============================================================================
+// FONT AWESOME ICONS
+// ============================================================================
+// Configure $fa-path and $icon-fa-map in _theme.scss
+// Load fonts with @include i.fa-load; in main.scss (if self-hosting)
+
+// Basic FA icon (use inside ::before or ::after)
+.fa-example::before {
+  @include i.fa(check);
+}
+
+// With size
+.fa-large::before {
+  @include i.fa(star, solid, 24px);
+}
+
+// Different styles
+.fa-outline::before {
+  @include i.fa(heart, regular);  // Outline style
+}
+
+.fa-brand::before {
+  @include i.fa(github, brands);  // Brand icon
+}
+
+// FA as standalone element
+.icon-user { @include i.fa-icon(user); }
+.icon-bell { @include i.fa-icon(bell, 20px); }
+.icon-warning { @include i.fa-icon(warning, 24px, solid, m.color(warning-default)); }
+
+// FA icon with text (buttons, links)
+.btn-save { @include i.fa-text(save); }
+.btn-external { @include i.fa-text(external, $position: after); }
+.btn-delete { @include i.fa-text(delete, $size: 0.875em, $gap: 0.5em); }
+
+// Spinning loader
+.loading { @include i.fa-spin(spinner); }
+.loading-large { @include i.fa-spin(spinner, 32px); }
+
+// Adding custom FA icons:
+// 1. Find unicode at https://fontawesome.com/search
+// 2. Add to $icon-fa-map in _theme.scss:
+//    my-icon: '\f123',
+// 3. Use it:
+//    @include i.fa(my-icon);
+
+// ============================================================================
+// REAL COMPONENT EXAMPLES
+// ============================================================================
+
+// Button with SVG icon
+.btn-primary {
+  @include m.btn-base;
+  @include i.svg-text(arrow-right, $position: after);
+  background: m.color(brand-primary);
+  color: m.color(text-inverse);
+  
+  &:hover { background: m.color(brand-primary-hover); }
+}
+
+// Button with FA icon
+.btn-secondary {
+  @include m.btn-base;
+  @include i.fa-text(download);
+  background: transparent;
+  @include m.border;
+  
+  &:hover { background: m.color(interactive-hover); }
+}
+
+// Icon-only button (SVG)
+.btn-icon {
+  @include m.button-reset;
+  @include m.flex-center;
+  @include i.svg(close, 20px);
+  width: 40px;
+  height: 40px;
+  border-radius: m.radius(full);
+  @include m.transition(background-color);
+  
+  &:hover { background: m.color(interactive-hover); }
+}
+
+// Icon-only button (FA)
+.btn-icon-fa {
+  @include m.button-reset;
+  @include m.flex-center;
+  @include i.fa-icon(settings, 20px);
+  width: 40px;
+  height: 40px;
+  border-radius: m.radius(full);
+  @include m.transition(background-color);
+  
+  &:hover { background: m.color(interactive-hover); }
+}
+
+// Alert with FA icon
+.alert {
+  @include m.card-base($p: sm);
+  @include m.inline(sm);
+  
+  &--info {
+    background: m.color(info-subtle);
+    @include m.border(3px, solid, info-default, left);
+    
+    &::before {
+      @include i.fa(info, solid, 1.25em);
+      color: m.color(info-default);
+    }
+  }
+  
+  &--success {
+    background: m.color(success-subtle);
+    @include m.border(3px, solid, success-default, left);
+    
+    &::before {
+      @include i.fa(check, solid, 1.25em);
+      color: m.color(success-default);
+    }
+  }
+  
+  &--warning {
+    background: m.color(warning-subtle);
+    @include m.border(3px, solid, warning-default, left);
+    
+    &::before {
+      @include i.fa(warning, solid, 1.25em);
+      color: m.color(warning-default);
+    }
+  }
+  
+  &--error {
+    background: m.color(error-subtle);
+    @include m.border(3px, solid, error-default, left);
+    
+    &::before {
+      @include i.fa(error, solid, 1.25em);
+      color: m.color(error-default);
+    }
+  }
+}
+
+// Input with icon
+.input-search {
+  position: relative;
+  
+  input {
+    @include m.input-base;
+    padding-left: m.space(xl);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: m.space(sm);
+    top: 50%;
+    transform: translateY(-50%);
+    @include i.svg(search, 20px);
+    color: m.color(text-muted);
+    pointer-events: none;
+  }
+}
+
+// Navbar with icons
+.navbar {
+  @include m.flex-between;
+  @include m.inset-y(sm);
+  @include m.inset-x(md);
+  @include m.border(1px, solid, border-default, bottom);
+  
+  &__logo {
+    @include i.svg-bg(logo, 32px);
+  }
+  
+  &__menu-btn {
+    @include m.button-reset;
+    @include i.svg(menu, 24px);
+    
+    @include m.tablet {
+      display: none;
+    }
+  }
+}
+
+// Social links with FA brands
+.social-links {
+  @include m.inline(md);
+  
+  a {
+    @include m.button-reset;
+    color: m.color(text-secondary);
+    @include m.hover(color, m.color(text-primary));
+    
+    &.github::before { @include i.fa(github, brands, 24px); }
+    &.twitter::before { @include i.fa(twitter, brands, 24px); }
+    &.linkedin::before { @include i.fa(linkedin, brands, 24px); }
+  }
+}
+
+// ============================================================================
+// CORE MIXINS EXAMPLES
+// ============================================================================
+
+// Font - tokens or values
+.heading { @include m.font(bold, xl, tight); }
+.body { @include m.font(reg, base, normal); }
+.custom { @include m.font(semibold, 1.5rem, 1.4, -0.01em); }
+
+// Spacing
+.section {
+  @include m.inset(lg);
+  @include m.stack(md);
+}
+
+// Borders
+.bordered { @include m.border; }
+.underlined { @include m.border(2px, solid, brand-primary, bottom); }
+
+// Breakpoints
+.responsive {
+  @include m.mobile-only { font-size: 14px; }
+  @include m.tablet { font-size: 16px; }
+  @include m.desktop { font-size: 18px; }
+}
+
+// Component bases
+.btn { @include m.btn-base; }
+.card { @include m.card-base; }
+.input { @include m.input-base; }
+.badge { @include m.badge-base; }
+
+// ============================================================================
+// CHEAT SHEET
+// ============================================================================
+
+/*
+SVG ICONS (folder-based):
+  1. Drop file in /assets/icons/ folder
+  2. Use filename as icon name:
+     arrow.svg → @include i.svg(arrow)
+  
+  @include i.svg(name, size?, color?)
+  @include i.svg-bg(name, size?)              → Multi-color SVGs
+  @include i.svg-text(name, size?, gap?, position?)
+  
+  Optional alias (in _theme.scss):
+    $icon-svg-alias: (delete: 'trash')        → delete uses trash.svg
+
+FONT AWESOME:
+  @include i.fa(name, style?, size?)          → Inside ::before/::after
+  @include i.fa-icon(name, size?, style?, color?)
+  @include i.fa-text(name, size?, gap?, style?, position?)
+  @include i.fa-spin(name, size?, style?)
+  @include i.fa-load                          → Load fonts (self-hosted)
+
+FA STYLES:
+  solid   → Filled (default)
+  regular → Outline
+  brands  → Logos (github, twitter)
+
+CORE MIXINS:
+  m.color(name)       m.space(n)        m.radius(size)
+  m.font(type, ...)   m.border(...)     m.elevation(level)
+  m.transition(...)   m.flex-center     m.inline(gap)
+  m.stack(gap)        m.inset(size)     m.squish(y, x)
+  m.btn-base(...)     m.card-base(...)  m.input-base(...)
+*/

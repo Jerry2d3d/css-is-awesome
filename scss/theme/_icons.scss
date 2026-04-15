@@ -1,0 +1,90 @@
+// ============================================================================
+// ICONS - SVG + Font Awesome Configuration
+// ============================================================================
+
+// SVG Icons
+$icon-path: '/assets/icons' !default;
+$icon-size: 24px !default;
+
+$icon-svg-alias: (
+  delete: 'trash',
+  close:  'x',
+) !default;
+
+// Font Awesome
+$fa-path: '/webfonts' !default;
+$fa-style: solid !default;
+
+$icon-fa-map: (
+  // Navigation
+  menu:           '\f0c9',
+  close:          '\f00d',
+  search:         '\f002',
+  home:           '\f015',
+
+  // Actions
+  plus:           '\f067',
+  minus:          '\f068',
+  edit:           '\f044',
+  delete:         '\f1f8',
+  save:           '\f0c7',
+  download:       '\f019',
+  upload:         '\f093',
+  copy:           '\f0c5',
+
+  // Arrows
+  arrow-up:       '\f062',
+  arrow-down:     '\f063',
+  arrow-left:     '\f060',
+  arrow-right:    '\f061',
+  chevron-up:     '\f077',
+  chevron-down:   '\f078',
+  chevron-left:   '\f053',
+  chevron-right:  '\f054',
+
+  // Status
+  check:          '\f00c',
+  info:           '\f129',
+  warning:        '\f071',
+  error:          '\f06a',
+
+  // UI
+  user:           '\f007',
+  settings:       '\f013',
+  bell:           '\f0f3',
+  calendar:       '\f133',
+  clock:          '\f017',
+  lock:           '\f023',
+  unlock:         '\f09c',
+  eye:            '\f06e',
+  eye-off:        '\f070',
+  star:           '\f005',
+  heart:          '\f004',
+  filter:         '\f0b0',
+  sort:           '\f0dc',
+
+  // Media
+  play:           '\f04b',
+  pause:          '\f04c',
+  stop:           '\f04d',
+
+  // Communication
+  mail:           '\f0e0',
+  phone:          '\f095',
+
+  // Misc
+  spinner:        '\f110',
+  external:       '\f35d',
+  link:           '\f0c1',
+  refresh:        '\f021',
+  more:           '\f142',
+  grip:           '\f58e',
+
+  // Brands
+  github:         '\f09b',
+  twitter:        '\f099',
+  facebook:       '\f09a',
+  linkedin:       '\f0e1',
+  youtube:        '\f167',
+  instagram:      '\f16d',
+) !default;

@@ -1,0 +1,137 @@
+// ============================================================================
+// GENERATOR - SCSS Maps → CSS Custom Properties
+// ============================================================================
+// Loops over theme maps and system maps to generate CSS custom properties.
+// This is the bridge: SCSS data → :root { --token: value; }
+// Replaces the old _tokens.scss
+// ============================================================================
+@use 'sass:map';
+@use 'sass:list';
+@use 'sass:meta';
+@use 'sass:string';
+@use 'theme' as t;
+@use 'system' as s;
+
+// ----------------------------------------------------------------------------
+// HELPER: Generic map-to-vars generator
+// ----------------------------------------------------------------------------
+@mixin _vars($map, $prefix: '') {
+  @each $key, $value in $map {
+    @if $prefix != '' {
+      --#{$prefix}-#{$key}: #{$value};
+    } @else {
+      --#{$key}: #{$value};
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// VALIDATION: Ensure theme maps have required keys
+// ----------------------------------------------------------------------------
+$_required-light-keys: (
+  background-default, surface-default, text-primary, text-secondary,
+  text-muted, text-inverse, text-link, border-default, border-focus,
+  action-primary-default, action-primary-hover, action-primary-active,
+  success-default, warning-default, error-default, info-default,
+);
+
+@mixin _validate-theme {
+  @each $key in $_required-light-keys {
+    @if not map.has-key(t.$theme-light, $key) {
+      @warn "Theme missing required light color: #{$key}";
+    }
+  }
+  @each $key in $_required-light-keys {
+    @if not map.has-key(t.$theme-dark, $key) {
+      @warn "Theme missing required dark color: #{$key}";
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// GENERATE: All light mode tokens
+// ----------------------------------------------------------------------------
+@mixin generate-light {
+  // Brand colors (from theme)
+  @include _vars(t.$theme-brand, 'brand');
+
+  // Semantic colors - light (from theme)
+  @include _vars(t.$theme-light);
+
+  // Border radius (from theme)
+  @include _vars(t.$theme-radius, 'radius');
+
+  // Shadows - light (from theme)
+  @include _vars(t.$theme-shadows-light, 'shadow');
+
+  // Fonts (from theme)
+  @each $key, $stack in t.$theme-fonts {
+    --font-#{$key}: #{list.join($stack, (), comma)};
+  }
+
+  // Spacing scale (from system)
+  @include _vars(s.$spacing, 'space');
+
+  // Z-index (from system)
+  @include _vars(s.$z-layers, 'z');
+
+  // Typography (from system)
+  @include _vars(s.$font-sizes, 'font-size');
+  @include _vars(s.$font-weights, 'font-weight');
+  @include _vars(s.$line-heights, 'line-height');
+
+  // Durations (from system)
+  @include _vars(s.$durations, 'duration');
+
+  // Opacity (from system)
+  @include _vars(s.$opacities, 'opacity');
+}
+
+// ----------------------------------------------------------------------------
+// GENERATE: Dark mode overrides only
+// ----------------------------------------------------------------------------
+@mixin generate-dark {
+  // Semantic colors - dark (from theme)
+  @include _vars(t.$theme-dark);
+
+  // Shadows - dark (from theme)
+  @include _vars(t.$theme-shadows-dark, 'shadow');
+}
+
+// ----------------------------------------------------------------------------
+// GENERATE: Full theme (light base + dark variant)
+// ----------------------------------------------------------------------------
+@mixin generate-theme {
+  @include _validate-theme;
+
+  :root {
+    @include generate-light;
+  }
+
+  [data-theme="light"],
+  .theme-light {
+    @include generate-light;
+  }
+
+  [data-theme="dark"],
+  .theme-dark {
+    @include generate-dark;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      @include generate-dark;
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// GENERATE: Scoped theme (for component-level theming)
+// ----------------------------------------------------------------------------
+@mixin generate-scoped($mode: light) {
+  @if $mode == light {
+    @include generate-light;
+  } @else {
+    @include generate-dark;
+  }
+}

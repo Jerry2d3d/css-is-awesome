@@ -1,0 +1,167 @@
+// ============================================================================
+// SYSTEM - Universal Constants (Same across ALL projects)
+// ============================================================================
+// Compile-time values. NOT themed. NOT imported from Figma.
+// Breakpoints, z-index, spacing scale, font sizes, weights, line heights.
+// These feed into the generator and mixin API.
+// ============================================================================
+@use 'sass:map';
+
+// ----------------------------------------------------------------------------
+// SPACING - 4px base unit system
+// Semantic keys: xs, sm, md, lg, xl, 2xl, 3xl, 4xl
+// All values in rem for accessibility (scales with user preferences)
+// ----------------------------------------------------------------------------
+$spacing: (
+  0: 0,
+  none: 0,          // explicit zero token
+  2xs: 0.25rem,   // 4px
+  xs:  0.5rem,    // 8px
+  sm:  0.75rem,   // 12px
+  md:  1rem,      // 16px
+  lg:  1.5rem,    // 24px
+  xl:  2rem,      // 32px
+  2xl: 3rem,      // 48px
+  3xl: 4rem,      // 64px
+  4xl: 6rem,      // 96px
+) !default;
+
+// ----------------------------------------------------------------------------
+// FONT SIZES - Type scale
+// ----------------------------------------------------------------------------
+$font-sizes: (
+  xs:  0.75rem,   // 12px
+  sm:  0.875rem,  // 14px
+  base: 1rem,     // 16px
+  lg:  1.125rem,  // 18px
+  xl:  1.25rem,   // 20px
+  2xl: 1.5rem,    // 24px
+  3xl: 1.875rem,  // 30px
+  4xl: 2.25rem,   // 36px
+  5xl: 3rem,      // 48px
+  6xl: 3.75rem,   // 60px
+) !default;
+
+// ----------------------------------------------------------------------------
+// FONT WEIGHTS
+// ----------------------------------------------------------------------------
+$font-weights: (
+  light:    300,
+  normal:   400,
+  medium:   500,
+  semibold: 600,
+  bold:     700,
+  black:    900,
+) !default;
+
+// ----------------------------------------------------------------------------
+// LINE HEIGHTS
+// ----------------------------------------------------------------------------
+$line-heights: (
+  none:    1,
+  tight:   1.25,
+  snug:    1.375,
+  normal:  1.5,
+  relaxed: 1.625,
+  loose:   2,
+) !default;
+
+// ----------------------------------------------------------------------------
+// LETTER SPACING
+// ----------------------------------------------------------------------------
+$letter-spacings: (
+  tighter: -0.05em,
+  tight:   -0.025em,
+  normal:  0em,
+  wide:    0.025em,
+  wider:   0.05em,
+  widest:  0.1em,
+) !default;
+
+// ----------------------------------------------------------------------------
+// BREAKPOINTS - Mobile first (rem for accessibility)
+// IMPORTANT: These MUST stay as SCSS values (not CSS vars).
+// @media queries cannot use CSS custom properties.
+// ----------------------------------------------------------------------------
+$breakpoints: (
+  sm:  40rem,   // 640px
+  md:  48rem,   // 768px
+  lg:  64rem,   // 1024px
+  xl:  80rem,   // 1280px
+  2xl: 96rem,   // 1536px
+) !default;
+
+// Convenience aliases
+$bp-tablet: map.get($breakpoints, md) !default;
+$bp-desktop: map.get($breakpoints, lg) !default;
+
+// ----------------------------------------------------------------------------
+// Z-INDEX - Layer system
+// ----------------------------------------------------------------------------
+$z-layers: (
+  hide:     -1,
+  base:     0,
+  dropdown: 1000,
+  sticky:   1100,
+  fixed:    1200,
+  backdrop: 1300,
+  modal:    1400,
+  popover:  1500,
+  tooltip:  1600,
+  toast:    1700,
+) !default;
+
+// ----------------------------------------------------------------------------
+// BORDER WIDTHS
+// ----------------------------------------------------------------------------
+$border-widths: (
+  0: 0,
+  1: 1px,
+  2: 2px,
+  4: 4px,
+) !default;
+
+// ----------------------------------------------------------------------------
+// DURATIONS - Animation timing
+// ----------------------------------------------------------------------------
+$durations: (
+  instant: 0ms,
+  fast:    150ms,
+  normal:  250ms,
+  slow:    400ms,
+  slower:  600ms,
+) !default;
+
+// ----------------------------------------------------------------------------
+// EASINGS
+// ----------------------------------------------------------------------------
+$easings: (
+  linear:     linear,
+  ease:       ease,
+  ease-in:    ease-in,
+  ease-out:   ease-out,
+  ease-in-out: ease-in-out,
+  bounce:     cubic-bezier(0.68, -0.55, 0.265, 1.55),
+  smooth:     cubic-bezier(0.4, 0, 0.2, 1),
+) !default;
+
+// ----------------------------------------------------------------------------
+// OPACITY
+// ----------------------------------------------------------------------------
+$opacities: (
+  0:    0,
+  5:    0.05,
+  10:   0.1,
+  20:   0.2,
+  25:   0.25,
+  30:   0.3,
+  40:   0.4,
+  50:   0.5,
+  60:   0.6,
+  70:   0.7,
+  75:   0.75,
+  80:   0.8,
+  90:   0.9,
+  95:   0.95,
+  100:  1,
+) !default;

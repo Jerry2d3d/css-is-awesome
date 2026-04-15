@@ -1,0 +1,825 @@
+// ============================================================================
+// MIXINS - Core Utilities
+// ============================================================================
+// Icons are in _icons.scss (separate file)
+// Every mixin has parameters. Override anything.
+// ============================================================================
+@use 'sass:map';
+@use 'sass:list';
+@use 'sass:meta';
+@use 'theme' as t;
+@use 'system' as s;
+
+// ============================================================================
+// HELPER: Get component token with fallback
+// ============================================================================
+@function _comp($key, $fallback) {
+  $val: map.get(t.$theme-components, $key);
+  @if $val {
+    @return $val;
+  }
+  @return $fallback;
+}
+
+// ============================================================================
+// COLOR FUNCTIONS
+// ============================================================================
+
+@function color($name) {
+  $fallback: map.get(t.$theme-light, $name);
+  @if not $fallback {
+    $fallback: map.get(t.$theme-brand, $name);
+  }
+  @if $fallback {
+    @return var(--#{$name}, #{$fallback});
+  }
+  @return var(--#{$name}, currentColor);
+}
+
+@function brand($name) {
+  $fallback: map.get(t.$theme-brand, $name);
+  @return var(--brand-#{$name}, #{$fallback or currentColor});
+}
+
+@function color-raw($name) {
+  $value: map.get(t.$theme-light, $name);
+  @if not $value {
+    $value: map.get(t.$theme-brand, $name);
+  }
+  @return $value or currentColor;
+}
+
+// ============================================================================
+// SPACING FUNCTIONS (2026 System)
+// ============================================================================
+// UPDATED: 2026-02-06 - Use new $space map from theme
+// Uses 8-token scale (xs, sm, md, lg, xl, 2xl, 3xl, 4xl)
+// All values in rem for accessibility
+//
+// Usage: padding: space(md);  // Returns var(--space-md, 1rem)
+// ============================================================================
+
+@function space($key) {
+  $fallback: map.get(t.$space, $key);
+  @return var(--space-#{$key}, #{$fallback or 1rem});
+}
+
+@function space-raw($key) {
+  @return map.get(t.$space, $key) or 1rem;
+}
+
+// Semantic spacing aliases for better readability
+@function gap($type: normal) {
+  $fallback: map.get(t.$gap, $type);
+  @return var(--gap-#{$type}, #{$fallback or 1rem});
+}
+
+@function padding($type: normal) {
+  $fallback: map.get(t.$padding, $type);
+  @return var(--padding-#{$type}, #{$fallback or 1rem});
+}
+
+// ============================================================================
+// TYPOGRAPHY
+// ============================================================================
+
+@function font-family($type: primary) {
+  $stack: map.get(t.$theme-fonts, $type);
+  @if $stack {
+    $fallback: list.join($stack, (), comma);
+    @return var(--font-#{$type}, #{$fallback});
+  }
+  @return var(--font-#{$type}, sans-serif);
+}
+
+@function font-size($size) {
+  $fallback: map.get(s.$font-sizes, $size) or 1rem;
+  @return var(--font-size-#{$size}, #{$fallback});
+}
+
+@function font-size-raw($size) {
+  @return map.get(s.$font-sizes, $size) or 1rem;
+}
+
+@function line-height($size) {
+  $fallback: map.get(s.$line-heights, $size) or 1.5;
+  @return var(--line-height-#{$size}, #{$fallback});
+}
+
+@function line-height-raw($size) {
+  @return map.get(s.$line-heights, $size) or 1.5;
+}
+
+@function font-weight($weight) {
+  $fallback: map.get(s.$font-weights, $weight) or 400;
+  @return var(--font-weight-#{$weight}, #{$fallback});
+}
+
+@function font-weight-raw($weight) {
+  @return map.get(s.$font-weights, $weight) or 400;
+}
+
+// Font type map
+$_font-types: (
+  reg:         (weight: normal, style: normal),
+  regular:     (weight: normal, style: normal),
+  italic:      (weight: normal, style: italic),
+  light:       (weight: light, style: normal),
+  light-it:    (weight: light, style: italic),
+  medium:      (weight: medium, style: normal),
+  medium-it:   (weight: medium, style: italic),
+  semibold:    (weight: semibold, style: normal),
+  semibold-it: (weight: semibold, style: italic),
+  bold:        (weight: bold, style: normal),
+  bold-it:     (weight: bold, style: italic),
+  black:       (weight: black, style: normal),
+  black-it:    (weight: black, style: italic),
+);
+
+// Font mixin - accepts size as token name OR value
+@mixin font($type: reg, $size: null, $lh: null, $ls: null, $family: null) {
+  $cfg: map.get($_font-types, $type) or map.get($_font-types, reg);
+  font-weight: font-weight(map.get($cfg, weight));
+  font-style: map.get($cfg, style);
+  
+  @if $family { font-family: $family; }
+  
+  @if $size {
+    $size-val: map.get(s.$font-sizes, $size);
+    @if $size-val {
+      font-size: $size-val;
+    } @else {
+      font-size: $size;
+    }
+  }
+  
+  @if $lh {
+    $lh-val: map.get(s.$line-heights, $lh);
+    @if $lh-val {
+      line-height: $lh-val;
+    } @else {
+      line-height: $lh;
+    }
+  }
+  
+  @if $ls {
+    $ls-val: map.get(s.$letter-spacings, $ls);
+    @if $ls-val {
+      letter-spacing: $ls-val;
+    } @else {
+      letter-spacing: $ls;
+    }
+  }
+}
+
+// ============================================================================
+// TYPE SCALE PRESETS
+// ============================================================================
+// Semantic typography compositions for consistent hierarchy.
+// Usage: @include m.type(heading-1);  or  @include m.type(caption);
+// ============================================================================
+
+$_type-scale: (
+  display:    (size: 4xl, weight: bold,     lh: tight,  ls: tight),
+  heading-1:  (size: 3xl, weight: bold,     lh: tight,  ls: null),
+  heading-2:  (size: 2xl, weight: semibold, lh: tight,  ls: null),
+  heading-3:  (size: xl,  weight: semibold, lh: snug,   ls: null),
+  heading-4:  (size: lg,  weight: medium,   lh: normal, ls: null),
+  body:       (size: base, weight: normal,  lh: normal, ls: null),
+  body-sm:    (size: sm,  weight: normal,   lh: normal, ls: null),
+  caption:    (size: xs,  weight: normal,   lh: normal, ls: null),
+  overline:   (size: xs,  weight: semibold, lh: normal, ls: wide),
+);
+
+@mixin type($preset) {
+  $cfg: map.get($_type-scale, $preset);
+  @if not $cfg {
+    @error "Unknown type preset: #{$preset}. Available: #{map.keys($_type-scale)}";
+  }
+
+  $s: map.get($cfg, size);
+  $w: map.get($cfg, weight);
+  $lh-key: map.get($cfg, lh);
+  $ls-key: map.get($cfg, ls);
+
+  font-size: font-size($s);
+  font-weight: font-weight($w);
+
+  @if $lh-key {
+    $lh-val: map.get(s.$line-heights, $lh-key);
+    @if $lh-val { line-height: $lh-val; }
+  }
+
+  @if $ls-key {
+    $ls-val: map.get(s.$letter-spacings, $ls-key);
+    @if $ls-val and $ls-val != 0 { letter-spacing: $ls-val; }
+  }
+}
+
+// ============================================================================
+// BORDER & RADIUS
+// ============================================================================
+
+@function radius($size) {
+  $fallback: map.get(t.$theme-radius, $size);
+  @return var(--radius-#{$size}, #{$fallback or 0.25rem});
+}
+
+@function radius-raw($size) {
+  @return map.get(t.$theme-radius, $size) or 0.25rem;
+}
+
+@mixin border(
+  $width: 1px,
+  $style: solid,
+  $color: border-default,
+  $sides: all
+) {
+  @if $sides == all {
+    border: $width $style color($color);
+  } @else if meta.type-of($sides) == list {
+    @each $side in $sides {
+      border-#{$side}: $width $style color($color);
+    }
+  } @else {
+    border-#{$sides}: $width $style color($color);
+  }
+}
+
+// ============================================================================
+// SHADOWS
+// ============================================================================
+
+@function shadow($level) {
+  $fallback: map.get(t.$theme-shadows-light, $level);
+  @return var(--shadow-#{$level}, #{$fallback or none});
+}
+
+@function shadow-raw($level) {
+  @return map.get(t.$theme-shadows-light, $level) or none;
+}
+
+@mixin elevation($level: md) {
+  box-shadow: shadow($level);
+}
+
+// ============================================================================
+// Z-INDEX
+// ============================================================================
+
+@function z($layer) {
+  $fallback: map.get(s.$z-layers, $layer);
+  @return var(--z-#{$layer}, #{$fallback or 0});
+}
+
+@function z-raw($layer) {
+  @return map.get(s.$z-layers, $layer) or 0;
+}
+
+// ============================================================================
+// BREAKPOINTS
+// ============================================================================
+
+@mixin bp($size) {
+  $width: $size;
+  @if meta.type-of($size) != number {
+    $width: map.get(s.$breakpoints, $size);
+  }
+  @media screen and (min-width: $width) { @content; }
+}
+
+@mixin bp-down($size) {
+  $width: $size;
+  @if meta.type-of($size) != number {
+    $width: map.get(s.$breakpoints, $size);
+  }
+  @media screen and (max-width: calc(#{$width} - 1px)) { @content; }
+}
+
+@mixin bp-between($min, $max) {
+  $min-w: $min;
+  $max-w: $max;
+  @if meta.type-of($min) != number {
+    $min-w: map.get(s.$breakpoints, $min);
+  }
+  @if meta.type-of($max) != number {
+    $max-w: map.get(s.$breakpoints, $max);
+  }
+  @media screen and (min-width: $min-w) and (max-width: calc(#{$max-w} - 1px)) { @content; }
+}
+
+// Convenience aliases
+@mixin mobile-only { @include bp-down(md) { @content; } }
+@mixin tablet { @include bp(md) { @content; } }
+@mixin tablet-only { @include bp-between(md, lg) { @content; } }
+@mixin desktop { @include bp(lg) { @content; } }
+@mixin wide { @include bp(xl) { @content; } }
+
+// ============================================================================
+// CONTAINER QUERIES
+// ============================================================================
+// Component-level responsive design. Use alongside viewport breakpoints.
+// Usage: @include m.container('card'); then @include m.cq(md) { ... }
+// ============================================================================
+
+@mixin container($name: null, $type: inline-size) {
+  container-type: $type;
+  @if $name {
+    container-name: $name;
+  }
+}
+
+@mixin cq($size, $name: null) {
+  $width: $size;
+  @if meta.type-of($size) != number {
+    $width: map.get(s.$breakpoints, $size);
+  }
+  @if $name {
+    @container #{$name} (min-width: #{$width}) { @content; }
+  } @else {
+    @container (min-width: #{$width}) { @content; }
+  }
+}
+
+@mixin cq-down($size, $name: null) {
+  $width: $size;
+  @if meta.type-of($size) != number {
+    $width: map.get(s.$breakpoints, $size);
+  }
+  @if $name {
+    @container #{$name} (max-width: calc(#{$width} - 1px)) { @content; }
+  } @else {
+    @container (max-width: calc(#{$width} - 1px)) { @content; }
+  }
+}
+
+@mixin cq-between($min, $max, $name: null) {
+  $min-w: $min;
+  $max-w: $max;
+  @if meta.type-of($min) != number {
+    $min-w: map.get(s.$breakpoints, $min);
+  }
+  @if meta.type-of($max) != number {
+    $max-w: map.get(s.$breakpoints, $max);
+  }
+  @if $name {
+    @container #{$name} (min-width: #{$min-w}) and (max-width: calc(#{$max-w} - 1px)) { @content; }
+  } @else {
+    @container (min-width: #{$min-w}) and (max-width: calc(#{$max-w} - 1px)) { @content; }
+  }
+}
+
+// ============================================================================
+// TRANSITIONS
+// ============================================================================
+$_speeds: (
+  instant: 0ms,
+  fast: 150ms,
+  normal: 250ms,
+  slow: 400ms,
+  slower: 600ms,
+);
+
+$_easings: (
+  linear: linear,
+  ease: ease,
+  ease-in: ease-in,
+  ease-out: ease-out,
+  ease-in-out: ease-in-out,
+  bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55),
+  smooth: cubic-bezier(0.4, 0, 0.2, 1),
+);
+
+@mixin transition($props...) {
+  $speed: fast;
+  $easing: smooth;
+  $result: ();
+  
+  @each $prop in $props {
+    @if map.has-key($_speeds, $prop) {
+      $speed: $prop;
+    } @else if map.has-key($_easings, $prop) {
+      $easing: $prop;
+    } @else {
+      $result: list.append(
+        $result,
+        $prop map.get($_speeds, $speed) map.get($_easings, $easing),
+        comma
+      );
+    }
+  }
+  transition: $result;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+// ============================================================================
+// LAYOUT
+// ============================================================================
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin stack($gap: 4, $align: stretch) {
+  display: flex;
+  flex-direction: column;
+  gap: space($gap);
+  align-items: $align;
+}
+
+@mixin inline($gap: 2, $align: center, $wrap: nowrap) {
+  display: flex;
+  align-items: $align;
+  gap: space($gap);
+  flex-wrap: $wrap;
+}
+
+@mixin inset($size: 4) {
+  padding: space($size);
+}
+
+@mixin inset-x($size: 4) {
+  padding-left: space($size);
+  padding-right: space($size);
+}
+
+@mixin inset-y($size: 4) {
+  padding-top: space($size);
+  padding-bottom: space($size);
+}
+
+@mixin squish($y: 2, $x: 4) {
+  padding: space($y) space($x);
+}
+
+// ============================================================================
+// RESETS
+// ============================================================================
+
+@mixin button-reset {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  &:focus { outline: none; }
+}
+
+@mixin list-reset {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin header-reset {
+  @for $i from 1 through 6 {
+    h#{$i} { margin: 0; padding: 0; font: inherit; }
+  }
+}
+
+@mixin form-reset {
+  input, button, select, textarea {
+    font: inherit;
+    color: inherit;
+  }
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    width: 100%;
+  }
+}
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+@mixin truncate($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@mixin disabled($opacity: 0.5) {
+  opacity: $opacity;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@mixin focus-ring($color: border-focus, $width: 3px, $offset: 0) {
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 $width color($color);
+    @if $offset > 0 {
+      outline: $width solid color($color);
+      outline-offset: $offset;
+      box-shadow: none;
+    }
+  }
+}
+
+@mixin hover($prop, $value, $speed: fast) {
+  @include transition($prop, $speed);
+  &:hover { #{$prop}: $value; }
+}
+
+@mixin interactive($bg-hover: interactive-hover, $bg-active: interactive-active) {
+  @include transition(background-color, fast);
+  &:hover { background-color: color($bg-hover); }
+  &:active { background-color: color($bg-active); }
+  &:disabled, &[disabled] { @include disabled; }
+}
+
+// ============================================================================
+// COMPONENT BUILDERS
+// ============================================================================
+
+@mixin btn-base(
+  $py: _comp(btn-padding-y, 2),
+  $px: _comp(btn-padding-x, 4),
+  $r: _comp(btn-radius, md),
+  $font-weight: _comp(btn-font-weight, medium)
+) {
+  @include button-reset;
+  @include inline(2);
+  @include font($font-weight);
+  padding: space($py) space($px);
+  border-radius: radius($r);
+  @include transition(background-color, border-color, color, box-shadow, fast);
+  @include focus-ring;
+}
+
+@mixin card-base(
+  $p: _comp(card-padding, 4),
+  $r: _comp(card-radius, lg),
+  $shadow: _comp(card-shadow, sm),
+  $bg: surface-default
+) {
+  @include inset($p);
+  border-radius: radius($r);
+  background: color($bg);
+  @if $shadow and $shadow != none {
+    @include elevation($shadow);
+  }
+}
+
+@mixin input-base(
+  $py: _comp(input-padding-y, 2),
+  $px: _comp(input-padding-x, 3),
+  $r: _comp(input-radius, md),
+  $border-width: _comp(input-border-width, 1px),
+  $bg: surface-default,
+  $border-color: border-default
+) {
+  padding: space($py) space($px);
+  border: $border-width solid color($border-color);
+  border-radius: radius($r);
+  background: color($bg);
+  @include transition(border-color, box-shadow, fast);
+  
+  &:focus {
+    outline: none;
+    border-color: color(border-focus);
+    box-shadow: 0 0 0 3px rgba(color-raw(border-focus), 0.2);
+  }
+  &:disabled { @include disabled; }
+}
+
+@mixin badge-base(
+  $py: _comp(badge-padding-y, 0.5),
+  $px: _comp(badge-padding-x, 2),
+  $r: _comp(badge-radius, full),
+  $font-size: xs
+) {
+  display: inline-flex;
+  align-items: center;
+  padding: space($py) space($px);
+  border-radius: radius($r);
+  @include font(medium, $font-size);
+}
+
+@mixin modal-base(
+  $p: _comp(modal-padding, 6),
+  $r: _comp(modal-radius, xl),
+  $shadow: _comp(modal-shadow, 2xl),
+  $max-width: 500px
+) {
+  @include inset($p);
+  border-radius: radius($r);
+  background: color(surface-default);
+  @include elevation($shadow);
+  width: 90%;
+  max-width: $max-width;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@mixin tooltip-base(
+  $py: _comp(tooltip-padding-y, 1),
+  $px: _comp(tooltip-padding-x, 2),
+  $r: _comp(tooltip-radius, md),
+  $bg: text-primary,
+  $color: text-inverse
+) {
+  padding: space($py) space($px);
+  border-radius: radius($r);
+  background: color($bg);
+  color: color($color);
+  @include font(reg, xs);
+  white-space: nowrap;
+}
+
+// ============================================================================
+// FORM LAYOUT
+// ============================================================================
+
+@mixin form-layout($gap: 4, $columns: 1) {
+  display: grid;
+  gap: space($gap);
+  @if $columns > 1 {
+    @include tablet {
+      grid-template-columns: repeat($columns, 1fr);
+    }
+  }
+}
+
+@mixin form-group($gap: 1, $direction: column) {
+  display: flex;
+  flex-direction: $direction;
+  gap: space($gap);
+}
+
+@mixin form-row($gap: 2, $align: center) {
+  display: flex;
+  align-items: $align;
+  gap: space($gap);
+}
+
+// ============================================================================
+// ANIMATION HELPERS
+// ============================================================================
+
+@mixin spin($duration: 1s) {
+  animation: spin $duration linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  @at-root {
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  }
+}
+
+@mixin pulse($duration: 2s) {
+  animation: pulse $duration ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  @at-root {
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  }
+}
+
+@mixin fade-in($duration: normal) {
+  $dur: map.get($_speeds, $duration) or $duration;
+  animation: fade-in $dur ease-out both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+  }
+
+  @at-root {
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  }
+}
+
+@mixin slide-up($duration: normal, $distance: 1rem) {
+  $dur: map.get($_speeds, $duration) or $duration;
+  animation: slide-up $dur ease-out both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  @at-root {
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY($distance);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+// ============================================================================
+// BACKWARD COMPATIBILITY ALIASES
+// ============================================================================
+
+@mixin card {
+  @include card-base;
+}
+
+@mixin button-outline {
+  @include btn-base;
+  background: transparent;
+  border: 1px solid color(border-default);
+  color: color(text-primary);
+
+  &:hover {
+    background: color(interactive-hover);
+    border-color: color(border-focus);
+  }
+
+  &:active {
+    background: color(interactive-active);
+  }
+}
+
+@mixin form-input {
+  @include input-base;
+}
+
+@mixin label-base {
+  display: block;
+  @include font(medium, sm);
+  color: color(text-primary);
+  margin-bottom: space(xs);
+}
+
+@mixin button-primary {
+  @include btn-base;
+  background: color(action-primary-default);
+  color: color(text-inverse);
+
+  &:hover {
+    background: color(action-primary-hover);
+  }
+
+  &:active {
+    background: color(action-primary-active);
+  }
+}
+
+@mixin button-secondary {
+  @include btn-base;
+  background: color(action-secondary-default);
+  color: color(text-inverse);
+
+  &:hover {
+    background: color(action-secondary-hover);
+  }
+
+  &:active {
+    background: color(action-secondary-active);
+  }
+}

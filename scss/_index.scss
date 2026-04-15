@@ -1,0 +1,28 @@
+// ============================================================================
+// INDEX - Barrel File
+// ============================================================================
+// Clean re-exports for easy importing.
+// Usage: @use 'design-system' as ds;
+// ============================================================================
+
+// Forward with namespaces
+@forward 'system' as sys-*;
+@forward 'theme' as theme-*;
+@forward 'generator';
+@forward 'mixins' as *;    // No prefix - main API
+@forward 'icons' as icon-*; // Icon mixins with prefix
+
+// For direct access to maps (advanced usage)
+@use 'system' as s;
+@use 'theme' as t;
+@use 'generator';
+
+// Re-export key maps
+$spacing: s.$spacing;
+$breakpoints: s.$breakpoints;
+$z-layers: s.$z-layers;
+$font-sizes: s.$font-sizes;
+$theme-brand: t.$theme-brand;
+$theme-light: t.$theme-light;
+$theme-dark: t.$theme-dark;
+$theme-radius: t.$theme-radius;

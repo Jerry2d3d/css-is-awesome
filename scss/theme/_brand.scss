@@ -1,0 +1,18 @@
+// ============================================================================
+// BRAND COLORS - Royal Blue Theme
+// ============================================================================
+// All colors WCAG AA compliant for accessibility
+// Note: action-primary-* in _colors-light.scss intentionally references these
+// brand values. Brand = identity, action-primary = semantic usage of brand.
+// ============================================================================
+
+$brand: (
+  primary:        #3A5FCD,
+  primary-hover:  #2E4A99,
+  primary-active: #1E3A8A,
+  secondary:      #FF6B6B,
+  secondary-hover:#E85555,
+  secondary-active:#CC5555,
+  accent:         #0099FF,
+  accent-hover:   #0088E6,
+) !default;

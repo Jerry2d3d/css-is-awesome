@@ -1,0 +1,212 @@
+// ============================================================================
+// ICONS - Two Separate Systems (SVG + Font Awesome)
+// ============================================================================
+// Keep them separate. Use what you need. Easy to update.
+// ============================================================================
+@use 'sass:map';
+@use 'sass:list';
+@use 'theme' as t;
+
+// ============================================================================
+// SVG ICONS
+// ============================================================================
+// FOLDER-BASED: Just drop files into $icon-path folder
+// Filename = icon name: arrow.svg → @include svg(arrow)
+// 
+// How it works:
+// 1. Checks $icon-svg-alias for remapping (delete → trash.svg)
+// 2. If not in alias, uses name directly (arrow → arrow.svg)
+//
+// To add icons: Just put the .svg file in your folder. Done.
+// ============================================================================
+
+// Get filename - checks alias map, falls back to name
+@function _svg-file($name) {
+  $alias: map.get(t.$theme-icon-svg-alias, $name);
+  @if $alias {
+    @return $alias;
+  }
+  @return $name;
+}
+
+// Basic SVG icon
+@mixin svg(
+  $name,
+  $size: t.$theme-icon-size,
+  $color: currentColor
+) {
+  $file: _svg-file($name);
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: $size;
+  height: $size;
+  color: $color;
+  
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: currentColor;
+    mask: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
+    -webkit-mask: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
+  }
+}
+
+// SVG as background (for multi-color SVGs)
+@mixin svg-bg(
+  $name,
+  $size: t.$icon-size
+) {
+  $file: _svg-file($name);
+  
+  display: inline-block;
+  width: $size;
+  height: $size;
+  background: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
+}
+
+// SVG icon with text
+@mixin svg-text(
+  $name,
+  $size: 1em,
+  $gap: 0.5em,
+  $position: before
+) {
+  $file: _svg-file($name);
+  
+  display: inline-flex;
+  align-items: center;
+  gap: $gap;
+  
+  @if $position == after {
+    flex-direction: row-reverse;
+  }
+  
+  &::#{$position} {
+    content: '';
+    flex-shrink: 0;
+    width: $size;
+    height: $size;
+    background: currentColor;
+    mask: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
+    -webkit-mask: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
+  }
+}
+
+// ============================================================================
+// FONT AWESOME ICONS
+// ============================================================================
+// Configure $fa-path and $icon-fa-map in theme/_icons.scss
+
+// FA family config
+$_fa-styles: (
+  solid:   ('Font Awesome 6 Free', 900),
+  regular: ('Font Awesome 6 Free', 400),
+  light:   ('Font Awesome 6 Pro', 300),
+  thin:    ('Font Awesome 6 Pro', 100),
+  brands:  ('Font Awesome 6 Brands', 400),
+);
+
+// Load FA fonts (call once in main.scss if self-hosting)
+@mixin fa-load {
+  @font-face {
+    font-family: 'Font Awesome 6 Free';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('#{t.$theme-fa-path}/fa-regular-400.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Font Awesome 6 Free';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url('#{t.$theme-fa-path}/fa-solid-900.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Font Awesome 6 Brands';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('#{t.$theme-fa-path}/fa-brands-400.woff2') format('woff2');
+  }
+}
+
+// Basic FA icon (outputs content property styles)
+// Use inside ::before or ::after
+@mixin fa(
+  $name,
+  $style: t.$theme-fa-style,
+  $size: null
+) {
+  $code: map.get(t.$theme-icon-fa-map, $name) or $name;
+  $config: map.get($_fa-styles, $style);
+  
+  font-family: list.nth($config, 1);
+  font-weight: list.nth($config, 2);
+  font-style: normal;
+  line-height: 1;
+  content: $code;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  @if $size { font-size: $size; }
+}
+
+// FA icon as standalone element
+@mixin fa-icon(
+  $name,
+  $size: t.$theme-icon-size,
+  $style: t.$theme-fa-style,
+  $color: currentColor
+) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: $size;
+  height: $size;
+  color: $color;
+  
+  &::before {
+    @include fa($name, $style, $size);
+  }
+}
+
+// FA icon with text
+@mixin fa-text(
+  $name,
+  $size: 1em,
+  $gap: 0.5em,
+  $style: t.$theme-fa-style,
+  $position: before
+) {
+  display: inline-flex;
+  align-items: center;
+  gap: $gap;
+  
+  @if $position == after {
+    flex-direction: row-reverse;
+  }
+  
+  &::#{$position} {
+    @include fa($name, $style, $size);
+  }
+}
+
+// Spinning icon (for loaders)
+@mixin fa-spin($name, $size: t.$icon-size, $style: t.$theme-fa-style) {
+  @include fa-icon($name, $size, $style);
+  
+  &::before {
+    animation: fa-spin 1s linear infinite;
+  }
+  
+  @at-root {
+    @keyframes fa-spin {
+      to { transform: rotate(360deg); }
+    }
+  }
+}

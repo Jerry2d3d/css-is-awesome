@@ -1,0 +1,38 @@
+{
+  "name": "css-is-awesome",
+  "version": "0.1.0",
+  "description": "A token-driven SCSS design system with light/dark theming, semantic color tokens, and a 800+ LOC mixin API.",
+  "main": "dist/css-is-awesome.css",
+  "style": "dist/css-is-awesome.css",
+  "sass": "scss/main.scss",
+  "files": [
+    "scss",
+    "dist",
+    "figma-tokens",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "sass scss/main.scss dist/css-is-awesome.css --no-source-map",
+    "build:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map",
+    "build:all": "npm run build && npm run build:min",
+    "watch": "sass scss/main.scss dist/css-is-awesome.css --watch"
+  },
+  "keywords": [
+    "css",
+    "scss",
+    "sass",
+    "design-system",
+    "design-tokens",
+    "theming",
+    "dark-mode"
+  ],
+  "author": "Jerry2d3d",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jerry2d3d/css-is-awesome.git"
+  },
+  "devDependencies": {
+    "sass": "^1.97.1"
+  }
+}
