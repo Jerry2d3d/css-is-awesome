@@ -1,0 +1,107 @@
+// ============================================================================
+// THEMING EXAMPLES
+// ============================================================================
+// Shows how consumers can customize css-is-awesome without forking.
+// ============================================================================
+
+// ---------------------------------------------------------------------------
+// METHOD 1: CSS Custom Property Overrides (easiest, runtime-capable)
+// ---------------------------------------------------------------------------
+// Just set CSS custom properties at :root to remap any token.
+// This works with the compiled CSS — no SCSS needed.
+//
+// :root {
+//   --brand-primary: #E11D48;
+//   --brand-primary-hover: #BE123C;
+//   --brand-primary-active: #9F1239;
+//   --action-primary-default: #E11D48;
+//   --action-primary-hover: #BE123C;
+//   --action-primary-active: #9F1239;
+//   --font-primary: "Poppins", sans-serif;
+//   --radius-md: 0.5rem;
+// }
+
+// ---------------------------------------------------------------------------
+// METHOD 2: SCSS-Level Overrides (full control, compile-time)
+// ---------------------------------------------------------------------------
+// Override the theme maps before importing the generator.
+//
+// @use "css-is-awesome/scss/theme" with (
+//   $brand: (
+//     primary:        #E11D48,
+//     primary-hover:  #BE123C,
+//     primary-active: #9F1239,
+//     secondary:      #8B5CF6,
+//     secondary-hover:#7C3AED,
+//     secondary-active:#6D28D9,
+//     accent:         #06B6D4,
+//     accent-hover:   #0891B2,
+//   )
+// );
+// @use "css-is-awesome/scss/generator";
+// @include generator.generate-theme;
+
+// ---------------------------------------------------------------------------
+// METHOD 3: Multi-Brand Theming
+// ---------------------------------------------------------------------------
+// Use data-theme attributes for brand + mode combinations.
+
+// Brand A — Rose theme
+[data-theme="brand-a-light"] {
+  --brand-primary: #E11D48;
+  --brand-primary-hover: #BE123C;
+  --brand-primary-active: #9F1239;
+  --action-primary-default: #E11D48;
+  --action-primary-hover: #BE123C;
+  --action-primary-active: #9F1239;
+  --brand-secondary: #8B5CF6;
+  --brand-secondary-hover: #7C3AED;
+  --brand-secondary-active: #6D28D9;
+  --action-secondary-default: #8B5CF6;
+  --action-secondary-hover: #7C3AED;
+  --action-secondary-active: #6D28D9;
+}
+
+[data-theme="brand-a-dark"] {
+  --brand-primary: #FB7185;
+  --brand-primary-hover: #F43F5E;
+  --brand-primary-active: #E11D48;
+  --action-primary-default: #FB7185;
+  --action-primary-hover: #F43F5E;
+  --action-primary-active: #E11D48;
+  --brand-secondary: #A78BFA;
+  --brand-secondary-hover: #8B5CF6;
+  --brand-secondary-active: #7C3AED;
+  --action-secondary-default: #A78BFA;
+  --action-secondary-hover: #8B5CF6;
+  --action-secondary-active: #7C3AED;
+  --background-default: #0A0A0A;
+  --surface-default: #151515;
+  --text-primary: #FFF;
+  --text-secondary: #B8B8B8;
+  --border-default: #2A2A2A;
+}
+
+// Brand B — Teal theme
+[data-theme="brand-b-light"] {
+  --brand-primary: #0D9488;
+  --brand-primary-hover: #0F766E;
+  --brand-primary-active: #115E59;
+  --action-primary-default: #0D9488;
+  --action-primary-hover: #0F766E;
+  --action-primary-active: #115E59;
+}
+
+[data-theme="brand-b-dark"] {
+  --brand-primary: #2DD4BF;
+  --brand-primary-hover: #14B8A6;
+  --brand-primary-active: #0D9488;
+  --action-primary-default: #2DD4BF;
+  --action-primary-hover: #14B8A6;
+  --action-primary-active: #0D9488;
+  --background-default: #0A0A0A;
+  --surface-default: #151515;
+  --text-primary: #FFF;
+  --text-secondary: #B8B8B8;
+  --border-default: #2A2A2A;
+}

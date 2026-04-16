@@ -67,12 +67,12 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 
 **Goal:** Make it easy to override tokens without forking.
 
-- [ ] Documented override pattern: consumers set CSS custom properties at `:root` to remap any token
-- [ ] SCSS-level override pattern: `@use "css-is-awesome/scss/mixins" with ($overrides...)`
-- [ ] Brand theming guide (replace `#3A5FCD` with your brand in 3 lines)
-- [ ] Multi-brand example: light/dark + brand A/brand B via `[data-theme="brand-a-light"]`
-- [ ] Runtime theme-switch JS snippet in docs (localStorage, `prefers-color-scheme` honor)
-- [ ] Export Figma Tokens JSON alongside SCSS (for design-tool sync)
+- [x] Documented override pattern: consumers set CSS custom properties at `:root` to remap any token
+- [x] SCSS-level override pattern: `@use "css-is-awesome/scss/theme" with ($overrides...)`
+- [x] Brand theming guide (replace `#3A5FCD` with your brand in 3 lines)
+- [x] Multi-brand example: light/dark + brand A/brand B via `[data-theme="brand-a-light"]`
+- [x] Runtime theme-switch JS snippet in docs (localStorage, `prefers-color-scheme` honor)
+- [x] Export Figma Tokens JSON alongside SCSS (for design-tool sync)
 
 **Release:** `v0.4.0` — fully themeable.
 
