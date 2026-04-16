@@ -1,0 +1,457 @@
+// ============================================================================
+// UTILITIES - Drop-in utility classes (cia- prefix)
+// ============================================================================
+// Generated from existing design tokens. No SCSS knowledge required to use.
+// Usage: <div class="cia-flex cia-p-md cia-bg-surface-subtle cia-rounded-lg">
+// ============================================================================
+@use 'sass:map';
+@use 'sass:list';
+@use 'sass:meta';
+@use 'system' as s;
+@use 'theme' as t;
+@use 'mixins' as m;
+
+// ============================================================================
+// SPACING: margin & padding
+// ============================================================================
+// .cia-m-md, .cia-mt-lg, .cia-mx-xl, .cia-p-sm, .cia-py-2xl, etc.
+// ============================================================================
+
+$_space-props: (
+  m:  margin,
+  mt: margin-top,
+  mr: margin-right,
+  mb: margin-bottom,
+  ml: margin-left,
+  p:  padding,
+  pt: padding-top,
+  pr: padding-right,
+  pb: padding-bottom,
+  pl: padding-left,
+);
+
+$_space-axis: (
+  mx: (margin-left, margin-right),
+  my: (margin-top, margin-bottom),
+  px: (padding-left, padding-right),
+  py: (padding-top, padding-bottom),
+);
+
+@each $key, $value in s.$spacing {
+  @each $prefix, $prop in $_space-props {
+    .cia-#{$prefix}-#{$key} { #{$prop}: $value; }
+  }
+  @each $prefix, $props in $_space-axis {
+    .cia-#{$prefix}-#{$key} {
+      @each $prop in $props { #{$prop}: $value; }
+    }
+  }
+}
+
+// Auto margin utilities
+.cia-m-auto { margin: auto; }
+.cia-mx-auto { margin-left: auto; margin-right: auto; }
+.cia-my-auto { margin-top: auto; margin-bottom: auto; }
+.cia-ml-auto { margin-left: auto; }
+.cia-mr-auto { margin-right: auto; }
+.cia-mt-auto { margin-top: auto; }
+.cia-mb-auto { margin-bottom: auto; }
+
+// Gap utilities
+@each $key, $value in s.$spacing {
+  .cia-gap-#{$key} { gap: $value; }
+  .cia-gap-x-#{$key} { column-gap: $value; }
+  .cia-gap-y-#{$key} { row-gap: $value; }
+}
+
+// ============================================================================
+// TYPOGRAPHY
+// ============================================================================
+
+@each $key, $value in s.$font-sizes {
+  .cia-text-#{$key} { font-size: var(--font-size-#{$key}, #{$value}); }
+}
+
+@each $key, $value in s.$font-weights {
+  .cia-font-#{$key} { font-weight: var(--font-weight-#{$key}, #{$value}); }
+}
+
+@each $key, $value in s.$line-heights {
+  .cia-leading-#{$key} { line-height: $value; }
+}
+
+@each $key, $value in s.$letter-spacings {
+  .cia-tracking-#{$key} { letter-spacing: $value; }
+}
+
+.cia-text-left { text-align: left; }
+.cia-text-center { text-align: center; }
+.cia-text-right { text-align: right; }
+.cia-text-justify { text-align: justify; }
+
+.cia-uppercase { text-transform: uppercase; }
+.cia-lowercase { text-transform: lowercase; }
+.cia-capitalize { text-transform: capitalize; }
+.cia-normal-case { text-transform: none; }
+
+.cia-underline { text-decoration: underline; }
+.cia-line-through { text-decoration: line-through; }
+.cia-no-underline { text-decoration: none; }
+
+.cia-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cia-whitespace-nowrap { white-space: nowrap; }
+.cia-whitespace-normal { white-space: normal; }
+.cia-break-words { overflow-wrap: break-word; }
+
+// ============================================================================
+// COLORS (semantic tokens via CSS custom properties)
+// ============================================================================
+
+$_color-tokens: (
+  // Text
+  text-primary, text-secondary, text-muted, text-inverse, text-link,
+  // Status text
+  success-text, warning-text, error-text, info-text,
+);
+
+@each $token in $_color-tokens {
+  .cia-text-#{$token} { color: var(--#{$token}); }
+}
+
+$_bg-tokens: (
+  // Backgrounds
+  background-default, background-subtle, background-navbar,
+  // Surfaces
+  surface-default, surface-subtle, surface-muted, surface-emphasis,
+  // Status
+  success-subtle, warning-subtle, error-subtle, info-subtle,
+  // Actions
+  action-primary-default, action-secondary-default,
+);
+
+@each $token in $_bg-tokens {
+  .cia-bg-#{$token} { background-color: var(--#{$token}); }
+}
+
+$_border-tokens: (border-default, border-subtle, border-emphasis, border-focus);
+
+@each $token in $_border-tokens {
+  .cia-border-#{$token} { border-color: var(--#{$token}); }
+}
+
+// ============================================================================
+// LAYOUT: display
+// ============================================================================
+
+.cia-block { display: block; }
+.cia-inline-block { display: inline-block; }
+.cia-inline { display: inline; }
+.cia-flex { display: flex; }
+.cia-inline-flex { display: inline-flex; }
+.cia-grid { display: grid; }
+.cia-inline-grid { display: inline-grid; }
+.cia-hidden { display: none; }
+.cia-contents { display: contents; }
+
+// ============================================================================
+// LAYOUT: flexbox
+// ============================================================================
+
+.cia-flex-row { flex-direction: row; }
+.cia-flex-row-reverse { flex-direction: row-reverse; }
+.cia-flex-col { flex-direction: column; }
+.cia-flex-col-reverse { flex-direction: column-reverse; }
+
+.cia-flex-wrap { flex-wrap: wrap; }
+.cia-flex-nowrap { flex-wrap: nowrap; }
+.cia-flex-wrap-reverse { flex-wrap: wrap-reverse; }
+
+.cia-flex-1 { flex: 1 1 0%; }
+.cia-flex-auto { flex: 1 1 auto; }
+.cia-flex-initial { flex: 0 1 auto; }
+.cia-flex-none { flex: none; }
+.cia-flex-grow { flex-grow: 1; }
+.cia-flex-grow-0 { flex-grow: 0; }
+.cia-flex-shrink { flex-shrink: 1; }
+.cia-flex-shrink-0 { flex-shrink: 0; }
+
+// ============================================================================
+// LAYOUT: alignment
+// ============================================================================
+
+.cia-items-start { align-items: flex-start; }
+.cia-items-end { align-items: flex-end; }
+.cia-items-center { align-items: center; }
+.cia-items-baseline { align-items: baseline; }
+.cia-items-stretch { align-items: stretch; }
+
+.cia-justify-start { justify-content: flex-start; }
+.cia-justify-end { justify-content: flex-end; }
+.cia-justify-center { justify-content: center; }
+.cia-justify-between { justify-content: space-between; }
+.cia-justify-around { justify-content: space-around; }
+.cia-justify-evenly { justify-content: space-evenly; }
+
+.cia-self-auto { align-self: auto; }
+.cia-self-start { align-self: flex-start; }
+.cia-self-end { align-self: flex-end; }
+.cia-self-center { align-self: center; }
+.cia-self-stretch { align-self: stretch; }
+
+// Composition shortcuts
+.cia-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cia-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cia-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+// ============================================================================
+// LAYOUT: grid
+// ============================================================================
+
+.cia-grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.cia-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cia-grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cia-grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cia-grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.cia-grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+.cia-col-span-1 { grid-column: span 1 / span 1; }
+.cia-col-span-2 { grid-column: span 2 / span 2; }
+.cia-col-span-3 { grid-column: span 3 / span 3; }
+.cia-col-span-4 { grid-column: span 4 / span 4; }
+.cia-col-span-6 { grid-column: span 6 / span 6; }
+.cia-col-span-12 { grid-column: span 12 / span 12; }
+.cia-col-span-full { grid-column: 1 / -1; }
+
+// ============================================================================
+// POSITION
+// ============================================================================
+
+.cia-static { position: static; }
+.cia-relative { position: relative; }
+.cia-absolute { position: absolute; }
+.cia-fixed { position: fixed; }
+.cia-sticky { position: sticky; }
+
+.cia-inset-0 { inset: 0; }
+.cia-top-0 { top: 0; }
+.cia-right-0 { right: 0; }
+.cia-bottom-0 { bottom: 0; }
+.cia-left-0 { left: 0; }
+
+// ============================================================================
+// SIZING
+// ============================================================================
+
+.cia-w-full { width: 100%; }
+.cia-w-screen { width: 100vw; }
+.cia-w-auto { width: auto; }
+.cia-w-fit { width: fit-content; }
+.cia-w-min { width: min-content; }
+.cia-w-max { width: max-content; }
+.cia-min-w-0 { min-width: 0; }
+.cia-min-w-full { min-width: 100%; }
+.cia-max-w-none { max-width: none; }
+.cia-max-w-full { max-width: 100%; }
+
+.cia-h-full { height: 100%; }
+.cia-h-screen { height: 100vh; }
+.cia-h-auto { height: auto; }
+.cia-h-fit { height: fit-content; }
+.cia-min-h-0 { min-height: 0; }
+.cia-min-h-screen { min-height: 100vh; }
+.cia-min-h-full { min-height: 100%; }
+
+// ============================================================================
+// BORDER & RADIUS
+// ============================================================================
+
+.cia-border { border: 1px solid var(--border-default); }
+.cia-border-0 { border: 0; }
+.cia-border-t { border-top: 1px solid var(--border-default); }
+.cia-border-r { border-right: 1px solid var(--border-default); }
+.cia-border-b { border-bottom: 1px solid var(--border-default); }
+.cia-border-l { border-left: 1px solid var(--border-default); }
+
+@each $key, $value in t.$theme-radius {
+  .cia-rounded-#{$key} { border-radius: var(--radius-#{$key}, #{$value}); }
+}
+
+// ============================================================================
+// SHADOWS
+// ============================================================================
+
+@each $key, $value in t.$theme-shadows-light {
+  .cia-shadow-#{$key} { box-shadow: var(--shadow-#{$key}, #{$value}); }
+}
+
+// ============================================================================
+// OPACITY
+// ============================================================================
+
+@each $key, $value in s.$opacities {
+  .cia-opacity-#{$key} { opacity: $value; }
+}
+
+// ============================================================================
+// Z-INDEX
+// ============================================================================
+
+@each $key, $value in s.$z-layers {
+  .cia-z-#{$key} { z-index: $value; }
+}
+
+// ============================================================================
+// OVERFLOW
+// ============================================================================
+
+.cia-overflow-auto { overflow: auto; }
+.cia-overflow-hidden { overflow: hidden; }
+.cia-overflow-visible { overflow: visible; }
+.cia-overflow-scroll { overflow: scroll; }
+.cia-overflow-x-auto { overflow-x: auto; }
+.cia-overflow-y-auto { overflow-y: auto; }
+.cia-overflow-x-hidden { overflow-x: hidden; }
+.cia-overflow-y-hidden { overflow-y: hidden; }
+
+// ============================================================================
+// CURSOR & INTERACTION
+// ============================================================================
+
+.cia-cursor-pointer { cursor: pointer; }
+.cia-cursor-default { cursor: default; }
+.cia-cursor-not-allowed { cursor: not-allowed; }
+.cia-pointer-events-none { pointer-events: none; }
+.cia-pointer-events-auto { pointer-events: auto; }
+.cia-select-none { user-select: none; }
+.cia-select-text { user-select: text; }
+.cia-select-all { user-select: all; }
+
+// ============================================================================
+// ACCESSIBILITY
+// ============================================================================
+
+.cia-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.cia-not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  border: 0;
+}
+
+// ============================================================================
+// RESPONSIVE VARIANTS
+// ============================================================================
+// Mobile-first: .cia-sm\:flex, .cia-md\:hidden, .cia-lg\:grid-cols-3, etc.
+// Only display/flex/grid utilities get responsive variants to keep size down.
+// ============================================================================
+
+$_responsive-display: (
+  hidden: none,
+  block: block,
+  inline-block: inline-block,
+  flex: flex,
+  inline-flex: inline-flex,
+  grid: grid,
+);
+
+$_responsive-flex: (
+  flex-row: (flex-direction: row),
+  flex-col: (flex-direction: column),
+  flex-wrap: (flex-wrap: wrap),
+  flex-nowrap: (flex-wrap: nowrap),
+  items-start: (align-items: flex-start),
+  items-center: (align-items: center),
+  items-end: (align-items: flex-end),
+  items-stretch: (align-items: stretch),
+  justify-start: (justify-content: flex-start),
+  justify-center: (justify-content: center),
+  justify-between: (justify-content: space-between),
+  justify-end: (justify-content: flex-end),
+  flex-center: (display: flex, align-items: center, justify-content: center),
+  flex-between: (display: flex, align-items: center, justify-content: space-between),
+);
+
+$_responsive-grid: (
+  grid-cols-1: (grid-template-columns: repeat(1, minmax(0, 1fr))),
+  grid-cols-2: (grid-template-columns: repeat(2, minmax(0, 1fr))),
+  grid-cols-3: (grid-template-columns: repeat(3, minmax(0, 1fr))),
+  grid-cols-4: (grid-template-columns: repeat(4, minmax(0, 1fr))),
+  grid-cols-6: (grid-template-columns: repeat(6, minmax(0, 1fr))),
+  grid-cols-12: (grid-template-columns: repeat(12, minmax(0, 1fr))),
+);
+
+$_responsive-text: (
+  text-left: (text-align: left),
+  text-center: (text-align: center),
+  text-right: (text-align: right),
+);
+
+@each $bp-name, $bp-value in s.$breakpoints {
+  @media screen and (min-width: $bp-value) {
+    @each $name, $display in $_responsive-display {
+      .cia-#{$bp-name}\:#{$name} { display: $display; }
+    }
+
+    @each $name, $props in $_responsive-flex {
+      .cia-#{$bp-name}\:#{$name} {
+        @each $prop, $val in $props { #{$prop}: $val; }
+      }
+    }
+
+    @each $name, $props in $_responsive-grid {
+      .cia-#{$bp-name}\:#{$name} {
+        @each $prop, $val in $props { #{$prop}: $val; }
+      }
+    }
+
+    @each $name, $props in $_responsive-text {
+      .cia-#{$bp-name}\:#{$name} {
+        @each $prop, $val in $props { #{$prop}: $val; }
+      }
+    }
+
+    // Responsive spacing (margin & padding)
+    @each $key, $value in s.$spacing {
+      @each $prefix, $prop in $_space-props {
+        .cia-#{$bp-name}\:#{$prefix}-#{$key} { #{$prop}: $value; }
+      }
+      @each $prefix, $props in $_space-axis {
+        .cia-#{$bp-name}\:#{$prefix}-#{$key} {
+          @each $prop in $props { #{$prop}: $value; }
+        }
+      }
+    }
+  }
+}

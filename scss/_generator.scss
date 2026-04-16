@@ -108,13 +108,11 @@ $_required-light-keys: (
     @include generate-light;
   }
 
-  [data-theme="light"],
-  .theme-light {
+  [data-theme="light"] {
     @include generate-light;
   }
 
-  [data-theme="dark"],
-  .theme-dark {
+  [data-theme="dark"] {
     @include generate-dark;
   }
 

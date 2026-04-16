@@ -133,11 +133,11 @@ $theme-brand: (
 
 1. **Light Mode Base** (`generate-light`):
    - Applied to `:root` (default)
-   - Applied to `[data-theme="light"]` and `.theme-light`
+   - Applied to `[data-theme="light"]`
    - Includes: brand colors, light semantic colors, fonts, spacing, shadows
 
 2. **Dark Mode Overrides** (`generate-dark`):
-   - Applied to `[data-theme="dark"]` and `.theme-dark`
+   - Applied to `[data-theme="dark"]`
    - Applied to `:root:not([data-theme="light"])` when `prefers-color-scheme: dark`
    - Includes: dark semantic colors, dark shadows
 
@@ -251,7 +251,7 @@ $theme-dark: (
 // Recommended: Short aliases
 @use 'mixins' as m;
 @use 'icons' as i;
-@use 'primitives' as p;
+@use 'system' as s;
 @use 'theme' as t;
 
 .button {
@@ -438,12 +438,12 @@ The system generates these CSS variables:
 
 Dark mode can be applied via:
 1. `[data-theme="dark"]` - Explicit dark mode (JavaScript control)
-2. `.theme-dark` - CSS class for scoped theming
-3. `prefers-color-scheme: dark` - System preference (auto-detects)
+2. `prefers-color-scheme: dark` - System preference (auto-detects)
 
 Light mode can be forced via:
 1. `[data-theme="light"]` - Overrides system preference
-2. `.theme-light` - CSS class for scoped theming
+
+> **Note:** For component-scoped theming, use the `generate-scoped` mixin under your own selector rather than relying on `.theme-*` classes.
 
 ### Background vs Surface Tokens
 

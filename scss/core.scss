@@ -1,22 +1,12 @@
 // ============================================================================
-// MAIN - Entry Point
-// ============================================================================
-// This generates the actual CSS output.
-// Import this once at your app's root.
+// CORE - Tokens + resets only (no utilities)
 // ============================================================================
 @use 'generator';
 @use 'mixins' as m;
-@use 'utilities';
 @use 'app-styles';
 
-// ----------------------------------------------------------------------------
-// GENERATE CSS VARIABLES
-// ----------------------------------------------------------------------------
 @include generator.generate-theme;
 
-// ----------------------------------------------------------------------------
-// BASE STYLES (Optional - include what you need)
-// ----------------------------------------------------------------------------
 *,
 *::before,
 *::after {
@@ -37,22 +27,19 @@ body {
   background: m.color(surface-default);
 }
 
-// Resets
 @include m.header-reset;
 @include m.form-reset;
 
-// Links
 a {
   color: m.color(text-link);
   text-decoration: none;
   @include m.transition(color);
-  
+
   &:hover {
     color: m.color(text-link-hover);
   }
 }
 
-// Focus visible
 :focus-visible {
   outline: 2px solid m.color(border-focus);
   outline-offset: 2px;
@@ -61,7 +48,3 @@ a {
 :focus:not(:focus-visible) {
   outline: none;
 }
-
-// ----------------------------------------------------------------------------
-// APP STYLES (Project-owned — never overwritten by boilerplate)
-// ----------------------------------------------------------------------------

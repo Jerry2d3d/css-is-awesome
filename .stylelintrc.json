@@ -1,0 +1,30 @@
+{
+  "extends": "stylelint-config-standard-scss",
+  "rules": {
+    "at-rule-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "custom-property-empty-line-before": null,
+    "rule-empty-line-before": null,
+    "scss/dollar-variable-empty-line-before": null,
+    "scss/double-slash-comment-empty-line-before": null,
+    "scss/comment-no-empty": null,
+    "scss/at-mixin-pattern": "^[a-z_][a-z0-9-]*$",
+    "scss/at-function-pattern": "^[a-z_][a-z0-9-]*$",
+    "scss/dollar-variable-pattern": "^[a-z_][a-z0-9-]*$",
+    "no-descending-specificity": null,
+    "color-function-notation": null,
+    "alpha-value-notation": null,
+    "property-no-vendor-prefix": null,
+    "property-no-deprecated": null,
+    "selector-not-notation": null,
+    "media-feature-range-notation": null,
+    "container-name-pattern": null,
+    "color-function-alias-notation": null,
+    "declaration-block-single-line-max-declarations": null,
+    "value-keyword-case": ["lower", {
+      "ignoreProperties": ["font-family", "/^--font/"],
+      "ignoreKeywords": ["BlinkMacSystemFont", "currentColor"],
+      "camelCaseSvgKeywords": true
+    }]
+  }
+}

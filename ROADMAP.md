@@ -18,20 +18,20 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 **Goal:** Fix existing issues, lock down the API surface, make the library safe to consume.
 
 ### Bug fixes
-- [ ] Fix unquoted color-name warning in `scss/_generator.scss:21` (quote `$key` when interpolating)
-- [ ] Pick ONE theme-switch pattern: `[data-theme="dark"]` OR `.theme-dark` — deprecate the other
-- [ ] Audit `@use` paths for consumer portability (work with aliased imports)
+- [x] Fix unquoted color-name warning in `scss/_generator.scss:21` (quote `$key` when interpolating)
+- [x] Pick ONE theme-switch pattern: `[data-theme="dark"]` OR `.theme-dark` — deprecate the other
+- [x] Audit `@use` paths for consumer portability (work with aliased imports)
 
 ### Developer experience
 - [ ] Add `dist/` build output committed to releases (not git — via npm publish)
-- [ ] Add `CHANGELOG.md` with semver discipline
-- [ ] Add `LICENSE` file (MIT)
-- [ ] Add `.editorconfig` for contribution consistency
+- [x] Add `CHANGELOG.md` with semver discipline
+- [x] Add `LICENSE` file (MIT)
+- [x] Add `.editorconfig` for contribution consistency
 
 ### Quality
-- [ ] Stylelint config + lint pass on all SCSS
-- [ ] `npm run lint` script
-- [ ] Verify compile output size (gzipped CSS target: <15 KB for core)
+- [x] Stylelint config + lint pass on all SCSS
+- [x] `npm run lint` script
+- [x] Verify compile output size (gzipped CSS target: <15 KB for core) — 2 KB gzipped
 
 **Release:** `v0.2.0` — first "safe to use" version.
 
@@ -42,24 +42,24 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 **Goal:** The big Bootstrap-parity lever. Give consumers drop-in utility classes so they don't need SCSS at all.
 
 ### Utility CSS generation
-- [ ] New `scss/_utilities.scss` that emits utility classes from existing tokens
-- [ ] **Spacing:** `.m-xs` through `.m-4xl`, `.mt/mr/mb/ml-*`, `.mx/my-*`, same for padding
-- [ ] **Typography:** `.text-xs` through `.text-6xl`, `.font-light/normal/semibold/bold`, `.text-primary/secondary/muted`, `.leading-tight/normal/loose`
-- [ ] **Colors:** `.bg-surface-*`, `.text-action-*`, `.border-default`, status variants
-- [ ] **Layout:** `.flex`, `.flex-center`, `.flex-between`, `.stack`, `.grid`, `.inline`
-- [ ] **Display:** `.d-none`, `.d-block`, `.d-flex`, `.d-grid`, `.d-inline-*`
-- [ ] **Position:** `.static`, `.relative`, `.absolute`, `.fixed`, `.sticky`
-- [ ] **Border/Radius:** `.rounded-sm/md/lg/full`, `.border`, `.border-0`
-- [ ] **Shadow:** `.shadow-sm/md/lg/xl`, `.shadow-inner`, `.shadow-none`
-- [ ] **Responsive variants:** `.sm:flex`, `.md:text-lg`, etc. (opt-in, doubles output size)
+- [x] New `scss/_utilities.scss` that emits utility classes from existing tokens (all `cia-` prefixed)
+- [x] **Spacing:** `.cia-m-xs` through `.cia-m-4xl`, `.cia-mt/mr/mb/ml-*`, `.cia-mx/my-*`, same for padding + gap
+- [x] **Typography:** `.cia-text-xs` through `.cia-text-6xl`, `.cia-font-light/normal/semibold/bold`, `.cia-text-primary/secondary/muted`, `.cia-leading-tight/normal/loose`
+- [x] **Colors:** `.cia-bg-surface-*`, `.cia-text-*`, `.cia-border-*`, status variants
+- [x] **Layout:** `.cia-flex`, `.cia-flex-center`, `.cia-flex-between`, `.cia-stack`, `.cia-grid`, `.cia-inline`
+- [x] **Display:** `.cia-hidden`, `.cia-block`, `.cia-flex`, `.cia-grid`, `.cia-inline-*`
+- [x] **Position:** `.cia-static`, `.cia-relative`, `.cia-absolute`, `.cia-fixed`, `.cia-sticky`
+- [x] **Border/Radius:** `.cia-rounded-sm/md/lg/full`, `.cia-border`, `.cia-border-0`
+- [x] **Shadow:** `.cia-shadow-sm/md/lg/xl`, `.cia-shadow-inner`, `.cia-shadow-none`
+- [x] **Responsive variants:** `.cia-sm\:flex`, `.cia-md\:hidden`, etc. (included, mobile-first)
 
 ### Build outputs
-- [ ] `dist/css-is-awesome.css` — full system + utilities
-- [ ] `dist/css-is-awesome.core.css` — tokens + resets only (no utilities)
-- [ ] `dist/css-is-awesome.utilities.css` — utilities only (no core)
-- [ ] All above as `.min.css` via cssnano
+- [x] `dist/css-is-awesome.css` — full system + utilities (10 KB gzip)
+- [x] `dist/css-is-awesome.core.css` — tokens + resets only (2 KB gzip)
+- [x] `dist/css-is-awesome.utilities.css` — utilities only (8 KB gzip)
+- [x] All above as `.min.css` via Sass compressed mode
 
-**Release:** `v0.3.0` — consumers can write `<div class="flex-between p-md bg-surface-subtle rounded-lg">` without touching SCSS.
+**Release:** `v0.3.0` — consumers can write `<div class="cia-flex-between cia-p-md cia-bg-surface-subtle cia-rounded-lg">` without touching SCSS.
 
 ---
 

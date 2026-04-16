@@ -6,12 +6,12 @@
 
 $colors-light: (
   // Backgrounds
-  background-default: #FFFFFF,
+  background-default: #FFF,
   background-subtle:  #F8F6F0,
   background-navbar:  #FAFAFA,
 
   // Surfaces
-  surface-default:    #FFFFFF,
+  surface-default:    #FFF,
   surface-subtle:     #F8F6F0,
   surface-muted:      #F5F5F5,
   surface-emphasis:   #E5E5E5,
@@ -20,7 +20,7 @@ $colors-light: (
   text-primary:       #0f0f0f,
   text-secondary:     #525252,
   text-muted:         #6b6b6b,
-  text-inverse:       #ffffff,
+  text-inverse:       #fff,
   text-link:          #384fff,
   text-link-hover:    #2a3acc,
 
@@ -42,7 +42,7 @@ $colors-light: (
   // Action - Secondary
   action-secondary-default: #FF6B6B,
   action-secondary-hover:   #E85555,
-  action-secondary-active:  #CC5555,
+  action-secondary-active:  #C55,
 
   // Status - Success
   success-default:    #10b981,
