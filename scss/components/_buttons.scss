@@ -1,0 +1,122 @@
+// ============================================================================
+// BUTTONS
+// ============================================================================
+// Mixin-first button system. Every parameter has a default from the theme.
+// Change one thing or everything — no specificity wars.
+//
+// Usage:
+//   .btn       { @include btn-base; }
+//   .btn-cta   { @include btn-primary($px: xl, $r: full); }
+//   .btn-small { @include btn-base($py: xs, $px: sm, $font-size: sm); }
+// ============================================================================
+@use 'sass:map';
+@use '../theme' as t;
+@use '../system' as s;
+@use '../mixins' as m;
+
+// ----------------------------------------------------------------------------
+// BASE
+// ----------------------------------------------------------------------------
+@mixin btn-base(
+  $py: m.comp(btn-padding-y, xs),
+  $px: m.comp(btn-padding-x, md),
+  $r: m.comp(btn-radius, md),
+  $font-weight: m.comp(btn-font-weight, medium),
+  $font-size: null
+) {
+  @include m.button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(xs);
+  font-weight: m.font-weight($font-weight);
+  padding: m.space($py) m.space($px);
+  border-radius: m.radius($r);
+  @include m.transition(background-color, border-color, color, box-shadow);
+  @include m.focus-ring;
+
+  @if $font-size {
+    font-size: m.font-size($font-size);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// VARIANTS
+// ----------------------------------------------------------------------------
+@mixin btn-primary(
+  $bg: action-primary-default,
+  $bg-hover: action-primary-hover,
+  $bg-active: action-primary-active,
+  $color: text-inverse,
+  $py: null, $px: null, $r: null, $font-size: null
+) {
+  @include btn-base($py: $py or m.comp(btn-padding-y, xs), $px: $px or m.comp(btn-padding-x, md), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  background: m.color($bg);
+  color: m.color($color);
+
+  &:hover { background: m.color($bg-hover); }
+  &:active { background: m.color($bg-active); }
+  &:disabled, &[disabled] { @include m.disabled; }
+}
+
+@mixin btn-secondary(
+  $bg: action-secondary-default,
+  $bg-hover: action-secondary-hover,
+  $bg-active: action-secondary-active,
+  $color: text-inverse,
+  $py: null, $px: null, $r: null, $font-size: null
+) {
+  @include btn-base($py: $py or m.comp(btn-padding-y, xs), $px: $px or m.comp(btn-padding-x, md), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  background: m.color($bg);
+  color: m.color($color);
+
+  &:hover { background: m.color($bg-hover); }
+  &:active { background: m.color($bg-active); }
+  &:disabled, &[disabled] { @include m.disabled; }
+}
+
+@mixin btn-outline(
+  $border-color: border-default,
+  $color: text-primary,
+  $hover-bg: interactive-hover,
+  $hover-border: border-focus,
+  $active-bg: interactive-active,
+  $py: null, $px: null, $r: null, $font-size: null
+) {
+  @include btn-base($py: $py or m.comp(btn-padding-y, xs), $px: $px or m.comp(btn-padding-x, md), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  background: transparent;
+  border: 1px solid m.color($border-color);
+  color: m.color($color);
+
+  &:hover {
+    background: m.color($hover-bg);
+    border-color: m.color($hover-border);
+  }
+  &:active { background: m.color($active-bg); }
+  &:disabled, &[disabled] { @include m.disabled; }
+}
+
+@mixin btn-ghost(
+  $color: text-primary,
+  $hover-bg: interactive-hover,
+  $active-bg: interactive-active,
+  $py: null, $px: null, $r: null, $font-size: null
+) {
+  @include btn-base($py: $py or m.comp(btn-padding-y, xs), $px: $px or m.comp(btn-padding-x, md), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  background: transparent;
+  color: m.color($color);
+
+  &:hover { background: m.color($hover-bg); }
+  &:active { background: m.color($active-bg); }
+  &:disabled, &[disabled] { @include m.disabled; }
+}
+
+@mixin btn-icon($size: 2.5rem, $r: md) {
+  @include m.button-reset;
+  @include m.flex-center;
+  width: $size;
+  height: $size;
+  border-radius: m.radius($r);
+  @include m.transition(background-color, color);
+  @include m.focus-ring;
+  @include m.interactive;
+}

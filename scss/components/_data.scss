@@ -1,0 +1,167 @@
+// ============================================================================
+// DATA DISPLAY — Table, Card, List, Avatar
+// ============================================================================
+@use 'sass:map';
+@use '../theme' as t;
+@use '../system' as s;
+@use '../mixins' as m;
+
+// ----------------------------------------------------------------------------
+// TABLE
+// ----------------------------------------------------------------------------
+// Usage:
+//   table { @include table-base; }
+//   table { @include table-base($striped: true, $hover: true); }
+
+@mixin table-base($striped: false, $hover: false, $bordered: false, $compact: false) {
+  width: 100%;
+  border-collapse: collapse;
+  @include m.font(reg, sm);
+
+  th, td {
+    text-align: left;
+    padding: m.space(if($compact, xs, sm)) m.space(if($compact, sm, md));
+    border-bottom: 1px solid m.color(border-default);
+  }
+
+  th {
+    @include m.font(semibold, xs);
+    color: m.color(text-secondary);
+    text-transform: uppercase;
+    letter-spacing: map.get(s.$letter-spacings, wide);
+  }
+
+  @if $bordered {
+    th, td { border: 1px solid m.color(border-default); }
+  }
+
+  @if $striped {
+    tbody tr:nth-child(even) {
+      background: m.color(surface-subtle);
+    }
+  }
+
+  @if $hover {
+    tbody tr {
+      @include m.transition(background-color);
+      &:hover { background: m.color(interactive-hover); }
+    }
+  }
+}
+
+// Responsive table wrapper
+@mixin table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+// ----------------------------------------------------------------------------
+// CARD
+// ----------------------------------------------------------------------------
+@mixin card-base(
+  $p: m.comp(card-padding, md),
+  $r: m.comp(card-radius, lg),
+  $shadow: m.comp(card-shadow, sm),
+  $bg: surface-default,
+  $border: false
+) {
+  padding: m.space($p);
+  border-radius: m.radius($r);
+  background: m.color($bg);
+
+  @if $shadow and $shadow != none {
+    box-shadow: m.shadow($shadow);
+  }
+
+  @if $border {
+    border: 1px solid m.color(border-default);
+  }
+}
+
+@mixin card-header($pb: sm) {
+  padding-bottom: m.space($pb);
+  border-bottom: 1px solid m.color(border-default);
+  margin-bottom: m.space(md);
+}
+
+@mixin card-footer($pt: sm) {
+  padding-top: m.space($pt);
+  border-top: 1px solid m.color(border-default);
+  margin-top: m.space(md);
+}
+
+@mixin card-interactive {
+  cursor: pointer;
+  @include m.transition(box-shadow, transform);
+
+  &:hover {
+    box-shadow: m.shadow(md);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// LIST
+// ----------------------------------------------------------------------------
+@mixin list-base($gap: 0, $dividers: false) {
+  @include m.list-reset;
+  display: flex;
+  flex-direction: column;
+  gap: m.space($gap);
+
+  @if $dividers and $gap == 0 {
+    > li + li { border-top: 1px solid m.color(border-default); }
+  }
+}
+
+@mixin list-item($py: sm, $px: md) {
+  display: flex;
+  align-items: center;
+  gap: m.space(sm);
+  padding: m.space($py) m.space($px);
+}
+
+@mixin list-item-interactive($py: sm, $px: md) {
+  @include list-item($py: $py, $px: $px);
+  cursor: pointer;
+  @include m.transition(background-color);
+
+  &:hover { background: m.color(interactive-hover); }
+  &:active { background: m.color(interactive-active); }
+}
+
+// ----------------------------------------------------------------------------
+// AVATAR
+// ----------------------------------------------------------------------------
+@mixin avatar($size: 2.5rem, $r: full) {
+  width: $size;
+  height: $size;
+  border-radius: m.radius($r);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+@mixin avatar-placeholder($size: 2.5rem, $r: full, $bg: surface-muted, $color: text-muted) {
+  @include m.flex-center;
+  width: $size;
+  height: $size;
+  border-radius: m.radius($r);
+  background: m.color($bg);
+  color: m.color($color);
+  @include m.font(semibold, sm);
+  flex-shrink: 0;
+}
+
+@mixin avatar-group($overlap: -0.5rem) {
+  display: flex;
+
+  > * + * {
+    margin-left: $overlap;
+    border: 2px solid m.color(surface-default);
+  }
+}

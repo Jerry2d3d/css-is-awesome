@@ -9,8 +9,10 @@
 @forward 'system' as sys-*;
 @forward 'theme' as theme-*;
 @forward 'generator';
-@forward 'mixins' as *;    // No prefix - main API
-@forward 'icons' as icon-*; // Icon mixins with prefix
+@forward 'mixins' as *;        // No prefix - main API
+@forward 'layout' as *;       // Layout mixins (grid, container, page)
+@forward 'icons' as icon-*;   // Icon mixins with prefix
+@forward 'components' as *;   // Component mixins (btn, card, nav, etc.)
 
 // For direct access to maps (advanced usage)
 @use 'system' as s;

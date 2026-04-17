@@ -1,0 +1,124 @@
+// ============================================================================
+// OVERLAY — Modal, Tooltip, Popover, Dropdown
+// ============================================================================
+@use 'sass:map';
+@use '../theme' as t;
+@use '../system' as s;
+@use '../mixins' as m;
+
+// ----------------------------------------------------------------------------
+// MODAL
+// ----------------------------------------------------------------------------
+@mixin modal-backdrop($bg: rgba(0, 0, 0, 0.5)) {
+  position: fixed;
+  inset: 0;
+  background: $bg;
+  z-index: m.z(backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin modal-base(
+  $p: m.comp(modal-padding, lg),
+  $r: m.comp(modal-radius, xl),
+  $shadow: m.comp(modal-shadow, 2xl),
+  $max-width: 500px
+) {
+  padding: m.space($p);
+  border-radius: m.radius($r);
+  background: m.color(surface-default);
+  box-shadow: m.shadow($shadow);
+  width: 90%;
+  max-width: $max-width;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: m.z(modal);
+}
+
+@mixin modal-header($pb: sm) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: m.space($pb);
+  border-bottom: 1px solid m.color(border-default);
+  margin-bottom: m.space(md);
+}
+
+@mixin modal-footer($pt: sm) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: m.space(sm);
+  padding-top: m.space($pt);
+  border-top: 1px solid m.color(border-default);
+  margin-top: m.space(md);
+}
+
+// ----------------------------------------------------------------------------
+// TOOLTIP
+// ----------------------------------------------------------------------------
+@mixin tooltip-base(
+  $py: m.comp(tooltip-padding-y, 2xs),
+  $px: m.comp(tooltip-padding-x, xs),
+  $r: m.comp(tooltip-radius, md),
+  $bg: text-primary,
+  $color: text-inverse
+) {
+  padding: m.space($py) m.space($px);
+  border-radius: m.radius($r);
+  background: m.color($bg);
+  color: m.color($color);
+  @include m.font(reg, xs);
+  white-space: nowrap;
+  z-index: m.z(tooltip);
+}
+
+// ----------------------------------------------------------------------------
+// POPOVER
+// ----------------------------------------------------------------------------
+@mixin popover-base($p: md, $r: lg, $shadow: lg, $max-width: 320px) {
+  padding: m.space($p);
+  border-radius: m.radius($r);
+  background: m.color(surface-default);
+  box-shadow: m.shadow($shadow);
+  border: 1px solid m.color(border-default);
+  max-width: $max-width;
+  z-index: m.z(popover);
+}
+
+// ----------------------------------------------------------------------------
+// DROPDOWN
+// ----------------------------------------------------------------------------
+@mixin dropdown-menu($py: xs, $r: md, $shadow: md, $min-width: 12rem) {
+  display: flex;
+  flex-direction: column;
+  padding: m.space($py) 0;
+  border-radius: m.radius($r);
+  background: m.color(surface-default);
+  box-shadow: m.shadow($shadow);
+  border: 1px solid m.color(border-default);
+  min-width: $min-width;
+  z-index: m.z(dropdown);
+}
+
+@mixin dropdown-item($py: xs, $px: md) {
+  display: flex;
+  align-items: center;
+  gap: m.space(sm);
+  padding: m.space($py) m.space($px);
+  @include m.font(reg, sm);
+  color: m.color(text-primary);
+  text-decoration: none;
+  cursor: pointer;
+  @include m.transition(background-color);
+
+  &:hover { background: m.color(interactive-hover); }
+  &:active { background: m.color(interactive-active); }
+}
+
+@mixin dropdown-divider($spacing: xs) {
+  border: none;
+  border-top: 1px solid m.color(border-default);
+  margin: m.space($spacing) 0;
+}

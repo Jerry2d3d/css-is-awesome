@@ -21,6 +21,7 @@
     "container-name-pattern": null,
     "color-function-alias-notation": null,
     "declaration-block-single-line-max-declarations": null,
+    "declaration-block-no-redundant-longhand-properties": null,
     "value-keyword-case": ["lower", {
       "ignoreProperties": ["font-family", "/^--font/"],
       "ignoreKeywords": ["BlinkMacSystemFont", "currentColor"],

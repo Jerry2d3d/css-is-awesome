@@ -1,0 +1,163 @@
+// ============================================================================
+// FORM CONTROLS
+// ============================================================================
+// Input, select, textarea, checkbox, radio, label, form layout.
+//
+// Usage:
+//   input    { @include input-base; }
+//   label    { @include label-base; }
+//   .form    { @include form-layout(2); }
+//   .field   { @include form-group; }
+// ============================================================================
+@use 'sass:map';
+@use '../theme' as t;
+@use '../system' as s;
+@use '../mixins' as m;
+
+// ----------------------------------------------------------------------------
+// INPUT
+// ----------------------------------------------------------------------------
+@mixin input-base(
+  $py: m.comp(input-padding-y, xs),
+  $px: m.comp(input-padding-x, sm),
+  $r: m.comp(input-radius, md),
+  $border-width: m.comp(input-border-width, 1px),
+  $bg: surface-default,
+  $border-color: border-default,
+  $font-size: null
+) {
+  padding: m.space($py) m.space($px);
+  border: $border-width solid m.color($border-color);
+  border-radius: m.radius($r);
+  background: m.color($bg);
+  @include m.transition(border-color, box-shadow);
+
+  @if $font-size {
+    font-size: m.font-size($font-size);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: m.color(border-focus);
+    box-shadow: 0 0 0 3px rgba(m.color-raw(border-focus), 0.2);
+  }
+
+  &::placeholder {
+    color: m.color(text-muted);
+  }
+
+  &:disabled { @include m.disabled; }
+}
+
+// ----------------------------------------------------------------------------
+// SELECT
+// ----------------------------------------------------------------------------
+@mixin select-base(
+  $py: m.comp(input-padding-y, xs),
+  $px: m.comp(input-padding-x, sm),
+  $r: m.comp(input-radius, md),
+  $bg: surface-default,
+  $border-color: border-default
+) {
+  @include input-base($py: $py, $px: $px, $r: $r, $bg: $bg, $border-color: $border-color);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23525252' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right m.space-raw(sm) center;
+  background-size: 1em;
+  padding-right: m.space-raw(xl);
+}
+
+// ----------------------------------------------------------------------------
+// TEXTAREA
+// ----------------------------------------------------------------------------
+@mixin textarea-base(
+  $py: sm,
+  $px: sm,
+  $r: m.comp(input-radius, md),
+  $min-height: 6rem,
+  $resize: vertical
+) {
+  @include input-base($py: $py, $px: $px, $r: $r);
+  min-height: $min-height;
+  resize: $resize;
+}
+
+// ----------------------------------------------------------------------------
+// CHECKBOX & RADIO
+// ----------------------------------------------------------------------------
+@mixin check-base($size: 1.125rem, $r: sm, $color: action-primary-default) {
+  appearance: none;
+  width: $size;
+  height: $size;
+  border: 2px solid m.color(border-default);
+  border-radius: m.radius($r);
+  background: m.color(surface-default);
+  @include m.transition(background-color, border-color);
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:checked {
+    background: m.color($color);
+    border-color: m.color($color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid m.color(border-focus);
+    outline-offset: 2px;
+  }
+
+  &:disabled { @include m.disabled; }
+}
+
+@mixin radio-base($size: 1.125rem, $color: action-primary-default) {
+  @include check-base($size: $size, $r: full, $color: $color);
+}
+
+// ----------------------------------------------------------------------------
+// LABEL
+// ----------------------------------------------------------------------------
+@mixin label-base($size: sm, $weight: medium, $color: text-primary) {
+  display: block;
+  @include m.font($weight, $size);
+  color: m.color($color);
+  margin-bottom: m.space(xs);
+}
+
+// ----------------------------------------------------------------------------
+// FORM LAYOUT
+// ----------------------------------------------------------------------------
+@mixin form-layout($columns: 1, $gap: md) {
+  display: grid;
+  gap: m.space($gap);
+  @if $columns > 1 {
+    @include m.tablet {
+      grid-template-columns: repeat($columns, 1fr);
+    }
+  }
+}
+
+@mixin form-group($gap: xs, $direction: column) {
+  display: flex;
+  flex-direction: $direction;
+  gap: m.space($gap);
+}
+
+@mixin form-row($gap: sm, $align: center) {
+  display: flex;
+  align-items: $align;
+  gap: m.space($gap);
+}
+
+// ----------------------------------------------------------------------------
+// HELPER TEXT
+// ----------------------------------------------------------------------------
+@mixin form-help($color: text-muted) {
+  @include m.font(reg, xs);
+  color: m.color($color);
+  margin-top: m.space(2xs);
+}
+
+@mixin form-error {
+  @include form-help($color: error-text);
+}

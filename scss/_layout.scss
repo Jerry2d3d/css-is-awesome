@@ -1,0 +1,227 @@
+// ============================================================================
+// LAYOUT - Grid, Container, and Page Structure Mixins
+// ============================================================================
+// Smart defaults that work for 80% of cases. Override with parameters.
+// Usage: @include m.container;  @include m.grid(3);  @include m.page-layout;
+// ============================================================================
+@use 'sass:map';
+@use 'sass:meta';
+@use 'system' as s;
+@use 'theme' as t;
+
+// ============================================================================
+// CONTAINER
+// ============================================================================
+// Centered, max-width wrapper with responsive padding.
+// Usage:
+//   @include container;            → 1280px max, responsive padding
+//   @include container(sm);        → 640px max
+//   @include container(full);      → no max-width, just padding
+//   @include container($px: xl);   → custom horizontal padding
+
+$_container-widths: (
+  sm:   40rem,
+  md:   48rem,
+  lg:   64rem,
+  xl:   80rem,
+  2xl:  96rem,
+  full: none,
+);
+
+@mixin container($size: xl, $px: null) {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+
+  $max: map.get($_container-widths, $size);
+  @if $max and $max != none {
+    max-width: $max;
+  }
+
+  $pad: $px or md;
+  $pad-val: map.get(t.$space, $pad) or $pad;
+  padding-left: $pad-val;
+  padding-right: $pad-val;
+
+  @media screen and (min-width: map.get(s.$breakpoints, md)) {
+    $pad-up: if($px, $pad-val, map.get(t.$space, lg));
+    padding-left: $pad-up;
+    padding-right: $pad-up;
+  }
+}
+
+// ============================================================================
+// GRID
+// ============================================================================
+// Responsive CSS grid. Sensible defaults: N columns on desktop, 1 on mobile.
+// Usage:
+//   @include grid(3);                → 3 cols desktop, 1 col mobile
+//   @include grid(4, $gap: lg);      → 4 cols, large gap
+//   @include grid(auto, $min: 250px);→ auto-fit, 250px minimum per item
+//   @include grid(2, $bp: sm);       → 2 cols from sm breakpoint
+
+@mixin grid($cols: 1, $gap: md, $bp: md, $min: null) {
+  display: grid;
+  gap: map.get(t.$space, $gap) or $gap;
+
+  @if $cols == auto {
+    $min-val: $min or 16rem;
+    grid-template-columns: repeat(auto-fit, minmax(#{$min-val}, 1fr));
+  } @else if $cols == 1 {
+    grid-template-columns: 1fr;
+  } @else {
+    grid-template-columns: 1fr;
+
+    $bp-val: $bp;
+    @if meta.type-of($bp) != number {
+      $bp-val: map.get(s.$breakpoints, $bp);
+    }
+
+    @media screen and (min-width: $bp-val) {
+      grid-template-columns: repeat(#{$cols}, 1fr);
+    }
+  }
+}
+
+// ============================================================================
+// SUBGRID
+// ============================================================================
+// Makes a grid child inherit the parent's column/row tracks.
+// Usage:
+//   .parent { @include grid(3); }
+//   .child  { @include subgrid; grid-column: span 3; }
+
+@mixin subgrid($direction: columns) {
+  display: grid;
+  @if $direction == both {
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+  } @else if $direction == rows {
+    grid-template-rows: subgrid;
+  } @else {
+    grid-template-columns: subgrid;
+  }
+}
+
+// ============================================================================
+// PAGE LAYOUT
+// ============================================================================
+// Full-page grid: header + main + footer. Sticky footer built in.
+// Usage:
+//   body { @include page-layout; }
+//   body { @include page-layout(sidebar-left); }
+
+@mixin page-layout($variant: default) {
+  display: grid;
+  min-height: 100vh;
+
+  @if $variant == default {
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+  } @else if $variant == sidebar-left {
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "header header"
+      "sidebar main"
+      "footer footer";
+
+    @media screen and (max-width: calc(#{map.get(s.$breakpoints, md)} - 1px)) {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "header"
+        "main"
+        "footer";
+    }
+  } @else if $variant == sidebar-right {
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "header header"
+      "main sidebar"
+      "footer footer";
+
+    @media screen and (max-width: calc(#{map.get(s.$breakpoints, md)} - 1px)) {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "header"
+        "main"
+        "footer";
+    }
+  }
+}
+
+@mixin page-header { grid-area: header; }
+@mixin page-main { grid-area: main; }
+@mixin page-footer { grid-area: footer; }
+@mixin page-sidebar { grid-area: sidebar; }
+
+// ============================================================================
+// SECTION
+// ============================================================================
+// Vertical page section with consistent spacing.
+// Usage:
+//   section { @include section; }
+//   section { @include section($py: 4xl); }
+
+@mixin section($py: 3xl, $px: null) {
+  $py-val: map.get(t.$space, $py) or $py;
+  padding-top: $py-val;
+  padding-bottom: $py-val;
+
+  @if $px {
+    $px-val: map.get(t.$space, $px) or $px;
+    padding-left: $px-val;
+    padding-right: $px-val;
+  }
+}
+
+// ============================================================================
+// ROW & COL (Flex-based)
+// ============================================================================
+// Simple flex row/column with smart defaults.
+// Usage:
+//   @include row;              → horizontal, centered, md gap
+//   @include row($gap: lg);    → horizontal, large gap
+//   @include col;              → vertical stack, md gap
+
+@mixin row($gap: md, $align: center, $justify: flex-start, $wrap: wrap) {
+  display: flex;
+  flex-direction: row;
+  align-items: $align;
+  justify-content: $justify;
+  flex-wrap: $wrap;
+  gap: map.get(t.$space, $gap) or $gap;
+}
+
+@mixin col($gap: md, $align: stretch, $justify: flex-start) {
+  display: flex;
+  flex-direction: column;
+  align-items: $align;
+  justify-content: $justify;
+  gap: map.get(t.$space, $gap) or $gap;
+}
+
+// ============================================================================
+// DIVIDER
+// ============================================================================
+
+@mixin divider($color: border-default, $spacing: md) {
+  $space-val: map.get(t.$space, $spacing) or $spacing;
+  border: none;
+  border-top: 1px solid var(--#{$color});
+  margin-top: $space-val;
+  margin-bottom: $space-val;
+}
+
+@mixin divider-vertical($color: border-default, $spacing: md) {
+  $space-val: map.get(t.$space, $spacing) or $spacing;
+  border: none;
+  border-left: 1px solid var(--#{$color});
+  margin-left: $space-val;
+  margin-right: $space-val;
+  align-self: stretch;
+}

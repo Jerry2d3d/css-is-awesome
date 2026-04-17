@@ -1,0 +1,189 @@
+// ============================================================================
+// NAVIGATION — Navbar, Nav, Breadcrumb, Tabs, Pagination
+// ============================================================================
+@use 'sass:map';
+@use '../theme' as t;
+@use '../system' as s;
+@use '../mixins' as m;
+
+// ----------------------------------------------------------------------------
+// NAVBAR
+// ----------------------------------------------------------------------------
+// Usage:
+//   .navbar { @include navbar-base; }
+//   .navbar { @include navbar-base($bg: background-navbar, $sticky: true); }
+
+@mixin navbar-base(
+  $bg: background-navbar,
+  $py: sm,
+  $px: md,
+  $shadow: sm,
+  $sticky: false,
+  $border: true
+) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: m.space($py) m.space($px);
+  background: m.color($bg);
+
+  @if $sticky {
+    position: sticky;
+    top: 0;
+    z-index: m.z(sticky);
+  }
+
+  @if $shadow != none {
+    box-shadow: m.shadow($shadow);
+  }
+
+  @if $border {
+    border-bottom: 1px solid m.color(border-default);
+  }
+}
+
+@mixin navbar-brand($gap: sm) {
+  display: flex;
+  align-items: center;
+  gap: m.space($gap);
+  text-decoration: none;
+  color: m.color(text-primary);
+  @include m.font(bold, lg);
+}
+
+@mixin navbar-nav($gap: xs) {
+  display: flex;
+  align-items: center;
+  gap: m.space($gap);
+  @include m.list-reset;
+}
+
+@mixin navbar-link($py: xs, $px: sm, $r: md) {
+  display: flex;
+  align-items: center;
+  gap: m.space(2xs);
+  padding: m.space($py) m.space($px);
+  border-radius: m.radius($r);
+  color: m.color(text-secondary);
+  text-decoration: none;
+  @include m.font(medium, sm);
+  @include m.transition(color, background-color);
+
+  &:hover {
+    color: m.color(text-primary);
+    background: m.color(interactive-hover);
+  }
+
+  &[aria-current="page"],
+  &.active {
+    color: m.color(text-link);
+    background: m.color(interactive-hover);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// NAV (generic list navigation)
+// ----------------------------------------------------------------------------
+@mixin nav-base($direction: row, $gap: xs) {
+  display: flex;
+  flex-direction: $direction;
+  gap: m.space($gap);
+  @include m.list-reset;
+}
+
+@mixin nav-link($py: xs, $px: sm) {
+  @include navbar-link($py: $py, $px: $px);
+}
+
+// ----------------------------------------------------------------------------
+// BREADCRUMB
+// ----------------------------------------------------------------------------
+@mixin breadcrumb($gap: xs, $separator: "/") {
+  display: flex;
+  align-items: center;
+  gap: m.space($gap);
+  @include m.list-reset;
+  @include m.font(reg, sm);
+
+  li + li::before {
+    content: $separator;
+    color: m.color(text-muted);
+    margin-right: m.space($gap);
+  }
+
+  a {
+    color: m.color(text-link);
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  [aria-current="page"] {
+    color: m.color(text-muted);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// TABS
+// ----------------------------------------------------------------------------
+@mixin tabs-base($gap: 0, $border: true) {
+  display: flex;
+  gap: m.space($gap);
+  @include m.list-reset;
+
+  @if $border {
+    border-bottom: 1px solid m.color(border-default);
+  }
+}
+
+@mixin tab-item($py: sm, $px: md, $active-color: action-primary-default) {
+  padding: m.space($py) m.space($px);
+  color: m.color(text-secondary);
+  @include m.font(medium, sm);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  @include m.transition(color, border-color);
+
+  &:hover { color: m.color(text-primary); }
+
+  &[aria-selected="true"],
+  &.active {
+    color: m.color($active-color);
+    border-bottom-color: m.color($active-color);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// PAGINATION
+// ----------------------------------------------------------------------------
+@mixin pagination($gap: 2xs) {
+  display: flex;
+  align-items: center;
+  gap: m.space($gap);
+  @include m.list-reset;
+}
+
+@mixin pagination-item($size: 2.25rem, $r: md) {
+  @include m.flex-center;
+  width: $size;
+  height: $size;
+  border-radius: m.radius($r);
+  @include m.font(medium, sm);
+  color: m.color(text-secondary);
+  text-decoration: none;
+  @include m.transition(background-color, color);
+
+  &:hover {
+    background: m.color(interactive-hover);
+    color: m.color(text-primary);
+  }
+
+  &[aria-current="page"],
+  &.active {
+    background: m.color(action-primary-default);
+    color: m.color(text-inverse);
+  }
+
+  &:disabled, &[disabled] { @include m.disabled; }
+}

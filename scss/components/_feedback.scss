@@ -1,0 +1,106 @@
+// ============================================================================
+// FEEDBACK — Alert, Toast, Badge, Tag, Progress
+// ============================================================================
+@use 'sass:map';
+@use '../theme' as t;
+@use '../system' as s;
+@use '../mixins' as m;
+
+// ----------------------------------------------------------------------------
+// ALERT
+// ----------------------------------------------------------------------------
+// Usage:
+//   .alert         { @include alert-base; }
+//   .alert-success { @include alert(success); }
+//   .alert-error   { @include alert(error); }
+
+@mixin alert-base($py: sm, $px: md, $r: md, $border-width: 1px) {
+  display: flex;
+  align-items: flex-start;
+  gap: m.space(sm);
+  padding: m.space($py) m.space($px);
+  border-radius: m.radius($r);
+  border: $border-width solid transparent;
+  @include m.font(reg, sm);
+}
+
+@mixin alert($status: info, $py: sm, $px: md, $r: md) {
+  @include alert-base($py: $py, $px: $px, $r: $r);
+  background: m.color(#{$status}-subtle);
+  border-color: m.color(#{$status}-default);
+  color: m.color(#{$status}-text);
+}
+
+// ----------------------------------------------------------------------------
+// TOAST
+// ----------------------------------------------------------------------------
+@mixin toast-base($py: sm, $px: md, $r: lg, $shadow: lg) {
+  display: flex;
+  align-items: center;
+  gap: m.space(sm);
+  padding: m.space($py) m.space($px);
+  border-radius: m.radius($r);
+  background: m.color(surface-default);
+  box-shadow: m.shadow($shadow);
+  @include m.font(reg, sm);
+}
+
+// ----------------------------------------------------------------------------
+// BADGE
+// ----------------------------------------------------------------------------
+@mixin badge-base(
+  $py: m.comp(badge-padding-y, 2xs),
+  $px: m.comp(badge-padding-x, xs),
+  $r: m.comp(badge-radius, full),
+  $font-size: xs
+) {
+  display: inline-flex;
+  align-items: center;
+  padding: m.space($py) m.space($px);
+  border-radius: m.radius($r);
+  @include m.font(medium, $font-size);
+}
+
+@mixin badge($status: info) {
+  @include badge-base;
+  background: m.color(#{$status}-subtle);
+  color: m.color(#{$status}-text);
+}
+
+// ----------------------------------------------------------------------------
+// TAG / CHIP
+// ----------------------------------------------------------------------------
+@mixin tag-base($py: 2xs, $px: sm, $r: md, $font-size: sm) {
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(2xs);
+  padding: m.space($py) m.space($px);
+  border-radius: m.radius($r);
+  @include m.font(reg, $font-size);
+  background: m.color(surface-muted);
+  color: m.color(text-primary);
+  border: 1px solid m.color(border-default);
+}
+
+@mixin tag-removable {
+  @include tag-base;
+  padding-right: m.space(2xs);
+}
+
+// ----------------------------------------------------------------------------
+// PROGRESS BAR
+// ----------------------------------------------------------------------------
+@mixin progress-track($height: 0.5rem, $r: full, $bg: surface-muted) {
+  width: 100%;
+  height: $height;
+  border-radius: m.radius($r);
+  background: m.color($bg);
+  overflow: hidden;
+}
+
+@mixin progress-fill($color: action-primary-default) {
+  height: 100%;
+  border-radius: inherit;
+  background: m.color($color);
+  @include m.transition(width, slow);
+}
