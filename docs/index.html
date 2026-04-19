@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS is Awesome — a tiny design system</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="draft-stamp" aria-hidden="true">v0.1 · Draft</div>
+
+  <main class="landing">
+    <div class="landing__inner">
+      <div class="landing__wordmark">
+        <h1 class="landing__display">CSS is <em>Awesome</em></h1>
+        <div class="landing__sub">
+          <span>— a tiny design system —</span>
+        </div>
+      </div>
+
+      <div class="logo-stage">
+        <div class="logo" aria-label="CSS is Awesome">
+          <span>CSS</span>
+          <span>IS</span>
+          <span class="overflow">AWESOME</span>
+        </div>
+        <span class="logo-stage__caption" aria-hidden="true">overflow intentional</span>
+      </div>
+
+      <nav class="main-nav" aria-label="Primary">
+        <a href="index.html" class="is-active">Home</a>
+        <a href="docs.html">Docs</a>
+        <a href="examples.html">Examples</a>
+        <a href="blog.html">Blog</a>
+        <a href="about.html">About</a>
+      </nav>
+
+      <p class="landing__tagline">Tokens, mixins, and one very honest joke. Tiny enough to read in an afternoon. Flexible enough to skin however you like.</p>
+
+      <div class="landing__stats">
+        <span class="stat-chip"><strong>5</strong> themes</span>
+        <span class="stat-chip"><strong>800+</strong> LOC mixin API</span>
+        <span class="stat-chip"><strong>0</strong> runtime deps</span>
+      </div>
+    </div>
+
+    <section class="manifesto" aria-label="Why this exists">
+      <p class="manifesto__eyebrow">— why this exists —</p>
+      <h2 class="manifesto__statement">
+        Every design system I tried was <em>buggy</em>.<br>
+        Painful to update. <em>Slow</em> to fix.
+      </h2>
+      <p class="manifesto__body">
+        This one isn't. It's small enough to read in an afternoon, fast enough to update in a minute, and honest about what it does.
+      </p>
+      <p class="manifesto__signoff">— that's the whole pitch.</p>
+    </section>
+
+    <footer class="landing__footer">
+      built with <code>display: grid</code> — drawn by hand
+    </footer>
+  </main>
+</body>
+</html>

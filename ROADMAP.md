@@ -82,15 +82,55 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 
 **Goal:** A living docs site where people can see, copy, and steal.
 
-- [ ] Pick a docs engine (Astro Starlight, VitePress, or plain static site)
-- [ ] Sections: Install, Tokens (color/spacing/type grids), Utilities (searchable table), Mixins API, Theming, Migration from Bootstrap
+**Decision:** plain static HTML — no docs engine. Dogfoods the system. Zero build step.
+
+### Template (DONE)
+- [x] Ported Sketchbook sketch → `docs/` (index, docs, examples, blog, about)
+- [x] Favicon wired to every page
+- [x] Two-file contract: `theme.css` (swappable tokens) + `styles.css` (base system)
+- [x] SCSS source mirrored in `docs/src/` for devs who compile
+- [x] `docs/README.md` with run + swap instructions
+
+### Positioning
+- **Landing:** stays clean and fast. No heavy demos, no interactive widgets. One screen, <1s load. Logo, tagline, manifesto, nav. That's it.
+- **Power demos live inside** — where the reader is already committed.
+
+### Content (TODO)
+- [ ] Replace placeholder docs copy with real install/usage for the published `cia-` system
+- [ ] Sections: Tokens (color/spacing/type grids), Utilities (searchable table), Mixins API, Migration from Bootstrap
 - [ ] Live color swatches, spacing visualizers, type scale preview
 - [ ] Copy-to-clipboard code snippets
-- [ ] Dark/light toggle in docs (dogfooding)
-- [ ] Deploy to GitHub Pages or Vercel under `css-is-awesome.dev` or a subdomain
+- [ ] Deploy to GitHub Pages or Vercel under `css-is-awesome.dev` or subdomain
 - [ ] Link docs site in README + package.json `homepage`
 
+### New pages
+- [ ] **`/docs` intro page** — first interactive demo: live theme-swap widget at the top of the docs landing. "Click a theme → whole page reskins."
+- [ ] **`/compare` page** — honest three-column comparison: css-is-awesome vs Tailwind vs Bootstrap. Where each wins, where each loses. Embed the theme-swap demo as the "this is the thing the others can't do" moment.
+- [ ] **`/showcase` page** — real-looking full pages built with the system (marketing / blog / dashboard / admin / 404), all theme-swappable via a single toggle at the top. Answers "what can I do with it?" visually.
+
 **Release:** `v0.5.0` — docs are the pitch.
+
+---
+
+## Phase 4.5 — Theme System (v0.5 / v0.6 crossover)
+
+**Goal:** Themes as one-file add-ons. User downloads a `theme.css`, replaces the one they have, everything reskins.
+
+**Model locked in:**
+- Theme = a single CSS file that declares CSS custom properties on `:root`.
+- Tokens only — no component CSS, no new rules. Base system stays clean.
+- Install = copy over `theme.css`. No build step, no tool required.
+- Discovery = a Themes gallery page on the docs site with live `<link>` swapping.
+
+### Work
+- [ ] Lock the **token API contract** — the list of CSS vars every theme must define. Once locked, themes version against this.
+- [ ] Decide **sizing scale** (numbered 1–9 vs t-shirt sm/md/lg) before locking contract — breaking change if changed later.
+- [ ] Pull Sketchbook's docs-specific flourishes (construction lines, seal, draft stamp, brush rules) out of any future "base system" port — they belong in docs chrome only.
+- [ ] Ship Theme #2 (candidate: dark, brutalist, or clean-bootstrap-like) to prove the swap.
+- [ ] Build the `/themes` gallery page — live preview + one-click download.
+- [ ] Write `CONTRIBUTING-THEMES.md` for community submissions later.
+
+**Release:** `v0.5.x` — theme system live, 2+ themes shipped.
 
 ---
 
@@ -136,10 +176,24 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 
 ## Open Questions
 
-1. **Utility naming:** stay close to Bootstrap (`.p-3`) or Tailwind-like (`.p-md`)? The current token names (`xs/sm/md/lg/xl`) push toward Tailwind-style.
-2. **Namespace:** should utilities be prefixed (`.ca-flex`) to avoid collisions with existing codebases?
-3. **Default CSS output:** include utilities by default or opt-in?
-4. **Browser support target:** modern evergreen only, or include a legacy build?
+1. ~~**Utility naming:** stay close to Bootstrap (`.p-3`) or Tailwind-like (`.p-md`)?~~ **Decided:** Tailwind-style (`.cia-p-md`) with `cia-` prefix.
+2. ~~**Namespace:** should utilities be prefixed?~~ **Decided:** yes, `cia-` on everything.
+3. **Default CSS output:** include utilities by default or opt-in? Still open.
+4. **Browser support target:** modern evergreen only, or include a legacy build? Still open.
+5. **Sizing scale:** refactor `xs/sm/md/lg/xl/2xl/3xl/4xl` → numbered `1–9` with aliases? **Pending — blocks the theme token contract.**
+
+---
+
+## What's next (decision order)
+
+1. **Lock sizing scale** (t-shirt vs numbered) — this gates everything downstream.
+2. **Lock theme token API contract** — the exact list of `:root` vars themes must define.
+3. **Build Theme #2** to prove the swap mechanism.
+4. **Build `/compare` page** — three-column table vs Tailwind/Bootstrap + embedded theme-swap demo.
+5. **Build `/showcase` page** — full-page examples with a single theme toggle at top.
+6. **Add live theme-swap demo to docs intro** (first thing readers see inside docs).
+7. **Replace placeholder docs copy** with real usage for the `cia-` system.
+8. **Wire the `/themes` gallery page** with live `<link>` swap preview + download buttons.
 
 ---
 

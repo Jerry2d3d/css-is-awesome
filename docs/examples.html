@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examples — CSS is Awesome</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="docs-header">
+    <div class="docs-header__inner">
+      <a class="docs-header__brand" href="index.html">
+        <span class="logo--sm" aria-hidden="true">
+          <span>CSS</span><span>IS</span><span>AWES</span>
+        </span>
+        CSS is Awesome
+      </a>
+      <nav class="docs-header__nav">
+        <a href="index.html">Home</a>
+        <a href="docs.html">Docs</a>
+        <a href="examples.html" class="is-active">Examples</a>
+        <a href="blog.html">Blog</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="docs-shell" style="grid-template-columns: 1fr; max-width: 900px;">
+    <article class="docs-content">
+      <h1>Examples</h1>
+      <p class="lead">Small pages built with the system. Copy, fork, break, rebuild.</p>
+
+      <h2>Marketing hero</h2>
+      <div class="example">
+        <div class="example__preview" style="text-align:center;padding:56px 24px;">
+          <div style="font-family:var(--font-script);font-size:1.5rem;color:var(--ink-soft);margin-bottom:6px;">a new way to ship</div>
+          <h2 style="margin:0 0 8px;border:0;padding:0;font-size:2.6rem;font-family:var(--font-display);letter-spacing:-0.02em;">Ship honest interfaces.</h2>
+          <p style="color:var(--ink-soft);margin:0 0 22px;font-family:var(--font-serif);font-style:italic;">A system that fits on one page and never lies about its limits.</p>
+          <button class="btn btn--primary">Get started</button>
+          <button class="btn btn--ghost">Read docs</button>
+        </div>
+      </div>
+
+      <h2>Pricing</h2>
+      <div class="example">
+        <div class="example__preview" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+          <div class="card"><h4>Free</h4><p>All tokens. All components. $0 forever.</p></div>
+          <div class="card" style="border-color:var(--ai);">
+            <h4>Also free</h4>
+            <p>Same thing, with an indigo edge.</p>
+            <div style="margin-top:12px;"><span class="seal">Best fit</span></div>
+          </div>
+          <div class="card"><h4>Still free</h4><p>It's a stylesheet. We couldn't charge if we tried.</p></div>
+        </div>
+      </div>
+
+      <h2>Form</h2>
+      <div class="example">
+        <div class="example__preview">
+          <form style="display:grid;gap:14px;max-width:380px;">
+            <label style="font-family:var(--font-serif);font-size:0.95rem;color:var(--ink);font-style:italic;">
+              Email
+              <input type="email" placeholder="you@example.com"
+                style="display:block;width:100%;margin-top:6px;">
+            </label>
+            <label style="font-family:var(--font-serif);font-size:0.95rem;color:var(--ink);font-style:italic;">
+              Message
+              <textarea rows="3" placeholder="Tell us about CSS."
+                style="display:block;width:100%;margin-top:6px;resize:vertical;"></textarea>
+            </label>
+            <div style="display:flex;gap:8px;">
+              <button type="button" class="btn btn--primary">Send</button>
+              <button type="button" class="btn btn--ghost">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <h2>Footer</h2>
+      <div class="example">
+        <div class="example__preview" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+          <div style="display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:14px;font-family:var(--font-serif);">
+            <span class="logo--sm"><span>CSS</span><span>IS</span><span>AWES</span></span>
+            &copy; 2026 CSS is Awesome
+          </div>
+          <nav style="display:flex;gap:16px;font-family:var(--font-serif);font-size:14px;">
+            <a href="#">Docs</a><a href="#">Examples</a><a href="#">GitHub</a>
+          </nav>
+        </div>
+      </div>
+    </article>
+  </div>
+</body>
+</html>
