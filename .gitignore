@@ -13,3 +13,6 @@ dist/
 out/
 next-env.d.ts
 *.tsbuildinfo
+
+# Claude Code state (agent worktrees, local config)
+.claude/
