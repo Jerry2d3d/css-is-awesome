@@ -866,6 +866,32 @@ input:focus, textarea:focus {
   line-height: 1;
 }
 
+/* ============================================================
+   ICON COMPONENT — .cia-icon
+   -----------------------------------------------------------
+   Theme-swappable icon pack mechanism. Each theme folder may
+   ship a sibling `icons.svg` sprite. Usage:
+
+     <svg class="cia-icon"><use href="icons.svg#edit"></use></svg>
+
+   Icons inherit color from currentColor so they reskin with
+   the theme automatically.
+   ============================================================ */
+
+.cia-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+  color: inherit;
+  flex-shrink: 0;
+}
+.cia-icon--sm { font-size: 0.875em; }
+.cia-icon--md { font-size: 1em; }
+.cia-icon--lg { font-size: 1.5em; }
+.cia-icon--xl { font-size: 2em; }
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }

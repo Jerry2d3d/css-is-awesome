@@ -1,0 +1,203 @@
+// ============================================================================
+// ANIMATIONS - Keyframe library + mixin + cia-* utility classes
+// ============================================================================
+// Philosophy: a fixed keyframe vocabulary, theme-driven duration + easing.
+// Every animation reads from --duration-* and --ease so swapping themes
+// changes the feel (Terminal snappy, Glass floaty) with zero code change.
+//
+// Respects prefers-reduced-motion — all animations collapse to 0s.
+// ============================================================================
+@use 'sass:map';
+
+// ----------------------------------------------------------------------------
+// KEYFRAME LIBRARY
+// ----------------------------------------------------------------------------
+
+@keyframes cia-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes cia-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes cia-slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cia-slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cia-slide-left {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes cia-slide-right {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes cia-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes cia-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+@keyframes cia-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+@keyframes cia-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes cia-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes cia-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-2deg); }
+  75%      { transform: rotate(2deg); }
+}
+
+// ----------------------------------------------------------------------------
+// ANIMATION VOCABULARY
+// ----------------------------------------------------------------------------
+
+$_anims: (
+  fade-in:     cia-fade-in,
+  fade-out:    cia-fade-out,
+  slide-up:    cia-slide-up,
+  slide-down:  cia-slide-down,
+  slide-left:  cia-slide-left,
+  slide-right: cia-slide-right,
+  scale-in:    cia-scale-in,
+  pop:         cia-pop,
+  pulse:       cia-pulse,
+  shimmer:     cia-shimmer,
+  spin:        cia-spin,
+  wiggle:      cia-wiggle,
+);
+
+$_speeds: (
+  fast:   var(--duration-fast,   180ms),
+  normal: var(--duration-normal, 240ms),
+  slow:   var(--duration-slow,   380ms),
+);
+
+// ----------------------------------------------------------------------------
+// MIXIN API
+// ----------------------------------------------------------------------------
+// @include animate(fade-in);
+// @include animate(slide-up, $speed: slow);
+// @include animate(spin, $speed: slow, $iteration: infinite, $timing: linear);
+// ----------------------------------------------------------------------------
+
+@mixin animate(
+  $name,
+  $speed: normal,
+  $delay: 0s,
+  $iteration: 1,
+  $fill: both,
+  $timing: var(--ease, cubic-bezier(0.33, 0.66, 0.33, 1))
+) {
+  $keyframe: map.get($_anims, $name);
+  $duration: map.get($_speeds, $speed);
+
+  @if not $keyframe {
+    @error "animate(): unknown animation '#{$name}'. Known: #{map.keys($_anims)}";
+  }
+  @if not $duration {
+    @error "animate(): unknown speed '#{$speed}'. Known: fast, normal, slow";
+  }
+
+  animation-name: $keyframe;
+  animation-duration: $duration;
+  animation-delay: $delay;
+  animation-iteration-count: $iteration;
+  animation-fill-mode: $fill;
+  animation-timing-function: $timing;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// HOVER / INTERACTION HELPERS
+// ----------------------------------------------------------------------------
+// @include animate-on(hover, lift);
+// @include animate-on(hover, glow);
+// ----------------------------------------------------------------------------
+
+@mixin animate-on($event: hover, $effect: lift) {
+  transition:
+    transform  var(--duration-fast, 180ms) var(--ease, ease),
+    box-shadow var(--duration-fast, 180ms) var(--ease, ease),
+    opacity    var(--duration-fast, 180ms) var(--ease, ease);
+
+  @if $effect == lift {
+    &:#{$event} {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+  } @else if $effect == glow {
+    &:#{$event} {
+      box-shadow: var(--glow-md);
+    }
+  } @else if $effect == press {
+    &:#{$event} {
+      transform: translateY(1px) scale(0.99);
+    }
+  } @else if $effect == fade {
+    &:#{$event} {
+      opacity: 0.7;
+    }
+  } @else {
+    @error "animate-on(): unknown effect '#{$effect}'. Known: lift, glow, press, fade";
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &:#{$event} { transform: none; }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// UTILITY CLASSES — .cia-anim-* + .cia-hover-*
+// ----------------------------------------------------------------------------
+
+@each $name, $keyframe in $_anims {
+  .cia-anim-#{$name} {
+    @include animate($name);
+  }
+  .cia-anim-#{$name}-fast { @include animate($name, $speed: fast); }
+  .cia-anim-#{$name}-slow { @include animate($name, $speed: slow); }
+}
+
+// Loopers — spin + pulse + shimmer want infinite by default when used as utility
+.cia-anim-spin    { @include animate(spin,    $speed: slow, $iteration: infinite, $timing: linear); }
+.cia-anim-pulse   { @include animate(pulse,   $speed: slow, $iteration: infinite); }
+.cia-anim-shimmer { @include animate(shimmer, $speed: slow, $iteration: infinite, $timing: linear); }
+
+.cia-hover-lift  { @include animate-on(hover, lift); }
+.cia-hover-glow  { @include animate-on(hover, glow); }
+.cia-hover-press { @include animate-on(hover, press); }
+.cia-hover-fade  { @include animate-on(hover, fade); }
+
+// ----------------------------------------------------------------------------
+// GLOBAL REDUCED-MOTION SAFETY NET
+// ----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

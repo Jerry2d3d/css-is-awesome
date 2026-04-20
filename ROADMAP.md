@@ -123,14 +123,35 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 - Discovery = a Themes gallery page on the docs site with live `<link>` swapping.
 
 ### Work
-- [ ] Lock the **token API contract** — the list of CSS vars every theme must define. Once locked, themes version against this.
-- [ ] Decide **sizing scale** (numbered 1–9 vs t-shirt sm/md/lg) before locking contract — breaking change if changed later.
+- [x] Lock the **token API contract** — documented in `docs/theme.css` header as the authoritative slot list every theme declares. Slots grouped: surfaces · ink · lines · primary · seal · accent · code · type · radius · shadow · blur · glow · motion.
+- [ ] Decide **sizing scale** (numbered 1–9 vs t-shirt sm/md/lg) — still open; current contract ships t-shirt (`--r-sm/md/lg`). Numbered aliases can be added later without breaking.
 - [ ] Pull Sketchbook's docs-specific flourishes (construction lines, seal, draft stamp, brush rules) out of any future "base system" port — they belong in docs chrome only.
-- [ ] Ship Theme #2 (candidate: dark, brutalist, or clean-bootstrap-like) to prove the swap.
+- [x] Ship 5 additional themes to prove the swap:
+  - [x] Press (editorial newsprint)
+  - [x] Graphite (dark aluminum) — the dark-mode proof
+  - [x] Glass (visionOS glassmorphism) — exercises `--blur-*` + `--paper-glass`
+  - [x] Cupertino (macOS native)
+  - [x] Terminal (CRT phosphor) — mono-only stress test
 - [ ] Build the `/themes` gallery page — live preview + one-click download.
 - [ ] Write `CONTRIBUTING-THEMES.md` for community submissions later.
 
-**Release:** `v0.5.x` — theme system live, 2+ themes shipped.
+### Animation system
+- [x] Keyframe library in `scss/_animations.scss` (fade/slide/scale/pop/pulse/shimmer/spin/wiggle)
+- [x] `animate()` mixin with name/speed/delay/iteration/fill/timing params
+- [x] `animate-on()` interaction helper (hover/focus · lift/glow/press/fade)
+- [x] `.cia-anim-*` and `.cia-hover-*` utility classes emitted from the same source
+- [x] Theme-driven — reads `--duration-fast/normal/slow` and `--ease` so each theme controls feel
+- [x] `prefers-reduced-motion` respected globally
+- [ ] Docs page with live animation preview grid
+
+### Theme icon packs
+- [x] `.cia-icon` component in base `styles.css` — `currentColor` + font-size sizing
+- [x] Seed sprite at `docs/icons.svg` (8 icons: edit, download, check, close, search, menu, arrow-right, chevron-down)
+- [x] Per-theme `icons.svg` slot documented — drop a replacement sprite in the theme folder to swap the pack
+- [ ] Ship icon packs for Press, Graphite, Glass, Cupertino, Terminal
+- [ ] Icon index page listing every symbol by name
+
+**Release:** `v0.5.x` — theme system live, 6 themes shipped, animations + icon-pack mechanism in place.
 
 ---
 
@@ -186,14 +207,15 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 
 ## What's next (decision order)
 
-1. **Lock sizing scale** (t-shirt vs numbered) — this gates everything downstream.
-2. **Lock theme token API contract** — the exact list of `:root` vars themes must define.
-3. **Build Theme #2** to prove the swap mechanism.
+1. ~~**Lock theme token API contract**~~ — done. 6 themes implement it.
+2. **Decide sizing scale** (t-shirt vs numbered) — still open but no longer blocking; shipping t-shirt now, numbered aliases can layer on.
+3. **Wire the `/themes` gallery page** — live `<link>` swap preview + download buttons for all 6 themes.
 4. **Build `/compare` page** — three-column table vs Tailwind/Bootstrap + embedded theme-swap demo.
 5. **Build `/showcase` page** — full-page examples with a single theme toggle at top.
 6. **Add live theme-swap demo to docs intro** (first thing readers see inside docs).
-7. **Replace placeholder docs copy** with real usage for the `cia-` system.
-8. **Wire the `/themes` gallery page** with live `<link>` swap preview + download buttons.
+7. **Ship theme-specific `icons.svg`** for each of the 5 new themes.
+8. **Animation preview page** — grid of every keyframe × every theme.
+9. **Replace placeholder docs copy** with real usage for the `cia-` system.
 
 ---
 

@@ -4,15 +4,37 @@
    This is the ONE FILE users swap to reskin their site.
    Replace this file with any other theme.css to change the
    entire look & feel. Tokens only — no component CSS lives here.
+
+   TOKEN CONTRACT
+   -----------------------------------------------------------
+   Every theme MUST declare every variable in this file, even
+   if it sets it to a neutral value (e.g. --blur-md: none;).
+   That's what guarantees a clean one-file swap.
+
+   Slots:
+     Surfaces : --paper, --paper-raised, --paper-sunk, --paper-glass
+     Ink      : --ink, --ink-soft, --ink-faint, --graphite, --muted
+     Lines    : --guide, --guide-soft, --hair, --hair-soft
+     Primary  : --ai, --ai-ink, --ai-wash           (indigo in sketchbook)
+     Seal     : --shu, --shu-wash                    (vermilion / editorial red)
+     Accent   : --ochre, --ochre-wash                (warm gold / draft)
+     Code     : --code-bg/ink/muted/accent/green/blue
+     Type     : --font-display/script/serif/sans/mono
+     Radius   : --r-sm, --r-md, --r-lg
+     Shadow   : --shadow-sm, --shadow-md, --shadow-lg
+     Blur     : --blur-sm, --blur-md, --blur-lg     (glass only; else 'none')
+     Glow     : --glow-sm, --glow-md, --glow-lg     (emphasis / rim / phosphor)
+     Motion   : --duration-fast, --duration-normal, --duration-slow, --ease
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 :root {
-  /* Paper — warm, slightly textured background surfaces */
+  /* Surfaces — warm paper */
   --paper:        #F7F3EA;
   --paper-raised: #FDFAF2;
   --paper-sunk:   #ECE5D3;
+  --paper-glass:  rgba(253, 250, 242, 0.75);
 
   /* Ink — warm pencil + sumi */
   --ink:        #2A241E;
@@ -21,19 +43,23 @@
   --graphite:   #3A332B;
   --muted:      #948977;
 
-  /* Construction lines — visible but light */
+  /* Construction lines */
   --guide:      #C9BDA5;
   --guide-soft: #DDD4C0;
   --hair:       #D4CCBB;
   --hair-soft:  #E8E2D4;
 
-  /* Accents */
-  --ai:         #1F3A5F;    /* indigo accent */
+  /* Primary accent — indigo */
+  --ai:         #1F3A5F;
   --ai-ink:     #14263F;
   --ai-wash:    #E5EBF1;
-  --shu:        #C1272D;    /* vermilion seal */
+
+  /* Seal — vermilion (reserve for emphasis) */
+  --shu:        #C1272D;
   --shu-wash:   #F6E3E1;
-  --ochre:      #A37B30;    /* warm gold — draft tags */
+
+  /* Draft / marginalia — warm gold */
+  --ochre:      #A37B30;
   --ochre-wash: #F0E5CC;
 
   /* Code surface */
@@ -56,11 +82,24 @@
   --r-md: 3px;
   --r-lg: 6px;
 
-  /* Soft shadows — ink bleeding through paper */
+  /* Shadows — ink bleeding through paper */
   --shadow-sm: 0 1px 2px rgba(42, 36, 30, .06);
   --shadow-md: 0 4px 18px rgba(42, 36, 30, .08);
   --shadow-lg: 0 12px 40px rgba(42, 36, 30, .12);
 
+  /* Blur — paper themes don't use it; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — faint ink bleed, not phosphor */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
   /* Motion */
-  --ease: cubic-bezier(0.33, 0.66, 0.33, 1);
+  --duration-fast:   180ms;
+  --duration-normal: 240ms;
+  --duration-slow:   380ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
 }
