@@ -2,7 +2,7 @@ import styles from "./SiteHeader.module.scss";
 import Link from "next/link";
 import LogoMark from "@/components/LogoMark";
 
-type NavId = "home" | "docs" | "themes" | "examples" | "compare" | "blog" | "about";
+type NavId = "home" | "docs" | "themes" | "examples" | "compare" | "showcase" | "blog" | "about";
 
 const NAV: { id: NavId; label: string; href: string }[] = [
   { id: "home",     label: "Home",     href: "/" },
@@ -10,6 +10,7 @@ const NAV: { id: NavId; label: string; href: string }[] = [
   { id: "themes",   label: "Themes",   href: "/themes" },
   { id: "examples", label: "Examples", href: "/examples" },
   { id: "compare",  label: "Compare",  href: "/compare" },
+  { id: "showcase", label: "Showcase", href: "/showcase" },
   { id: "blog",     label: "Blog",     href: "/blog" },
   { id: "about",    label: "About",    href: "/about" },
 ];

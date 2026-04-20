@@ -1,0 +1,137 @@
+/* ============================================================
+   Showcase page (/showcase) — co-located module styles.
+   Full-component-composition examples. Everything here is
+   expressed in theme tokens so the whole page re-skins when
+   the user swaps theme.css.
+   ============================================================ */
+
+.shell {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.eyebrow {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  color: var(--shu);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.hero h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  margin-bottom: 0.75rem;
+}
+.hero :global(.lead) {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.example {
+  margin-bottom: 3rem;
+}
+.exampleHeader {
+  margin-bottom: 1rem;
+}
+.exampleHeader h2 {
+  margin: 0 0 0.2rem;
+}
+.exampleNote {
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.previewPaper {
+  background: var(--paper-raised);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* -------- A. Marketing hero -------- */
+.marketing {
+  max-width: 620px;
+}
+.marketingEyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ochre);
+  margin: 0 0 1rem;
+}
+.marketingTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+}
+.marketingLead {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 0 0 1.5rem;
+  font-style: italic;
+}
+.marketingLead code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--ai);
+}
+.marketingActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* -------- C. Dashboard -------- */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.big {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+/* -------- D. 404 -------- */
+.paper404 {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+.fourOhFour {
+  font-family: var(--font-display);
+  font-size: 7rem;
+  line-height: 1;
+  color: var(--ai);
+  margin: 0;
+  letter-spacing: -0.04em;
+}
+.fourOhFourNote {
+  font-family: var(--font-script);
+  font-size: 1.5rem;
+  color: var(--ink-soft);
+  margin: 1rem 0 2rem;
+}
+.fourOhFourActions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
