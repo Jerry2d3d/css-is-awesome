@@ -1,0 +1,9 @@
+@use 'components/buttons' as m;
+
+/* Button — every variant is a composite mixin from the library.
+   Add primary as an include and the whole base comes with it. */
+
+.default { @include m.btn-base;    }
+.primary { @include m.btn-primary; }
+.outline { @include m.btn-outline; }
+.ghost   { @include m.btn-ghost;   }

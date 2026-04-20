@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes } from "react";
+import styles from "./Button.module.scss";
 
 type Variant = "default" | "primary" | "outline" | "ghost";
 
@@ -20,10 +21,7 @@ type ButtonAsLink = BaseProps &
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 function classFor(variant: Variant, extra?: string) {
-  const classes = ["btn"];
-  if (variant !== "default") classes.push(`btn--${variant}`);
-  if (extra) classes.push(extra);
-  return classes.join(" ");
+  return [styles[variant], extra].filter(Boolean).join(" ");
 }
 
 export default function Button(props: ButtonProps) {
