@@ -15,14 +15,16 @@
     "dev": "next dev -p 5173",
     "build": "next build",
     "start": "next start -p 5173",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "lint:scss": "stylelint \"scss/**/*.scss\"",
+    "lint:scss:fix": "stylelint \"scss/**/*.scss\" --fix",
     "build:css": "sass scss/main.scss dist/css-is-awesome.css --no-source-map",
     "build:css:core": "sass scss/core.scss dist/css-is-awesome.core.css --no-source-map",
     "build:css:utilities": "sass scss/utilities-only.scss dist/css-is-awesome.utilities.css --no-source-map",
     "build:css:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
     "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:utilities && npm run build:css:min",
-    "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
-    "lint": "stylelint \"scss/**/*.scss\"",
-    "lint:fix": "stylelint \"scss/**/*.scss\" --fix"
+    "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch"
   },
   "keywords": [
     "css",
@@ -45,9 +47,12 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.0.0",
     "sass": "^1.97.1",
     "stylelint": "^17.8.0",
     "stylelint-config-standard-scss": "^17.0.0",
