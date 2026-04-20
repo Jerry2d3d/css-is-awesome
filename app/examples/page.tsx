@@ -1,23 +1,9 @@
+import SiteHeader from "@/components/SiteHeader";
+
 export default function ExamplesPage() {
   return (
     <>
-      <header className="docs-header">
-        <div className="docs-header__inner">
-          <a className="docs-header__brand" href="/">
-            <span className="logo--sm" aria-hidden="true">
-              <span>CSS</span><span>IS</span><span>AWES</span>
-            </span>
-            CSS is Awesome
-          </a>
-          <nav className="docs-header__nav">
-            <a href="/">Home</a>
-            <a href="/docs">Docs</a>
-            <a href="/examples" className="is-active">Examples</a>
-            <a href="/blog">Blog</a>
-            <a href="/about">About</a>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader current="examples" />
 
       <div className="docs-shell" style={{ gridTemplateColumns: "1fr", maxWidth: "900px" }}>
         <article className="docs-content">

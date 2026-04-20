@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <>
@@ -22,11 +24,11 @@ export default function Home() {
           </div>
 
           <nav className="main-nav" aria-label="Primary">
-            <a href="index.html" className="is-active">Home</a>
-            <a href="docs.html">Docs</a>
-            <a href="examples.html">Examples</a>
-            <a href="blog.html">Blog</a>
-            <a href="about.html">About</a>
+            <Link href="/" className="is-active">Home</Link>
+            <Link href="/docs">Docs</Link>
+            <Link href="/examples">Examples</Link>
+            <Link href="/blog">Blog</Link>
+            <Link href="/about">About</Link>
           </nav>
 
           <p className="landing__tagline">Tokens, mixins, and one very honest joke. Tiny enough to read in an afternoon. Flexible enough to skin however you like.</p>

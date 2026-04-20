@@ -1,23 +1,9 @@
+import SiteHeader from "@/components/SiteHeader";
+
 export default function BlogPage() {
   return (
     <>
-      <header className="docs-header">
-        <div className="docs-header__inner">
-          <a className="docs-header__brand" href="/">
-            <span className="logo--sm" aria-hidden="true">
-              <span>CSS</span><span>IS</span><span>AWES</span>
-            </span>
-            CSS is Awesome
-          </a>
-          <nav className="docs-header__nav">
-            <a href="/">Home</a>
-            <a href="/docs">Docs</a>
-            <a href="/examples">Examples</a>
-            <a href="/blog" className="is-active">Blog</a>
-            <a href="/about">About</a>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader current="blog" />
 
       <main className="blog-shell">
         <section className="blog-hero">

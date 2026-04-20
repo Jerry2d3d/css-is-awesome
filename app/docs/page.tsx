@@ -1,23 +1,9 @@
+import SiteHeader from "@/components/SiteHeader";
+
 export default function DocsPage() {
   return (
     <>
-      <header className="docs-header">
-        <div className="docs-header__inner">
-          <a className="docs-header__brand" href="/">
-            <span className="logo--sm" aria-hidden="true">
-              <span>CSS</span><span>IS</span><span>AWES</span>
-            </span>
-            CSS is Awesome
-          </a>
-          <nav className="docs-header__nav">
-            <a href="/">Home</a>
-            <a href="/docs" className="is-active">Docs</a>
-            <a href="/examples">Examples</a>
-            <a href="/blog">Blog</a>
-            <a href="/about">About</a>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader current="docs" />
 
       <div className="docs-shell">
         <aside className="docs-sidebar" aria-label="Docs navigation">
