@@ -1,0 +1,52 @@
+/* ============================================================
+   SiteHeader component — co-located styles.
+   Imported from SiteHeader.tsx as a side effect.
+   .logo--sm (the mark inside the brand link) is shared and stays in globals.
+   ============================================================ */
+
+.docs-header {
+  border-bottom: 1px solid var(--hair);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.docs-header__inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.docs-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.1rem;
+  border: 0;
+  letter-spacing: -0.005em;
+}
+.docs-header__brand:hover { border: 0; opacity: 0.8; }
+.docs-header__nav {
+  display: flex;
+  gap: 1.75rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+}
+.docs-header__nav a {
+  color: var(--ink-faint);
+  border: 0;
+  padding: 2px 0;
+  border-bottom: 1px solid transparent;
+  transition: color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.docs-header__nav a:hover,
+.docs-header__nav a.is-active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}

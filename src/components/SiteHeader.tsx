@@ -1,3 +1,4 @@
+import "./SiteHeader.scss";
 import Link from "next/link";
 
 type NavId = "home" | "docs" | "examples" | "blog" | "about";

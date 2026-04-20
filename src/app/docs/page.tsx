@@ -1,3 +1,4 @@
+import "./page.scss";
 import SiteHeader from "@/components/SiteHeader";
 
 export default function DocsPage() {
