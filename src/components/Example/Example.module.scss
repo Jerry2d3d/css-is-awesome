@@ -1,0 +1,28 @@
+@use 'mixins' as m;
+
+.example {
+  margin: 1.5rem 0 2rem;
+  background: m.color(surface-raised);
+  border: 1px solid m.color(border-default);
+  border-radius: m.radius(md);
+  overflow: hidden;
+  box-shadow: m.shadow(sm);
+}
+
+.preview {
+  padding: 2rem 1.5rem;
+  background: m.color(surface-raised);
+  border-bottom: 1px solid m.color(border-subtle);
+}
+
+.code {
+  margin: 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: m.font-family(mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+}
