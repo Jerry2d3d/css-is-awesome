@@ -1,10 +1,13 @@
 import "./page.scss";
 import Link from "next/link";
+import DraftStamp from "@/components/DraftStamp";
+import Logo from "@/components/Logo";
+import StatChip from "@/components/StatChip";
 
 export default function Home() {
   return (
     <>
-      <div className="draft-stamp" aria-hidden="true">v0.1 · Draft</div>
+      <DraftStamp>v0.1 · Draft</DraftStamp>
 
       <main className="landing">
         <div className="landing__inner">
@@ -15,14 +18,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="logo-stage">
-            <div className="logo" aria-label="CSS is Awesome">
-              <span>CSS</span>
-              <span>IS</span>
-              <span className="overflow">AWESOME</span>
-            </div>
-            <span className="logo-stage__caption" aria-hidden="true">overflow intentional</span>
-          </div>
+          <Logo />
 
           <nav className="main-nav" aria-label="Primary">
             <Link href="/" className="is-active">Home</Link>
@@ -35,9 +31,9 @@ export default function Home() {
           <p className="landing__tagline">Tokens, mixins, and one very honest joke. Tiny enough to read in an afternoon. Flexible enough to skin however you like.</p>
 
           <div className="landing__stats">
-            <span className="stat-chip"><strong>5</strong> themes</span>
-            <span className="stat-chip"><strong>800+</strong> LOC mixin API</span>
-            <span className="stat-chip"><strong>0</strong> runtime deps</span>
+            <StatChip value="5" label="themes" />
+            <StatChip value="800+" label="LOC mixin API" />
+            <StatChip value="0" label="runtime deps" />
           </div>
         </div>
 

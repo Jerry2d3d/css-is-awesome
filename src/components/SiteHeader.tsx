@@ -1,5 +1,6 @@
 import "./SiteHeader.scss";
 import Link from "next/link";
+import LogoMark from "./LogoMark";
 
 type NavId = "home" | "docs" | "examples" | "blog" | "about";
 
@@ -16,9 +17,7 @@ export default function SiteHeader({ current }: { current: NavId }) {
     <header className="docs-header">
       <div className="docs-header__inner">
         <Link className="docs-header__brand" href="/">
-          <span className="logo--sm" aria-hidden="true">
-            <span>CSS</span><span>IS</span><span>AWES</span>
-          </span>
+          <LogoMark />
           CSS is Awesome
         </Link>
         <nav className="docs-header__nav">
