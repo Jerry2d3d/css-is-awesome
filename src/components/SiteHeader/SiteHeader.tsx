@@ -1,6 +1,6 @@
 import styles from "./SiteHeader.module.scss";
 import Link from "next/link";
-import LogoMark from "./LogoMark";
+import LogoMark from "@/components/LogoMark";
 
 type NavId = "home" | "docs" | "themes" | "examples" | "compare" | "blog" | "about";
 
