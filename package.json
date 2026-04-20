@@ -12,13 +12,15 @@
     "README.md"
   ],
   "scripts": {
-    "dev": "live-server docs --port=5173 --no-browser --ignore=src",
-    "build": "sass scss/main.scss dist/css-is-awesome.css --no-source-map",
-    "build:core": "sass scss/core.scss dist/css-is-awesome.core.css --no-source-map",
-    "build:utilities": "sass scss/utilities-only.scss dist/css-is-awesome.utilities.css --no-source-map",
-    "build:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
-    "build:all": "npm run build && npm run build:core && npm run build:utilities && npm run build:min",
-    "watch": "sass scss/main.scss dist/css-is-awesome.css --watch",
+    "dev": "next dev -p 5173",
+    "build": "next build",
+    "start": "next start -p 5173",
+    "build:css": "sass scss/main.scss dist/css-is-awesome.css --no-source-map",
+    "build:css:core": "sass scss/core.scss dist/css-is-awesome.core.css --no-source-map",
+    "build:css:utilities": "sass scss/utilities-only.scss dist/css-is-awesome.utilities.css --no-source-map",
+    "build:css:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
+    "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:utilities && npm run build:css:min",
+    "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
     "lint": "stylelint \"scss/**/*.scss\"",
     "lint:fix": "stylelint \"scss/**/*.scss\" --fix"
   },
@@ -37,10 +39,18 @@
     "type": "git",
     "url": "git+https://github.com/Jerry2d3d/css-is-awesome.git"
   },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   "devDependencies": {
-    "live-server": "^1.2.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "sass": "^1.97.1",
     "stylelint": "^17.8.0",
-    "stylelint-config-standard-scss": "^17.0.0"
+    "stylelint-config-standard-scss": "^17.0.0",
+    "typescript": "^5.7.0"
   }
 }

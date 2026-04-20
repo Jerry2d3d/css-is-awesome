@@ -7,3 +7,9 @@ dist/
 .vscode/
 .idea/
 *.map
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
