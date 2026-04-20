@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import styles from "./Card.module.scss";
 
 export type CardProps = {
   title: ReactNode;
@@ -15,11 +16,12 @@ export default function Card({
   style,
   className,
 }: CardProps) {
-  const classes = className ? `card ${className}` : "card";
+  const classes = [styles.card, className].filter(Boolean).join(" ");
   return (
     <div className={classes} style={style}>
-      <h4>{title}</h4>
-      {children && (bodyAs === "p" ? <p>{children}</p> : children)}
+      <h4 className={styles.title}>{title}</h4>
+      {children &&
+        (bodyAs === "p" ? <p className={styles.body}>{children}</p> : children)}
     </div>
   );
 }

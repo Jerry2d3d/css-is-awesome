@@ -1,0 +1,18 @@
+@use 'mixins' as m;
+
+.seal {
+  display: inline-grid;
+  place-items: center;
+  padding: 6px 14px;
+  background: m.color(action-secondary-wash);
+  border: 2px solid m.color(action-secondary-default);
+  color: m.color(action-secondary-default);
+  font-family: m.font-family(mono);
+  font-weight: m.font-weight(bold);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: m.radius(sm);
+  line-height: 1;
+  transform: rotate(-3deg);
+}
