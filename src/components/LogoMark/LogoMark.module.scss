@@ -1,0 +1,29 @@
+/* ============================================================
+   LogoMark component — CSS Module (scoped).
+   Small 3-row logo mark used inside SiteHeader's brand link.
+   Mirrors the global .logo--sm rules in globals.css, but scoped
+   and built from library mixins.
+   ============================================================ */
+@use 'mixins' as m;
+
+.mark {
+  --logo-size: 32px;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  width: 32px;
+  aspect-ratio: 1 / 1;
+  padding: 2px 3px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  color: m.color(text-primary);
+  line-height: 1;
+  border: 1px solid m.color(text-primary);
+  overflow: visible;
+  background: m.color(surface-raised);
+}
+
+.mark > span {
+  font-size: 7px;
+  display: block;
+  white-space: nowrap;
+}

@@ -1,0 +1,71 @@
+/* ============================================================
+   Logo component — CSS Module (scoped, camelCase classes).
+   Big "CSS IS AWESOME" meme logo on a sketchbook stage with
+   construction-lines SVG and caption. Mirrors the global
+   .logo-stage / .logo / .overflow / .logo-stage__caption
+   rules in globals.css, but scoped and built from library mixins.
+   ============================================================ */
+@use 'mixins' as m;
+
+.stage {
+  position: relative;
+  display: inline-block;
+  padding: 52px 58px;
+}
+
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: 24px 24px 24px 24px;
+  pointer-events: none;
+  /* NOTE: the embedded SVG's stroke color `%23C9BDA5` is the Sketchbook
+     native guide-color. It is intentionally a literal (not a theme token),
+     so the construction-lines motif stays the warm tan regardless of theme.
+     Other themes simply do not render Logo-with-stage prominently. */
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><g stroke='%23C9BDA5' stroke-width='0.9' fill='none' stroke-linecap='round' opacity='0.75'><path d='M-20 100 L220 100' stroke-dasharray='1 4'/><path d='M100 -20 L100 220' stroke-dasharray='1 4'/><path d='M-10 -10 L210 210' stroke-dasharray='1 5'/><path d='M210 -10 L-10 210' stroke-dasharray='1 5'/><circle cx='100' cy='100' r='98' stroke-dasharray='2 6'/></g></svg>");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+}
+
+.logo {
+  --logo-size: clamp(200px, 28vw, 340px);
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  align-items: center;
+  justify-items: start;
+  width: var(--logo-size);
+  aspect-ratio: 1 / 1;
+  padding: 0.3em 0.35em 0.35em;
+  position: relative;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  color: m.color(text-primary);
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  overflow: visible;
+  border: 2px solid m.color(text-primary);
+  background: transparent;
+  box-shadow: 3px 4px 0 rgba(42, 36, 30, 0.1);
+}
+
+.logo > span {
+  font-size: calc(var(--logo-size) * 0.26);
+  white-space: nowrap;
+  display: block;
+}
+
+.overflow { margin-left: -0.02em; }
+
+.caption {
+  position: absolute;
+  bottom: 8px;
+  right: 36px;
+  font-family: m.font-family(script);
+  font-size: 1.5rem;
+  color: m.color(action-secondary-default);
+  transform: rotate(-4deg);
+  line-height: 1;
+  pointer-events: none;
+}
