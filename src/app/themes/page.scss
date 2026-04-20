@@ -1,0 +1,37 @@
+/* ============================================================
+   Themes gallery (/themes) — co-located styles.
+   ============================================================ */
+.themes-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+}
+.themes-hero {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+.themes-hero__eyebrow {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  color: var(--shu);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.themes-hero h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  margin-bottom: 0.75rem;
+}
+.themes-hero .lead {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.themes-hero code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+.themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}

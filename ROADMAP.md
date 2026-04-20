@@ -82,31 +82,42 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 
 **Goal:** A living docs site where people can see, copy, and steal.
 
-**Decision:** plain static HTML — no docs engine. Dogfoods the system. Zero build step.
+**Decision (revised):** Next.js 15 + App Router + TypeScript. Static-exported (`output: "export"`) so it deploys to any static host. Replaced the original "plain static HTML" plan — dogfooding still intact (the site consumes our own CSS), but we get proper routing, component reuse, and TypeScript safety.
 
 ### Template (DONE)
-- [x] Ported Sketchbook sketch → `docs/` (index, docs, examples, blog, about)
-- [x] Favicon wired to every page
-- [x] Two-file contract: `theme.css` (swappable tokens) + `styles.css` (base system)
-- [x] SCSS source mirrored in `docs/src/` for devs who compile
-- [x] `docs/README.md` with run + swap instructions
+- [x] Ported Sketchbook sketch → `src/app/` (index, docs, examples, blog, about)
+- [x] Favicon wired via `src/app/favicon.ico` (Next.js App Router convention)
+- [x] Two-file contract preserved: `public/theme.css` (swappable tokens) + `src/app/globals.css` (base system)
+- [x] Co-located SCSS: every `page.tsx` gets a sibling `page.scss`; every component gets its own `.scss`
+- [x] `npm run dev` + `npm run build` scripts
 
-### Positioning
-- **Landing:** stays clean and fast. No heavy demos, no interactive widgets. One screen, <1s load. Logo, tagline, manifesto, nav. That's it.
-- **Power demos live inside** — where the reader is already committed.
+### App structure (DONE)
+- [x] `src/app/` — routes: `/`, `/docs`, `/examples`, `/blog`, `/about`, `/themes`, `/compare`
+- [x] `src/components/` — extracted components (see below)
+- [x] `public/` — theme files, icon sprite
+- [x] `scss/` — the design-system library (unchanged by this phase; separate concern)
 
-### Content (TODO)
+### Extracted components (DONE)
+Shared chrome + reusable building blocks now live in `src/components/`:
+- `SiteHeader` — docs header with nav + active state
+- `ThemePicker` — live 6-theme swap widget
+- `Button`, `Card`, `Icon`, `Seal`, `LogoMark` — atoms
+- `Post`, `Principle`, `TimelineItem`, `StatChip` — data-driven repeating blocks
+- `Example` (+ `.Preview` / `.Code` compound slots) — code + preview wrapper
+- `DocsSidebar`, `Logo`, `DraftStamp` — structural
+
+### Content (still TODO)
 - [ ] Replace placeholder docs copy with real install/usage for the published `cia-` system
 - [ ] Sections: Tokens (color/spacing/type grids), Utilities (searchable table), Mixins API, Migration from Bootstrap
 - [ ] Live color swatches, spacing visualizers, type scale preview
 - [ ] Copy-to-clipboard code snippets
-- [ ] Deploy to GitHub Pages or Vercel under `css-is-awesome.dev` or subdomain
-- [ ] Link docs site in README + package.json `homepage`
+- [ ] Deploy to the external host + link from README + `package.json` `homepage`
 
 ### New pages
-- [ ] **`/docs` intro page** — first interactive demo: live theme-swap widget at the top of the docs landing. "Click a theme → whole page reskins."
-- [ ] **`/compare` page** — honest three-column comparison: css-is-awesome vs Tailwind vs Bootstrap. Where each wins, where each loses. Embed the theme-swap demo as the "this is the thing the others can't do" moment.
-- [ ] **`/showcase` page** — real-looking full pages built with the system (marketing / blog / dashboard / admin / 404), all theme-swappable via a single toggle at the top. Answers "what can I do with it?" visually.
+- [x] **`/themes` gallery** — all 6 themes with live-swap preview + download per tile. Uses `ThemeTile` component.
+- [x] **`/compare` page** — honest three-column vs Tailwind vs Bootstrap with feature table and "where each wins" verdicts.
+- [ ] **`/docs` intro page** — still placeholder; replace with live theme-swap demo at top + real cia-* usage.
+- [ ] **`/showcase` page** — real-looking full pages (marketing / blog / dashboard / 404), all theme-swappable.
 
 **Release:** `v0.5.0` — docs are the pitch.
 
@@ -132,7 +143,7 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
   - [x] Glass (visionOS glassmorphism) — exercises `--blur-*` + `--paper-glass`
   - [x] Cupertino (macOS native)
   - [x] Terminal (CRT phosphor) — mono-only stress test
-- [ ] Build the `/themes` gallery page — live preview + one-click download.
+- [x] Build the `/themes` gallery page — live preview + one-click download per tile.
 - [ ] Write `CONTRIBUTING-THEMES.md` for community submissions later.
 
 ### Animation system
@@ -208,14 +219,14 @@ A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style
 ## What's next (decision order)
 
 1. ~~**Lock theme token API contract**~~ — done. 6 themes implement it.
-2. **Decide sizing scale** (t-shirt vs numbered) — still open but no longer blocking; shipping t-shirt now, numbered aliases can layer on.
-3. **Wire the `/themes` gallery page** — live `<link>` swap preview + download buttons for all 6 themes.
-4. **Build `/compare` page** — three-column table vs Tailwind/Bootstrap + embedded theme-swap demo.
-5. **Build `/showcase` page** — full-page examples with a single theme toggle at top.
-6. **Add live theme-swap demo to docs intro** (first thing readers see inside docs).
-7. **Ship theme-specific `icons.svg`** for each of the 5 new themes.
-8. **Animation preview page** — grid of every keyframe × every theme.
-9. **Replace placeholder docs copy** with real usage for the `cia-` system.
+2. ~~**Wire `/themes` gallery page**~~ — done.
+3. ~~**Build `/compare` page**~~ — done.
+4. **Replace placeholder `/docs` copy** with real `cia-*` usage, token grids, mixin API reference, migration from Bootstrap.
+5. **Build `/showcase` page** — full-page examples (marketing / blog / dashboard / 404) with theme-swap toggle at top.
+6. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes.
+7. **Animation preview page** — grid of every keyframe × every theme.
+8. **Decide sizing scale** (t-shirt vs numbered) — shipping t-shirt now; numbered aliases can layer on non-breaking.
+9. **Phase 5: publish to npm + wire jsDelivr CDN** — first real release.
 
 ---
 

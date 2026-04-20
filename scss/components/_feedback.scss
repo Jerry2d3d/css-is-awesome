@@ -104,3 +104,35 @@
   background: m.color($color);
   @include m.transition(width, slow);
 }
+
+// ----------------------------------------------------------------------------
+// SPINNER
+// ----------------------------------------------------------------------------
+// A circular loading indicator. Inherits size from font-size of the parent.
+// Respects prefers-reduced-motion — drops to a pulsing opacity.
+@mixin spinner(
+  $size: 1.25em,
+  $thickness: 2px,
+  $color: action-primary-default
+) {
+  display: inline-block;
+  width: $size;
+  height: $size;
+  border: $thickness solid m.color(border-default);
+  border-top-color: m.color($color);
+  border-radius: 50%;
+  animation: cia-spinner-rotate 0.7s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: cia-spinner-pulse 1.2s ease-in-out infinite;
+    border-top-color: m.color($color);
+  }
+}
+
+@keyframes cia-spinner-rotate {
+  to { transform: rotate(360deg); }
+}
+@keyframes cia-spinner-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}

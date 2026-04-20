@@ -2,12 +2,14 @@ import "./SiteHeader.scss";
 import Link from "next/link";
 import LogoMark from "./LogoMark";
 
-type NavId = "home" | "docs" | "examples" | "blog" | "about";
+type NavId = "home" | "docs" | "themes" | "examples" | "compare" | "blog" | "about";
 
 const NAV: { id: NavId; label: string; href: string }[] = [
   { id: "home",     label: "Home",     href: "/" },
   { id: "docs",     label: "Docs",     href: "/docs" },
+  { id: "themes",   label: "Themes",   href: "/themes" },
   { id: "examples", label: "Examples", href: "/examples" },
+  { id: "compare",  label: "Compare",  href: "/compare" },
   { id: "blog",     label: "Blog",     href: "/blog" },
   { id: "about",    label: "About",    href: "/about" },
 ];

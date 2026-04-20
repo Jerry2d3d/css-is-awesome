@@ -1,0 +1,99 @@
+/* Compare page (/compare) — co-located styles. */
+.compare-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+}
+.compare-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.compare-hero__eyebrow {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  color: var(--shu);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.compare-hero h1 {
+  font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+}
+.compare-hero .lead {
+  margin-left: auto;
+  margin-right: auto;
+}
+.compare-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 4rem;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+}
+.compare-table th,
+.compare-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--hair-soft);
+  vertical-align: top;
+}
+.compare-table thead th {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: -0.01em;
+}
+.compare-table tbody th {
+  font-weight: 500;
+  color: var(--ink);
+}
+.compare-note {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin-top: 0.2rem;
+  font-weight: 400;
+}
+.cmp-cell {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+.cmp-cell--yes {
+  color: var(--ai);
+  font-weight: 600;
+}
+.cmp-cell--no {
+  color: var(--ink-faint);
+}
+.compare-verdict h2 {
+  margin-bottom: 1.5rem;
+}
+.compare-verdict__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+.compare-verdict__grid article {
+  padding: 1.5rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+}
+.compare-verdict__grid h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5rem;
+}
+.compare-verdict__grid p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+}
