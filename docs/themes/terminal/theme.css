@@ -1,0 +1,112 @@
+/* ============================================================
+   THEME — Terminal (VT100 CRT Phosphor)
+   -----------------------------------------------------------
+   This is the ONE FILE users swap to reskin their site.
+   Replace this file with any other theme.css to change the
+   entire look & feel. Tokens only — no component CSS lives here.
+
+   TOKEN CONTRACT
+   -----------------------------------------------------------
+   Every theme MUST declare every variable in this file, even
+   if it sets it to a neutral value (e.g. --blur-md: none;).
+   That's what guarantees a clean one-file swap.
+
+   Slots:
+     Surfaces : --paper, --paper-raised, --paper-sunk, --paper-glass
+     Ink      : --ink, --ink-soft, --ink-faint, --graphite, --muted
+     Lines    : --guide, --guide-soft, --hair, --hair-soft
+     Primary  : --ai, --ai-ink, --ai-wash           (cyan — terminal links)
+     Seal     : --shu, --shu-wash                    (error red)
+     Accent   : --ochre, --ochre-wash                (warning amber)
+     Code     : --code-bg/ink/muted/accent/green/blue
+     Type     : --font-display/script/serif/sans/mono
+     Radius   : --r-sm, --r-md, --r-lg
+     Shadow   : --shadow-sm, --shadow-md, --shadow-lg
+     Blur     : --blur-sm, --blur-md, --blur-lg     (glass only; else 'none')
+     Glow     : --glow-sm, --glow-md, --glow-lg     (emphasis / rim / phosphor)
+     Motion   : --duration-fast, --duration-normal, --duration-slow, --ease
+
+   FONT NOTE
+   -----------------------------------------------------------
+   A terminal has no serif and no handwritten script. To keep
+   the contract intact without breaking the mood, every font
+   slot — display, script, serif, sans, mono — points at
+   --font-mono. The contract survives; the CRT stays pure.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* Surfaces — deep warm black chassis + phosphor haze */
+  --paper:        #0A0E0A;
+  --paper-raised: #0F140F;
+  --paper-sunk:   #070A07;
+  --paper-glass:  rgba(79, 224, 120, 0.06);
+
+  /* Ink — phosphor green on the tube */
+  --ink:        #4FE078;
+  --ink-soft:   #2A8B42;
+  --ink-faint:  #1E5E2F;
+  --graphite:   #1A3D22;
+  --muted:      #2A8B42;
+
+  /* Scanlines / rule lines */
+  --guide:      #1E5E2F;
+  --guide-soft: #143618;
+  --hair:       #2A8B42;
+  --hair-soft:  #1E5E2F;
+
+  /* Primary accent — cyan (interactive links in a terminal) */
+  --ai:         #7FDBFF;
+  --ai-ink:     #5AB3D4;
+  --ai-wash:    rgba(127, 219, 255, 0.10);
+
+  /* Seal — error red */
+  --shu:        #FF5A5A;
+  --shu-wash:   rgba(255, 90, 90, 0.10);
+
+  /* Accent — warning amber */
+  --ochre:      #F0A030;
+  --ochre-wash: rgba(240, 160, 48, 0.10);
+
+  /* Code surface */
+  --code-bg:     #070A07;
+  --code-ink:    #4FE078;
+  --code-muted:  #2A8B42;
+  --code-accent: #F0A030;
+  --code-green:  #8FFCA8;
+  --code-blue:   #7FDBFF;
+
+  /* Typography — mono everywhere (see FONT NOTE in header) */
+  --font-mono:    'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;
+  --font-sans:    var(--font-mono);
+  --font-serif:   var(--font-mono);
+  --font-display: var(--font-mono);
+  --font-script:  var(--font-mono);
+
+  /* Radius — a CRT has hard pixel corners */
+  --r-sm: 0;
+  --r-md: 0;
+  --r-lg: 0;
+
+  /* Shadows — a CRT doesn't cast, it emits. Keep subtle. */
+  --shadow-sm: 0 0 0 1px rgba(79, 224, 120, 0.20);
+  --shadow-md: 0 0 0 1px rgba(79, 224, 120, 0.30), 0 0 12px rgba(79, 224, 120, 0.15);
+  --shadow-lg: 0 0 0 1px rgba(79, 224, 120, 0.40), 0 0 24px rgba(79, 224, 120, 0.25);
+
+  /* Blur — terminal has no frosted glass; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — phosphor halo (this is where the theme sings) */
+  --glow-sm: 0 0 4px rgba(79, 224, 120, 0.25);
+  --glow-md: 0 0 8px rgba(79, 224, 120, 0.35);
+  --glow-lg: 0 0 16px rgba(79, 224, 120, 0.45);
+
+  /* Motion — terminals are instant */
+  --duration-fast:   100ms;
+  --duration-normal: 140ms;
+  --duration-slow:   220ms;
+  --ease:            cubic-bezier(0.2, 0.0, 0.2, 1);
+}

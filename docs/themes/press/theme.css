@@ -1,0 +1,110 @@
+/* ============================================================
+   THEME — Press
+   -----------------------------------------------------------
+   This is the ONE FILE users swap to reskin their site.
+   Replace this file with any other theme.css to change the
+   entire look & feel. Tokens only — no component CSS lives here.
+
+   Mood: T-Magazine / Stripe Press / Apple Newsroom editorial
+   newsprint. Classical measure, thin hairlines, dramatic serif
+   display, a single press-red accent. Warm off-white paper,
+   near-black ink, very square radii, minimal flat shadows.
+
+   TOKEN CONTRACT
+   -----------------------------------------------------------
+   Every theme MUST declare every variable in this file, even
+   if it sets it to a neutral value (e.g. --blur-md: none;).
+   That's what guarantees a clean one-file swap.
+
+   Slots:
+     Surfaces : --paper, --paper-raised, --paper-sunk, --paper-glass
+     Ink      : --ink, --ink-soft, --ink-faint, --graphite, --muted
+     Lines    : --guide, --guide-soft, --hair, --hair-soft
+     Primary  : --ai, --ai-ink, --ai-wash           (near-ink editorial link)
+     Seal     : --shu, --shu-wash                    (press red — the accent)
+     Accent   : --ochre, --ochre-wash                (warm gold / pull-quote)
+     Code     : --code-bg/ink/muted/accent/green/blue
+     Type     : --font-display/script/serif/sans/mono
+     Radius   : --r-sm, --r-md, --r-lg
+     Shadow   : --shadow-sm, --shadow-md, --shadow-lg
+     Blur     : --blur-sm, --blur-md, --blur-lg     (editorial: none)
+     Glow     : --glow-sm, --glow-md, --glow-lg     (editorial: transparent)
+     Motion   : --duration-fast, --duration-normal, --duration-slow, --ease
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Surfaces — warm newsprint */
+  --paper:        #FAFAF7;
+  --paper-raised: #FFFFFF;
+  --paper-sunk:   #F2F1EC;
+  --paper-glass:  rgba(255, 255, 255, 0.80);
+
+  /* Ink — warm near-black */
+  --ink:        #0A0A0A;
+  --ink-soft:   #555555;
+  --ink-faint:  #8A8A86;
+  --graphite:   #1A1A1A;
+  --muted:      #A8A6A0;
+
+  /* Rules / hairlines — thin editorial rules */
+  --guide:      #1A1A1A;
+  --guide-soft: #D9D7D1;
+  --hair:       #1A1A1A;
+  --hair-soft:  #ECEAE4;
+
+  /* Primary accent — near-ink editorial link (not a bright hue) */
+  --ai:         #1A1A1A;
+  --ai-ink:     #0A0A0A;
+  --ai-wash:    #ECEAE4;
+
+  /* Seal — press red (the single editorial accent) */
+  --shu:        #D93025;
+  --shu-wash:   #FBEAE8;
+
+  /* Pull-quote / marginalia — warm gold */
+  --ochre:      #B5873A;
+  --ochre-wash: #F4EBD6;
+
+  /* Code surface — keep editorial (ink slab) */
+  --code-bg:     #0A0A0A;
+  --code-ink:    #FAFAF7;
+  --code-muted:  #8A8A86;
+  --code-accent: #E8B96E;
+  --code-green:  #B8C57A;
+  --code-blue:   #94AFC9;
+
+  /* Typography */
+  --font-display: 'Playfair Display', 'Tiempos', 'Fraunces', Georgia, serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'Playfair Display', 'Tiempos', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+
+  /* Radius — editorial is tight, very square */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 4px;
+
+  /* Shadows — minimal, single-layer, editorial flat */
+  --shadow-sm: 0 1px 2px rgba(10, 10, 10, .05);
+  --shadow-md: 0 6px 24px rgba(10, 10, 10, .06);
+  --shadow-lg: 0 18px 48px rgba(10, 10, 10, .09);
+
+  /* Blur — editorial doesn't use it; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — editorial doesn't use it; declared transparent */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — editorial reads slower than digital */
+  --duration-fast:   200ms;
+  --duration-normal: 280ms;
+  --duration-slow:   420ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+}

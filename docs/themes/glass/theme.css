@@ -1,0 +1,121 @@
+/* ============================================================
+   THEME — Liquid Glass
+   -----------------------------------------------------------
+   This is the ONE FILE users swap to reskin their site.
+   Replace this file with any other theme.css to change the
+   entire look & feel. Tokens only — no component CSS lives here.
+
+   TOKEN CONTRACT
+   -----------------------------------------------------------
+   Every theme MUST declare every variable in this file, even
+   if it sets it to a neutral value (e.g. --blur-md: none;).
+   That's what guarantees a clean one-file swap.
+
+   Slots:
+     Surfaces : --paper, --paper-raised, --paper-sunk, --paper-glass
+     Ink      : --ink, --ink-soft, --ink-faint, --graphite, --muted
+     Lines    : --guide, --guide-soft, --hair, --hair-soft
+     Primary  : --ai, --ai-ink, --ai-wash           (iOS indigo)
+     Seal     : --shu, --shu-wash                    (iOS system pink)
+     Accent   : --ochre, --ochre-wash                (iOS orange)
+     Code     : --code-bg/ink/muted/accent/green/blue
+     Type     : --font-display/script/serif/sans/mono
+     Radius   : --r-sm, --r-md, --r-lg
+     Shadow   : --shadow-sm, --shadow-md, --shadow-lg
+     Blur     : --blur-sm, --blur-md, --blur-lg     (glass is the star here)
+     Glow     : --glow-sm, --glow-md, --glow-lg     (dual-inset rim light)
+     Motion   : --duration-fast, --duration-normal, --duration-slow, --ease
+
+   NOTE ON MESH BACKGROUNDS
+   -----------------------------------------------------------
+   A page-level mesh gradient is NOT a theme token. The base
+   --paper slot is a pastel-tint white so surfaces look vibrant
+   out of the box; consumers who want the full visionOS mesh
+   should add a background-image at the page level themselves.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* Surfaces — frosted translucent over a lavender-tint base */
+  --paper:        #F4EEFF;
+  --paper-raised: #FFFFFF;
+  --paper-sunk:   #E8E0F5;
+  --paper-glass:  rgba(255, 255, 255, 0.55);
+
+  /* Ink — warm near-black, Apple style */
+  --ink:        #1D1D1F;
+  --ink-soft:   #3A3A3C;
+  --ink-faint:  #8E8E93;
+  --graphite:   #2C2C2E;
+  --muted:      #6E6E73;
+
+  /* Construction lines — glass doesn't like hard edges */
+  --guide:      rgba(29, 29, 31, 0.14);
+  --guide-soft: rgba(29, 29, 31, 0.10);
+  --hair:       rgba(29, 29, 31, 0.08);
+  --hair-soft:  rgba(29, 29, 31, 0.04);
+
+  /* Primary accent — iOS indigo */
+  --ai:         #5E5CE6;
+  --ai-ink:     #3634A3;
+  --ai-wash:    rgba(94, 92, 230, 0.12);
+
+  /* Seal — iOS system pink (draft / emphasis) */
+  --shu:        #FF375F;
+  --shu-wash:   rgba(255, 55, 95, 0.12);
+
+  /* Draft / marginalia — iOS orange */
+  --ochre:      #FF9500;
+  --ochre-wash: rgba(255, 149, 0, 0.14);
+
+  /* Code surface */
+  --code-bg:     rgba(29, 29, 31, 0.82);
+  --code-ink:    #F5F5F7;
+  --code-muted:  #9A9AA0;
+  --code-accent: #FFD60A;
+  --code-green:  #30D158;
+  --code-blue:   #64D2FF;
+
+  /* Typography — SF system stack */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Radius — soft and large, iOS-style */
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 24px;
+
+  /* Shadows — floaty with a cool-blue undertone */
+  --shadow-sm: 0 2px 10px rgba(31, 38, 135, 0.06);
+  --shadow-md: 0 8px 32px rgba(31, 38, 135, 0.10);
+  --shadow-lg: 0 24px 60px rgba(31, 38, 135, 0.14);
+
+  /* Blur — the star of this theme; pair with --paper-glass */
+  --blur-sm: blur(14px) saturate(160%);
+  --blur-md: blur(22px) saturate(170%);
+  --blur-lg: blur(30px) saturate(180%);
+
+  /* Glow — dual-inset rim highlight (catches light like visionOS) */
+  --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.70);
+  --glow-md:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.20),
+    inset 1px 0 0 rgba(255, 255, 255, 0.35),
+    inset -1px 0 0 rgba(255, 255, 255, 0.20);
+  --glow-lg:
+    inset 0 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.25),
+    inset 2px 0 0 rgba(255, 255, 255, 0.45),
+    inset -2px 0 0 rgba(255, 255, 255, 0.25),
+    inset 0 0 40px rgba(255, 255, 255, 0.15);
+
+  /* Motion */
+  --duration-fast:   180ms;
+  --duration-normal: 240ms;
+  --duration-slow:   380ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+}
