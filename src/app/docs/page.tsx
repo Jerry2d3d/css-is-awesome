@@ -1,4 +1,4 @@
-import "./page.scss";
+import styles from "./page.module.scss";
 import SiteHeader from "@/components/SiteHeader";
 import DocsSidebar from "@/components/DocsSidebar";
 import Example from "@/components/Example";
@@ -130,7 +130,7 @@ export default function DocsPage() {
           </Example>
         </article>
 
-        <nav className="docs-toc" aria-label="On this page">
+        <nav className={styles.toc} aria-label="On this page">
           <h5>on this page</h5>
           <ul>
             <li><a href="#introduction">Introduction</a></li>

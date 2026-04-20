@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import styles from "./Post.module.scss";
 
 export type PostProps = {
   date: string;
@@ -10,15 +11,15 @@ export type PostProps = {
 
 export default function Post({ date, tag, title, excerpt, href }: PostProps) {
   return (
-    <article className="post">
+    <article className={styles.post}>
       <div>
-        <div className="post__date">{date}</div>
-        <span className="post__tag">{tag}</span>
+        <div className={styles.date}>{date}</div>
+        <span className={styles.tag}>{tag}</span>
       </div>
       <div>
-        <h2 className="post__title"><a href={href}>{title}</a></h2>
-        <p className="post__excerpt">{excerpt}</p>
-        <a href={href} className="post__read">keep reading →</a>
+        <h2 className={styles.title}><a href={href}>{title}</a></h2>
+        <p className={styles.excerpt}>{excerpt}</p>
+        <a href={href} className={styles.read}>keep reading →</a>
       </div>
     </article>
   );

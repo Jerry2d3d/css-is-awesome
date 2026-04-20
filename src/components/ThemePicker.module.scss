@@ -1,11 +1,6 @@
-/* ============================================================
-   ThemePicker component — floating theme-swap widget.
-   Imported from ThemePicker.tsx as a side effect.
-   Uses --paper, --ink, and --ai tokens so the picker reskins
-   with the active theme.
-   ============================================================ */
+/* ThemePicker component — floating theme-swap widget (CSS Module). */
 
-#cia-theme-picker {
+.picker {
   position: fixed;
   right: 16px;
   bottom: 16px;
@@ -24,19 +19,19 @@
   line-height: 1.4;
   max-width: 200px;
 }
-#cia-theme-picker .cia-tp__label {
+.picker .label {
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-faint, #888);
   padding-bottom: 4px;
 }
-#cia-theme-picker .cia-tp__row {
+.picker .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
 }
-#cia-theme-picker button {
+.picker button {
   all: unset;
   cursor: pointer;
   padding: 5px 8px;
@@ -48,15 +43,15 @@
   font: inherit;
   transition: background 120ms ease, border-color 120ms ease;
 }
-#cia-theme-picker button:hover {
+.picker button:hover {
   background: var(--paper-sunk, rgba(0,0,0,0.05));
 }
-#cia-theme-picker button[aria-pressed="true"] {
+.picker button[aria-pressed="true"] {
   background: var(--ai-wash, rgba(0,0,0,0.08));
   border-color: var(--ai, currentColor);
   color: var(--ai, currentColor);
   font-weight: 600;
 }
 @media (max-width: 560px) {
-  #cia-theme-picker { right: 8px; bottom: 8px; padding: 8px; }
+  .picker { right: 8px; bottom: 8px; padding: 8px; }
 }

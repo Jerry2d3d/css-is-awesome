@@ -1,4 +1,4 @@
-import "./SiteHeader.scss";
+import styles from "./SiteHeader.module.scss";
 import Link from "next/link";
 import LogoMark from "./LogoMark";
 
@@ -16,18 +16,18 @@ const NAV: { id: NavId; label: string; href: string }[] = [
 
 export default function SiteHeader({ current }: { current: NavId }) {
   return (
-    <header className="docs-header">
-      <div className="docs-header__inner">
-        <Link className="docs-header__brand" href="/">
+    <header className={styles.header}>
+      <div className={styles.inner}>
+        <Link className={styles.brand} href="/">
           <LogoMark />
           CSS is Awesome
         </Link>
-        <nav className="docs-header__nav">
+        <nav className={styles.nav}>
           {NAV.map((item) => (
             <Link
               key={item.id}
               href={item.href}
-              className={item.id === current ? "is-active" : undefined}
+              className={item.id === current ? styles.isActive : undefined}
             >
               {item.label}
             </Link>

@@ -1,5 +1,5 @@
 "use client";
-import "./ThemeTile.scss";
+import styles from "./ThemeTile.module.scss";
 
 import Button from "@/components/Button";
 
@@ -32,30 +32,30 @@ export default function ThemeTile({
   }
 
   return (
-    <article className="theme-tile">
-      <div className="theme-tile__swatches" aria-hidden="true">
+    <article className={styles.tile}>
+      <div className={styles.swatches} aria-hidden="true">
         <span
-          className="theme-tile__swatch"
+          className={styles.swatch}
           style={{ background: swatches.paper }}
         />
         <span
-          className="theme-tile__swatch"
+          className={styles.swatch}
           style={{ background: swatches.ink }}
         />
         <span
-          className="theme-tile__swatch"
+          className={styles.swatch}
           style={{ background: swatches.accent }}
         />
         {swatches.seal ? (
           <span
-            className="theme-tile__swatch"
+            className={styles.swatch}
             style={{ background: swatches.seal }}
           />
         ) : null}
       </div>
-      <h3 className="theme-tile__title">{name}</h3>
-      <p className="theme-tile__description">{description}</p>
-      <div className="theme-tile__actions">
+      <h3 className={styles.title}>{name}</h3>
+      <p className={styles.description}>{description}</p>
+      <div className={styles.actions}>
         <Button variant="primary" onClick={applyTheme}>
           Preview
         </Button>

@@ -1,4 +1,4 @@
-import "./page.scss";
+import styles from "./page.module.scss";
 import SiteHeader from "@/components/SiteHeader";
 import Post from "@/components/Post";
 import type { PostProps } from "@/components/Post";
@@ -70,14 +70,14 @@ export default function BlogPage() {
     <>
       <SiteHeader current="blog" />
 
-      <main className="blog-shell">
-        <section className="blog-hero">
-          <p className="blog-hero__eyebrow">the sketchbook</p>
+      <main className={styles.shell}>
+        <section className={styles.hero}>
+          <p className={styles.eyebrow}>the sketchbook</p>
           <h1>Notes from the margins.</h1>
           <p>Updates, experiments, and small ideas from building the system. New posts when there's something worth saying.</p>
         </section>
 
-        <section className="post-list">
+        <section className={styles.postList}>
           {POSTS.map((p) => (
             <Post key={p.title as string} {...p} />
           ))}

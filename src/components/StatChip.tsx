@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import styles from "./StatChip.module.scss";
 
 export type StatChipProps = {
   value: ReactNode;
@@ -7,7 +8,7 @@ export type StatChipProps = {
 
 export default function StatChip({ value, label }: StatChipProps) {
   return (
-    <span className="stat-chip">
+    <span className={styles.chip}>
       <strong>{value}</strong> {label}
     </span>
   );

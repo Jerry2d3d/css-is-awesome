@@ -1,4 +1,6 @@
-.theme-tile {
+/* ThemeTile component — theme preview card (CSS Module). */
+
+.tile {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -10,25 +12,25 @@
     box-shadow 240ms var(--ease);
 }
 
-.theme-tile:hover {
+.tile:hover {
   transform: translateY(-3px);
   border-color: var(--ink-faint);
   box-shadow: var(--shadow-md);
 }
 
-.theme-tile__swatches {
+.swatches {
   display: flex;
   gap: 4px;
 }
 
-.theme-tile__swatch {
+.swatch {
   width: 28px;
   height: 28px;
   border-radius: var(--r-sm);
   border: 1px solid var(--hair-soft);
 }
 
-.theme-tile__title {
+.title {
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.4rem;
@@ -36,7 +38,7 @@
   color: var(--ink);
 }
 
-.theme-tile__description {
+.description {
   margin: 0;
   font-family: var(--font-serif);
   font-size: 0.95rem;
@@ -45,7 +47,7 @@
   line-height: 1.5;
 }
 
-.theme-tile__actions {
+.actions {
   display: flex;
   gap: 0.75rem;
   margin-top: auto;

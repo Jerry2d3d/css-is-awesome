@@ -1,4 +1,4 @@
-import "./page.scss";
+import styles from "./page.module.scss";
 import SiteHeader from "@/components/SiteHeader";
 import ThemeTile from "@/components/ThemeTile";
 import type { ThemeTileProps } from "@/components/ThemeTile";
@@ -52,9 +52,9 @@ export default function ThemesPage() {
   return (
     <>
       <SiteHeader current="themes" />
-      <main className="themes-shell">
-        <section className="themes-hero">
-          <p className="themes-hero__eyebrow">six voices, one contract</p>
+      <main className={styles.shell}>
+        <section className={styles.hero}>
+          <p className={styles.eyebrow}>six voices, one contract</p>
           <h1>Themes</h1>
           <p className="lead">
             Every theme is a single <code>theme.css</code> declaring the same set of
@@ -62,7 +62,7 @@ export default function ThemesPage() {
           </p>
         </section>
 
-        <section className="themes-grid">
+        <section className={styles.grid}>
           {THEMES.map((t) => (
             <ThemeTile key={t.id} {...t} />
           ))}

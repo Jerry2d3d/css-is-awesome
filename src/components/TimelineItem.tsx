@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import styles from "./TimelineItem.module.scss";
 
 export type TimelineItemProps = {
   date: string;
@@ -8,10 +9,10 @@ export type TimelineItemProps = {
 
 export default function TimelineItem({ date, title, children }: TimelineItemProps) {
   return (
-    <li className="timeline__item">
-      <div className="timeline__date">{date}</div>
-      <h3 className="timeline__title">{title}</h3>
-      <p className="timeline__body">{children}</p>
+    <li className={styles.item}>
+      <div className={styles.date}>{date}</div>
+      <h3 className={styles.title}>{title}</h3>
+      <p className={styles.body}>{children}</p>
     </li>
   );
 }

@@ -1,4 +1,4 @@
-import "./page.scss";
+import styles from "./page.module.scss";
 import SiteHeader from "@/components/SiteHeader";
 import Principle from "@/components/Principle";
 import TimelineItem from "@/components/TimelineItem";
@@ -9,13 +9,13 @@ export default function AboutPage() {
     <>
       <SiteHeader current="about" />
 
-      <section className="about-hero">
-        <p className="about-hero__eyebrow">a short history</p>
+      <section className={styles.hero}>
+        <p className={styles.eyebrow}>a short history</p>
         <h1>Where this system came from.</h1>
         <p className="lead">A small design system, started because every other one I tried was too big, too buggy, and too slow to update. This is the one I wish I'd had.</p>
       </section>
 
-      <article className="about-body">
+      <article className={styles.body}>
         <h2>Why I built it</h2>
         <p>Every design system on the market has two problems: they ship with bugs, and they're painful to update. You pull in a framework and spend the next month fighting it. You patch. You override. You write CSS to undo CSS.</p>
         <p>I wanted the opposite. Something small enough that if a token needed changing, I could change it in a minute. Something honest enough that it didn't pretend to be a framework when all I needed was tokens and mixins. Something that got out of my way.</p>
@@ -30,7 +30,7 @@ export default function AboutPage() {
         <hr className="brush-rule" />
 
         <h2>The principles that followed</h2>
-        <div className="principle-grid">
+        <div className={styles.principleGrid}>
           <Principle num={1} title="Tiny by default">A handful of tokens and a handful of mixins. If you can't read the system in an afternoon, it's too big.</Principle>
           <Principle num={2} title="Honest about limits">Keep the overflow. Don't hide imperfection — dimension it, annotate it, ship it.</Principle>
           <Principle num={3} title="Skins are themes">One HTML. Many stylesheets. Zen, Bricks, Brutalist, Terminal, Blueprint, Sketchbook — same system, different voices.</Principle>
@@ -40,7 +40,7 @@ export default function AboutPage() {
         <hr className="brush-rule" />
 
         <h2>Milestones, so far</h2>
-        <ol className="timeline">
+        <ol className={styles.timeline}>
           <TimelineItem date="2009 — the origin" title="A meme is posted.">Steven Frank ships the now-famous <code>CSS&nbsp;IS&nbsp;AWESOME</code> image. The internet keeps it forever.</TimelineItem>
           <TimelineItem date="2025 — the package" title="v0.1.0 on npm.">A token-driven SCSS design system ships. Light and dark themes, semantic tokens, an ~800-LOC mixin API, Figma tokens auto-generated from Tokens Studio.</TimelineItem>
           <TimelineItem date="2026 — the themes" title="Five voices, one system.">Zen, Bricks, Brutalist, Terminal, Blueprint — each a full skin, each honoring the overflow. Sketchbook arrives later in the year.</TimelineItem>

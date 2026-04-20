@@ -1,0 +1,16 @@
+/* StatChip component styles */
+.chip {
+  padding: 6px 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--paper-raised);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chip strong { color: var(--ai); font-weight: 700; }

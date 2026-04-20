@@ -1,4 +1,4 @@
-import "./page.scss";
+import styles from "./page.module.scss";
 import SiteHeader from "@/components/SiteHeader";
 import Example from "@/components/Example";
 import Button from "@/components/Button";

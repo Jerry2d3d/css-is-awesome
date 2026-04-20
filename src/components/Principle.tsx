@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import styles from "./Principle.module.scss";
 
 export type PrincipleProps = {
   num: number | string;
@@ -8,8 +9,8 @@ export type PrincipleProps = {
 
 export default function Principle({ num, title, children }: PrincipleProps) {
   return (
-    <div className="principle">
-      <div className="principle__num">{num}</div>
+    <div className={styles.principle}>
+      <div className={styles.num}>{num}</div>
       <h4>{title}</h4>
       <p>{children}</p>
     </div>

@@ -1,13 +1,13 @@
 /* ============================================================
-   Landing page (/) — co-located styles.
-   Imported from page.tsx as a side effect.
+   Landing page (/) — CSS Module styles.
+   Imported from page.tsx via `import styles from "./page.module.scss"`.
    Global tokens live in theme.css; shared utilities in globals.css.
    ============================================================ */
 
 /* ============================================================
    NAVIGATION
    ============================================================ */
-.main-nav {
+.mainNav {
   display: inline-flex;
   align-items: center;
   gap: 2rem;
@@ -15,7 +15,7 @@
   font-size: 0.95rem;
   letter-spacing: 0.04em;
 }
-.main-nav a {
+.mainNav a {
   color: var(--ink-faint);
   border: 0;
   padding: 0.25rem 0;
@@ -23,7 +23,7 @@
   position: relative;
   transition: color 220ms var(--ease);
 }
-.main-nav a::after {
+.mainNav a::after {
   content: '';
   position: absolute;
   left: -4px; right: -4px; bottom: -4px;
@@ -33,10 +33,10 @@
   opacity: 0;
   transition: opacity 240ms var(--ease);
 }
-.main-nav a:hover,
-.main-nav a.is-active { color: var(--ink); }
-.main-nav a:hover::after,
-.main-nav a.is-active::after { opacity: 1; }
+.mainNav a:hover,
+.mainNav a.isActive { color: var(--ink); }
+.mainNav a:hover::after,
+.mainNav a.isActive::after { opacity: 1; }
 
 /* ============================================================
    LANDING
@@ -53,21 +53,21 @@
   text-align: center;
   position: relative;
 }
-.landing__wordmark {
+.wordmark {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
   margin-bottom: 2rem;
 }
-.landing__eyebrow {
+.eyebrow {
   font-family: var(--font-script);
   font-size: 1.6rem;
   color: var(--ink-soft);
   transform: translateY(8px);
   line-height: 1;
 }
-.landing__display {
+.display {
   font-family: var(--font-display);
   font-size: clamp(3rem, 8vw, 5.5rem);
   line-height: 0.95;
@@ -76,12 +76,12 @@
   margin: 0;
   font-style: normal;
 }
-.landing__display em {
+.display em {
   font-style: italic;
   font-family: var(--font-display);
   color: var(--ai);
 }
-.landing__sub {
+.sub {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -90,13 +90,13 @@
   font-size: 1.7rem;
   color: var(--shu);
 }
-.landing__inner {
+.inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2.5rem;
 }
-.landing__tagline {
+.tagline {
   font-family: var(--font-serif);
   font-size: 1.2rem;
   color: var(--ink-soft);
@@ -105,61 +105,25 @@
   font-style: italic;
   margin: 0;
 }
-.landing__stats {
+.stats {
   display: flex;
   gap: 1.5rem;
   margin-top: 1rem;
 }
-.stat-chip {
-  padding: 6px 14px;
-  border: 1.5px solid var(--ink);
-  border-radius: var(--r-sm);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink);
-  background: var(--paper-raised);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.stat-chip strong { color: var(--ai); font-weight: 700; }
 
-.landing__footer {
+.footer {
   margin-top: 5rem;
   font-family: var(--font-script);
   font-size: 1.2rem;
   color: var(--muted);
 }
-.landing__footer code {
+.footer code {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   color: var(--ai);
   background: transparent;
   border: 0;
   padding: 0;
-}
-
-/* Draft stamp — top-right */
-.draft-stamp {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  padding: 8px 16px;
-  border: 2px solid var(--ochre);
-  color: var(--ochre);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  transform: rotate(-4deg);
-  z-index: 60;
-  background: var(--ochre-wash);
-  line-height: 1;
-  pointer-events: none;
 }
 
 /* ============================================================
@@ -185,7 +149,7 @@
 }
 .manifesto::after { margin: 2.5rem auto 0; }
 
-.manifesto__eyebrow {
+.manifestoEyebrow {
   font-family: var(--font-script);
   font-size: 1.45rem;
   color: var(--shu);
@@ -193,7 +157,7 @@
   margin: 0 0 1.25rem;
   font-weight: 600;
 }
-.manifesto__statement {
+.statement {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(1.75rem, 4.5vw, 2.75rem);
@@ -203,12 +167,12 @@
   margin: 0 auto 1.5rem;
   max-width: 22ch;
 }
-.manifesto__statement em {
+.statement em {
   font-style: italic;
   color: var(--shu);
   font-weight: 400;
 }
-.manifesto__body {
+.body {
   font-family: var(--font-serif);
   font-size: 1.1rem;
   line-height: 1.7;
@@ -217,7 +181,7 @@
   margin: 0 auto 1.25rem;
   font-style: italic;
 }
-.manifesto__signoff {
+.signoff {
   font-family: var(--font-script);
   font-size: 1.35rem;
   color: var(--ink-faint);

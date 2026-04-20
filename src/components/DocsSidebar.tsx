@@ -1,3 +1,4 @@
+import styles from "./DocsSidebar.module.scss";
 import type { ReactNode } from "react";
 
 export type DocsSidebarSection = {
@@ -12,14 +13,14 @@ export type DocsSidebarProps = {
 
 export default function DocsSidebar({ sections, label = "Docs navigation" }: DocsSidebarProps) {
   return (
-    <aside className="docs-sidebar" aria-label={label}>
+    <aside className={styles.sidebar} aria-label={label}>
       {sections.map((section, i) => (
         <div key={i}>
           <h4>{section.title}</h4>
           <ul>
             {section.items.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className={item.active ? "is-active" : undefined}>
+                <a href={item.href} className={item.active ? styles.isActive : undefined}>
                   {item.label}
                 </a>
               </li>

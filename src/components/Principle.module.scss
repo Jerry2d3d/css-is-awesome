@@ -1,0 +1,24 @@
+/* ============================================================
+   Principle component — scoped styles (CSS Module).
+   ============================================================ */
+
+.principle {
+  padding: 1.25rem 1.25rem 1.1rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+}
+.num {
+  font-family: var(--font-script);
+  font-size: 2.4rem;
+  color: var(--ai);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.principle h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.2rem;
+  margin: 0 0 0.3rem;
+}
+.principle p { margin: 0; font-size: 0.94rem; }

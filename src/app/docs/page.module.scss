@@ -1,18 +1,17 @@
 /* ============================================================
-   Docs page (/docs) — co-located styles.
-   Imported from page.tsx as a side effect.
-   Shared .docs-shell / .docs-content / .example* stay in globals.css.
+   Docs page (/docs) — CSS Module (scoped, camelCase classes).
+   Imported from page.tsx as `styles` and applied via className={styles.x}.
+   Only holds the on-this-page table of contents; the left-hand
+   sidebar lives in src/components/DocsSidebar.module.scss.
    ============================================================ */
 
-.docs-sidebar,
-.docs-toc {
+.toc {
   font-size: 0.9rem;
   align-self: start;
   position: sticky;
   top: 5rem;
 }
-.docs-sidebar h4,
-.docs-toc h5 {
+.toc h5 {
   font-family: var(--font-script);
   font-size: 1.25rem;
   font-weight: 600;
@@ -22,18 +21,15 @@
   text-transform: none;
   line-height: 1;
 }
-.docs-sidebar h4 + ul,
-.docs-toc h5 + ul { margin-bottom: 1.75rem; }
-.docs-sidebar ul,
-.docs-toc ul {
+.toc h5 + ul { margin-bottom: 1.75rem; }
+.toc ul {
   list-style: none;
   padding: 0;
   margin: 0;
   border-left: 1px solid var(--hair-soft);
   font-family: var(--font-serif);
 }
-.docs-sidebar a,
-.docs-toc a {
+.toc a {
   display: block;
   padding: 0.3rem 0.9rem;
   color: var(--ink-soft);
@@ -43,10 +39,8 @@
   line-height: 1.5;
   transition: color 180ms var(--ease), border-color 180ms var(--ease);
 }
-.docs-sidebar a:hover,
-.docs-toc a:hover { color: var(--ink); }
-.docs-sidebar a.is-active,
-.docs-toc a.is-active {
+.toc a:hover { color: var(--ink); }
+.toc a.isActive {
   color: var(--ink);
   border-left-color: var(--ai);
   font-weight: 600;

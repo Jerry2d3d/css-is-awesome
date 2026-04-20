@@ -1,4 +1,4 @@
-import "./page.scss";
+import styles from "./page.module.scss";
 import SiteHeader from "@/components/SiteHeader";
 import Seal from "@/components/Seal";
 
@@ -28,18 +28,18 @@ const ROWS: Row[] = [
 ];
 
 function Cell({ v }: { v: string | boolean }) {
-  if (v === true)  return <span className="cmp-cell cmp-cell--yes">Yes</span>;
-  if (v === false) return <span className="cmp-cell cmp-cell--no">No</span>;
-  return <span className="cmp-cell">{v}</span>;
+  if (v === true)  return <span className={`${styles.cell} ${styles.cellYes}`}>Yes</span>;
+  if (v === false) return <span className={`${styles.cell} ${styles.cellNo}`}>No</span>;
+  return <span className={styles.cell}>{v}</span>;
 }
 
 export default function ComparePage() {
   return (
     <>
       <SiteHeader current="compare" />
-      <main className="compare-shell">
-        <section className="compare-hero">
-          <p className="compare-hero__eyebrow">honest comparison</p>
+      <main className={styles.shell}>
+        <section className={styles.hero}>
+          <p className={styles.eyebrow}>honest comparison</p>
           <h1>css-is-awesome vs Tailwind vs Bootstrap</h1>
           <p className="lead">
             Three good tools. Different jobs. Here is where each one actually wins —
@@ -47,8 +47,8 @@ export default function ComparePage() {
           </p>
         </section>
 
-        <section className="compare-table-wrap">
-          <table className="compare-table">
+        <section className={styles.tableWrap}>
+          <table className={styles.table}>
             <thead>
               <tr>
                 <th>Feature</th>
@@ -62,7 +62,7 @@ export default function ComparePage() {
                 <tr key={i}>
                   <th scope="row">
                     {row.feature}
-                    {row.note && <span className="compare-note">{row.note}</span>}
+                    {row.note && <span className={styles.note}>{row.note}</span>}
                   </th>
                   <td><Cell v={row.cia} /></td>
                   <td><Cell v={row.tailwind} /></td>
@@ -73,9 +73,9 @@ export default function ComparePage() {
           </table>
         </section>
 
-        <section className="compare-verdict">
+        <section className={styles.verdict}>
           <h2>Where each one wins</h2>
-          <div className="compare-verdict__grid">
+          <div className={styles.verdictGrid}>
             <article>
               <h3>Pick Bootstrap if</h3>
               <p>You want prebuilt components with a decade of battle-testing, and you don&apos;t mind the weight.</p>

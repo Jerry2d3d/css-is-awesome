@@ -1,0 +1,20 @@
+/* DraftStamp component styles */
+/* Draft stamp — top-right */
+.stamp {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  padding: 8px 16px;
+  border: 2px solid var(--ochre);
+  color: var(--ochre);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+  z-index: 60;
+  background: var(--ochre-wash);
+  line-height: 1;
+  pointer-events: none;
+}

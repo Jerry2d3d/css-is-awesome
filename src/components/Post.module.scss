@@ -1,32 +1,8 @@
 /* ============================================================
-   Blog page (/blog) — co-located styles.
-   Imported from page.tsx as a side effect.
+   Post component — a single blog entry card.
+   Imported by Post.tsx.
    ============================================================ */
 
-.blog-shell {
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 4rem 1.5rem 6rem;
-}
-.blog-hero {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-.blog-hero__eyebrow {
-  font-family: var(--font-script);
-  font-size: 1.7rem;
-  color: var(--shu);
-  line-height: 1;
-  margin-bottom: 0.5rem;
-}
-.blog-hero h1 { font-size: clamp(2.4rem, 6vw, 4rem); margin-bottom: 0.6rem; }
-.blog-hero p { color: var(--ink-soft); font-family: var(--font-serif); font-style: italic; max-width: 50ch; margin: 0 auto; }
-
-.post-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
 .post {
   display: grid;
   grid-template-columns: 140px 1fr;
@@ -38,7 +14,7 @@
 }
 .post:last-child { border-bottom: 1px solid var(--hair-soft); }
 .post:hover { background: rgba(253, 250, 242, 0.5); }
-.post__date {
+.date {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 600;
@@ -47,7 +23,7 @@
   color: var(--muted);
   padding-top: 0.4rem;
 }
-.post__tag {
+.tag {
   display: inline-block;
   margin-top: 0.4rem;
   padding: 2px 8px;
@@ -60,29 +36,29 @@
   border: 1px solid var(--shu);
   border-radius: var(--r-sm);
 }
-.post__title {
+.title {
   font-family: var(--font-display);
   font-size: 1.75rem;
   line-height: 1.2;
   margin: 0 0 0.5rem;
   letter-spacing: -0.01em;
 }
-.post__title a { color: var(--ink); border: 0; }
-.post__title a:hover { color: var(--ai); }
-.post__excerpt {
+.title a { color: var(--ink); border: 0; }
+.title a:hover { color: var(--ai); }
+.excerpt {
   font-family: var(--font-serif);
   color: var(--ink-soft);
   font-size: 1rem;
   line-height: 1.7;
   margin: 0 0 0.75rem;
 }
-.post__read {
+.read {
   font-family: var(--font-script);
   font-size: 1.3rem;
   color: var(--shu);
   border: 0;
 }
-.post__read:hover { opacity: 0.75; border: 0; }
+.read:hover { opacity: 0.75; border: 0; }
 
 @media (max-width: 640px) {
   .post { grid-template-columns: 1fr; gap: 0.5rem; }

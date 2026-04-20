@@ -1,6 +1,6 @@
 "use client";
 
-import "./ThemePicker.scss";
+import styles from "./ThemePicker.module.scss";
 import { useEffect, useState } from "react";
 
 type Theme = { id: string; label: string; href: string };
@@ -39,9 +39,9 @@ export default function ThemePicker() {
   }
 
   return (
-    <div id="cia-theme-picker" aria-label="Theme picker">
-      <div className="cia-tp__label">Theme</div>
-      <div className="cia-tp__row">
+    <div className={styles.picker} aria-label="Theme picker">
+      <div className={styles.label}>Theme</div>
+      <div className={styles.row}>
         {THEMES.map((t) => (
           <button
             key={t.id}
