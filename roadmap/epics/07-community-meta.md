@@ -37,7 +37,8 @@ A repo-root `CONTRIBUTING.md` that walks a would-be contributor from "cloned the
 - [ ] Cross-linked from README.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** new contributor
 
 **US-7.1.2** — As a theme author, I want `CONTRIBUTING.md` to point me at the theme-specific contribution guide, so that I follow the theme-author path instead of the library-contributor path.
 
@@ -48,7 +49,8 @@ A repo-root `CONTRIBUTING.md` that walks a would-be contributor from "cloned the
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 **US-7.1.3** — As a maintainer, I want the commit message format documented (Conventional Commits), so that release automation (Epic 5) can derive changelog entries and SemVer bumps mechanically.
 
@@ -59,7 +61,8 @@ A repo-root `CONTRIBUTING.md` that walks a would-be contributor from "cloned the
 - [ ] Uses an existing recognized template (Conventional Commits) where one exists.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ---
 
@@ -77,7 +80,8 @@ A repo-root `CODE_OF_CONDUCT.md` adopting Contributor Covenant 2.1 (or current s
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** visitor evaluating project health
 
 **US-7.2.2** — As someone who needs to report a violation, I want a real, monitored reporting channel, so that my report reaches a human who will act on it.
 
@@ -88,7 +92,8 @@ A repo-root `CODE_OF_CONDUCT.md` adopting Contributor Covenant 2.1 (or current s
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** someone who needs to report a violation
 
 ---
 
@@ -107,7 +112,8 @@ A repo-root `SECURITY.md` describing responsible-disclosure procedure: how to co
 - [ ] Cross-linked from README.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** security researcher
 
 **US-7.3.2** — As a security researcher, I want the supported-versions table and disclosure timeline stated, so that I know which versions qualify for a fix and when I can publish.
 
@@ -119,7 +125,8 @@ A repo-root `SECURITY.md` describing responsible-disclosure procedure: how to co
 - [ ] Uses an existing recognized template (GitHub security advisory template) where one exists.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** security researcher
 
 **US-7.3.3** — As a maintainer, I want the private advisory workflow (GitHub Security Advisories) enabled and documented, so that a report moves through a repeatable process instead of ad-hoc email.
 
@@ -130,7 +137,8 @@ A repo-root `SECURITY.md` describing responsible-disclosure procedure: how to co
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ---
 
@@ -148,7 +156,8 @@ YAML-form issue templates under `.github/ISSUE_TEMPLATE/` — `bug_report.yml`, 
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** new contributor reporting a bug
 
 **US-7.4.2** — As a new contributor proposing a feature, I want a feature-request form that asks for problem statement and proposed solution, so that I describe the need before the implementation.
 
@@ -159,7 +168,8 @@ YAML-form issue templates under `.github/ISSUE_TEMPLATE/` — `bug_report.yml`, 
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** new contributor proposing a feature
 
 **US-7.4.3** — As a visitor with a usage question, I want a question template that points me at the discussion channel first, so that I use the right channel for support vs. bug reports.
 
@@ -170,7 +180,8 @@ YAML-form issue templates under `.github/ISSUE_TEMPLATE/` — `bug_report.yml`, 
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** visitor with a usage question
 
 ---
 
@@ -188,7 +199,8 @@ A `.github/pull_request_template.md` with summary, related-issue link, test plan
 - [ ] Cross-linked from `CONTRIBUTING.md`.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** new contributor
 
 **US-7.5.2** — As a maintainer, I want a contributor checklist in the PR template, so that lint, tests, docs, and changelog updates are surfaced before review rather than discovered in review.
 
@@ -199,7 +211,8 @@ A `.github/pull_request_template.md` with summary, related-issue link, test plan
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ---
 
@@ -217,7 +230,8 @@ A `.github/FUNDING.yml` listing GitHub Sponsors (and optionally Open Collective,
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** sponsor or funder
 
 **US-7.6.2** — As a visitor evaluating project health, I want a sponsors section in the README, so that I see the project is backed and who backs it.
 
@@ -228,7 +242,8 @@ A `.github/FUNDING.yml` listing GitHub Sponsors (and optionally Open Collective,
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** visitor evaluating project health
 
 ---
 
@@ -247,7 +262,8 @@ A `VERSIONING.md` (or dedicated section in `CONTRIBUTING.md`) stating how css-is
 - [ ] Cross-linked from README and CONTRIBUTING.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** maintainer
 
 **US-7.7.2** — As a user pinning a version, I want the SemVer policy to tell me what upgrading a patch or minor version can and cannot do to my rendered output, so that I know how safely I can `npm update`.
 
@@ -258,7 +274,8 @@ A `VERSIONING.md` (or dedicated section in `CONTRIBUTING.md`) stating how css-is
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** user pinning a version
 
 **US-7.7.3** — As a release manager, I want the SemVer policy wired to the commit message format, so that the release tool (Epic 5) can compute the next version from the commit log.
 
@@ -269,7 +286,8 @@ A `VERSIONING.md` (or dedicated section in `CONTRIBUTING.md`) stating how css-is
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** release manager
 
 ---
 
@@ -287,7 +305,8 @@ A `DEPRECATION.md` (or section in `VERSIONING.md`) stating how deprecations work
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** user
 
 **US-7.8.2** — As a maintainer, I want the deprecation policy to specify how a deprecated item is marked in source and in docs, so that deprecation is uniformly discoverable.
 
@@ -298,7 +317,8 @@ A `DEPRECATION.md` (or section in `VERSIONING.md`) stating how deprecations work
 - [ ] Cross-linked from CONTRIBUTING.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ---
 
@@ -316,7 +336,8 @@ Pick and document a changelog format — Keep a Changelog structure, entries gro
 - [ ] Cross-linked from README.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** user reading `CHANGELOG.md`
 
 **US-7.9.2** — As a release manager, I want the changelog format documented so Epic 5 automation can generate entries from Conventional Commits, so that changelog maintenance is not manual per release.
 
@@ -327,7 +348,8 @@ Pick and document a changelog format — Keep a Changelog structure, entries gro
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** release manager
 
 ---
 
@@ -345,7 +367,8 @@ Enable GitHub Discussions on the repo with a minimal, committed category structu
 - [ ] Issue templates (Feature 7.4) redirect usage questions here.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** visitor with a usage question
 
 **US-7.10.2** — As a maintainer, I want a single committed discussion channel rather than several, so that community attention is not fragmented across platforms before the project has critical mass.
 
@@ -355,7 +378,8 @@ Enable GitHub Discussions on the repo with a minimal, committed category structu
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ---
 
@@ -373,7 +397,8 @@ A pre-written, reviewed announcement kit for 1.0: where to post (Hacker News, r/
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** maintainer shipping 1.0
 
 **US-7.11.2** — As a visitor evaluating the project via a launch post, I want the launch copy to state the "why now" (mixin-first, theme-token model, Bootstrap alternative) in one paragraph, so that I can decide whether to click through in ten seconds.
 
@@ -383,7 +408,8 @@ A pre-written, reviewed announcement kit for 1.0: where to post (Hacker News, r/
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** visitor evaluating the project via a launch post
 
 ---
 
@@ -401,7 +427,8 @@ A repo-root `brand/` folder (or `/brand` page on the docs site) shipping the log
 - [ ] Cross-linked from README.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** sponsor or press outlet
 
 **US-7.12.2** — As a community theme author, I want a "Built with css-is-awesome" badge snippet, so that I can link back from my theme's readme or demo page.
 
@@ -411,7 +438,8 @@ A repo-root `brand/` folder (or `/brand` page on the docs site) shipping the log
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** community theme author
 
 ---
 
@@ -430,7 +458,8 @@ A `MAINTAINERS.md` (or section of `CONTRIBUTING.md`) for when anyone other than 
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** new maintainer
 
 **US-7.13.2** — As a maintainer triaging issues, I want documented triage guidelines (labels, priority rules, close-stale policy), so that the issue tracker stays coherent as volume grows.
 
@@ -442,7 +471,8 @@ A `MAINTAINERS.md` (or section of `CONTRIBUTING.md`) for when anyone other than 
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer triaging issues
 
 ---
 
@@ -461,7 +491,8 @@ A documented release-notes process: who writes them (release manager), where the
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** user on an existing version
 
 **US-7.14.2** — As a release manager, I want the release-notes template and timing rules documented, so that every release follows the same shape without ad-hoc copy per version.
 
@@ -472,7 +503,8 @@ A documented release-notes process: who writes them (release manager), where the
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** release manager
 
 **US-7.14.3** — As a contributor whose PR shipped, I want release notes to include contributor thanks, so that external contribution is recognized.
 
@@ -482,7 +514,8 @@ A documented release-notes process: who writes them (release manager), where the
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** contributor whose PR shipped
 
 ---
 
