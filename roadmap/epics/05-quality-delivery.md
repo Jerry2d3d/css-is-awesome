@@ -36,7 +36,8 @@ Stand up the Jest + React Testing Library + `@testing-library/jest-dom` configur
 - [ ] The suite completes in under 30 seconds locally on a mid-range dev machine.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** contributor
 
 **US-5.1.2** — As a contributor, I want every React component to have a co-located test file, so that I can't forget to add coverage when I add a component.
 
@@ -47,7 +48,8 @@ Stand up the Jest + React Testing Library + `@testing-library/jest-dom` configur
 - [ ] The missing-test check runs on every PR and fails the build on regression.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** contributor
 
 **US-5.1.3** — As a reviewer, I want a documented minimum-test checklist, so that I can tell at a glance whether a PR's tests are complete.
 
@@ -58,7 +60,8 @@ Stand up the Jest + React Testing Library + `@testing-library/jest-dom` configur
 - [ ] Produces an artifact (Jest's JSON output) a reviewer can read.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** reviewer
 
 ### Feature 5.2: Accessibility tests (jest-axe)
 Every component test file runs `jest-axe` against its rendered output and asserts zero violations at AA level. Every documented page route also gets a Playwright-driven axe run. This is a hard gate — not a warning — because "accessible" is a load-bearing claim of the system.
@@ -76,7 +79,8 @@ Every component test file runs `jest-axe` against its rendered output and assert
 - [ ] Completes in under 20 seconds locally across the full component suite.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** accessibility reviewer
 
 **US-5.2.2** — As an accessibility reviewer, I want every documented page to pass axe-core at AA in every theme, so that page-level composition issues are caught.
 
@@ -88,7 +92,8 @@ Every component test file runs `jest-axe` against its rendered output and assert
 - [ ] Runs on every PR via CI.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** accessibility reviewer
 
 **US-5.2.3** — As a maintainer, I want a short allowlist mechanism for known-accepted axe violations, so that a documented intentional exception doesn't block the build forever.
 
@@ -99,7 +104,8 @@ Every component test file runs `jest-axe` against its rendered output and assert
 - [ ] The allowlist is referenced from the accessibility statement (Feature 5.11).
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ### Feature 5.3: End-to-end smoke tests (Playwright)
 A Playwright suite exercises the built docs site: loads the landing page, navigates the docs sidebar, switches themes via the picker, confirms the choice persists across reloads, and verifies every documented route returns 200. Runs across Chromium, Firefox, and WebKit.
@@ -116,7 +122,8 @@ A Playwright suite exercises the built docs site: loads the landing page, naviga
 - [ ] Produces an HTML report reviewers can open.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** contributor
 
 **US-5.3.2** — As a reviewer, I want an end-to-end test that verifies theme switching and persistence, so that the theme picker doesn't silently break.
 
@@ -128,7 +135,8 @@ A Playwright suite exercises the built docs site: loads the landing page, naviga
 - [ ] Fails the build on regression — not just a warning.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** reviewer
 
 **US-5.3.3** — As a release manager, I want every documented route enumerated and pinged in the smoke suite, so that a dead route never reaches a release.
 
@@ -139,7 +147,8 @@ A Playwright suite exercises the built docs site: loads the landing page, naviga
 - [ ] Produces a route coverage artifact showing which routes were tested.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** release manager
 
 ### Feature 5.4: Visual regression tests
 Screenshot every documented page in every in-repo theme at a fixed viewport, and every Storybook story per component, diff against a committed baseline using `pixelmatch` (or a hosted provider like Chromatic), fail on any diff over the configured pixel threshold. Baseline regeneration requires explicit approval; it never happens automatically. Pages × themes covers the integrated docs site; stories cover component-level rendering in isolation — both run on every PR.
@@ -156,7 +165,8 @@ Screenshot every documented page in every in-repo theme at a fixed viewport, and
 - [ ] Runs on every PR via CI.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** reviewer
 
 **US-5.4.2** — As a maintainer, I want a visual-regression run against every Storybook story on every PR, so that I catch unintended component-level UI changes before merge.
 
@@ -169,7 +179,8 @@ Screenshot every documented page in every in-repo theme at a fixed viewport, and
 - [ ] Failure mode is actionable: comment links directly to the diff.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** maintainer
 
 **US-5.4.3** — As a maintainer, I want baseline snapshots to regenerate only with explicit approval, so that a contributor can't silently normalize a visual regression.
 
@@ -181,7 +192,8 @@ Screenshot every documented page in every in-repo theme at a fixed viewport, and
 - [ ] `tests/visual/README.md` and `CONTRIBUTING.md` document the update workflow and review expectations.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** maintainer
 
 **US-5.4.4** — As a contributor, I want fast local feedback on a single page × theme pair, so that I'm not waiting for the full matrix during iteration.
 
@@ -191,7 +203,8 @@ Screenshot every documented page in every in-repo theme at a fixed viewport, and
 - [ ] The command is documented in `tests/visual/README.md`.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 **US-5.4.5** — As a release manager, I want secrets for the chosen visual-testing provider stored in GitHub Actions secrets, so that no tokens land in the repo.
 
@@ -201,7 +214,8 @@ Screenshot every documented page in every in-repo theme at a fixed viewport, and
 - [ ] Required secret names are listed in `CONTRIBUTING.md`.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** release manager
 
 ### Feature 5.5: Color contrast audit per theme
 A script enumerates every token pair that must meet WCAG contrast (text on surface at AA, body text at AAA) in every in-repo theme and reports fails by theme and pair. Runs in CI on every PR that touches a theme file or a contrast-sensitive component.
@@ -219,7 +233,8 @@ A script enumerates every token pair that must meet WCAG contrast (text on surfa
 - [ ] Produces a JSON artifact with per-pair ratios for the accessibility statement.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** accessibility reviewer
 
 **US-5.5.2** — As a theme author, I want to run the contrast audit against a single theme locally, so that I can iterate on a new theme without running the full suite.
 
@@ -230,7 +245,8 @@ A script enumerates every token pair that must meet WCAG contrast (text on surfa
 - [ ] Zero npm runtime dependencies (stdlib only) to match the theme-validator convention (Epic 1).
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 **US-5.5.3** — As a CI system, I want the contrast audit integrated into the PR flow, so that a failing theme blocks merge.
 
@@ -241,7 +257,8 @@ A script enumerates every token pair that must meet WCAG contrast (text on surfa
 - [ ] Fails the build on regression — not just a warning.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** CI system
 
 ### Feature 5.6: Lighthouse baseline
 Every route gets a Lighthouse run via `@lhci/cli` (or equivalent). A JSON baseline is committed to the repo. PRs that drop any category score more than the configured delta fail CI.
@@ -257,7 +274,8 @@ Every route gets a Lighthouse run via `@lhci/cli` (or equivalent). A JSON baseli
 - [ ] Scores are archived per run as a CI artifact.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** release manager
 
 **US-5.6.2** — As a reviewer, I want Lighthouse regressions to fail CI, so that a slow page or a11y regression doesn't sneak in.
 
@@ -269,7 +287,8 @@ Every route gets a Lighthouse run via `@lhci/cli` (or equivalent). A JSON baseli
 - [ ] Produces an artifact (Lighthouse HTML or JSON report) a reviewer can read.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** reviewer
 
 **US-5.6.3** — As a maintainer, I want baseline updates to require explicit approval, so that scores don't quietly drift downward over releases.
 
@@ -280,7 +299,8 @@ Every route gets a Lighthouse run via `@lhci/cli` (or equivalent). A JSON baseli
 - [ ] `tests/lighthouse/README.md` documents when a baseline bump is appropriate (e.g. explicit perf work landed).
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ### Feature 5.7: Bundle-size monitoring
 Every PR measures `dist/*.css` (library output) and `.next/static/css/*` (site output) against a committed baseline. Over-budget PRs fail; under-budget PRs update the baseline (with opt-in) so "wins" stick. A `npm run analyze` command produces an interactive `webpack-bundle-analyzer` (or `@next/bundle-analyzer`) treemap to diagnose what's big in the Next.js build.
@@ -297,7 +317,8 @@ Every PR measures `dist/*.css` (library output) and `.next/static/css/*` (site o
 - [ ] Produces the table as a CI artifact / PR comment for reviewer visibility.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** reviewer
 
 **US-5.7.2** — As a CI system, I want configurable warn/fail thresholds, so that the gate's strictness is explicit.
 
@@ -308,7 +329,8 @@ Every PR measures `dist/*.css` (library output) and `.next/static/css/*` (site o
 - [ ] Fails the build on regression — not just a warning.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** CI system
 
 **US-5.7.3** — As a maintainer, I want baseline updates to be an explicit action, so that size creep can't hide behind auto-updated baselines.
 
@@ -319,7 +341,8 @@ Every PR measures `dist/*.css` (library output) and `.next/static/css/*` (site o
 - [ ] `tests/bundle-size/README.md` documents when a baseline bump is appropriate.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 **US-5.7.4** — As a contributor, I want `npm run analyze` to produce an interactive bundle treemap, so that I can see what's big in the Next.js build.
 
@@ -329,7 +352,8 @@ Every PR measures `dist/*.css` (library output) and `.next/static/css/*` (site o
 - [ ] Documented in `CONTRIBUTING.md` under "Performance".
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 **US-5.7.5** — As a maintainer, I want a size budget posted as a PR comment when the bundle grows beyond a threshold, so that size regressions get attention.
 
@@ -340,7 +364,8 @@ Every PR measures `dist/*.css` (library output) and `.next/static/css/*` (site o
 - [ ] Failure mode is actionable: the comment names the chunk that grew.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** maintainer
 
 ### Feature 5.8: Browser matrix verification
 Playwright runs the full suite against Chromium, Firefox, and WebKit. A documented manual-test plan covers iOS Safari and Android Chrome at mobile viewport sizes, since headless WebKit does not perfectly emulate mobile Safari.
@@ -357,7 +382,8 @@ Playwright runs the full suite against Chromium, Firefox, and WebKit. A document
 - [ ] Produces per-browser HTML reports as artifacts.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** CI system
 
 **US-5.8.2** — As a release manager, I want a documented mobile manual-test plan, so that iOS and Android coverage isn't skipped just because automation can't fully emulate them.
 
@@ -368,7 +394,8 @@ Playwright runs the full suite against Chromium, Firefox, and WebKit. A document
 - [ ] The document includes a template for recording results.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** release manager
 
 ### Feature 5.9: Manual accessibility checklists (keyboard + screen reader)
 Documented hand-run checklists that a reviewer or contributor walks through for any new interactive component. Keyboard coverage: Tab order, Escape to dismiss overlays, Enter to activate, Arrow keys on composite widgets (menus, tabs, sliders, lists), and focus visibility. Screen reader coverage: VoiceOver (macOS / iOS), NVDA (Windows), and JAWS (Windows). Not automated — automation of screen reader semantics is unreliable. Required before every release and for any PR that adds or significantly changes an interactive component.
@@ -384,7 +411,8 @@ Documented hand-run checklists that a reviewer or contributor walks through for 
 - [ ] The document fits the "completes in under 30 minutes per release" criterion for a full site sweep.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** accessibility reviewer
 
 **US-5.9.2** — As a contributor, I want the keyboard checklist linked from the PR template, so that I remember to run it against any interactive component I touch.
 
@@ -395,7 +423,8 @@ Documented hand-run checklists that a reviewer or contributor walks through for 
 - [ ] Produces a reviewer-readable record in the PR description itself.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 **US-5.9.3** — As an accessibility reviewer, I want a documented screen reader checklist per archetype, so that AT coverage is verified before release.
 
@@ -406,7 +435,8 @@ Documented hand-run checklists that a reviewer or contributor walks through for 
 - [ ] The document is linked from the release checklist (Feature 5.16).
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** accessibility reviewer
 
 **US-5.9.4** — As a release manager, I want screen-reader smoke results recorded per release, so that we have an auditable trail of AT verification.
 
@@ -417,7 +447,8 @@ Documented hand-run checklists that a reviewer or contributor walks through for 
 - [ ] Produces an artifact (the run log) a reviewer can read.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** release manager
 
 ### Feature 5.10: Accessibility statement
 A public a11y conformance statement at `/accessibility` on the docs site (with a source `a11y.md` at the repo root). States the conformance target (WCAG 2.1 AA, with AAA for body text), lists known gaps, links to the contrast audit results, and provides a contact path for reporting issues.
@@ -434,7 +465,8 @@ A public a11y conformance statement at `/accessibility` on the docs site (with a
 - [ ] A contact method for reporting issues is included.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** consumer
 
 **US-5.10.2** — As a maintainer, I want the accessibility statement linked to automated-audit outputs, so that claims stay honest over time.
 
@@ -445,7 +477,8 @@ A public a11y conformance statement at `/accessibility` on the docs site (with a
 - [ ] The statement is updated as part of the release checklist (Feature 5.16).
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ### Feature 5.11: Coverage reporting
 Istanbul/c8 coverage runs as part of `npm test`. A baseline threshold is configured in `jest.config.js`. PRs that drop below threshold fail CI. Coverage reports are archived as CI artifacts.
@@ -461,7 +494,8 @@ Istanbul/c8 coverage runs as part of `npm test`. A baseline threshold is configu
 - [ ] The report surfaces line, branch, function, and statement coverage per file.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** reviewer
 
 **US-5.11.2** — As a CI system, I want a configured coverage threshold that fails the build, so that untested code can't pile up silently.
 
@@ -472,7 +506,8 @@ Istanbul/c8 coverage runs as part of `npm test`. A baseline threshold is configu
 - [ ] Fails the build on regression — not just a warning.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** CI system
 
 **US-5.11.3** — As a maintainer, I want threshold bumps to be deliberate, so that coverage trends upward over time.
 
@@ -482,7 +517,8 @@ Istanbul/c8 coverage runs as part of `npm test`. A baseline threshold is configu
 - [ ] Exclusions (e.g. generated files, type-only files) are listed and justified inline.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ### Feature 5.12: GitHub Actions CI pipeline
 A single `.github/workflows/ci.yml` workflow that runs on every PR and every push to `main`. It installs dependencies once, then runs lint (ESLint + Stylelint), typecheck (`tsc --noEmit`), both builds (`npm run build` and `npm run build:css:all`), and the full Jest + Playwright test suite from Features 5.1–5.11. Coverage is uploaded as an artifact and posted as a PR comment. The workflow uses the Node version from `.nvmrc` and caches `node_modules` for speed.
@@ -500,7 +536,8 @@ A single `.github/workflows/ci.yml` workflow that runs on every PR and every pus
 - [ ] Failure mode is actionable: each failed step points to the exact file/rule.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** contributor
 
 **US-5.12.2** — As a contributor, I want CI to finish in under 5 minutes, so that I don't context-switch waiting for it.
 
@@ -511,7 +548,8 @@ A single `.github/workflows/ci.yml` workflow that runs on every PR and every pus
 - [ ] Wall-clock times for each job are visible in the workflow summary.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** contributor
 
 **US-5.12.3** — As a contributor, I want test coverage posted as a PR comment, so that I can see whether my change moved the number.
 
@@ -522,7 +560,8 @@ A single `.github/workflows/ci.yml` workflow that runs on every PR and every pus
 - [ ] Coverage artifact (`lcov.info`) is uploaded for download.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 **US-5.12.4** — As a CI system, I want secrets (npm token, deploy key) stored in GitHub Actions secrets, so that no credentials land in the repo.
 
@@ -533,7 +572,8 @@ A single `.github/workflows/ci.yml` workflow that runs on every PR and every pus
 - [ ] A workflow that requires a missing secret fails with a clear message naming the missing secret.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** CI system
 
 ### Feature 5.13: Docs-site deploy with preview URLs
 The docs site (Next.js app at repo root) auto-deploys to Jerry's chosen host on every merge to `main`. Every PR gets a unique preview deployment with its URL posted as a PR comment. The host choice (Vercel, Netlify, Cloudflare Pages, GitHub Pages with a static export) is documented in `DEPLOY.md` and encoded in one workflow file.
@@ -549,7 +589,8 @@ The docs site (Next.js app at repo root) auto-deploys to Jerry's chosen host on 
 - [ ] Rollback procedure is documented in `DEPLOY.md`.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** maintainer
 
 **US-5.13.2** — As a contributor, I want every PR to get a preview deploy URL, so that reviewers can click through visual changes before merge.
 
@@ -560,7 +601,8 @@ The docs site (Next.js app at repo root) auto-deploys to Jerry's chosen host on 
 - [ ] Preview is torn down or garbage-collected on PR close.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** contributor
 
 **US-5.13.3** — As a host provider, I want the deploy workflow to use host-native conventions, so that I'm not fighting the platform.
 
@@ -571,7 +613,8 @@ The docs site (Next.js app at repo root) auto-deploys to Jerry's chosen host on 
 - [ ] `DEPLOY.md` lists the host, the auth mechanism, and how to change hosts.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** host provider
 
 ### Feature 5.14: npm publish hygiene
 Before shipping 1.0, `package.json` must declare `exports`, a minimal `files` allowlist, `sideEffects`, `module`/`main`, and `types` if applicable. Every CDN link in the README and docs site must include an SRI hash. Dry-run `npm publish` must produce a tarball with only the intended contents.
@@ -588,7 +631,8 @@ Before shipping 1.0, `package.json` must declare `exports`, a minimal `files` al
 - [ ] Documented in `CONTRIBUTING.md` under a "Release Hygiene" section.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** consumer
 
 **US-5.14.2** — As a release manager, I want `npm publish --dry-run` to show a tarball with only the intended files, so that I never accidentally publish `node_modules` or source artifacts.
 
@@ -600,7 +644,8 @@ Before shipping 1.0, `package.json` must declare `exports`, a minimal `files` al
 - [ ] Failure mode is actionable: if the tarball contains an unexpected file, CI names it.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** release manager
 
 **US-5.14.3** — As a consumer, I want every CDN link in the README and docs site to carry an SRI hash, so that I can verify the file I'm loading hasn't been tampered with.
 
@@ -611,7 +656,8 @@ Before shipping 1.0, `package.json` must declare `exports`, a minimal `files` al
 - [ ] Running the site with a tampered file fails to load (manually verified once and noted in `DEPLOY.md`).
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** consumer
 
 ### Feature 5.15: Release automation
 A single command — `npm run release` — bumps the package version (SemVer), regenerates `CHANGELOG.md` from Conventional Commits or Changesets, builds `dist/`, publishes to npm, creates a git tag, pushes the tag, and creates a GitHub release whose body is the changelog excerpt for that version. Alternatively, triggered by applying a `release` label on a PR. No manual `npm version`, no manual file edits, no manual `git tag`.
@@ -629,7 +675,8 @@ A single command — `npm run release` — bumps the package version (SemVer), r
 - [ ] Failure mode is actionable: each failed step tells the release manager exactly what to fix.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** release manager
 
 **US-5.15.2** — As a release manager, I want the version bump to be SemVer-correct based on commit history, so that I don't have to decide major/minor/patch by hand.
 
@@ -640,7 +687,8 @@ A single command — `npm run release` — bumps the package version (SemVer), r
 - [ ] A mis-typed commit message does not silently corrupt the bump — a lint rule catches it.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** release manager
 
 **US-5.15.3** — As a consumer, I want `CHANGELOG.md` to list every user-visible change per version with dates and links, so that I can audit what shipped.
 
@@ -651,7 +699,8 @@ A single command — `npm run release` — bumps the package version (SemVer), r
 - [ ] The GitHub release body pulls the same content for that version.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** consumer
 
 **US-5.15.4** — As a release manager, I want to optionally trigger a release by applying a `release` label to a PR, so that I can cut a version without a terminal.
 
@@ -662,7 +711,8 @@ A single command — `npm run release` — bumps the package version (SemVer), r
 - [ ] The mechanism is documented in `RELEASING.md`.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** release manager
 
 ### Feature 5.16: TypeScript token definitions
 Ship a `tokens.d.ts` (and compiled `tokens.js`/`tokens.mjs`) that exposes every token from `$theme-light`, `$space`, `$font-sizes`, `$font-weights`, `$line-heights`, `$shadow`, `$z-layers`, `$radius`, and `$theme-components` as typed TypeScript constants. TypeScript consumers import them for type-safe token access in component code (e.g. inline styles, CSS-in-JS, or data props). Generated from the SCSS source of truth at build time; not hand-maintained.
@@ -678,7 +728,8 @@ Ship a `tokens.d.ts` (and compiled `tokens.js`/`tokens.mjs`) that exposes every 
 - [ ] Documented in a docs-site page and linked from the README.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** consumer
 
 **US-5.16.2** — As a system author, I want the TypeScript token file generated from the SCSS source, so that it cannot drift.
 
@@ -690,7 +741,8 @@ Ship a `tokens.d.ts` (and compiled `tokens.js`/`tokens.mjs`) that exposes every 
 - [ ] Failure mode is actionable: names the drifted token.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** system author
 
 **US-5.16.3** — As a consumer, I want token types to include literal values, so that my editor shows the actual `0.5rem` or `#0066ff` on hover.
 
@@ -700,7 +752,8 @@ Ship a `tokens.d.ts` (and compiled `tokens.js`/`tokens.mjs`) that exposes every 
 - [ ] A consumer can use a token as a template-literal type (e.g. in a Tailwind config) without `as const` gymnastics.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** consumer
 
 ### Feature 5.17: Storybook installation
 Install Storybook v10+ with the Next.js framework, running via `npm run storybook` on port 6006. Configure the dark-mode addon, a11y addon, and docs addon. Mirror the setup already proven in the `boiler-project-ai` boilerplate so future upgrades stay in sync. Storybook reads global styles and the current theme CSS so stories render in the real visual context.
@@ -717,7 +770,8 @@ Install Storybook v10+ with the Next.js framework, running via `npm run storyboo
 - [ ] Documented in `CONTRIBUTING.md`.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** contributor
 
 **US-5.17.2** — As a Storybook author, I want dark-mode, a11y, and docs addons installed and configured, so that every story surfaces accessibility issues and lets me flip themes.
 
@@ -728,7 +782,8 @@ Install Storybook v10+ with the Next.js framework, running via `npm run storyboo
 - [ ] The a11y addon runs axe-core against every story and surfaces violations in the side panel.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** Storybook author
 
 **US-5.17.3** — As a contributor, I want `npm run build-storybook` to produce a static Storybook, so that it can be published alongside the docs site.
 
@@ -739,7 +794,8 @@ Install Storybook v10+ with the Next.js framework, running via `npm run storyboo
 - [ ] Optionally deployed under `/storybook` on the docs site host (documented, not required for P0).
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 ### Feature 5.18: Storybook stories per component
 Every React component in `src/components/` has a co-located `.stories.tsx` file. Each stories file covers the default rendering, every variant (size, color, shape), every state (hover, focus, disabled, loading, error), and at least one edge case (empty, very long content, RTL if relevant). Stories use the Component Story Format (CSF 3).
@@ -755,7 +811,8 @@ Every React component in `src/components/` has a co-located `.stories.tsx` file.
 - [ ] Documented in `CONTRIBUTING.md` under "Adding a component".
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** Storybook author
 
 **US-5.18.2** — As a contributor, I want every existing React component to have a stories file covering default + variants + states, so that Storybook is a complete component catalog.
 
@@ -766,7 +823,8 @@ Every React component in `src/components/` has a co-located `.stories.tsx` file.
 - [ ] A CI check fails if a new component PR lands without a stories file.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** contributor
 
 **US-5.18.3** — As a Storybook author, I want `argTypes` wired so the Controls panel exposes every prop with sensible ranges, so that designers can play with a component without editing code.
 
@@ -776,7 +834,8 @@ Every React component in `src/components/` has a co-located `.stories.tsx` file.
 - [ ] Changing a control updates the rendered story in real time.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** Storybook author
 
 ### Feature 5.19: Pre-commit hooks
 Install Husky or simple-git-hooks. On every `git commit`, run lint and typecheck against changed files (via `lint-staged`). Block the commit on failure. The hook is installed automatically after `npm install` so no contributor has to remember to enable it.
@@ -794,7 +853,8 @@ Install Husky or simple-git-hooks. On every `git commit`, run lint and typecheck
 - [ ] Documented in `CONTRIBUTING.md`.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** contributor
 
 **US-5.19.2** — As a contributor, I want to bypass hooks on an emergency basis, so that I'm never fully locked out of committing.
 
@@ -804,7 +864,8 @@ Install Husky or simple-git-hooks. On every `git commit`, run lint and typecheck
 - [ ] The README/CONTRIBUTING notes that bypassing locally still fails CI.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 **US-5.19.3** — As a contributor, I want commit messages to be validated against Conventional Commits, so that the release changelog (Feature 5.15) stays clean.
 
@@ -815,7 +876,8 @@ Install Husky or simple-git-hooks. On every `git commit`, run lint and typecheck
 - [ ] Documented in `CONTRIBUTING.md`.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 ### Feature 5.20: `dev:watch` combined script
 One npm script — `npm run dev:watch` — that concurrently starts `next dev` and the SCSS library watch build, so an edit to `scss/*` rebuilds the library CSS and Next.js hot-reloads the resulting change into the running docs site. Uses `concurrently` or `npm-run-all -p` to run both in one terminal with colored prefixed output.
@@ -832,7 +894,8 @@ One npm script — `npm run dev:watch` — that concurrently starts `next dev` a
 - [ ] Documented in `CONTRIBUTING.md`.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 **US-5.20.2** — As a contributor, I want a clear error when either sub-process fails, so that I don't spend 10 minutes wondering why nothing's reloading.
 
@@ -842,7 +905,8 @@ One npm script — `npm run dev:watch` — that concurrently starts `next dev` a
 - [ ] Documented failure modes (port in use, SCSS syntax error) are listed in `CONTRIBUTING.md`.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** contributor
 
 ### Feature 5.21: Starter templates
 Four starter templates that let a consumer go from zero to "css-is-awesome running in my project" in under 60 seconds: (1) minimal-HTML (single `index.html` with CDN `<link>` and SRI), (2) Vite starter, (3) Next.js starter, (4) Astro starter. Each is either a GitHub template repo or a folder under `starters/` that users can scaffold with `degit`. Each includes a README with run instructions.
@@ -859,7 +923,8 @@ Four starter templates that let a consumer go from zero to "css-is-awesome runni
 - [ ] Documented in the main repo `README.md` under "Starters".
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** consumer
 
 **US-5.21.2** — As a consumer, I want a Vite starter, a Next.js starter, and an Astro starter, so that I can pick the one matching my stack.
 
@@ -870,7 +935,8 @@ Four starter templates that let a consumer go from zero to "css-is-awesome runni
 - [ ] Each has a README with prerequisites, run command, and a pointer to the docs site.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** consumer
 
 **US-5.21.3** — As a maintainer, I want starters to stay in sync with the library version, so that a consumer doesn't scaffold a broken starter.
 
@@ -881,7 +947,8 @@ Four starter templates that let a consumer go from zero to "css-is-awesome runni
 - [ ] A documented procedure for updating starters at release time lives in `RELEASING.md`.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** maintainer
 
 ## Dependencies
 - Blocks: 1.0 release (no publish without tests, CI, and release automation; every quality claim is unverified without this epic).
