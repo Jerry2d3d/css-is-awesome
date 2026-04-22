@@ -97,6 +97,8 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 4px 18px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.65);
+  --shadow-2xl: 0 28px 70px rgba(0, 0, 0, 0.75);
 
   /* Blur — graphite doesn't use it; declared so swap stays lossless */
   --blur-sm: none;
@@ -123,6 +125,11 @@
      automatically.
      ---------------------------------------------------------- */
 
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
   /* Surfaces */
   --surface-default:   var(--paper);
   --surface-raised:    var(--paper-raised);
@@ -147,20 +154,89 @@
   --border-emphasis:   var(--ink);
   --border-focus:      var(--ai);
 
+  /* Interactive (hover / active wash layers) — translucent WHITE on dark */
+  --interactive-hover:  rgba(255, 255, 255, 0.06);
+  --interactive-active: rgba(255, 255, 255, 0.10);
+
+  /* Brand (identity — action-primary usually references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
   /* Action (primary / secondary / tertiary) */
   --action-primary-default:   var(--ai);
   --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
   --action-primary-wash:      var(--ai-wash);
   --action-secondary-default: var(--shu);
   --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
   --action-secondary-wash:    var(--shu-wash);
   --action-tertiary-default:  var(--ochre);
   --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
   --action-tertiary-wash:     var(--ochre-wash);
 
-  /* Feedback / status */
+  /* Feedback / status (high-level semantic) */
   --feedback-info:     var(--ai);
   --feedback-success:  var(--code-green);
   --feedback-warning:  var(--ochre);
   --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text) */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(10, 132, 255, 0.14);
+  --info-text:    #409CFF;
+
+  /* Status — success (Apple dark-mode green) */
+  --success-default: #30D158;
+  --success-subtle:  rgba(48, 209, 88, 0.14);
+  --success-text:    #5FE37F;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(255, 159, 10, 0.14);
+  --warning-text:    #FFB340;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(255, 69, 58, 0.14);
+  --error-text:    #FF6961;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / motion / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — mirrors --r-* with standard names so
+     `m.radius(size)` in the library finds --radius-<size>. */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography — base body font + key scale slots */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
 }
