@@ -35,7 +35,8 @@ Refactor the library's scale maps (`$space`, `$font-sizes`, `$line-heights`, `$s
 - [ ] A migration note lives in `CHANGELOG.md` and `CONTRIBUTING-THEMES.md` listing old → new key mapping.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** system author
 
 **US-1.1.2** — As a consumer, I want optional t-shirt aliases (`sm`, `md`, `lg`) to still resolve, so that I don't have to memorize numbers.
 
@@ -46,7 +47,8 @@ Refactor the library's scale maps (`$space`, `$font-sizes`, `$line-heights`, `$s
 - [ ] Aliases are documented at the top of each scale map file.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** consumer
 
 **US-1.1.3** — As a theme author, I want a clear migration path from the old t-shirt keys, so that I can upgrade an existing theme without guessing.
 
@@ -57,7 +59,8 @@ Refactor the library's scale maps (`$space`, `$font-sizes`, `$line-heights`, `$s
 - [ ] Running the migrated theme through the validator (Feature 1.6) exits 0.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 ### Feature 1.2: Full token contract coverage per theme
 Audit every token the library's mixins reference, then ensure all 6 in-repo themes (`public/theme.css`, `public/themes/cupertino`, `graphite`, `glass`, `press`, `terminal`) declare the full contract: primary/secondary/tertiary semantic colors, `interactive-hover`, `interactive-active`, `border-focus`, and any other slot a mixin reads. Today only primary semantic colors are aliased; the rest fall back to library defaults, which undermines theming.
@@ -73,7 +76,8 @@ Audit every token the library's mixins reference, then ensure all 6 in-repo them
 - [ ] The contract is the input consumed by the validator (Feature 1.6).
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** system author
 
 **US-1.2.2** — As a theme author, I want every in-repo theme to declare the full token contract, so that I have working reference themes to copy.
 
@@ -84,7 +88,8 @@ Audit every token the library's mixins reference, then ensure all 6 in-repo them
 - [ ] No mixin in the library silently falls back to a default for any of the 6 themes (verified by temporarily removing defaults and running the build).
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-1.2.3** — As a designer, I want `interactive-hover`, `interactive-active`, and `border-focus` explicitly defined per theme, so that interaction states stay on-brand.
 
@@ -94,7 +99,8 @@ Audit every token the library's mixins reference, then ensure all 6 in-repo them
 - [ ] A demo page in the docs site cycles all 6 themes and visually shows the states.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** designer
 
 ### Feature 1.3: `$theme-components` override map
 Introduce a per-theme map that lets a theme override component-level tokens (`btn-padding-y`, `btn-padding-x`, `btn-radius`, `card-padding`, `card-radius`, `card-shadow`, `input-radius`, etc.) without patching the library. Currently no theme populates this map and the library always uses defaults. Define the full key list, document it, and wire at least two themes (e.g. Terminal, Press) to actually override values.
@@ -110,7 +116,8 @@ Introduce a per-theme map that lets a theme override component-level tokens (`bt
 - [ ] Each listed component mixin reads from the map via a `map.get` with fallback.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** system author
 
 **US-1.3.2** — As a theme author, I want to override component tokens by declaring a `$theme-components` map in my theme, so that I don't have to patch library files.
 
@@ -120,7 +127,8 @@ Introduce a per-theme map that lets a theme override component-level tokens (`bt
 - [ ] `CONTRIBUTING-THEMES.md` documents the mechanism with a worked example.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-1.3.3** — As a designer, I want Terminal and Press themes to actually use component overrides, so that their visual identity is consistent beyond color.
 
@@ -130,7 +138,8 @@ Introduce a per-theme map that lets a theme override component-level tokens (`bt
 - [ ] Switching to either theme in the picker visibly changes component shape, not just color.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** designer
 
 ### Feature 1.4: Full scale coverage per theme
 Every theme must declare `$font-weights`, `$line-heights`, `$font-sizes`, `$space`, `$shadow`, and `$z-layers` maps that cover every numeric step the library expects. Terminal and Press in particular are suspected of partial coverage today. Close the gaps so no mixin falls through to a library default when a theme is applied.
@@ -146,7 +155,8 @@ Every theme must declare `$font-weights`, `$line-heights`, `$font-sizes`, `$spac
 - [ ] Terminal and Press themes in particular pass validation after this story closes.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** system author
 
 **US-1.4.2** — As a theme author, I want a minimal starter theme template that already covers every scale step, so that I start from a valid baseline.
 
@@ -156,7 +166,8 @@ Every theme must declare `$font-weights`, `$line-heights`, `$font-sizes`, `$spac
 - [ ] The template is referenced from `CONTRIBUTING-THEMES.md` as the starting point.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 ### Feature 1.5: Dark mode auto-detection with manual override
 Dark mode should "just work" on systems set to dark, and respect any manual override a user has chosen via the theme picker (persisted in localStorage). The mechanism lives in the default theme (media-query block) and/or a small pre-hydration script in `app/layout.tsx` that sets `data-theme="dark"` on first paint when appropriate. Manual override always wins.
@@ -172,7 +183,8 @@ Dark mode should "just work" on systems set to dark, and respect any manual over
 - [ ] Verified in Chrome and Safari at minimum.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** consumer
 
 **US-1.5.2** — As a consumer, I want my manual theme pick to persist and override the system preference, so that the site remembers my choice.
 
@@ -183,7 +195,8 @@ Dark mode should "just work" on systems set to dark, and respect any manual over
 - [ ] A "Use system setting" option in the picker clears the override.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** consumer
 
 **US-1.5.3** — As a system author, I want the auto-detect logic in one place, so that it's easy to audit and port.
 
@@ -193,7 +206,8 @@ Dark mode should "just work" on systems set to dark, and respect any manual over
 - [ ] A short section in `CONTRIBUTING-THEMES.md` explains the boot sequence for anyone forking the site.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 ### Feature 1.6: Theme validator script
 A standalone Node script (no dependencies) that takes a `theme.css` file path, parses its `:root { ... }` block, compares declared custom properties against the contract from Feature 1.2, and reports any missing tokens. Runs locally and in CI. Fails the build on any PR that adds or modifies a theme file with missing tokens.
@@ -209,7 +223,8 @@ A standalone Node script (no dependencies) that takes a `theme.css` file path, p
 - [ ] Completes in under 2 seconds on any of the 6 in-repo themes.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-1.6.2** — As a CI system, I want the validator to run on every PR that touches a theme file, so that broken themes never reach main.
 
@@ -220,7 +235,8 @@ A standalone Node script (no dependencies) that takes a `theme.css` file path, p
 - [ ] The workflow file is committed under `.github/workflows/`.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** CI system
 
 **US-1.6.3** — As a system author, I want the validator to read the contract from a single source, so that adding a token to the library auto-propagates to the check.
 
@@ -230,7 +246,8 @@ A standalone Node script (no dependencies) that takes a `theme.css` file path, p
 - [ ] A README block in `scripts/` explains how to add a new token slot end-to-end.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 **US-1.6.4** — As a theme author, I want the validator to warn (not fail) on unknown extra tokens, so that I can experiment without the script blocking me.
 
@@ -240,7 +257,8 @@ A standalone Node script (no dependencies) that takes a `theme.css` file path, p
 - [ ] The warning message suggests either adding the token to the contract or removing it from the theme.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 ### Feature 1.7: Icon mixin documentation
 The library's `scss/_icons.scss` defines `svg()`, `svg-bg()`, `svg-text()`, and Font Awesome variants. These are currently undocumented. Ship a docs-site page that explains usage and expand `public/icons/README.md` with a concise explainer so anyone browsing the icon directory understands how the mixins consume the files.
@@ -256,7 +274,8 @@ The library's `scss/_icons.scss` defines `svg()`, `svg-bg()`, `svg-text()`, and 
 - [ ] The page is linked from the docs-site sidebar.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** consumer
 
 **US-1.7.2** — As a theme author, I want `public/icons/README.md` to explain the icon-pack contract, so that I know how to ship icons with my theme.
 
@@ -267,7 +286,8 @@ The library's `scss/_icons.scss` defines `svg()`, `svg-bg()`, `svg-text()`, and 
 - [ ] It fits on one screen (concise, not a tutorial).
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 ### Feature 1.8: `CONTRIBUTING-THEMES.md`
 A repo-root document that explains exactly how to author and submit a new theme: what tokens to declare, how to structure the file, how to run the validator, how to override component tokens, and how to submit. Cross-links to the docs-site theme authoring guide (Epic 4) without duplicating prose.
@@ -283,7 +303,8 @@ A repo-root document that explains exactly how to author and submit a new theme:
 - [ ] A reader following the doc end-to-end produces a theme that passes the validator.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-1.8.2** — As a system author, I want the theme contributing doc to cross-link with Epic 4's theme authoring guide, so that readers don't get lost between repo and site.
 
@@ -293,7 +314,8 @@ A repo-root document that explains exactly how to author and submit a new theme:
 - [ ] Neither document duplicates the other's primary content.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 ## Dependencies
 - Blocks: Epic 2 (Themes & Icons — community submission depends on validator and full contract), Epic 3 (React Component Library — components consume the numbered scale and `$theme-components` map), Epic 4 (Documentation Content — docs reference token names that stabilize here).
