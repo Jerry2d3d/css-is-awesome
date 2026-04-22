@@ -24,7 +24,8 @@
     "build:css:utilities": "sass scss/utilities-only.scss dist/css-is-awesome.utilities.css --no-source-map",
     "build:css:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
     "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:utilities && npm run build:css:min",
-    "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch"
+    "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
+    "validate-themes": "node scripts/theme-validator.js --all"
   },
   "keywords": [
     "css",
