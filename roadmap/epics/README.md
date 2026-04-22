@@ -31,7 +31,8 @@ One-paragraph description.
 - [ ] criterion 2
 
 **Priority:** P0 | P1 | P2
-**Effort:** S | M | L | XL
+**Effort:** 1 | 3 | 5 | 7 | 9 | 11 | 13
+**Role:** {role — pulled from the "As a" opener; e.g. "maintainer", "consumer", "CI system"}
 
 (repeat per story)
 
@@ -57,10 +58,33 @@ P0 (blocker for 1.0) | P1 (wanted for 1.0) | P2 (post-1.0)
 
 ## Effort scale
 
-- **S** — under a day
-- **M** — a day or two
-- **L** — a week
-- **XL** — longer than a week
+Modified-Fibonacci odd scale. Bigger numbers mean more uncertainty as well as more hours.
+
+- **1** — trivial; under half a day of focused work
+- **3** — simple; roughly one day
+- **5** — straightforward; two to three days
+- **7** — medium; one working week
+- **9** — complex; a week plus some uncertainty
+- **11** — hard; more than a week with open questions
+- **13** — large; multi-week or needs to be split
+
+Default existing stories map roughly: old **S → 1**, **M → 3**, **L → 7**, **XL → 13**. Re-estimate when better information shows up.
+
+## Role
+
+Every user story has one primary role pulled from the "As a {role}…" opener. Kept as its own metadata line so the backlog is scannable by audience. Roles to use consistently across epics:
+
+- **system author** / **maintainer** — Jerry or anyone keeping the library running
+- **consumer** — a developer using css-is-awesome in their project
+- **theme author** — someone writing a new theme
+- **contributor** — external PR author
+- **CI system** — automated checks
+- **designer** — non-engineer stakeholder
+- **accessibility reviewer**
+- **release manager**
+- **AI assistant** — Claude / ChatGPT / Gemini / Copilot / Cursor
+- **new user** — first five minutes on the site
+- **Bootstrap migrant**, **keyboard user**, **screen-reader user**, etc. as specific stories need
 
 ## The seven epics
 
