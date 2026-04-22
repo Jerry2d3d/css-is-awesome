@@ -88,9 +88,11 @@
   --r-lg: 4px;
 
   /* Shadows — minimal, single-layer, editorial flat */
-  --shadow-sm: 0 1px 2px rgba(10, 10, 10, .05);
-  --shadow-md: 0 6px 24px rgba(10, 10, 10, .06);
-  --shadow-lg: 0 18px 48px rgba(10, 10, 10, .09);
+  --shadow-sm:  0 1px 2px rgba(10, 10, 10, .05);
+  --shadow-md:  0 6px 24px rgba(10, 10, 10, .06);
+  --shadow-lg:  0 18px 48px rgba(10, 10, 10, .09);
+  --shadow-xl:  0 28px 64px rgba(10, 10, 10, .12);
+  --shadow-2xl: 0 40px 96px rgba(10, 10, 10, .18);
 
   /* Blur — editorial doesn't use it; declared so swap stays lossless */
   --blur-sm: none;
@@ -117,6 +119,11 @@
      automatically.
      ---------------------------------------------------------- */
 
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
   /* Surfaces */
   --surface-default:   var(--paper);
   --surface-raised:    var(--paper-raised);
@@ -141,20 +148,93 @@
   --border-emphasis:   var(--ink);
   --border-focus:      var(--ai);
 
+  /* Interactive (hover / active wash layers) — ink overlays on paper */
+  --interactive-hover:  rgba(10, 10, 10, 0.05);
+  --interactive-active: rgba(10, 10, 10, 0.10);
+
+  /* Brand (identity — action-primary references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
   /* Action (primary / secondary / tertiary) */
   --action-primary-default:   var(--ai);
   --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
   --action-primary-wash:      var(--ai-wash);
   --action-secondary-default: var(--shu);
   --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
   --action-secondary-wash:    var(--shu-wash);
   --action-tertiary-default:  var(--ochre);
   --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
   --action-tertiary-wash:     var(--ochre-wash);
 
-  /* Feedback / status */
+  /* Feedback / status (high-level semantic) */
   --feedback-info:     var(--ai);
   --feedback-success:  var(--code-green);
   --feedback-warning:  var(--ochre);
   --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text).
+     Press has no indigo; --ai is a near-ink editorial tone. */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success. Restrained editorial green (desaturated). */
+  --success-default: #2F7A3A;
+  --success-subtle:  #E3EEDF;
+  --success-text:    #1F5228;
+
+  /* Status — warning. Warm editorial ochre. */
+  --warning-default: #A86A1A;
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #6B4512;
+
+  /* Status — error. Press red IS the error color. */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #8A1D15;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     Numeric scales mirror Sketchbook so rhythm is consistent.
+     ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — mirrors --r-* with standard names so
+     `m.radius(size)` in the library finds --radius-<size>.
+     Press is editorial and angular: xl stays tight (4px). */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   6px;
+  --radius-full: 9999px;
+
+  /* Typography — base body font + key scale slots.
+     Press body is Inter (--font-sans). */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
 }
