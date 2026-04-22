@@ -17,25 +17,43 @@ const THEMES: Theme[] = [
 const STORAGE_KEY = "cia-theme-file";
 const LINK_ID = "cia-theme-link";
 
-function applyTheme(id: string) {
+function applyTheme(id: string, persist: boolean = false) {
   const t = THEMES.find((x) => x.id === id) || THEMES[0];
   const link = document.getElementById(LINK_ID) as HTMLLinkElement | null;
   if (link) link.href = t.href;
-  localStorage.setItem(STORAGE_KEY, t.id);
+  document.documentElement.setAttribute("data-theme-id", t.id);
+  if (persist) localStorage.setItem(STORAGE_KEY, t.id);
 }
 
 export default function ThemePicker() {
   const [active, setActive] = useState<string>("sketchbook");
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) || "sketchbook";
-    setActive(saved);
-    applyTheme(saved);
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const initial =
+      saved ??
+      (window.matchMedia?.("(prefers-color-scheme: dark)").matches
+        ? "graphite"
+        : "sketchbook");
+    setActive(initial);
+    applyTheme(initial);
+
+    const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
+    if (!mq) return;
+    const onChange = (e: MediaQueryListEvent) => {
+      // Only react if no manual choice is saved.
+      if (localStorage.getItem(STORAGE_KEY)) return;
+      const next = e.matches ? "graphite" : "sketchbook";
+      setActive(next);
+      applyTheme(next);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
   }, []);
 
   function choose(id: string) {
     setActive(id);
-    applyTheme(id);
+    applyTheme(id, true);
   }
 
   return (
