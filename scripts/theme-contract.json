@@ -1,102 +1,161 @@
 {
   "version": "1",
-  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Source of truth is the header of public/theme.css (Sketchbook).",
+  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference).",
   "required": [
-    "--paper",
-    "--paper-raised",
-    "--paper-sunk",
-    "--paper-glass",
-
-    "--ink",
-    "--ink-soft",
-    "--ink-faint",
-    "--graphite",
-    "--muted",
-
-    "--guide",
-    "--guide-soft",
-    "--hair",
-    "--hair-soft",
+    "--action-primary-active",
+    "--action-primary-default",
+    "--action-primary-hover",
+    "--action-primary-wash",
+    "--action-secondary-active",
+    "--action-secondary-default",
+    "--action-secondary-hover",
+    "--action-secondary-wash",
+    "--action-tertiary-active",
+    "--action-tertiary-default",
+    "--action-tertiary-hover",
+    "--action-tertiary-wash",
 
     "--ai",
     "--ai-ink",
     "--ai-wash",
 
-    "--shu",
-    "--shu-wash",
+    "--background-default",
+    "--background-navbar",
+    "--background-subtle",
 
-    "--ochre",
-    "--ochre-wash",
+    "--blur-lg",
+    "--blur-md",
+    "--blur-sm",
 
+    "--border-default",
+    "--border-emphasis",
+    "--border-focus",
+    "--border-subtle",
+
+    "--brand-primary",
+    "--brand-primary-hover",
+
+    "--code-accent",
     "--code-bg",
+    "--code-blue",
+    "--code-green",
     "--code-ink",
     "--code-muted",
-    "--code-accent",
-    "--code-green",
-    "--code-blue",
-
-    "--font-display",
-    "--font-script",
-    "--font-serif",
-    "--font-sans",
-    "--font-mono",
-
-    "--r-sm",
-    "--r-md",
-    "--r-lg",
-
-    "--shadow-sm",
-    "--shadow-md",
-    "--shadow-lg",
-
-    "--blur-sm",
-    "--blur-md",
-    "--blur-lg",
-
-    "--glow-sm",
-    "--glow-md",
-    "--glow-lg",
 
     "--duration-fast",
     "--duration-normal",
     "--duration-slow",
     "--ease",
 
-    "--surface-default",
-    "--surface-raised",
-    "--surface-sunk",
-    "--surface-muted",
-    "--surface-subtle",
-    "--surface-emphasis",
-    "--surface-glass",
+    "--error-default",
+    "--error-subtle",
+    "--error-text",
 
-    "--text-primary",
-    "--text-secondary",
-    "--text-muted",
-    "--text-tertiary",
-    "--text-inverse",
-    "--text-link",
-    "--text-link-hover",
-
-    "--border-default",
-    "--border-subtle",
-    "--border-emphasis",
-    "--border-focus",
-
-    "--action-primary-default",
-    "--action-primary-hover",
-    "--action-primary-wash",
-    "--action-secondary-default",
-    "--action-secondary-hover",
-    "--action-secondary-wash",
-    "--action-tertiary-default",
-    "--action-tertiary-hover",
-    "--action-tertiary-wash",
-
+    "--feedback-error",
     "--feedback-info",
     "--feedback-success",
     "--feedback-warning",
-    "--feedback-error"
+
+    "--font-display",
+    "--font-mono",
+    "--font-primary",
+    "--font-sans",
+    "--font-script",
+    "--font-serif",
+
+    "--font-size-base",
+
+    "--font-weight-medium",
+
+    "--glow-lg",
+    "--glow-md",
+    "--glow-sm",
+
+    "--graphite",
+    "--guide",
+    "--guide-soft",
+    "--hair",
+    "--hair-soft",
+
+    "--info-default",
+    "--info-subtle",
+    "--info-text",
+
+    "--ink",
+    "--ink-faint",
+    "--ink-soft",
+
+    "--interactive-active",
+    "--interactive-hover",
+
+    "--line-height-normal",
+
+    "--muted",
+
+    "--ochre",
+    "--ochre-wash",
+
+    "--paper",
+    "--paper-glass",
+    "--paper-raised",
+    "--paper-sunk",
+
+    "--r-lg",
+    "--r-md",
+    "--r-sm",
+
+    "--radius-full",
+    "--radius-lg",
+    "--radius-md",
+    "--radius-sm",
+    "--radius-xl",
+
+    "--shadow-2xl",
+    "--shadow-lg",
+    "--shadow-md",
+    "--shadow-sm",
+    "--shadow-xl",
+
+    "--shu",
+    "--shu-wash",
+
+    "--space-2xs",
+    "--space-lg",
+    "--space-md",
+    "--space-sm",
+    "--space-xl",
+    "--space-xs",
+
+    "--success-default",
+    "--success-subtle",
+    "--success-text",
+
+    "--surface-default",
+    "--surface-emphasis",
+    "--surface-glass",
+    "--surface-muted",
+    "--surface-raised",
+    "--surface-subtle",
+    "--surface-sunk",
+
+    "--text-inverse",
+    "--text-link",
+    "--text-link-hover",
+    "--text-muted",
+    "--text-primary",
+    "--text-secondary",
+    "--text-tertiary",
+
+    "--warning-default",
+    "--warning-subtle",
+    "--warning-text",
+
+    "--z-backdrop",
+    "--z-dropdown",
+    "--z-modal",
+    "--z-popover",
+    "--z-sticky",
+    "--z-tooltip"
   ],
   "optional": []
 }
