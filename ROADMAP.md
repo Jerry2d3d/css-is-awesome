@@ -2,6 +2,13 @@
 
 A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style distributable library. Each phase stands on its own and can ship independently.
 
+## Two views
+
+- **This file (phases):** delivery milestones — what ships in v0.1, v0.2, v0.5, v1.0, etc.
+- **[`roadmap/epics/`](./roadmap/epics/README.md):** thematic work slices with features + user stories + acceptance criteria.
+
+User stories from any epic may ship across multiple phases. Epics don't gate phases; they just describe the work in depth.
+
 ---
 
 ## Phase 0 — Foundation (DONE)
