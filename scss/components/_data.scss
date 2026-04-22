@@ -60,22 +60,22 @@
 // CARD
 // ----------------------------------------------------------------------------
 @mixin card-base(
-  $p: m.comp(card-padding, 4),
-  $r: m.comp(card-radius, lg),
-  $shadow: m.comp(card-shadow, 1),
+  $p: 4,
+  $r: lg,
+  $shadow: 1,
   $bg: surface-default,
   $border: false
 ) {
-  padding: m.space($p);
-  border-radius: m.radius($r);
+  padding: var(--card-padding, #{m.space($p)});
+  border-radius: var(--card-radius, #{m.radius($r)});
   background: m.color($bg);
 
   @if $shadow and $shadow != none {
-    box-shadow: m.shadow($shadow);
+    box-shadow: var(--card-shadow, #{m.shadow($shadow)});
   }
 
   @if $border {
-    border: 1px solid m.color(border-default);
+    border: var(--card-border, 1px solid #{m.color(border-default)});
   }
 }
 

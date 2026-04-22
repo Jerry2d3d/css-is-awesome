@@ -23,24 +23,24 @@
 // BASE
 // ----------------------------------------------------------------------------
 @mixin btn-base(
-  $py: m.comp(btn-padding-y, 1),
-  $px: m.comp(btn-padding-x, 4),
-  $r: m.comp(btn-radius, md),
-  $font-weight: m.comp(btn-font-weight, medium),
+  $py: 1,
+  $px: 4,
+  $r: md,
+  $font-weight: medium,
   $font-size: null
 ) {
   @include m.button-reset;
   display: inline-flex;
   align-items: center;
   gap: m.space(1);
-  font-weight: m.font-weight($font-weight);
-  padding: m.space($py) m.space($px);
-  border-radius: m.radius($r);
+  font-weight: var(--btn-font-weight, #{m.font-weight($font-weight)});
+  padding: var(--btn-padding-y, #{m.space($py)}) var(--btn-padding-x, #{m.space($px)});
+  border-radius: var(--btn-radius, #{m.radius($r)});
   @include m.transition(background-color, border-color, color, box-shadow);
   @include m.focus-ring;
 
   @if $font-size {
-    font-size: m.font-size($font-size);
+    font-size: var(--btn-font-size, #{m.font-size($font-size)});
   }
 }
 
@@ -54,7 +54,7 @@
   $color: text-inverse,
   $py: null, $px: null, $r: null, $font-size: null
 ) {
-  @include btn-base($py: $py or m.comp(btn-padding-y, 1), $px: $px or m.comp(btn-padding-x, 4), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  @include btn-base($py: $py or 1, $px: $px or 4, $r: $r or md, $font-size: $font-size);
   background: m.color($bg);
   color: m.color($color);
 
@@ -70,7 +70,7 @@
   $color: text-inverse,
   $py: null, $px: null, $r: null, $font-size: null
 ) {
-  @include btn-base($py: $py or m.comp(btn-padding-y, 1), $px: $px or m.comp(btn-padding-x, 4), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  @include btn-base($py: $py or 1, $px: $px or 4, $r: $r or md, $font-size: $font-size);
   background: m.color($bg);
   color: m.color($color);
 
@@ -87,7 +87,7 @@
   $active-bg: interactive-active,
   $py: null, $px: null, $r: null, $font-size: null
 ) {
-  @include btn-base($py: $py or m.comp(btn-padding-y, 1), $px: $px or m.comp(btn-padding-x, 4), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  @include btn-base($py: $py or 1, $px: $px or 4, $r: $r or md, $font-size: $font-size);
   background: transparent;
   border: 1px solid m.color($border-color);
   color: m.color($color);
@@ -106,7 +106,7 @@
   $active-bg: interactive-active,
   $py: null, $px: null, $r: null, $font-size: null
 ) {
-  @include btn-base($py: $py or m.comp(btn-padding-y, 1), $px: $px or m.comp(btn-padding-x, 4), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  @include btn-base($py: $py or 1, $px: $px or 4, $r: $r or md, $font-size: $font-size);
   background: transparent;
   color: m.color($color);
 

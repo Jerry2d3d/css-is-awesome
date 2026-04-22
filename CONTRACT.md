@@ -297,6 +297,108 @@ Paper themes declare these as `none` / `transparent` so a swap to a glass or pho
 
 ---
 
+## Component overrides (optional)
+
+These are per-component tokens a theme MAY override to change how a single family of components renders (buttons, cards, inputs, etc.) without touching the library or rebuilding SCSS. They are **optional** — the library emits every one of them on `:root` with a sensible default, and every component mixin reads them via `var(--<key>, <library-default>)`. A theme that sets none of them renders exactly the same as today.
+
+To override, declare the variable inside your theme's `:root { … }` block, e.g.:
+
+```css
+:root {
+  --btn-radius:   0;              /* Terminal — zero radii everywhere */
+  --card-shadow:  none;           /* Press   — editorial flat */
+  --input-radius: var(--r-sm);    /* Cupertino — AppKit text field */
+}
+```
+
+### Buttons
+
+| Token                | Type       | Default                         | Purpose                                |
+| -------------------- | ---------- | ------------------------------- | -------------------------------------- |
+| `--btn-padding-y`    | length     | `var(--space-1, 0.5rem)`        | Vertical padding on `btn-base`         |
+| `--btn-padding-x`    | length     | `var(--space-4, 1rem)`          | Horizontal padding on `btn-base`       |
+| `--btn-radius`       | length     | `var(--radius-md, 0.25rem)`     | Corner radius                          |
+| `--btn-font-weight`  | number     | `var(--font-weight-medium, 500)`| Type weight                            |
+| `--btn-font-size`    | length     | `var(--font-size-base, 1rem)`   | Font size (used when size is explicit) |
+| `--btn-border-width` | length     | `1px`                           | Border stroke (outline / ghost)        |
+
+### Cards
+
+| Token            | Type       | Default                              | Purpose                       |
+| ---------------- | ---------- | ------------------------------------ | ----------------------------- |
+| `--card-padding` | length     | `var(--space-4, 1rem)`               | Inner padding                 |
+| `--card-radius`  | length     | `var(--radius-lg, 0.5rem)`           | Corner radius                 |
+| `--card-shadow`  | box-shadow | `var(--shadow-sm, …)`                | Elevation (set `none` to flatten) |
+| `--card-border`  | border     | `1px solid var(--border-default)`    | Edge treatment (when enabled) |
+
+### Inputs
+
+| Token                  | Type   | Default                     | Purpose            |
+| ---------------------- | ------ | --------------------------- | ------------------ |
+| `--input-padding-y`    | length | `var(--space-1, 0.5rem)`    | Vertical padding   |
+| `--input-padding-x`    | length | `var(--space-2, 0.75rem)`   | Horizontal padding |
+| `--input-radius`       | length | `var(--radius-md, 0.25rem)` | Corner radius      |
+| `--input-border-width` | length | `1px`                       | Border stroke      |
+
+### Alerts
+
+| Token               | Type   | Default                     | Purpose            |
+| ------------------- | ------ | --------------------------- | ------------------ |
+| `--alert-padding-y` | length | `var(--space-2, 0.75rem)`   | Vertical padding   |
+| `--alert-padding-x` | length | `var(--space-4, 1rem)`      | Horizontal padding |
+| `--alert-radius`    | length | `var(--radius-md, 0.25rem)` | Corner radius      |
+
+### Badges
+
+| Token               | Type   | Default                     | Purpose            |
+| ------------------- | ------ | --------------------------- | ------------------ |
+| `--badge-padding-y` | length | `var(--space-1, 0.5rem)`    | Vertical padding   |
+| `--badge-padding-x` | length | `var(--space-1, 0.5rem)`    | Horizontal padding |
+| `--badge-radius`    | length | `var(--radius-full, 9999px)`| Corner radius      |
+
+### Tags / Chips
+
+| Token             | Type   | Default                      | Purpose            |
+| ----------------- | ------ | ---------------------------- | ------------------ |
+| `--tag-padding-y` | length | `var(--space-2xs, 0.25rem)`  | Vertical padding   |
+| `--tag-padding-x` | length | `var(--space-2, 0.75rem)`    | Horizontal padding |
+| `--tag-radius`    | length | `var(--radius-md, 0.25rem)`  | Corner radius      |
+
+### Modals
+
+| Token             | Type       | Default                         | Purpose         |
+| ----------------- | ---------- | ------------------------------- | --------------- |
+| `--modal-padding` | length     | `var(--space-5, 1.5rem)`        | Inner padding   |
+| `--modal-radius`  | length     | `var(--radius-xl, 0.75rem)`     | Corner radius   |
+| `--modal-shadow`  | box-shadow | `var(--shadow-2xl, …)`          | Elevation       |
+
+### Popovers
+
+| Token               | Type       | Default                        | Purpose       |
+| ------------------- | ---------- | ------------------------------ | ------------- |
+| `--popover-padding` | length     | `var(--space-4, 1rem)`         | Inner padding |
+| `--popover-radius`  | length     | `var(--radius-lg, 0.5rem)`     | Corner radius |
+| `--popover-shadow`  | box-shadow | `var(--shadow-lg, …)`          | Elevation     |
+
+### Tooltips
+
+| Token                 | Type   | Default                     | Purpose            |
+| --------------------- | ------ | --------------------------- | ------------------ |
+| `--tooltip-padding-y` | length | `var(--space-1, 0.5rem)`    | Vertical padding   |
+| `--tooltip-padding-x` | length | `var(--space-1, 0.5rem)`    | Horizontal padding |
+| `--tooltip-radius`    | length | `var(--radius-md, 0.25rem)` | Corner radius      |
+
+### Dropdowns
+
+| Token                | Type       | Default                     | Purpose       |
+| -------------------- | ---------- | --------------------------- | ------------- |
+| `--dropdown-radius`  | length     | `var(--radius-md, 0.25rem)` | Corner radius |
+| `--dropdown-shadow`  | box-shadow | `var(--shadow-md, …)`       | Elevation     |
+
+Total: 34 optional component tokens. None are validated — a theme that omits all of them still passes `npm run validate-themes`.
+
+---
+
 ## Versioning
 
 The contract is versioned via `scripts/theme-contract.json` (`version: "1"`).

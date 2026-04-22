@@ -18,17 +18,17 @@
 // INPUT
 // ----------------------------------------------------------------------------
 @mixin input-base(
-  $py: m.comp(input-padding-y, 1),
-  $px: m.comp(input-padding-x, 2),
-  $r: m.comp(input-radius, md),
-  $border-width: m.comp(input-border-width, 1px),
+  $py: 1,
+  $px: 2,
+  $r: md,
+  $border-width: 1px,
   $bg: surface-default,
   $border-color: border-default,
   $font-size: null
 ) {
-  padding: m.space($py) m.space($px);
-  border: $border-width solid m.color($border-color);
-  border-radius: m.radius($r);
+  padding: var(--input-padding-y, #{m.space($py)}) var(--input-padding-x, #{m.space($px)});
+  border: var(--input-border-width, #{$border-width}) solid m.color($border-color);
+  border-radius: var(--input-radius, #{m.radius($r)});
   background: m.color($bg);
   @include m.transition(border-color, box-shadow);
 
@@ -53,9 +53,9 @@
 // SELECT
 // ----------------------------------------------------------------------------
 @mixin select-base(
-  $py: m.comp(input-padding-y, 1),
-  $px: m.comp(input-padding-x, 2),
-  $r: m.comp(input-radius, md),
+  $py: 1,
+  $px: 2,
+  $r: md,
   $bg: surface-default,
   $border-color: border-default
 ) {
@@ -74,7 +74,7 @@
 @mixin textarea-base(
   $py: 2,
   $px: 2,
-  $r: m.comp(input-radius, md),
+  $r: md,
   $min-height: 6rem,
   $resize: vertical
 ) {

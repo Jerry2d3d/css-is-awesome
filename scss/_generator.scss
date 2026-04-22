@@ -85,6 +85,11 @@ $_required-light-keys: (
 
   // Opacity (from system)
   @include _vars(s.$opacities, 'opacity');
+
+  // Component tokens (Feature 1.3) — emit each entry as a CSS custom
+  // property on :root. Themes may override these selectively in their
+  // own :root block without forking the library.
+  @include _vars(t.$theme-components);
 }
 
 // ----------------------------------------------------------------------------

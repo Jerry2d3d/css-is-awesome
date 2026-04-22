@@ -18,8 +18,8 @@
   display: flex;
   align-items: flex-start;
   gap: m.space(2);
-  padding: m.space($py) m.space($px);
-  border-radius: m.radius($r);
+  padding: var(--alert-padding-y, #{m.space($py)}) var(--alert-padding-x, #{m.space($px)});
+  border-radius: var(--alert-radius, #{m.radius($r)});
   border: $border-width solid transparent;
   @include m.font(reg, 2);
 }
@@ -49,15 +49,15 @@
 // BADGE
 // ----------------------------------------------------------------------------
 @mixin badge-base(
-  $py: m.comp(badge-padding-y, 2xs),
-  $px: m.comp(badge-padding-x, 1),
-  $r: m.comp(badge-radius, full),
+  $py: 1,
+  $px: 1,
+  $r: full,
   $font-size: 1
 ) {
   display: inline-flex;
   align-items: center;
-  padding: m.space($py) m.space($px);
-  border-radius: m.radius($r);
+  padding: var(--badge-padding-y, #{m.space($py)}) var(--badge-padding-x, #{m.space($px)});
+  border-radius: var(--badge-radius, #{m.radius($r)});
   @include m.font(medium, $font-size);
 }
 
@@ -74,8 +74,8 @@
   display: inline-flex;
   align-items: center;
   gap: m.space(2xs);
-  padding: m.space($py) m.space($px);
-  border-radius: m.radius($r);
+  padding: var(--tag-padding-y, #{m.space($py)}) var(--tag-padding-x, #{m.space($px)});
+  border-radius: var(--tag-radius, #{m.radius($r)});
   @include m.font(reg, $font-size);
   background: m.color(surface-muted);
   color: m.color(text-primary);

@@ -20,15 +20,15 @@
 }
 
 @mixin modal-base(
-  $p: m.comp(modal-padding, 5),
-  $r: m.comp(modal-radius, xl),
-  $shadow: m.comp(modal-shadow, 5),
+  $p: 5,
+  $r: xl,
+  $shadow: 5,
   $max-width: 500px
 ) {
-  padding: m.space($p);
-  border-radius: m.radius($r);
+  padding: var(--modal-padding, #{m.space($p)});
+  border-radius: var(--modal-radius, #{m.radius($r)});
   background: m.color(surface-default);
-  box-shadow: m.shadow($shadow);
+  box-shadow: var(--modal-shadow, #{m.shadow($shadow)});
   width: 90%;
   max-width: $max-width;
   max-height: 90vh;
@@ -59,14 +59,14 @@
 // TOOLTIP
 // ----------------------------------------------------------------------------
 @mixin tooltip-base(
-  $py: m.comp(tooltip-padding-y, 2xs),
-  $px: m.comp(tooltip-padding-x, 1),
-  $r: m.comp(tooltip-radius, md),
+  $py: 1,
+  $px: 1,
+  $r: md,
   $bg: text-primary,
   $color: text-inverse
 ) {
-  padding: m.space($py) m.space($px);
-  border-radius: m.radius($r);
+  padding: var(--tooltip-padding-y, #{m.space($py)}) var(--tooltip-padding-x, #{m.space($px)});
+  border-radius: var(--tooltip-radius, #{m.radius($r)});
   background: m.color($bg);
   color: m.color($color);
   @include m.font(reg, 1);
@@ -78,10 +78,10 @@
 // POPOVER
 // ----------------------------------------------------------------------------
 @mixin popover-base($p: 4, $r: lg, $shadow: 3, $max-width: 320px) {
-  padding: m.space($p);
-  border-radius: m.radius($r);
+  padding: var(--popover-padding, #{m.space($p)});
+  border-radius: var(--popover-radius, #{m.radius($r)});
   background: m.color(surface-default);
-  box-shadow: m.shadow($shadow);
+  box-shadow: var(--popover-shadow, #{m.shadow($shadow)});
   border: 1px solid m.color(border-default);
   max-width: $max-width;
   z-index: m.z(popover);
@@ -94,9 +94,9 @@
   display: flex;
   flex-direction: column;
   padding: m.space($py) 0;
-  border-radius: m.radius($r);
+  border-radius: var(--dropdown-radius, #{m.radius($r)});
   background: m.color(surface-default);
-  box-shadow: m.shadow($shadow);
+  box-shadow: var(--dropdown-shadow, #{m.shadow($shadow)});
   border: 1px solid m.color(border-default);
   min-width: $min-width;
   z-index: m.z(dropdown);

@@ -230,4 +230,19 @@
   --z-modal:    1050;
   --z-popover:  1060;
   --z-tooltip:  1070;
+
+  /* ----------------------------------------------------------
+     OPTIONAL COMPONENT OVERRIDES (Feature 1.3)
+     -----------------------------------------------------------
+     Cupertino expresses AppKit UI: softly rounded controls,
+     diffuse card lift, larger panel radii. Overrides are
+     intentionally sparse — pick the ones that carry the
+     identity of the OS, leave the rest on library defaults.
+     ---------------------------------------------------------- */
+  --btn-radius:    var(--r-md);            /* 10px — AppKit control */
+  --card-radius:   var(--r-lg);            /* 14px — panel corner */
+  --card-shadow:   var(--shadow-sm);       /* diffuse, lifted */
+  --input-radius:  var(--r-sm);            /* 8px — text field */
+  --modal-radius:  var(--r-lg);            /* matches panel */
+  --tooltip-radius: var(--r-sm);           /* bezel tooltip */
 }

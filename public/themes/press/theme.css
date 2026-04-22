@@ -237,4 +237,19 @@
   --z-modal:    1050;
   --z-popover:  1060;
   --z-tooltip:  1070;
+
+  /* ----------------------------------------------------------
+     OPTIONAL COMPONENT OVERRIDES (Feature 1.3)
+     -----------------------------------------------------------
+     Press is editorial newsprint: very tight radii (2–4px),
+     shadowless cards (rules, not lifts), flat panels.
+     Overrides are sparse — only the choices that define the
+     editorial voice, defaults carry the rest.
+     ---------------------------------------------------------- */
+  --btn-radius:    var(--r-sm);            /* 2px — near-square control */
+  --card-radius:   var(--r-sm);            /* 2px — boxed layout */
+  --card-shadow:   none;                   /* editorial is flat */
+  --card-border:   1px solid var(--hair);  /* thin ink rule instead */
+  --input-radius:  var(--r-sm);            /* 2px — text field */
+  --modal-radius:  var(--r-md);            /* 3px — still tight */
 }
