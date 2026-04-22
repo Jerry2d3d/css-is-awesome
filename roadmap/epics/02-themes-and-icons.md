@@ -33,7 +33,8 @@ Each of the 5 non-Sketchbook themes gets its own `public/themes/{name}/icons/` f
 - [ ] Spec is linked from `CONTRIBUTING-THEMES.md` and from Feature 2.4's authoring guide.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 **US-2.1.2** — As a consumer, I want Press, Graphite, Glass, Cupertino, and Terminal to each ship the same 8 starter icons as Sketchbook, so that swapping themes never leaves me with missing glyphs.
 
@@ -44,7 +45,8 @@ Each of the 5 non-Sketchbook themes gets its own `public/themes/{name}/icons/` f
 - [ ] Terminal icons use pixel-grid styling; Press uses serif/editorial; Glass uses thin line; Cupertino uses SF-symbol-adjacent weight; Graphite uses hand-sketched stroke.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** consumer
 
 **US-2.1.3** — As a designer, I want to see all icon packs side-by-side in a comparison grid, so that I can evaluate whether a theme's icon voice matches the brand I'm considering it for.
 
@@ -54,7 +56,8 @@ Each of the 5 non-Sketchbook themes gets its own `public/themes/{name}/icons/` f
 - [ ] Hovering a cell shows the theme name and icon name as a tooltip.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** designer
 
 ### Feature 2.2: Theme-aware icon swap
 Today `$theme-icon-path` is a global. This feature makes the icon set swap together with the theme: loading `themes/terminal/theme.css` should also point the svg mixin at `themes/terminal/icons/`. Must work without JavaScript and without the consumer editing config.
@@ -70,7 +73,8 @@ Today `$theme-icon-path` is a global. This feature makes the icon set swap toget
 - [ ] No JavaScript required for the swap.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** consumer
 
 **US-2.2.2** — As a theme author, I want to override only a subset of icons (e.g. ship my own `check` and `close`, inherit the rest from Sketchbook), so that I don't have to re-draw 8 icons to start a theme.
 
@@ -80,7 +84,8 @@ Today `$theme-icon-path` is a global. This feature makes the icon set swap toget
 - [ ] Behavior is documented in the authoring guide with a worked example.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-2.2.3** — As a maintainer, I want the icon-path indirection to cost zero extra HTTP requests when a theme provides all 8 icons, so that the swap doesn't regress performance.
 
@@ -89,7 +94,8 @@ Today `$theme-icon-path` is a global. This feature makes the icon set swap toget
 - [ ] Lighthouse performance score on the `/themes` preview page does not drop more than 2 points vs the Sketchbook-only baseline.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ### Feature 2.3: Live theme preview thumbnails on /themes
 Replace the current colored-swatch cards with live-rendered thumbnails of a shared sample page (hero, button, card, form field, code block, icon row) re-skinned by each theme. Inspired by Raycast's theme store. Thumbnails are real DOM scaled via `transform: scale()`, not static screenshots, so they stay honest as themes evolve.
@@ -105,7 +111,8 @@ Replace the current colored-swatch cards with live-rendered thumbnails of a shar
 - [ ] Clicking a card opens the full-size preview.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** designer
 
 **US-2.3.2** — As a consumer, I want the gallery to load in under 2 seconds on a cold cache over 4G, so that browsing themes feels instant.
 
@@ -115,7 +122,8 @@ Replace the current colored-swatch cards with live-rendered thumbnails of a shar
 - [ ] Total transfer for the gallery page <= 150 KB gzipped.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** consumer
 
 **US-2.3.3** — As a maintainer, I want the sample-page DOM defined in exactly one file, so that adding a new component to the preview updates every theme thumbnail at once.
 
@@ -125,7 +133,8 @@ Replace the current colored-swatch cards with live-rendered thumbnails of a shar
 - [ ] Adding a new element to the sample file requires zero changes under `public/themes/`.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 ### Feature 2.4: Theme authoring guide (docs-site page)
 A complete docs-site page (`/docs/themes/authoring` or similar) walking an author from "I want to build a theme" to "my theme is merged." Covers token contract, file layout, icon pack requirements, contrast targets, size budget, preview workflow, and PR checklist. Pairs with — but is distinct from — `CONTRIBUTING-THEMES.md`: the repo-root file is the terse process; this page is the illustrated tutorial.
@@ -140,7 +149,8 @@ A complete docs-site page (`/docs/themes/authoring` or similar) walking an autho
 - [ ] Guide includes a complete worked example (a fictional "Newsprint" theme built end-to-end).
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-2.4.2** — As a theme author, I want copy-paste starter code for a minimal theme.css, so that I start from a scaffold not a blank file.
 
@@ -150,7 +160,8 @@ A complete docs-site page (`/docs/themes/authoring` or similar) walking an autho
 - [ ] Scaffold passes the Epic 1 theme validator on first save with only placeholder values.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 **US-2.4.3** — As a designer, I want the guide to explain the design constraints (one file, tokens only, no component-level overrides), so that I understand why the system is shaped this way before I propose a theme that breaks it.
 
@@ -160,7 +171,8 @@ A complete docs-site page (`/docs/themes/authoring` or similar) walking an autho
 - [ ] Section links to the locked design decision record.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** designer
 
 ### Feature 2.5: Community submission flow
 End-to-end process a contributor follows to submit a theme. Codified in `CONTRIBUTING-THEMES.md` (file produced by Epic 1) and enforced by the PR template, validator, and CI gates this epic ships.
@@ -175,7 +187,8 @@ End-to-end process a contributor follows to submit a theme. Codified in `CONTRIB
 - [ ] Template links to the authoring guide and `CONTRIBUTING-THEMES.md`.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 **US-2.5.2** — As a maintainer, I want theme PRs automatically checked by CI before I review, so that I only spend my time on design feedback, not checklist enforcement.
 
@@ -185,7 +198,8 @@ End-to-end process a contributor follows to submit a theme. Codified in `CONTRIB
 - [ ] Failing checks block merge via required status check.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** maintainer
 
 **US-2.5.3** — As a maintainer, I want an end-to-end test run of the submission flow before 1.0, so that we know the documented process actually works for an outsider.
 
@@ -195,7 +209,8 @@ End-to-end process a contributor follows to submit a theme. Codified in `CONTRIB
 - [ ] Any friction discovered is filed as issues and either fixed or deferred with a label before 1.0.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** maintainer
 
 ### Feature 2.6: Color contrast audit CI
 A script walks every shipped theme, computes WCAG contrast ratios for every semantic foreground/background pair defined by the token contract, and fails CI if any pair drops below AA. Runs on PR for changed themes and on schedule for all themes (catches regressions from base-library token renames).
@@ -210,7 +225,8 @@ A script walks every shipped theme, computes WCAG contrast ratios for every sema
 - [ ] All 6 shipped themes pass as of merge-to-main; audit output is archived per release tag.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** accessibility reviewer
 
 **US-2.6.2** — As a CI system, I want to run the audit automatically on any PR that modifies `public/themes/**` or `public/theme.css`, so that regressions never reach main.
 
@@ -220,7 +236,8 @@ A script walks every shipped theme, computes WCAG contrast ratios for every sema
 - [ ] Failure output names the exact token pair and the measured ratio (e.g. `--cia-bg-surface / --cia-fg-body: 3.8:1 (need 4.5:1)`).
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** CI system
 
 **US-2.6.3** — As a theme author, I want to run the same audit locally before I push, so that I don't waste a CI round trip on a failure I could have caught.
 
@@ -230,7 +247,8 @@ A script walks every shipped theme, computes WCAG contrast ratios for every sema
 - [ ] Command is documented in the authoring guide.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 ### Feature 2.7: Theme size/perf audit
 Each `theme.css` file has a hard budget of 2 KB gzipped. A CI script measures the size of every theme file and fails the build if any exceeds the budget. Also reports cumulative size across all shipped themes on each release tag.
@@ -245,7 +263,8 @@ Each `theme.css` file has a hard budget of 2 KB gzipped. A CI script measures th
 - [ ] Budget value lives in one config file so it can be tuned without hunting scripts.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** maintainer
 
 **US-2.7.2** — As a theme author, I want clear feedback when my theme exceeds the budget, including which tokens or selectors are costing the most bytes, so that I can trim intelligently.
 
@@ -255,7 +274,8 @@ Each `theme.css` file has a hard budget of 2 KB gzipped. A CI script measures th
 - [ ] Audit documented in the authoring guide with an example of reading the output.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** theme author
 
 **US-2.7.3** — As a CI system, I want the size audit to run on every PR that touches theme files, so that size regressions are caught pre-merge.
 
@@ -265,7 +285,8 @@ Each `theme.css` file has a hard budget of 2 KB gzipped. A CI script measures th
 - [ ] Cumulative size across all themes is reported on release-tag runs and archived.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** CI system
 
 ### Feature 2.8: Dark-mode companions
 Each shipped theme gets an explicit light/dark disposition: companion shipped, or documented as single-mode by design (e.g. Terminal stays dark-only). For themes that should pair, ship the companion file; for themes that shouldn't, record the rationale. Wiring to auto-detect `prefers-color-scheme` is Epic 1's job — this feature just ensures the content exists.
@@ -280,7 +301,8 @@ Each shipped theme gets an explicit light/dark disposition: companion shipped, o
 - [ ] Each paired dark companion passes the Feature 2.6 contrast audit.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** consumer
 
 **US-2.8.2** — As a designer, I want single-mode themes (e.g. Terminal light-less) to state that intent explicitly, so that I know it's a design decision not an oversight.
 
@@ -290,7 +312,8 @@ Each shipped theme gets an explicit light/dark disposition: companion shipped, o
 - [ ] Authoring guide explains when single-mode is an acceptable choice.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** designer
 
 **US-2.8.3** — As an accessibility reviewer, I want dark companions to meet the same WCAG AA bar as their light counterparts, so that dark mode is not a second-class experience.
 
@@ -300,7 +323,8 @@ Each shipped theme gets an explicit light/dark disposition: companion shipped, o
 - [ ] Audit report breaks down pass/fail per variant.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** accessibility reviewer
 
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations) — needs the token contract and theme validator in place before per-theme work can be audited consistently, and before `CONTRIBUTING-THEMES.md` has a stable reference surface.
