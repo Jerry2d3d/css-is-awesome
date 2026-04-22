@@ -90,9 +90,11 @@
   --r-lg: 24px;
 
   /* Shadows — floaty with a cool-blue undertone */
-  --shadow-sm: 0 2px 10px rgba(31, 38, 135, 0.06);
-  --shadow-md: 0 8px 32px rgba(31, 38, 135, 0.10);
-  --shadow-lg: 0 24px 60px rgba(31, 38, 135, 0.14);
+  --shadow-sm:  0 2px 10px rgba(31, 38, 135, 0.06);
+  --shadow-md:  0 8px 32px rgba(31, 38, 135, 0.10);
+  --shadow-lg:  0 24px 60px rgba(31, 38, 135, 0.14);
+  --shadow-xl:  0 40px 80px rgba(31, 38, 135, 0.18);
+  --shadow-2xl: 0 56px 112px rgba(31, 38, 135, 0.24);
 
   /* Blur — the star of this theme; pair with --paper-glass */
   --blur-sm: blur(14px) saturate(160%);
@@ -128,6 +130,11 @@
      automatically.
      ---------------------------------------------------------- */
 
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
   /* Surfaces */
   --surface-default:   var(--paper);
   --surface-raised:    var(--paper-raised);
@@ -152,20 +159,90 @@
   --border-emphasis:   var(--ink);
   --border-focus:      var(--ai);
 
+  /* Interactive (hover / active wash layers)
+     Kept subtle so glass translucency reads through. */
+  --interactive-hover:  rgba(29, 29, 31, 0.04);
+  --interactive-active: rgba(29, 29, 31, 0.08);
+
+  /* Brand (identity — action-primary usually references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
   /* Action (primary / secondary / tertiary) */
   --action-primary-default:   var(--ai);
   --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
   --action-primary-wash:      var(--ai-wash);
   --action-secondary-default: var(--shu);
   --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
   --action-secondary-wash:    var(--shu-wash);
   --action-tertiary-default:  var(--ochre);
   --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
   --action-tertiary-wash:     var(--ochre-wash);
 
-  /* Feedback / status */
+  /* Feedback / status (high-level semantic) */
   --feedback-info:     var(--ai);
   --feedback-success:  var(--code-green);
   --feedback-warning:  var(--ochre);
   --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text) */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(94, 92, 230, 0.12);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (iOS system green) */
+  --success-default: #34C759;
+  --success-subtle:  rgba(52, 199, 89, 0.12);
+  --success-text:    #1E8838;
+
+  /* Status — warning (iOS system orange) */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(255, 149, 0, 0.12);
+  --warning-text:    #B36600;
+
+  /* Status — error (iOS system pink) */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(255, 55, 95, 0.12);
+  --error-text:    #A3193A;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / motion / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — mirrors --r-* with standard names so
+     `m.radius(size)` in the library finds --radius-<size>. */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography — base body font + key scale slots */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
 }
