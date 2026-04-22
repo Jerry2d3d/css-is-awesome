@@ -37,7 +37,8 @@ The eight single-input primitives consumers need on day one: `Input`, `Textarea`
 - [ ] Has a Storybook story (see Epic 5).
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 **US-3.1.2** — As an app developer, I want `<Textarea>` with auto-resize as an opt-in, so that multi-line inputs grow with content without my app wiring a resize observer.
 
@@ -51,7 +52,8 @@ The eight single-input primitives consumers need on day one: `Input`, `Textarea`
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 **US-3.1.3** — As an app developer, I want `<Select>`, `<Checkbox>`, and `<Radio>` with consistent controlled/uncontrolled APIs, so that I can swap among them without relearning prop names.
 
@@ -65,7 +67,8 @@ The eight single-input primitives consumers need on day one: `Input`, `Textarea`
 - [ ] Each has a Storybook story.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** app developer
 
 **US-3.1.4** — As an accessibility reviewer, I want `<Switch>` to announce its on/off state and be operable from the keyboard, so that screen reader users can toggle settings.
 
@@ -78,7 +81,8 @@ The eight single-input primitives consumers need on day one: `Input`, `Textarea`
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** accessibility reviewer
 
 **US-3.1.5** — As an app developer, I want `<Slider>` with min/max/step and keyboard support, so that numeric range inputs match the rest of the form system.
 
@@ -91,7 +95,8 @@ The eight single-input primitives consumers need on day one: `Input`, `Textarea`
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 **US-3.1.6** — As a designer integrating Figma, I want `<Label>` to be a standalone component (not just a styled tag), so that required-field indicators and helper slots are consistent across the system.
 
@@ -103,7 +108,8 @@ The eight single-input primitives consumers need on day one: `Input`, `Textarea`
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** designer
 
 ---
 
@@ -123,7 +129,8 @@ Small status and display primitives: `Alert`, `Badge`, `Tag`, `Progress`, `Divid
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 **US-3.2.2** — As an app developer, I want `<Badge>` and `<Tag>` as distinct but consistent components, so that I can use Badge for counts/status dots and Tag for removable labels.
 
@@ -135,7 +142,8 @@ Small status and display primitives: `Alert`, `Badge`, `Tag`, `Progress`, `Divid
 - [ ] Both have Storybook stories.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 **US-3.2.3** — As an app developer, I want `<Progress>` as both determinate (has `value`) and indeterminate (no `value`), so that I can use it for file uploads and unknown-duration loaders.
 
@@ -148,7 +156,8 @@ Small status and display primitives: `Alert`, `Badge`, `Tag`, `Progress`, `Divid
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 **US-3.2.4** — As an app developer, I want `<Spinner>` as a pure visual loader, so that I don't have to embed an SVG inline every time I need one.
 
@@ -161,7 +170,8 @@ Small status and display primitives: `Alert`, `Badge`, `Tag`, `Progress`, `Divid
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 **US-3.2.5** — As an app developer, I want `<Skeleton>` to represent loading placeholders with matching shapes, so that my UI doesn't jump when data arrives.
 
@@ -174,7 +184,8 @@ Small status and display primitives: `Alert`, `Badge`, `Tag`, `Progress`, `Divid
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** app developer
 
 **US-3.2.6** — As a designer integrating Figma, I want `<Avatar>` and `<AvatarGroup>` that match the token-driven sizes, so that people rows in the app match Figma specs exactly.
 
@@ -186,7 +197,8 @@ Small status and display primitives: `Alert`, `Badge`, `Tag`, `Progress`, `Divid
 - [ ] Both have Storybook stories.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** designer
 
 **US-3.2.7** — As an app developer, I want `<Divider>` as a token-aware separator (horizontal or vertical), so that I don't hand-roll `border` CSS for every layout seam.
 
@@ -197,7 +209,8 @@ Small status and display primitives: `Alert`, `Badge`, `Tag`, `Progress`, `Divid
 - [ ] Has a Storybook story.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 ---
 
@@ -218,7 +231,8 @@ Compound form parts that hold light state or compose atoms: `FormField` (Label +
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** app developer
 
 **US-3.3.2** — As an app developer, I want `<SearchBar>` with a leading search icon and optional submit button, so that I can drop a search UI into a header without building it from atoms.
 
@@ -231,7 +245,8 @@ Compound form parts that hold light state or compose atoms: `FormField` (Label +
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** app developer
 
 ---
 
@@ -252,7 +267,8 @@ The navigation set: `Tabs` (active-tab state), `Pagination`, `Breadcrumb`, and `
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** app developer
 
 **US-3.4.2** — As an app developer, I want `<Pagination>` with page count, current page, and a sensible ellipsis strategy, so that I don't have to build page-number truncation logic myself.
 
@@ -266,7 +282,8 @@ The navigation set: `Tabs` (active-tab state), `Pagination`, `Breadcrumb`, and `
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** app developer
 
 **US-3.4.3** — As an accessibility reviewer, I want `<Breadcrumb>` to render as a navigation landmark with an ordered list, so that screen readers announce it as breadcrumbs.
 
@@ -278,7 +295,8 @@ The navigation set: `Tabs` (active-tab state), `Pagination`, `Breadcrumb`, and `
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** accessibility reviewer
 
 **US-3.4.4** — As an app developer, I want `<MenuItem>` as a reusable row (Icon + Text + optional Kbd shortcut), so that menus, dropdowns, and command palettes all share one visual vocabulary.
 
@@ -291,7 +309,8 @@ The navigation set: `Tabs` (active-tab state), `Pagination`, `Breadcrumb`, and `
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 ---
 
@@ -317,7 +336,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** app developer
 
 **US-3.5.2** — As an app developer, I want `<Tooltip>` to show on hover and focus with a small delay, so that I can annotate icon buttons without extra work.
 
@@ -332,7 +352,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** app developer
 
 **US-3.5.3** — As an app developer, I want `<Popover>` as a richer, clickable floating panel, so that I can put controls (not just text) in a floating UI.
 
@@ -347,7 +368,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** app developer
 
 **US-3.5.4** — As an app developer, I want `<Dropdown>` for menu patterns (not a form select), so that I have a consistent component for "open a list of actions" UI.
 
@@ -362,7 +384,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** app developer
 
 **US-3.5.5** — As an app developer, I want `<Accordion>` with single-expand and multi-expand modes, so that FAQ pages and settings panels can reuse one component.
 
@@ -376,7 +399,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Has a Storybook story.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** app developer
 
 ---
 
@@ -400,7 +424,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Has a Storybook story.
 
 **Priority:** P2
-**Effort:** XL
+**Effort:** 13
+**Role:** app developer
 
 **US-3.6.2** — As an app developer, I want `<List>` and `<ListItem>` with an interactive variant, so that sidebar nav and settings menus use the same component.
 
@@ -413,7 +438,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Both have Storybook stories.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** app developer
 
 ---
 
@@ -432,7 +458,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Has a Storybook story that wires the provider and fires toasts from a button.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** app developer
 
 **US-3.7.2** — As an accessibility reviewer, I want toasts announced to screen readers and auto-dismissed with a pausable timer, so that users who hover a toast don't lose it mid-read.
 
@@ -444,7 +471,8 @@ Portal-based components with focus management and a11y concerns: `Modal`/`Dialog
 - [ ] Respects `prefers-reduced-motion` (slide animation replaced with fade or instant).
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** accessibility reviewer
 
 ---
 
@@ -463,7 +491,8 @@ Cross-cutting requirements every component in this epic must satisfy. This featu
 - [ ] A lint rule or CI check enforces the pattern (coordinate with Epic 5).
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** app developer
 
 **US-3.8.2** — As a Storybook author, I want every component to live in a predictable folder structure, so that I can find and import its stylesheet, type, and story without hunting.
 
@@ -475,7 +504,8 @@ Cross-cutting requirements every component in this epic must satisfy. This featu
 - [ ] A CI check fails if a component does not match this pattern (coordinate with Epic 5).
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** Storybook author
 
 **US-3.8.3** — As a designer integrating Figma, I want every component's public prop to have a JSDoc comment, so that IntelliSense in VS Code explains what each prop does.
 
@@ -485,7 +515,8 @@ Cross-cutting requirements every component in this epic must satisfy. This featu
 - [ ] `tsc --noEmit` passes with `strict: true`.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** designer
 
 ## Dependencies
 - Blocks: Epic 4 (Documentation Site), Epic 5 (Quality & Delivery), Epic 5 (Quality & Delivery)
