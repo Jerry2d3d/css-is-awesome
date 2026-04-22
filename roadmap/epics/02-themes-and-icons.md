@@ -16,7 +16,7 @@ Extends the theme ecosystem from "six colored swatches" into a complete, audited
 - Docs-site chrome, TOC, search, syntax highlighting — see Epic 5.
 - Real docs content beyond the theme authoring page — see Epic 4.
 - React component wrappers that consume themes — see Epic 3.
-- Visual regression infra for theme snapshots — see Epic 6 (this epic produces the themes; Epic 6 adds the snapshot harness).
+- Visual regression infra for theme snapshots — see Epic 5 (this epic produces the themes; Epic 5 adds the snapshot harness).
 
 ## Features
 
@@ -304,8 +304,8 @@ Each shipped theme gets an explicit light/dark disposition: companion shipped, o
 
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations) — needs the token contract and theme validator in place before per-theme work can be audited consistently, and before `CONTRIBUTING-THEMES.md` has a stable reference surface.
-- Blocks: Epic 4 (Documentation Content) — the docs-site theme authoring page references this epic's icon-pack format and audit commands.
-- Blocks: Epic 6 (Testing & Quality) — visual regression snapshots of theme previews depend on the `/themes` thumbnail component shipped here.
+- Blocks: Epic 4 (Documentation Site) — the docs-site theme authoring page references this epic's icon-pack format and audit commands.
+- Blocks: Epic 5 (Quality & Delivery) — visual regression snapshots of theme previews depend on the `/themes` thumbnail component shipped here.
 
 ## Priority
 P0 overall. Sub-priorities:

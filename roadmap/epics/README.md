@@ -62,14 +62,12 @@ P0 (blocker for 1.0) | P1 (wanted for 1.0) | P2 (post-1.0)
 - **L** — a week
 - **XL** — longer than a week
 
-## The nine epics
+## The seven epics
 
 1. [Library Foundations](01-library-foundations.md) — token coverage, sizing scale, `$theme-components` map, theme validator, dark-mode auto-detect
 2. [Themes & Icons](02-themes-and-icons.md) — per-theme icon packs, preview thumbnails, authoring guide, community submission, contrast audit
 3. [React Component Library](03-react-components.md) — the ~25 missing React wrappers (atoms → molecules → overlays)
-4. [Documentation Content](04-documentation-content.md) — real `/docs` content, mixin reference, migration guide, recipes, a11y notes
-5. [Site UX](05-site-ux.md) — search, TOC, prev/next, OpenGraph, real 404, Shiki syntax highlight, copy-to-clipboard
-6. [Testing & Quality](06-testing-quality.md) — Jest, Playwright, axe-core, visual regression, Lighthouse, bundle-size CI
-7. [Infrastructure & Release](07-infrastructure-release.md) — GitHub Actions CI, deploy, automated release, Storybook, starter templates
-8. [AI Integration](08-ai-integration.md) — MCP server, CLI, JSON tokens, AI prompt templates
-9. [Community & Project Meta](09-community-meta.md) — CONTRIBUTING, CoC, SECURITY, issue/PR templates, SemVer policy
+4. [Documentation Site](04-documentation-site.md) — real `/docs` content + site UX: mixin reference, migration guide, search, TOC, Shiki, mobile nav, copy-to-clipboard
+5. [Quality & Delivery](05-quality-delivery.md) — tests, a11y, visual regression, Lighthouse, bundle budget, CI, deploy, release automation, Storybook, starter templates
+6. [AI Integration](06-ai-integration.md) — MCP server, CLI, JSON tokens, AI prompt templates
+7. [Community & Project Meta](07-community-meta.md) — CONTRIBUTING, CoC, SECURITY, issue/PR templates, SemVer policy

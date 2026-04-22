@@ -1,4 +1,4 @@
-# Epic 8: AI Integration
+# Epic 6: AI Integration
 
 ## Summary
 Makes css-is-awesome first-class legible to AI coding assistants (Claude, ChatGPT, Gemini, Cursor, Windsurf, Copilot) so they can reason about the system and generate correct code with it. The mixin-first architecture already fits in a few thousand tokens; this epic capitalizes on that by shipping the machine-readable artifacts, tools, and prompt surfaces that let an agent introspect tokens, mixins, and components, validate a theme, and scaffold a project without the user hand-feeding it docs. Deliverables include a Model Context Protocol (MCP) server, a `cia` CLI, an auto-generated JSON token export, reusable prompt templates, custom Claude/ChatGPT/Gemini bots, an `llm.txt` summary at repo root, a SemVer policy for AI consumers, and an integration guide. Together they turn "AI can probably handle this" into "an AI assistant can build a working page in one prompt."
@@ -13,20 +13,20 @@ Makes css-is-awesome first-class legible to AI coding assistants (Claude, ChatGP
 
 ## Out of scope
 - The token system itself (names, contract, validator logic) — see Epic 1 (Library Foundations). This epic consumes Epic 1's contract, not redefines it.
-- Docs-site content and long-form prose — see Epic 4 (Documentation Content). This epic references docs; it does not write them.
+- Docs-site content and long-form prose — see Epic 4 (Documentation Site). This epic references docs; it does not write them.
 - React component API design — see Epic 3 (React Component Library). This epic introspects components; it does not design them.
-- CI infra and release automation — see Epic 7 (Infrastructure & Release). This epic ships artifacts; Epic 7 ships the pipelines that publish them.
-- Community contribution policy for prompts and bots — see Epic 9 (Community & Project Meta).
-- Visual/functional regression of generated code — see Epic 6 (Testing & Quality).
+- CI infra and release automation — see Epic 5 (Quality & Delivery). This epic ships artifacts; Epic 5 ships the pipelines that publish them.
+- Community contribution policy for prompts and bots — see Epic 7 (Community & Project Meta).
+- Visual/functional regression of generated code — see Epic 5 (Quality & Delivery).
 
 ## Features
 
-### Feature 8.1: MCP (Model Context Protocol) server
+### Feature 6.1: MCP (Model Context Protocol) server
 A Node server (`@css-is-awesome/mcp`) that speaks MCP over stdio and/or HTTP so an AI client can connect and introspect the library. Exposes a tool surface covering tokens, mixins, components, theme validation, mixin suggestion from natural language, and component scaffolding. Stays stateless; reads the library's own source plus the generated JSON token export as its ground truth so there is no drift.
 
 #### User Stories
 
-**US-8.1.1** — As an AI assistant, I want a `list_tokens` tool that returns every design token with its type, current value, and example uses, so that I can cite exact token names when generating CSS.
+**US-6.1.1** — As an AI assistant, I want a `list_tokens` tool that returns every design token with its type, current value, and example uses, so that I can cite exact token names when generating CSS.
 
 **Acceptance criteria:**
 - [ ] Tool returns a structured array of `{ name, category, type, value, example }` entries for every token in Epic 1's contract.
@@ -38,7 +38,7 @@ A Node server (`@css-is-awesome/mcp`) that speaks MCP over stdio and/or HTTP so 
 **Priority:** P2
 **Effort:** M
 
-**US-8.1.2** — As an AI assistant, I want a `list_mixins` tool that returns every mixin with signature, parameters, defaults, and an example output, so that I can generate SCSS calls that compile on the first try.
+**US-6.1.2** — As an AI assistant, I want a `list_mixins` tool that returns every mixin with signature, parameters, defaults, and an example output, so that I can generate SCSS calls that compile on the first try.
 
 **Acceptance criteria:**
 - [ ] Tool returns `{ name, signature, params: [{name, type, default}], description, example_input, example_output_css }` for every mixin in `scss/_mixins.scss` and `scss/components/*`.
@@ -49,7 +49,7 @@ A Node server (`@css-is-awesome/mcp`) that speaks MCP over stdio and/or HTTP so 
 **Priority:** P2
 **Effort:** M
 
-**US-8.1.3** — As an AI assistant, I want a `list_components` tool that returns every React component with its props and an example JSX snippet, so that I can compose UIs using the library's own wrappers.
+**US-6.1.3** — As an AI assistant, I want a `list_components` tool that returns every React component with its props and an example JSX snippet, so that I can compose UIs using the library's own wrappers.
 
 **Acceptance criteria:**
 - [ ] Tool returns `{ name, import_path, props: [{name, type, required, default}], example_jsx }` for every exported component.
@@ -60,7 +60,7 @@ A Node server (`@css-is-awesome/mcp`) that speaks MCP over stdio and/or HTTP so 
 **Priority:** P2
 **Effort:** M
 
-**US-8.1.4** — As a developer using an AI copilot, I want a `validate_theme` tool that accepts a `theme.css` content string and returns the Epic 1 validator's output, so that my assistant can verify a theme it just wrote before I save it.
+**US-6.1.4** — As a developer using an AI copilot, I want a `validate_theme` tool that accepts a `theme.css` content string and returns the Epic 1 validator's output, so that my assistant can verify a theme it just wrote before I save it.
 
 **Acceptance criteria:**
 - [ ] Tool accepts a raw CSS string and returns `{ ok: boolean, missing: [], warnings: [], unknown: [] }`.
@@ -71,7 +71,7 @@ A Node server (`@css-is-awesome/mcp`) that speaks MCP over stdio and/or HTTP so 
 **Priority:** P2
 **Effort:** S
 
-**US-8.1.5** — As an AI assistant, I want a `suggest_mixin(description)` tool that takes a natural-language request and returns the best-matching mixin(s), so that I can pick the right call without scanning every mixin name.
+**US-6.1.5** — As an AI assistant, I want a `suggest_mixin(description)` tool that takes a natural-language request and returns the best-matching mixin(s), so that I can pick the right call without scanning every mixin name.
 
 **Acceptance criteria:**
 - [ ] Tool accepts a string description and returns a ranked array of `{ name, relevance_score, why }` with at least the top 3 matches.
@@ -82,7 +82,7 @@ A Node server (`@css-is-awesome/mcp`) that speaks MCP over stdio and/or HTTP so 
 **Priority:** P2
 **Effort:** M
 
-**US-8.1.6** — As an AI assistant, I want a `generate_component(spec)` tool that scaffolds a new component from a template, so that I can propose a complete, library-conformant file in one tool call.
+**US-6.1.6** — As an AI assistant, I want a `generate_component(spec)` tool that scaffolds a new component from a template, so that I can propose a complete, library-conformant file in one tool call.
 
 **Acceptance criteria:**
 - [ ] Tool accepts `{ name, kind: 'atom'|'molecule'|'overlay', props?, description? }` and returns `{ files: [{path, content}] }`.
@@ -93,7 +93,7 @@ A Node server (`@css-is-awesome/mcp`) that speaks MCP over stdio and/or HTTP so 
 **Priority:** P2
 **Effort:** L
 
-**US-8.1.7** — As an MCP client integrator, I want clear setup docs for connecting Claude Desktop, Cursor, and a custom client, so that I can wire the server without reading its source.
+**US-6.1.7** — As an MCP client integrator, I want clear setup docs for connecting Claude Desktop, Cursor, and a custom client, so that I can wire the server without reading its source.
 
 **Acceptance criteria:**
 - [ ] `docs/ai/mcp-setup.md` covers Claude Desktop config, Cursor config, and a generic stdio client recipe.
@@ -103,12 +103,12 @@ A Node server (`@css-is-awesome/mcp`) that speaks MCP over stdio and/or HTTP so 
 **Priority:** P2
 **Effort:** S
 
-### Feature 8.2: `cia` CLI
+### Feature 6.2: `cia` CLI
 A command-line companion (`@css-is-awesome/cli`) installable globally or via `npx`. Mirrors the MCP server's capabilities for humans who prefer a terminal, and bridges the library into a user's project (scaffolding, theme creation, icon drop-in, validator). Designed to feel shadcn-adjacent: copy reference components into the consumer's repo rather than locking them to a runtime dependency.
 
 #### User Stories
 
-**US-8.2.1** — As a CLI user, I want `cia init` to scaffold a new project with css-is-awesome wired in, so that I can go from empty directory to first render in under a minute.
+**US-6.2.1** — As a CLI user, I want `cia init` to scaffold a new project with css-is-awesome wired in, so that I can go from empty directory to first render in under a minute.
 
 **Acceptance criteria:**
 - [ ] `npx cia init <dir>` creates a working Next.js or Vite project with SCSS set up, Sketchbook theme imported, and a starter page.
@@ -119,7 +119,7 @@ A command-line companion (`@css-is-awesome/cli`) installable globally or via `np
 **Priority:** P2
 **Effort:** L
 
-**US-8.2.2** — As a CLI user, I want `cia add <component>` to pull a reference component into my project, so that I own the source like shadcn and can modify it.
+**US-6.2.2** — As a CLI user, I want `cia add <component>` to pull a reference component into my project, so that I own the source like shadcn and can modify it.
 
 **Acceptance criteria:**
 - [ ] `cia add button` copies the reference Button component and its SCSS partial into the configured project path.
@@ -130,7 +130,7 @@ A command-line companion (`@css-is-awesome/cli`) installable globally or via `np
 **Priority:** P2
 **Effort:** M
 
-**US-8.2.3** — As a CLI user, I want `cia theme new <name>` to generate a new `theme.css` from the contract template, so that I start from a file that already passes the validator.
+**US-6.2.3** — As a CLI user, I want `cia theme new <name>` to generate a new `theme.css` from the contract template, so that I start from a file that already passes the validator.
 
 **Acceptance criteria:**
 - [ ] Command writes `public/themes/<name>/theme.css` populated with every token from Epic 1's contract at default values.
@@ -141,7 +141,7 @@ A command-line companion (`@css-is-awesome/cli`) installable globally or via `np
 **Priority:** P1
 **Effort:** S
 
-**US-8.2.4** — As a CLI user, I want `cia theme validate <file>` to run the Epic 1 validator, so that I get the same gate CI runs locally.
+**US-6.2.4** — As a CLI user, I want `cia theme validate <file>` to run the Epic 1 validator, so that I get the same gate CI runs locally.
 
 **Acceptance criteria:**
 - [ ] Command invokes the exact validator from Epic 1 — no parallel implementation.
@@ -152,7 +152,7 @@ A command-line companion (`@css-is-awesome/cli`) installable globally or via `np
 **Priority:** P1
 **Effort:** S
 
-**US-8.2.5** — As a CLI user, I want `cia icons add <svg-url-or-path>` to drop an icon into my configured icon folder, so that I don't have to hand-place files.
+**US-6.2.5** — As a CLI user, I want `cia icons add <svg-url-or-path>` to drop an icon into my configured icon folder, so that I don't have to hand-place files.
 
 **Acceptance criteria:**
 - [ ] Command accepts a local file path or a URL and writes the SVG to the project's configured icon directory.
@@ -163,7 +163,7 @@ A command-line companion (`@css-is-awesome/cli`) installable globally or via `np
 **Priority:** P2
 **Effort:** M
 
-**US-8.2.6** — As a CLI user, I want `cia docs <topic>` to open the relevant docs page (local or hosted), so that I can jump to reference material without leaving my terminal.
+**US-6.2.6** — As a CLI user, I want `cia docs <topic>` to open the relevant docs page (local or hosted), so that I can jump to reference material without leaving my terminal.
 
 **Acceptance criteria:**
 - [ ] `cia docs button` opens the Button docs page in the default browser.
@@ -174,22 +174,22 @@ A command-line companion (`@css-is-awesome/cli`) installable globally or via `np
 **Priority:** P2
 **Effort:** S
 
-**US-8.2.7** — As a developer using an AI copilot, I want every `cia` command to support `--json` output, so that my assistant can consume results without parsing human text.
+**US-6.2.7** — As a developer using an AI copilot, I want every `cia` command to support `--json` output, so that my assistant can consume results without parsing human text.
 
 **Acceptance criteria:**
 - [ ] Every command accepts `--json` and emits a stable schema documented in `docs/ai/cli-json.md`.
 - [ ] Errors in JSON mode are structured objects with `code`, `message`, `hint`.
-- [ ] The schema is versioned (see Feature 8.7) and breaking changes bump the major.
+- [ ] The schema is versioned (see Feature 6.7) and breaking changes bump the major.
 
 **Priority:** P2
 **Effort:** S
 
-### Feature 8.3: JSON token export
+### Feature 6.3: JSON token export
 Auto-generate a JSON representation of the full token set on every build, in Design-Tokens-Community-Group (DTCG) format, compatible with Figma Tokens and similar tools. Today a `figma-tokens/` folder exists; this feature verifies its coverage matches Epic 1's contract, automates regeneration from the SCSS source of truth, and publishes the file at a stable hosted URL so AI tools and build pipelines can fetch it directly.
 
 #### User Stories
 
-**US-8.3.1** — As a system author, I want the JSON token export auto-generated from the SCSS source, so that it never drifts from the canonical tokens.
+**US-6.3.1** — As a system author, I want the JSON token export auto-generated from the SCSS source, so that it never drifts from the canonical tokens.
 
 **Acceptance criteria:**
 - [ ] A build script reads the SCSS token maps and writes `figma-tokens/tokens.json` in DTCG format.
@@ -200,18 +200,18 @@ Auto-generate a JSON representation of the full token set on every build, in Des
 **Priority:** P1
 **Effort:** M
 
-**US-8.3.2** — As an AI assistant, I want to fetch the token JSON from a stable URL, so that I can pin a version and load it into context in one request.
+**US-6.3.2** — As an AI assistant, I want to fetch the token JSON from a stable URL, so that I can pin a version and load it into context in one request.
 
 **Acceptance criteria:**
 - [ ] The JSON is published at a versioned URL (e.g. `/api/tokens/v1.json` or a CDN equivalent).
-- [ ] The URL is listed in `llm.txt` (Feature 8.6) and the root README.
+- [ ] The URL is listed in `llm.txt` (Feature 6.6) and the root README.
 - [ ] The response includes a `version` field tied to the library's SemVer.
 - [ ] Works from a cold fetch in any mainstream AI client.
 
 **Priority:** P1
 **Effort:** S
 
-**US-8.3.3** — As a designer, I want the JSON importable into Figma via the Figma Tokens / Tokens Studio plugin, so that my Figma file stays in sync with the code.
+**US-6.3.3** — As a designer, I want the JSON importable into Figma via the Figma Tokens / Tokens Studio plugin, so that my Figma file stays in sync with the code.
 
 **Acceptance criteria:**
 - [ ] Importing `tokens.json` into Tokens Studio produces usable variables across color, typography, space, and shadow.
@@ -221,12 +221,12 @@ Auto-generate a JSON representation of the full token set on every build, in Des
 **Priority:** P2
 **Effort:** S
 
-### Feature 8.4: AI prompt templates
+### Feature 6.4: AI prompt templates
 A `prompts/` folder in the repo (and distributed via the CLI) containing reusable prompt snippets for common tasks: scaffolding a component that matches the design system, migrating a Bootstrap or MUI component to css-is-awesome, generating a new theme from a brand brief, explaining the system to a fresh model context. Each template is parameterized and versioned.
 
 #### User Stories
 
-**US-8.4.1** — As a prompt author, I want a `prompts/` folder with a documented schema for each template, so that contributions follow a consistent shape.
+**US-6.4.1** — As a prompt author, I want a `prompts/` folder with a documented schema for each template, so that contributions follow a consistent shape.
 
 **Acceptance criteria:**
 - [ ] `prompts/README.md` defines the frontmatter schema (`id`, `title`, `inputs`, `version`, `description`).
@@ -237,18 +237,18 @@ A `prompts/` folder in the repo (and distributed via the CLI) containing reusabl
 **Priority:** P2
 **Effort:** M
 
-**US-8.4.2** — As a developer using an AI copilot, I want to pull a prompt template via the CLI (`cia prompt <id>`), so that I can paste it into my chat without hunting on GitHub.
+**US-6.4.2** — As a developer using an AI copilot, I want to pull a prompt template via the CLI (`cia prompt <id>`), so that I can paste it into my chat without hunting on GitHub.
 
 **Acceptance criteria:**
 - [ ] `cia prompt generate-component --var name=Button` prints the filled template to stdout.
 - [ ] `cia prompt list` enumerates every template with id + title.
 - [ ] Errors on unknown id or missing required var return structured messages.
-- [ ] Documented in the integration guide (Feature 8.8).
+- [ ] Documented in the integration guide (Feature 6.8).
 
 **Priority:** P2
 **Effort:** S
 
-**US-8.4.3** — As a bot maintainer, I want the prompt templates surfaced in the docs site, so that users without the CLI can copy them from the web.
+**US-6.4.3** — As a bot maintainer, I want the prompt templates surfaced in the docs site, so that users without the CLI can copy them from the web.
 
 **Acceptance criteria:**
 - [ ] A docs-site page lists every template with a copy-to-clipboard button.
@@ -258,12 +258,12 @@ A `prompts/` folder in the repo (and distributed via the CLI) containing reusabl
 **Priority:** P2
 **Effort:** S
 
-### Feature 8.5: Custom Claude / ChatGPT / Gemini bots
+### Feature 6.5: Custom Claude / ChatGPT / Gemini bots
 Pre-configured assistants published on each of Anthropic's, OpenAI's, and Google's hosted-bot platforms. Each is wired to the MCP server (where supported), the JSON token export, and the docs site so it answers questions about the library correctly out of the box. Public URLs ship in the README and docs.
 
 #### User Stories
 
-**US-8.5.1** — As a developer using an AI copilot, I want a public Claude/ChatGPT/Gemini bot tuned on css-is-awesome, so that I can ask design-system questions without wiring anything myself.
+**US-6.5.1** — As a developer using an AI copilot, I want a public Claude/ChatGPT/Gemini bot tuned on css-is-awesome, so that I can ask design-system questions without wiring anything myself.
 
 **Acceptance criteria:**
 - [ ] A Claude (Projects or Custom Bot), a ChatGPT Custom GPT, and a Gemini Gem are published with public URLs.
@@ -274,18 +274,18 @@ Pre-configured assistants published on each of Anthropic's, OpenAI's, and Google
 **Priority:** P2
 **Effort:** M
 
-**US-8.5.2** — As a bot maintainer, I want a single source document that every bot's system prompt is built from, so that the three bots stay in sync.
+**US-6.5.2** — As a bot maintainer, I want a single source document that every bot's system prompt is built from, so that the three bots stay in sync.
 
 **Acceptance criteria:**
 - [ ] A `prompts/bots/system.md` file is the source of truth for the shared system prompt.
 - [ ] Platform-specific overrides are kept in small adjoining files (`claude.md`, `chatgpt.md`, `gemini.md`).
 - [ ] A release checklist documents how to push changes to all three platforms.
-- [ ] The checklist is referenced from `CONTRIBUTING.md` (Epic 9).
+- [ ] The checklist is referenced from `CONTRIBUTING.md` (Epic 7).
 
 **Priority:** P2
 **Effort:** S
 
-**US-8.5.3** — As a developer using an AI copilot, I want each bot to correctly refuse or redirect when asked about out-of-scope topics (unrelated CSS frameworks, general design questions), so that answers stay grounded.
+**US-6.5.3** — As a developer using an AI copilot, I want each bot to correctly refuse or redirect when asked about out-of-scope topics (unrelated CSS frameworks, general design questions), so that answers stay grounded.
 
 **Acceptance criteria:**
 - [ ] The system prompt includes an explicit scope and a polite redirect for off-topic questions.
@@ -295,12 +295,12 @@ Pre-configured assistants published on each of Anthropic's, OpenAI's, and Google
 **Priority:** P2
 **Effort:** S
 
-### Feature 8.6: `llm.txt` / `ai.txt`
+### Feature 6.6: `llm.txt` / `ai.txt`
 A plain-text `llm.txt` at repo root (and served at `/llm.txt` on the docs site) that summarizes the system in a single fetch. Contains what the library is, install methods, a full token list, a full mixin list, one example usage block, and links to the docs, JSON tokens, and MCP server. Sized for a single LLM context load. Cheap, high leverage; treated as P1 even though the rest of this epic is P2.
 
 #### User Stories
 
-**US-8.6.1** — As an AI assistant, I want a single `/llm.txt` fetch that tells me everything I need to start generating correct css-is-awesome code, so that I don't have to scrape the docs site.
+**US-6.6.1** — As an AI assistant, I want a single `/llm.txt` fetch that tells me everything I need to start generating correct css-is-awesome code, so that I don't have to scrape the docs site.
 
 **Acceptance criteria:**
 - [ ] `llm.txt` exists at repo root and is served at `/llm.txt` on the deployed docs site.
@@ -311,7 +311,7 @@ A plain-text `llm.txt` at repo root (and served at `/llm.txt` on the docs site) 
 **Priority:** P1
 **Effort:** S
 
-**US-8.6.2** — As a system author, I want `llm.txt` auto-generated from the same sources as the docs and JSON export, so that it can never drift.
+**US-6.6.2** — As a system author, I want `llm.txt` auto-generated from the same sources as the docs and JSON export, so that it can never drift.
 
 **Acceptance criteria:**
 - [ ] A build script assembles `llm.txt` from SCSS tokens, mixin signatures, and a frontmatter intro file.
@@ -321,7 +321,7 @@ A plain-text `llm.txt` at repo root (and served at `/llm.txt` on the docs site) 
 **Priority:** P1
 **Effort:** S
 
-**US-8.6.3** — As a developer using an AI copilot, I want the llm.txt URL printed on the docs home and in the README, so that I can paste it into my assistant without digging.
+**US-6.6.3** — As a developer using an AI copilot, I want the llm.txt URL printed on the docs home and in the README, so that I can paste it into my assistant without digging.
 
 **Acceptance criteria:**
 - [ ] The root README has an "AI assistants" section with the URL and a one-line usage hint.
@@ -331,12 +331,12 @@ A plain-text `llm.txt` at repo root (and served at `/llm.txt` on the docs site) 
 **Priority:** P1
 **Effort:** S
 
-### Feature 8.7: Versioning policy for AI consumers
+### Feature 6.7: Versioning policy for AI consumers
 The MCP server, CLI, and JSON token export each follow their own SemVer, published independently from the library's version, so AI tools can pin a stable interface while the library itself evolves. Documented contract for what constitutes a breaking change in each surface.
 
 #### User Stories
 
-**US-8.7.1** — As an MCP client integrator, I want the MCP server versioned independently with a published changelog, so that I can pin a known-working version.
+**US-6.7.1** — As an MCP client integrator, I want the MCP server versioned independently with a published changelog, so that I can pin a known-working version.
 
 **Acceptance criteria:**
 - [ ] `@css-is-awesome/mcp` publishes to npm with its own SemVer and a `CHANGELOG.md`.
@@ -346,7 +346,7 @@ The MCP server, CLI, and JSON token export each follow their own SemVer, publish
 **Priority:** P2
 **Effort:** S
 
-**US-8.7.2** — As a CLI user, I want `cia --version` to show both the CLI version and the library version it expects, so that I can diagnose mismatches.
+**US-6.7.2** — As a CLI user, I want `cia --version` to show both the CLI version and the library version it expects, so that I can diagnose mismatches.
 
 **Acceptance criteria:**
 - [ ] `cia --version` prints `cli@x.y.z library@a.b.c`.
@@ -356,7 +356,7 @@ The MCP server, CLI, and JSON token export each follow their own SemVer, publish
 **Priority:** P2
 **Effort:** S
 
-**US-8.7.3** — As an AI assistant, I want the JSON token export to carry a `schema_version` field, so that I can detect and adapt to format changes.
+**US-6.7.3** — As an AI assistant, I want the JSON token export to carry a `schema_version` field, so that I can detect and adapt to format changes.
 
 **Acceptance criteria:**
 - [ ] Every emitted `tokens.json` includes `schema_version` following SemVer.
@@ -366,12 +366,12 @@ The MCP server, CLI, and JSON token export each follow their own SemVer, publish
 **Priority:** P2
 **Effort:** S
 
-### Feature 8.8: Integration guide
+### Feature 6.8: Integration guide
 A dedicated docs-site page that walks a reader through every way to hook AI into css-is-awesome: connecting the MCP server to Claude Desktop / Cursor, using the custom bots, installing the CLI, when to reach for each tool, and worked one-prompt examples. This is the landing surface for developers arriving via the "AI-friendly" pitch.
 
 #### User Stories
 
-**US-8.8.1** — As a developer using an AI copilot, I want one docs page that explains all AI integration paths, so that I don't have to assemble the picture from scattered READMEs.
+**US-6.8.1** — As a developer using an AI copilot, I want one docs page that explains all AI integration paths, so that I don't have to assemble the picture from scattered READMEs.
 
 **Acceptance criteria:**
 - [ ] A page at `/docs/ai` covers MCP setup, CLI usage, custom bots, `llm.txt`, and JSON tokens.
@@ -382,7 +382,7 @@ A dedicated docs-site page that walks a reader through every way to hook AI into
 **Priority:** P2
 **Effort:** M
 
-**US-8.8.2** — As a developer using an AI copilot, I want a "build a themed page in one prompt" worked example on the integration page, so that I have a concrete demonstration of the differentiator.
+**US-6.8.2** — As a developer using an AI copilot, I want a "build a themed page in one prompt" worked example on the integration page, so that I have a concrete demonstration of the differentiator.
 
 **Acceptance criteria:**
 - [ ] The page includes a reproducible example prompt plus the assistant's expected output, using one of the custom bots or a local Claude Desktop + MCP setup.
@@ -392,7 +392,7 @@ A dedicated docs-site page that walks a reader through every way to hook AI into
 **Priority:** P2
 **Effort:** S
 
-**US-8.8.3** — As a developer using an AI copilot, I want a "when to use what" decision table (CLI vs MCP vs raw docs vs bot), so that I pick the right tool without trial and error.
+**US-6.8.3** — As a developer using an AI copilot, I want a "when to use what" decision table (CLI vs MCP vs raw docs vs bot), so that I pick the right tool without trial and error.
 
 **Acceptance criteria:**
 - [ ] The integration page includes a table mapping task types (scaffold project, one-off question, generate component in-chat, batch migration) to the recommended tool.
@@ -408,5 +408,5 @@ A dedicated docs-site page that walks a reader through every way to hook AI into
 
 ## Priority
 P2 (post-1.0) overall, with two P1 exceptions that should ship before 1.0 because they are cheap and high leverage:
-- Feature 8.6 (`llm.txt` / `ai.txt`) — a single generated file that dramatically lifts AI accuracy.
-- Feature 8.3 (JSON token export) — verification and automation of an artifact the repo already partially ships.
+- Feature 6.6 (`llm.txt` / `ai.txt`) — a single generated file that dramatically lifts AI accuracy.
+- Feature 6.3 (JSON token export) — verification and automation of an artifact the repo already partially ships.

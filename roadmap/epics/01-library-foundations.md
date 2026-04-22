@@ -15,9 +15,9 @@ This epic makes the SCSS library internally complete and theme-aware from end to
 - Per-theme icon packs, preview thumbnails, community submission flow, and contrast audits — see Epic 2 (Themes & Icons).
 - New React component wrappers that consume these tokens — see Epic 3 (React Component Library).
 - Long-form docs-site prose, mixin reference pages, and recipes — see Epic 4 (Documentation Content). This epic ships only the minimal inline docs (`icons/README.md`, `CONTRIBUTING-THEMES.md`).
-- CI infrastructure beyond hooking the theme validator in — see Epic 7 (Infrastructure & Release).
-- Visual-regression tests of themes — see Epic 6 (Testing & Quality).
-- JSON token export for AI tooling — see Epic 8 (AI Integration).
+- CI infrastructure beyond hooking the theme validator in — see Epic 5 (Quality & Delivery).
+- Visual-regression tests of themes — see Epic 5 (Quality & Delivery).
+- JSON token export for AI tooling — see Epic 6 (AI Integration).
 
 ## Features
 

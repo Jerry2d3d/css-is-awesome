@@ -9,14 +9,14 @@ React is how most consumers will actually use css-is-awesome. Today the library 
 - 100% of components use `React.forwardRef`, accept `className` and `style`, and spread remaining HTML attributes onto the root element.
 - 100% of components have typed props with JSDoc on every public prop.
 - 100% of components pass an axe-core smoke test in default state.
-- Every component ships with at least one Storybook story (story authoring lives in Epic 7; this epic guarantees the stories exist).
+- Every component ships with at least one Storybook story (story authoring lives in Epic 5; this epic guarantees the stories exist).
 
 ## Out of scope
 - Authoring or modifying the underlying SCSS mixins — see Epic 1 (Library Foundations).
-- Visual regression tests, bundle-size budgets, and a11y CI wiring — see Epic 6 (Testing & Quality).
-- Storybook infrastructure, MDX docs pages, and deploy — see Epic 7 (Infrastructure & Release).
-- Written guide / "how to compose" documentation — see Epic 4 (Documentation Content).
-- Search, TOC, and other docs-site UX — see Epic 5 (Site UX).
+- Visual regression tests, bundle-size budgets, and a11y CI wiring — see Epic 5 (Quality & Delivery).
+- Storybook infrastructure, MDX docs pages, and deploy — see Epic 5 (Quality & Delivery).
+- Written guide / "how to compose" documentation — see Epic 4 (Documentation Site).
+- Search, TOC, and other docs-site UX — see Epic 4 (Documentation Site).
 
 ## Features
 
@@ -34,7 +34,7 @@ The eight single-input primitives consumers need on day one: `Input`, `Textarea`
 - [ ] Accepts `className` and forwards to root element.
 - [ ] Supports `invalid` prop that toggles the error visual state.
 - [ ] Respects `prefers-reduced-motion`.
-- [ ] Has a Storybook story (see Epic 7).
+- [ ] Has a Storybook story (see Epic 5).
 
 **Priority:** P0
 **Effort:** S
@@ -460,7 +460,7 @@ Cross-cutting requirements every component in this epic must satisfy. This featu
 - [ ] Every component accepts `className` and merges it onto the root element.
 - [ ] Every component accepts `style` and merges it onto the root element.
 - [ ] Every component spreads remaining native HTML attributes onto the root.
-- [ ] A lint rule or CI check enforces the pattern (coordinate with Epic 6).
+- [ ] A lint rule or CI check enforces the pattern (coordinate with Epic 5).
 
 **Priority:** P0
 **Effort:** M
@@ -472,7 +472,7 @@ Cross-cutting requirements every component in this epic must satisfy. This featu
 - [ ] Each folder contains `ComponentName.tsx`, `ComponentName.module.scss`, and `index.ts`.
 - [ ] `index.ts` re-exports the component and its prop type as named exports.
 - [ ] Package root `index.ts` re-exports every component.
-- [ ] A CI check fails if a component does not match this pattern (coordinate with Epic 6).
+- [ ] A CI check fails if a component does not match this pattern (coordinate with Epic 5).
 
 **Priority:** P0
 **Effort:** S
@@ -488,7 +488,7 @@ Cross-cutting requirements every component in this epic must satisfy. This featu
 **Effort:** M
 
 ## Dependencies
-- Blocks: Epic 5 (Site UX), Epic 6 (Testing & Quality), Epic 7 (Infrastructure & Release)
+- Blocks: Epic 4 (Documentation Site), Epic 5 (Quality & Delivery), Epic 5 (Quality & Delivery)
 - Blocked by: Epic 1 (Library Foundations) — needs token coverage and the new `switch-base`, `slider-base`, `spinner`, and `skeleton-base` mixins finalized before wrappers land
 
 ## Priority

@@ -1,7 +1,7 @@
-# Epic 9: Community & Project Meta
+# Epic 7: Community & Project Meta
 
 ## Summary
-Make css-is-awesome feel like a welcoming, credible open-source project rather than one person's GitHub repo. Today the project ships LICENSE, ROADMAP, CHANGELOG, THEMING, and README and nothing else — no CONTRIBUTING, no Code of Conduct, no SECURITY contact, no issue or PR templates, no funding config, no versioning policy, no discussion channel. This epic writes the policies, templates, and community scaffolding that a would-be contributor, security researcher, sponsor, or evaluator expects to find on day one. The actual release automation lives in Epic 7; this epic is the documents and GitHub config those releases are governed by.
+Make css-is-awesome feel like a welcoming, credible open-source project rather than one person's GitHub repo. Today the project ships LICENSE, ROADMAP, CHANGELOG, THEMING, and README and nothing else — no CONTRIBUTING, no Code of Conduct, no SECURITY contact, no issue or PR templates, no funding config, no versioning policy, no discussion channel. This epic writes the policies, templates, and community scaffolding that a would-be contributor, security researcher, sponsor, or evaluator expects to find on day one. The actual release automation lives in Epic 5; this epic is the documents and GitHub config those releases are governed by.
 
 ## Goals
 - All standard OSS community files present and discoverable from the README: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue templates, PR template, `FUNDING.yml`.
@@ -13,7 +13,7 @@ Make css-is-awesome feel like a welcoming, credible open-source project rather t
 
 ## Out of scope
 - Actual code review of external contributions — happens organically per PR, not governed by this epic.
-- Release automation and CI pipelines — see Epic 7. This epic writes the policy the automation enforces.
+- Release automation and CI pipelines — see Epic 5. This epic writes the policy the automation enforces.
 - Documentation content on the docs site itself — see Epic 4. This epic covers repo-root and `.github/` project-meta files.
 - Contributor recruitment and community growth programs — post-1.0 concern.
 - Moderation of the discussion channel beyond initial setup and category structure.
@@ -21,12 +21,12 @@ Make css-is-awesome feel like a welcoming, credible open-source project rather t
 
 ## Features
 
-### Feature 9.1: CONTRIBUTING.md
+### Feature 7.1: CONTRIBUTING.md
 A repo-root `CONTRIBUTING.md` that walks a would-be contributor from "cloned the repo" to "PR merged". Covers local setup (Node version, install, build, test commands), branch naming, commit message format, the PR template and review expectations, merge strategy, and cross-links to `CONTRIBUTING-THEMES.md` for theme-specific contributions (owned by Epic 2).
 
 #### User Stories
 
-**US-9.1.1** — As a new contributor, I want a single `CONTRIBUTING.md` that covers local setup, test commands, and PR expectations, so that I can ship my first PR without reverse-engineering the project.
+**US-7.1.1** — As a new contributor, I want a single `CONTRIBUTING.md` that covers local setup, test commands, and PR expectations, so that I can ship my first PR without reverse-engineering the project.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`CONTRIBUTING.md` at repo root).
@@ -39,7 +39,7 @@ A repo-root `CONTRIBUTING.md` that walks a would-be contributor from "cloned the
 **Priority:** P0
 **Effort:** M
 
-**US-9.1.2** — As a theme author, I want `CONTRIBUTING.md` to point me at the theme-specific contribution guide, so that I follow the theme-author path instead of the library-contributor path.
+**US-7.1.2** — As a theme author, I want `CONTRIBUTING.md` to point me at the theme-specific contribution guide, so that I follow the theme-author path instead of the library-contributor path.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`CONTRIBUTING.md` at repo root).
@@ -50,12 +50,12 @@ A repo-root `CONTRIBUTING.md` that walks a would-be contributor from "cloned the
 **Priority:** P0
 **Effort:** S
 
-**US-9.1.3** — As a maintainer, I want the commit message format documented (Conventional Commits), so that release automation (Epic 7) can derive changelog entries and SemVer bumps mechanically.
+**US-7.1.3** — As a maintainer, I want the commit message format documented (Conventional Commits), so that release automation (Epic 5) can derive changelog entries and SemVer bumps mechanically.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`CONTRIBUTING.md` at repo root).
 - [ ] Documents the chosen commit format with examples for feat, fix, docs, refactor, chore, and breaking-change footer.
-- [ ] Cross-references the SemVer policy (Feature 9.7) and changelog format (Feature 9.9).
+- [ ] Cross-references the SemVer policy (Feature 7.7) and changelog format (Feature 7.9).
 - [ ] Uses an existing recognized template (Conventional Commits) where one exists.
 
 **Priority:** P0
@@ -63,12 +63,12 @@ A repo-root `CONTRIBUTING.md` that walks a would-be contributor from "cloned the
 
 ---
 
-### Feature 9.2: CODE_OF_CONDUCT.md
+### Feature 7.2: CODE_OF_CONDUCT.md
 A repo-root `CODE_OF_CONDUCT.md` adopting Contributor Covenant 2.1 (or current stable version) with a real, monitored reporting channel — not a "coming soon" placeholder. Enforcement steps stated so it is not purely aspirational.
 
 #### User Stories
 
-**US-9.2.1** — As a visitor evaluating project health, I want to see a recognizable Code of Conduct at the conventional path, so that I can trust the project takes community norms seriously.
+**US-7.2.1** — As a visitor evaluating project health, I want to see a recognizable Code of Conduct at the conventional path, so that I can trust the project takes community norms seriously.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`CODE_OF_CONDUCT.md` at repo root).
@@ -79,7 +79,7 @@ A repo-root `CODE_OF_CONDUCT.md` adopting Contributor Covenant 2.1 (or current s
 **Priority:** P0
 **Effort:** S
 
-**US-9.2.2** — As someone who needs to report a violation, I want a real, monitored reporting channel, so that my report reaches a human who will act on it.
+**US-7.2.2** — As someone who needs to report a violation, I want a real, monitored reporting channel, so that my report reaches a human who will act on it.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`CODE_OF_CONDUCT.md` at repo root).
@@ -92,12 +92,12 @@ A repo-root `CODE_OF_CONDUCT.md` adopting Contributor Covenant 2.1 (or current s
 
 ---
 
-### Feature 9.3: SECURITY.md
+### Feature 7.3: SECURITY.md
 A repo-root `SECURITY.md` describing responsible-disclosure procedure: how to contact privately, expected acknowledgement SLA, supported versions, typical disclosure timeline, and credit policy. Wired to GitHub's security advisory feature.
 
 #### User Stories
 
-**US-9.3.1** — As a security researcher, I want a `SECURITY.md` with a private contact and SLA, so that I can report a vulnerability without posting it publicly.
+**US-7.3.1** — As a security researcher, I want a `SECURITY.md` with a private contact and SLA, so that I can report a vulnerability without posting it publicly.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`SECURITY.md` at repo root).
@@ -109,7 +109,7 @@ A repo-root `SECURITY.md` describing responsible-disclosure procedure: how to co
 **Priority:** P0
 **Effort:** S
 
-**US-9.3.2** — As a security researcher, I want the supported-versions table and disclosure timeline stated, so that I know which versions qualify for a fix and when I can publish.
+**US-7.3.2** — As a security researcher, I want the supported-versions table and disclosure timeline stated, so that I know which versions qualify for a fix and when I can publish.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`SECURITY.md` at repo root).
@@ -121,7 +121,7 @@ A repo-root `SECURITY.md` describing responsible-disclosure procedure: how to co
 **Priority:** P0
 **Effort:** S
 
-**US-9.3.3** — As a maintainer, I want the private advisory workflow (GitHub Security Advisories) enabled and documented, so that a report moves through a repeatable process instead of ad-hoc email.
+**US-7.3.3** — As a maintainer, I want the private advisory workflow (GitHub Security Advisories) enabled and documented, so that a report moves through a repeatable process instead of ad-hoc email.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`SECURITY.md` at repo root).
@@ -134,12 +134,12 @@ A repo-root `SECURITY.md` describing responsible-disclosure procedure: how to co
 
 ---
 
-### Feature 9.4: Issue templates
+### Feature 7.4: Issue templates
 YAML-form issue templates under `.github/ISSUE_TEMPLATE/` — `bug_report.yml`, `feature_request.yml`, `question.yml` — each with required fields (version, environment, reproduction, expected/actual), a short description, and labels applied automatically.
 
 #### User Stories
 
-**US-9.4.1** — As a new contributor reporting a bug, I want a structured bug-report form, so that I provide the repro information a maintainer needs without guessing.
+**US-7.4.1** — As a new contributor reporting a bug, I want a structured bug-report form, so that I provide the repro information a maintainer needs without guessing.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`.github/ISSUE_TEMPLATE/bug_report.yml`).
@@ -150,7 +150,7 @@ YAML-form issue templates under `.github/ISSUE_TEMPLATE/` — `bug_report.yml`, 
 **Priority:** P0
 **Effort:** S
 
-**US-9.4.2** — As a new contributor proposing a feature, I want a feature-request form that asks for problem statement and proposed solution, so that I describe the need before the implementation.
+**US-7.4.2** — As a new contributor proposing a feature, I want a feature-request form that asks for problem statement and proposed solution, so that I describe the need before the implementation.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`.github/ISSUE_TEMPLATE/feature_request.yml`).
@@ -161,11 +161,11 @@ YAML-form issue templates under `.github/ISSUE_TEMPLATE/` — `bug_report.yml`, 
 **Priority:** P0
 **Effort:** S
 
-**US-9.4.3** — As a visitor with a usage question, I want a question template that points me at the discussion channel first, so that I use the right channel for support vs. bug reports.
+**US-7.4.3** — As a visitor with a usage question, I want a question template that points me at the discussion channel first, so that I use the right channel for support vs. bug reports.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`.github/ISSUE_TEMPLATE/question.yml` or `.github/ISSUE_TEMPLATE/config.yml`).
-- [ ] Redirects usage questions to the chosen discussion channel (Feature 9.10).
+- [ ] Redirects usage questions to the chosen discussion channel (Feature 7.10).
 - [ ] Auto-applies a `question` label or closes with a pointer template.
 - [ ] Readable and actionable — not just boilerplate copy.
 
@@ -174,12 +174,12 @@ YAML-form issue templates under `.github/ISSUE_TEMPLATE/` — `bug_report.yml`, 
 
 ---
 
-### Feature 9.5: PR template
+### Feature 7.5: PR template
 A `.github/pull_request_template.md` with summary, related-issue link, test plan, screenshots for visual changes, and a contributor checklist (lint, tests, docs updated, changelog fragment added).
 
 #### User Stories
 
-**US-9.5.1** — As a new contributor, I want a PR template that tells me what to include, so that I do not submit a PR missing context the reviewer needs.
+**US-7.5.1** — As a new contributor, I want a PR template that tells me what to include, so that I do not submit a PR missing context the reviewer needs.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`.github/pull_request_template.md`).
@@ -190,7 +190,7 @@ A `.github/pull_request_template.md` with summary, related-issue link, test plan
 **Priority:** P0
 **Effort:** S
 
-**US-9.5.2** — As a maintainer, I want a contributor checklist in the PR template, so that lint, tests, docs, and changelog updates are surfaced before review rather than discovered in review.
+**US-7.5.2** — As a maintainer, I want a contributor checklist in the PR template, so that lint, tests, docs, and changelog updates are surfaced before review rather than discovered in review.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`.github/pull_request_template.md`).
@@ -203,12 +203,12 @@ A `.github/pull_request_template.md` with summary, related-issue link, test plan
 
 ---
 
-### Feature 9.6: Funding / sponsors
+### Feature 7.6: Funding / sponsors
 A `.github/FUNDING.yml` listing GitHub Sponsors (and optionally Open Collective, Buy Me a Coffee) so the "Sponsor" button appears on the repo page. A short sponsors section on README naming active sponsors.
 
 #### User Stories
 
-**US-9.6.1** — As a sponsor or funder, I want a visible "Sponsor" button on the repo, so that I can back the project through a familiar channel.
+**US-7.6.1** — As a sponsor or funder, I want a visible "Sponsor" button on the repo, so that I can back the project through a familiar channel.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`.github/FUNDING.yml`).
@@ -219,7 +219,7 @@ A `.github/FUNDING.yml` listing GitHub Sponsors (and optionally Open Collective,
 **Priority:** P1
 **Effort:** S
 
-**US-9.6.2** — As a visitor evaluating project health, I want a sponsors section in the README, so that I see the project is backed and who backs it.
+**US-7.6.2** — As a visitor evaluating project health, I want a sponsors section in the README, so that I see the project is backed and who backs it.
 
 **Acceptance criteria:**
 - [ ] README has a "Sponsors" or "Backers" section with links to active sponsors.
@@ -232,12 +232,12 @@ A `.github/FUNDING.yml` listing GitHub Sponsors (and optionally Open Collective,
 
 ---
 
-### Feature 9.7: SemVer policy
+### Feature 7.7: SemVer policy
 A `VERSIONING.md` (or dedicated section in `CONTRIBUTING.md`) stating how css-is-awesome applies Semantic Versioning to a CSS framework: what counts as patch, minor, major. Covers mixin additions/renames, token defaults, utility class renames, breaking visual changes, and semantic aliases.
 
 #### User Stories
 
-**US-9.7.1** — As a maintainer, I want a SemVer policy I can apply to any change without judgment calls, so that version bumps are mechanical.
+**US-7.7.1** — As a maintainer, I want a SemVer policy I can apply to any change without judgment calls, so that version bumps are mechanical.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`VERSIONING.md` at repo root or a clearly anchored section of `CONTRIBUTING.md`).
@@ -249,7 +249,7 @@ A `VERSIONING.md` (or dedicated section in `CONTRIBUTING.md`) stating how css-is
 **Priority:** P1
 **Effort:** M
 
-**US-9.7.2** — As a user pinning a version, I want the SemVer policy to tell me what upgrading a patch or minor version can and cannot do to my rendered output, so that I know how safely I can `npm update`.
+**US-7.7.2** — As a user pinning a version, I want the SemVer policy to tell me what upgrading a patch or minor version can and cannot do to my rendered output, so that I know how safely I can `npm update`.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`VERSIONING.md` or anchored section).
@@ -260,7 +260,7 @@ A `VERSIONING.md` (or dedicated section in `CONTRIBUTING.md`) stating how css-is
 **Priority:** P1
 **Effort:** S
 
-**US-9.7.3** — As a release manager, I want the SemVer policy wired to the commit message format, so that the release tool (Epic 7) can compute the next version from the commit log.
+**US-7.7.3** — As a release manager, I want the SemVer policy wired to the commit message format, so that the release tool (Epic 5) can compute the next version from the commit log.
 
 **Acceptance criteria:**
 - [ ] Policy references the Conventional Commits types used (feat, fix, feat!, BREAKING CHANGE footer).
@@ -273,12 +273,12 @@ A `VERSIONING.md` (or dedicated section in `CONTRIBUTING.md`) stating how css-is
 
 ---
 
-### Feature 9.8: Deprecation policy
+### Feature 7.8: Deprecation policy
 A `DEPRECATION.md` (or section in `VERSIONING.md`) stating how deprecations work: how long deprecated APIs survive (e.g. two minor versions), how they are marked in code and docs, where deprecation notices appear (changelog, docs, console warning where applicable), and when they become hard removals.
 
 #### User Stories
 
-**US-9.8.1** — As a user, I want a deprecation policy stating how long old APIs survive after being deprecated, so that I can plan migration without being surprised.
+**US-7.8.1** — As a user, I want a deprecation policy stating how long old APIs survive after being deprecated, so that I can plan migration without being surprised.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`DEPRECATION.md` at repo root, or a clearly anchored section of `VERSIONING.md`).
@@ -289,7 +289,7 @@ A `DEPRECATION.md` (or section in `VERSIONING.md`) stating how deprecations work
 **Priority:** P1
 **Effort:** S
 
-**US-9.8.2** — As a maintainer, I want the deprecation policy to specify how a deprecated item is marked in source and in docs, so that deprecation is uniformly discoverable.
+**US-7.8.2** — As a maintainer, I want the deprecation policy to specify how a deprecated item is marked in source and in docs, so that deprecation is uniformly discoverable.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`DEPRECATION.md` or anchored section).
@@ -302,12 +302,12 @@ A `DEPRECATION.md` (or section in `VERSIONING.md`) stating how deprecations work
 
 ---
 
-### Feature 9.9: Changelog format and adoption
-Pick and document a changelog format — Keep a Changelog structure, entries grouped by Added/Changed/Deprecated/Removed/Fixed/Security — and wire it to the Conventional Commits flow. The file itself (`CHANGELOG.md`) exists today; this feature formalizes the format and the automation contract Epic 7 will implement.
+### Feature 7.9: Changelog format and adoption
+Pick and document a changelog format — Keep a Changelog structure, entries grouped by Added/Changed/Deprecated/Removed/Fixed/Security — and wire it to the Conventional Commits flow. The file itself (`CHANGELOG.md`) exists today; this feature formalizes the format and the automation contract Epic 5 will implement.
 
 #### User Stories
 
-**US-9.9.1** — As a user reading `CHANGELOG.md`, I want a consistent format (Keep a Changelog), so that I can scan releases quickly and find breaking changes at a glance.
+**US-7.9.1** — As a user reading `CHANGELOG.md`, I want a consistent format (Keep a Changelog), so that I can scan releases quickly and find breaking changes at a glance.
 
 **Acceptance criteria:**
 - [ ] `CHANGELOG.md` at repo root follows the Keep a Changelog structure.
@@ -318,7 +318,7 @@ Pick and document a changelog format — Keep a Changelog structure, entries gro
 **Priority:** P1
 **Effort:** S
 
-**US-9.9.2** — As a release manager, I want the changelog format documented so Epic 7 automation can generate entries from Conventional Commits, so that changelog maintenance is not manual per release.
+**US-7.9.2** — As a release manager, I want the changelog format documented so Epic 5 automation can generate entries from Conventional Commits, so that changelog maintenance is not manual per release.
 
 **Acceptance criteria:**
 - [ ] `CONTRIBUTING.md` (or a dedicated `CHANGELOG-POLICY.md`) documents the format and the automation contract.
@@ -331,23 +331,23 @@ Pick and document a changelog format — Keep a Changelog structure, entries gro
 
 ---
 
-### Feature 9.10: Discussion channel
+### Feature 7.10: Discussion channel
 Enable GitHub Discussions on the repo with a minimal, committed category structure (e.g. Help, Ideas, Showcase, Announcements). Link from README. Pick one channel and commit — no "we also have a Discord and a Mastodon and a forum" sprawl before 1.0.
 
 #### User Stories
 
-**US-9.10.1** — As a visitor with a usage question, I want a discussion channel linked from the README, so that I have a support path other than filing an issue.
+**US-7.10.1** — As a visitor with a usage question, I want a discussion channel linked from the README, so that I have a support path other than filing an issue.
 
 **Acceptance criteria:**
 - [ ] GitHub Discussions is enabled on the repo.
 - [ ] Categories exist for Help, Ideas, Showcase, and Announcements (or equivalent committed structure).
 - [ ] Cross-linked from README.
-- [ ] Issue templates (Feature 9.4) redirect usage questions here.
+- [ ] Issue templates (Feature 7.4) redirect usage questions here.
 
 **Priority:** P1
 **Effort:** S
 
-**US-9.10.2** — As a maintainer, I want a single committed discussion channel rather than several, so that community attention is not fragmented across platforms before the project has critical mass.
+**US-7.10.2** — As a maintainer, I want a single committed discussion channel rather than several, so that community attention is not fragmented across platforms before the project has critical mass.
 
 **Acceptance criteria:**
 - [ ] Only one public discussion channel is linked from README at 1.0.
@@ -359,12 +359,12 @@ Enable GitHub Discussions on the repo with a minimal, committed category structu
 
 ---
 
-### Feature 9.11: Announcement plan
+### Feature 7.11: Announcement plan
 A pre-written, reviewed announcement kit for 1.0: where to post (Hacker News, r/webdev, r/css, Product Hunt, Dev.to, Hacker Newsletter, CSS-Tricks Almanac community, Mastodon web-dev tags), what the headline is, and the 1-paragraph pitch, 1-screen demo, and "why now" narrative.
 
 #### User Stories
 
-**US-9.11.1** — As a maintainer shipping 1.0, I want a pre-written announcement kit, so that launch day is executing a plan rather than drafting copy under pressure.
+**US-7.11.1** — As a maintainer shipping 1.0, I want a pre-written announcement kit, so that launch day is executing a plan rather than drafting copy under pressure.
 
 **Acceptance criteria:**
 - [ ] Lives under `roadmap/launch/` or similar conventional path in the repo.
@@ -375,7 +375,7 @@ A pre-written, reviewed announcement kit for 1.0: where to post (Hacker News, r/
 **Priority:** P2
 **Effort:** M
 
-**US-9.11.2** — As a visitor evaluating the project via a launch post, I want the launch copy to state the "why now" (mixin-first, theme-token model, Bootstrap alternative) in one paragraph, so that I can decide whether to click through in ten seconds.
+**US-7.11.2** — As a visitor evaluating the project via a launch post, I want the launch copy to state the "why now" (mixin-first, theme-token model, Bootstrap alternative) in one paragraph, so that I can decide whether to click through in ten seconds.
 
 **Acceptance criteria:**
 - [ ] Announcement kit contains a one-paragraph pitch approved by the project owner.
@@ -387,12 +387,12 @@ A pre-written, reviewed announcement kit for 1.0: where to post (Hacker News, r/
 
 ---
 
-### Feature 9.12: Brand assets
+### Feature 7.12: Brand assets
 A repo-root `brand/` folder (or `/brand` page on the docs site) shipping the logo SVG, wordmark, allowed/disallowed uses, color-on-light and color-on-dark variants, and a short "say you built something with css-is-awesome" snippet for community themes and press.
 
 #### User Stories
 
-**US-9.12.1** — As a sponsor or press outlet, I want logo and wordmark assets with allowed-use guidelines, so that I can represent the project accurately without asking.
+**US-7.12.1** — As a sponsor or press outlet, I want logo and wordmark assets with allowed-use guidelines, so that I can represent the project accurately without asking.
 
 **Acceptance criteria:**
 - [ ] Lives at a conventional path (`brand/` at repo root, or `/brand` on the docs site linked from README).
@@ -403,7 +403,7 @@ A repo-root `brand/` folder (or `/brand` page on the docs site) shipping the log
 **Priority:** P2
 **Effort:** M
 
-**US-9.12.2** — As a community theme author, I want a "Built with css-is-awesome" badge snippet, so that I can link back from my theme's readme or demo page.
+**US-7.12.2** — As a community theme author, I want a "Built with css-is-awesome" badge snippet, so that I can link back from my theme's readme or demo page.
 
 **Acceptance criteria:**
 - [ ] Brand assets folder/page includes a ready-to-paste badge snippet (HTML and markdown).
@@ -415,24 +415,24 @@ A repo-root `brand/` folder (or `/brand` page on the docs site) shipping the log
 
 ---
 
-### Feature 9.13: Maintainer onboarding
+### Feature 7.13: Maintainer onboarding
 A `MAINTAINERS.md` (or section of `CONTRIBUTING.md`) for when anyone other than the original author holds commit rights: who the current maintainers are, how secrets are managed, the release procedure, issue triage guidelines, and the security-advisory workflow from the maintainer side.
 
 #### User Stories
 
-**US-9.13.1** — As a new maintainer, I want a `MAINTAINERS.md` covering secrets management, release procedure, and triage expectations, so that I can operate the project without shoulder-surfing the original author.
+**US-7.13.1** — As a new maintainer, I want a `MAINTAINERS.md` covering secrets management, release procedure, and triage expectations, so that I can operate the project without shoulder-surfing the original author.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`MAINTAINERS.md` at repo root, or a clearly anchored section of `CONTRIBUTING.md`).
 - [ ] Lists current maintainers and their areas.
 - [ ] Covers secrets rotation and where secrets live (GitHub Actions, npm, domain registrar).
-- [ ] Cross-references the release procedure (Epic 7) and security advisory workflow (Feature 9.3).
+- [ ] Cross-references the release procedure (Epic 5) and security advisory workflow (Feature 7.3).
 - [ ] Readable and actionable — not just boilerplate copy.
 
 **Priority:** P2
 **Effort:** M
 
-**US-9.13.2** — As a maintainer triaging issues, I want documented triage guidelines (labels, priority rules, close-stale policy), so that the issue tracker stays coherent as volume grows.
+**US-7.13.2** — As a maintainer triaging issues, I want documented triage guidelines (labels, priority rules, close-stale policy), so that the issue tracker stays coherent as volume grows.
 
 **Acceptance criteria:**
 - [ ] Lives at the conventional path (`MAINTAINERS.md` or anchored section).
@@ -446,12 +446,12 @@ A `MAINTAINERS.md` (or section of `CONTRIBUTING.md`) for when anyone other than 
 
 ---
 
-### Feature 9.14: Release notes process
+### Feature 7.14: Release notes process
 A documented release-notes process: who writes them (release manager), where they live (GitHub Releases + `CHANGELOG.md` + a `/docs/releases` page on the docs site), what they include (summary, migration notes for breaking changes, shout-outs, full changelog link), and when they publish relative to the tag.
 
 #### User Stories
 
-**US-9.14.1** — As a user on an existing version, I want release notes that call out breaking changes and migration steps, so that I can upgrade without reading the full changelog.
+**US-7.14.1** — As a user on an existing version, I want release notes that call out breaking changes and migration steps, so that I can upgrade without reading the full changelog.
 
 **Acceptance criteria:**
 - [ ] Release notes process documented in `CONTRIBUTING.md` or a dedicated `RELEASING.md`.
@@ -463,7 +463,7 @@ A documented release-notes process: who writes them (release manager), where the
 **Priority:** P1
 **Effort:** S
 
-**US-9.14.2** — As a release manager, I want the release-notes template and timing rules documented, so that every release follows the same shape without ad-hoc copy per version.
+**US-7.14.2** — As a release manager, I want the release-notes template and timing rules documented, so that every release follows the same shape without ad-hoc copy per version.
 
 **Acceptance criteria:**
 - [ ] Release notes process documented at a conventional path.
@@ -474,7 +474,7 @@ A documented release-notes process: who writes them (release manager), where the
 **Priority:** P1
 **Effort:** S
 
-**US-9.14.3** — As a contributor whose PR shipped, I want release notes to include contributor thanks, so that external contribution is recognized.
+**US-7.14.3** — As a contributor whose PR shipped, I want release notes to include contributor thanks, so that external contribution is recognized.
 
 **Acceptance criteria:**
 - [ ] Release notes template includes a "Thanks" or "Contributors" section.
@@ -488,7 +488,7 @@ A documented release-notes process: who writes them (release manager), where the
 
 ## Dependencies
 - Blocked by: nothing. All of these artifacts are documents and GitHub config; none require library or site code to exist first. Most can land in parallel with any other epic.
-- Blocks: 1.0 public launch. Shipping 1.0 without `CONTRIBUTING`, `CODE_OF_CONDUCT`, `SECURITY`, and the PR/issue templates leaves the project looking abandoned to anyone doing due diligence. The SemVer/deprecation/changelog policies gate Epic 7's release automation — that automation needs a policy to enforce.
+- Blocks: 1.0 public launch. Shipping 1.0 without `CONTRIBUTING`, `CODE_OF_CONDUCT`, `SECURITY`, and the PR/issue templates leaves the project looking abandoned to anyone doing due diligence. The SemVer/deprecation/changelog policies gate Epic 5's release automation — that automation needs a policy to enforce.
 
 ## Priority
 P0 (blocker for 1.0): Features 9.1 CONTRIBUTING, 9.2 Code of Conduct, 9.3 SECURITY, 9.4 Issue templates, 9.5 PR template.

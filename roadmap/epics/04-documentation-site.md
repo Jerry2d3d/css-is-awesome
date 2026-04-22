@@ -12,12 +12,12 @@ Turn the placeholder `/docs` route into a complete, shippable documentation site
 - Every route ships OpenGraph + Twitter card metadata with a real preview image, and every docs page has a prev/next footer plus an "Edit on GitHub" link wired from a single nav config.
 
 ## Out of scope
-- Component playground / Storybook iframes — see Epic 7 (Infrastructure & Release).
-- MCP server, JSON token export, AI prompt templates — see Epic 8 (AI Integration).
-- Blog posts, changelog prose, release notes — handled in Epic 7 and Epic 9.
-- CONTRIBUTING / CoC / SECURITY docs — see Epic 9 (Community & Project Meta).
-- Visual regression tests on doc pages, axe-core runs, Playwright keyboard flows, screen-reader snapshot tests — see Epic 6 (Testing & Quality).
-- Deploy, analytics, and sitemap generation infrastructure — see Epic 7.
+- Component playground / Storybook iframes — see Epic 5 (Quality & Delivery).
+- MCP server, JSON token export, AI prompt templates — see Epic 6 (AI Integration).
+- Blog posts, changelog prose, release notes — handled in Epic 5 and Epic 7.
+- CONTRIBUTING / CoC / SECURITY docs — see Epic 7 (Community & Project Meta).
+- Visual regression tests on doc pages, axe-core runs, Playwright keyboard flows, screen-reader snapshot tests — see Epic 5 (Quality & Delivery).
+- Deploy, analytics, and sitemap generation infrastructure — see Epic 5.
 - React component wrappers referenced from docs pages — see Epic 3 (React Component Library).
 
 ## Features
