@@ -1,8 +1,62 @@
 // ============================================================================
-// ICONS - Two Separate Systems (SVG + Font Awesome)
+// ICONS — Two Separate Systems (SVG + Font Awesome)
 // ============================================================================
-// Keep them separate. Use what you need. Easy to update.
+// This module ships two independent icon APIs. Use whichever fits — or both.
+// They do NOT depend on each other.
+//
+// ----------------------------------------------------------------------------
+// 1. SVG icons (folder-based, zero registration)
+// ----------------------------------------------------------------------------
+//   `svg($name)`       — inline icon rendered via CSS mask + currentColor.
+//                        Single-color, reskins automatically with `color:`.
+//   `svg-bg($name)`    — icon as `background-image`. Multi-color SVGs stay
+//                        multi-color (no mask, no tint).
+//   `svg-text($name)`  — icon + label in one element via ::before / ::after,
+//                        with gap + before/after positioning.
+//
+// ----------------------------------------------------------------------------
+// 2. Font Awesome icons (font-based)
+// ----------------------------------------------------------------------------
+//   `fa-load`          — @font-face declarations (call once if self-hosting).
+//   `fa($name)`        — raw ::before/::after content (FA glyph + font).
+//   `fa-icon($name)`   — standalone FA icon element.
+//   `fa-text($name)`   — FA icon + label, same gap/position API as svg-text.
+//   `fa-spin($name)`   — FA icon with a built-in spinner animation.
+//
+// ----------------------------------------------------------------------------
+// Config points (all defined in `scss/theme/_icons.scss` and re-exported
+// from `scss/theme/_index.scss` as `t.$theme-*`):
+// ----------------------------------------------------------------------------
+//   $theme-icon-path        — URL where SVGs live. Default: '/icons'.
+//                             Themes can override to ship their own pack.
+//   $theme-icon-size        — default icon dimension. Default: 24px.
+//   $theme-icon-svg-alias   — map of semantic-name → file-name remaps,
+//                             e.g. (delete: 'trash', close: 'x').
+//   $theme-fa-path          — URL where FA woff2 files live. Default:
+//                             '/webfonts'.
+//   $theme-fa-style         — default FA family (solid|regular|light|
+//                             thin|brands). Default: solid.
+//   $theme-icon-fa-map      — map of semantic-name → FA unicode codepoint.
+//
+// ----------------------------------------------------------------------------
+// currentColor behavior
+// ----------------------------------------------------------------------------
+// `svg` and `svg-text` paint via CSS mask + `background: currentColor`, so
+// the icon inherits whatever `color:` is set on the element (or an ancestor).
+// Set `color: red;` on the parent and the icon turns red. No extra CSS.
+//
+// `svg-bg` does NOT recolor — it renders the source SVG as-is. Use it when
+// the SVG has multiple baked-in colors you want to preserve.
+//
+// ----------------------------------------------------------------------------
+// Adding icons
+// ----------------------------------------------------------------------------
+// Drop an SVG into the `$theme-icon-path` folder. Filename becomes the name:
+// `arrow-right.svg` → `@include m.svg(arrow-right);`. See the authoring
+// guide at `public/icons/README.md` for sizing, coloring, aliases, and
+// per-theme icon packs.
 // ============================================================================
+
 @use 'sass:map';
 @use 'sass:list';
 @use 'theme' as t;
@@ -10,17 +64,23 @@
 // ============================================================================
 // SVG ICONS
 // ============================================================================
-// FOLDER-BASED: Just drop files into $icon-path folder
+// FOLDER-BASED: Just drop files into $theme-icon-path folder
 // Filename = icon name: arrow.svg → @include svg(arrow)
-// 
+//
 // How it works:
-// 1. Checks $icon-svg-alias for remapping (delete → trash.svg)
+// 1. Checks $theme-icon-svg-alias for remapping (delete → trash.svg)
 // 2. If not in alias, uses name directly (arrow → arrow.svg)
 //
 // To add icons: Just put the .svg file in your folder. Done.
 // ============================================================================
 
-// Get filename - checks alias map, falls back to name
+// ----------------------------------------------------------------------------
+// _svg-file($name) — private helper
+// Resolves a semantic name to an actual .svg filename by checking the
+// alias map. If the name isn't aliased, the name itself is returned.
+//   _svg-file(delete)  → 'trash'      (via alias map)
+//   _svg-file(arrow)   → arrow        (pass-through)
+// ----------------------------------------------------------------------------
 @function _svg-file($name) {
   $alias: map.get(t.$theme-icon-svg-alias, $name);
   @if $alias {
@@ -29,21 +89,34 @@
   @return $name;
 }
 
-// Basic SVG icon
+// ----------------------------------------------------------------------------
+// @mixin svg($name, $size, $color)
+// Renders a single-color SVG as an inline element using CSS mask +
+// currentColor. The icon automatically reskins with the parent's `color`.
+// Use this for icons that should tint with text color.
+//
+// Params:
+//   $name    — icon name (matches `<name>.svg` in $theme-icon-path)
+//   $size    — icon width/height (default: t.$theme-icon-size)
+//   $color   — icon color (default: currentColor)
+//
+// Example:
+//   .btn-close { @include m.svg(close); color: var(--color-danger); }
+// ----------------------------------------------------------------------------
 @mixin svg(
   $name,
   $size: t.$theme-icon-size,
   $color: currentColor
 ) {
   $file: _svg-file($name);
-  
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: $size;
   height: $size;
   color: $color;
-  
+
   &::before {
     content: '';
     display: block;
@@ -55,20 +128,46 @@
   }
 }
 
-// SVG as background (for multi-color SVGs)
+// ----------------------------------------------------------------------------
+// @mixin svg-bg($name, $size)
+// Renders an SVG as a plain `background-image`. No mask, no recoloring —
+// multi-color source SVGs render with their original palette. Use this for
+// brand marks, illustrations, or any icon whose colors must stay baked in.
+//
+// Params:
+//   $name  — icon name (matches `<name>.svg` in $theme-icon-path)
+//   $size  — icon width/height (default: t.$icon-size)
+//
+// Example:
+//   .logo { @include m.svg-bg(brand-mark, 48px); }
+// ----------------------------------------------------------------------------
 @mixin svg-bg(
   $name,
   $size: t.$icon-size
 ) {
   $file: _svg-file($name);
-  
+
   display: inline-block;
   width: $size;
   height: $size;
   background: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
 }
 
-// SVG icon with text
+// ----------------------------------------------------------------------------
+// @mixin svg-text($name, $size, $gap, $position)
+// Pairs an SVG icon with its parent's text content in a single flex row.
+// The icon is drawn via ::before (default) or ::after, tinted by
+// currentColor, and separated from the text by $gap.
+//
+// Params:
+//   $name      — icon name
+//   $size      — icon dimension (default: 1em, scales with font-size)
+//   $gap       — space between icon and text (default: 0.5em)
+//   $position  — `before` or `after` (default: before)
+//
+// Example:
+//   .btn-save { @include m.svg-text(check, 1em, 0.5em, before); }
+// ----------------------------------------------------------------------------
 @mixin svg-text(
   $name,
   $size: 1em,
@@ -76,15 +175,15 @@
   $position: before
 ) {
   $file: _svg-file($name);
-  
+
   display: inline-flex;
   align-items: center;
   gap: $gap;
-  
+
   @if $position == after {
     flex-direction: row-reverse;
   }
-  
+
   &::#{$position} {
     content: '';
     flex-shrink: 0;
@@ -99,9 +198,12 @@
 // ============================================================================
 // FONT AWESOME ICONS
 // ============================================================================
-// Configure $fa-path and $icon-fa-map in theme/_icons.scss
+// Opt-in. Only use if your project is already on Font Awesome.
+// Configure $theme-fa-path and $theme-icon-fa-map in scss/theme/_icons.scss.
+// ============================================================================
 
-// FA family config
+// FA family config — maps a style name to (font-family, font-weight).
+// Extend here if you self-host additional FA families (duotone, sharp, etc).
 $_fa-styles: (
   solid:   ('Font Awesome 6 Free', 900),
   regular: ('Font Awesome 6 Free', 400),
@@ -110,7 +212,15 @@ $_fa-styles: (
   brands:  ('Font Awesome 6 Brands', 400),
 );
 
-// Load FA fonts (call once in main.scss if self-hosting)
+// ----------------------------------------------------------------------------
+// @mixin fa-load
+// Emits @font-face rules for self-hosted Font Awesome 6 Free + Brands.
+// Call this exactly once (e.g. in main.scss) if you ship FA woff2 files.
+// Skip this mixin entirely if you load FA via their CDN/kit.
+//
+// Example:
+//   @include m.fa-load;  // drop into main.scss if self-hosting
+// ----------------------------------------------------------------------------
 @mixin fa-load {
   @font-face {
     font-family: 'Font Awesome 6 Free';
@@ -135,8 +245,21 @@ $_fa-styles: (
   }
 }
 
-// Basic FA icon (outputs content property styles)
-// Use inside ::before or ::after
+// ----------------------------------------------------------------------------
+// @mixin fa($name, $style, $size)
+// Low-level primitive — emits the font-family/weight/content bundle for a
+// Font Awesome glyph. MUST be placed inside a ::before or ::after rule
+// because it sets `content:`. Most of the time you want `fa-icon` or
+// `fa-text` instead.
+//
+// Params:
+//   $name   — icon name from $theme-icon-fa-map, or a raw unicode string
+//   $style  — solid|regular|light|thin|brands (default: t.$theme-fa-style)
+//   $size   — optional font-size override
+//
+// Example:
+//   .alert::before { @include m.fa(warning, solid, 1.25em); }
+// ----------------------------------------------------------------------------
 @mixin fa(
   $name,
   $style: t.$theme-fa-style,
@@ -144,7 +267,7 @@ $_fa-styles: (
 ) {
   $code: map.get(t.$theme-icon-fa-map, $name) or $name;
   $config: map.get($_fa-styles, $style);
-  
+
   font-family: list.nth($config, 1);
   font-weight: list.nth($config, 2);
   font-style: normal;
@@ -152,11 +275,24 @@ $_fa-styles: (
   content: $code;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   @if $size { font-size: $size; }
 }
 
-// FA icon as standalone element
+// ----------------------------------------------------------------------------
+// @mixin fa-icon($name, $size, $style, $color)
+// Standalone Font Awesome icon — sizes the host element, renders the glyph
+// in ::before, and inherits currentColor by default. Counterpart to `svg`.
+//
+// Params:
+//   $name   — icon name (from $theme-icon-fa-map)
+//   $size   — icon width/height (default: t.$theme-icon-size)
+//   $style  — solid|regular|light|thin|brands (default: t.$theme-fa-style)
+//   $color  — icon color (default: currentColor)
+//
+// Example:
+//   .icon-search { @include m.fa-icon(search); }
+// ----------------------------------------------------------------------------
 @mixin fa-icon(
   $name,
   $size: t.$theme-icon-size,
@@ -169,13 +305,26 @@ $_fa-styles: (
   width: $size;
   height: $size;
   color: $color;
-  
+
   &::before {
     @include fa($name, $style, $size);
   }
 }
 
-// FA icon with text
+// ----------------------------------------------------------------------------
+// @mixin fa-text($name, $size, $gap, $style, $position)
+// Font Awesome icon + text label in a flex row. Mirrors the svg-text API.
+//
+// Params:
+//   $name      — icon name
+//   $size      — icon dimension (default: 1em)
+//   $gap       — space between icon and text (default: 0.5em)
+//   $style     — FA family (default: t.$theme-fa-style)
+//   $position  — `before` or `after` (default: before)
+//
+// Example:
+//   .btn-download { @include m.fa-text(download); }
+// ----------------------------------------------------------------------------
 @mixin fa-text(
   $name,
   $size: 1em,
@@ -186,24 +335,36 @@ $_fa-styles: (
   display: inline-flex;
   align-items: center;
   gap: $gap;
-  
+
   @if $position == after {
     flex-direction: row-reverse;
   }
-  
+
   &::#{$position} {
     @include fa($name, $style, $size);
   }
 }
 
-// Spinning icon (for loaders)
+// ----------------------------------------------------------------------------
+// @mixin fa-spin($name, $size, $style)
+// Font Awesome icon with a built-in 1s linear infinite rotation. Use for
+// loading spinners. Injects an @keyframes `fa-spin` at the root once.
+//
+// Params:
+//   $name   — icon name (typically `spinner` or `refresh`)
+//   $size   — icon dimension (default: t.$icon-size)
+//   $style  — FA family (default: t.$theme-fa-style)
+//
+// Example:
+//   .loader { @include m.fa-spin(spinner); }
+// ----------------------------------------------------------------------------
 @mixin fa-spin($name, $size: t.$icon-size, $style: t.$theme-fa-style) {
   @include fa-icon($name, $size, $style);
-  
+
   &::before {
     animation: fa-spin 1s linear infinite;
   }
-  
+
   @at-root {
     @keyframes fa-spin {
       to { transform: rotate(360deg); }
