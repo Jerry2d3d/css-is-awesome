@@ -37,7 +37,8 @@ A single linear page at `/docs` (or `/docs/intro`) that walks a brand-new visito
 - [ ] Scannable — has a heading, a code block, and a screenshot or live preview of the expected result.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** new user
 
 **US-4.1.2** — As a new user, I want the Getting Started page to show me how to swap themes with one line, so that I see the "theming is the whole point" value prop before I read anything else.
 
@@ -49,7 +50,8 @@ A single linear page at `/docs` (or `/docs/intro`) that walks a brand-new visito
 - [ ] Content is authoritative — reflects current theme-loading mechanics, not aspiration.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** new user
 
 **US-4.1.3** — As an AI assistant reading the docs to generate user code, I want the Getting Started page to state the minimum viable setup as a labeled, copy-safe block, so that I can emit it verbatim when a user asks "how do I start".
 
@@ -60,7 +62,8 @@ A single linear page at `/docs` (or `/docs/intro`) that walks a brand-new visito
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** AI assistant reading the docs to generate user code
 
 ---
 
@@ -78,7 +81,8 @@ A dedicated `/docs/install` page covering three install tiers: zero-build CDN dr
 - [ ] Content is authoritative — reflects current CDN URL and file layout.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** new user with an HTML file and no build tools
 
 **US-4.2.2** — As a Bootstrap migrant with a Sass build already configured, I want an npm + SCSS integration guide, so that I can import tokens and mixins into my existing stylesheet.
 
@@ -89,7 +93,8 @@ A dedicated `/docs/install` page covering three install tiers: zero-build CDN dr
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** Bootstrap migrant with a Sass build already configured
 
 **US-4.2.3** — As a React developer, I want a framework integration section showing how to pull the stylesheet into a Next.js or Vite project, so that my components pick up theme tokens.
 
@@ -100,7 +105,8 @@ A dedicated `/docs/install` page covering three install tiers: zero-build CDN dr
 - [ ] Content is authoritative — reflects current React wrapper surface.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** React developer
 
 **US-4.2.4** — As a copy-paster, I want a "download a theme file" option so that I can grab a single `.css` or `.scss` file and drop it into my project without any package manager.
 
@@ -111,7 +117,8 @@ A dedicated `/docs/install` page covering three install tiers: zero-build CDN dr
 - [ ] Every code sample runs as shown if copy-pasted.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** copy-paster
 
 ---
 
@@ -129,7 +136,8 @@ Live, visual reference at `/docs/tokens` (or subpages) for every token family: c
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** new user
 
 **US-4.3.2** — As a theme author, I want a spacing visualizer showing every step of the numbered scale rendered at scale, so that I can see the rhythm my theme will inherit.
 
@@ -141,7 +149,8 @@ Live, visual reference at `/docs/tokens` (or subpages) for every token family: c
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-4.3.3** — As a new user, I want a type scale preview rendering each step of the typography scale with live text, so that I can see how headings and body text relate.
 
@@ -152,7 +161,8 @@ Live, visual reference at `/docs/tokens` (or subpages) for every token family: c
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** new user
 
 **US-4.3.4** — As a copy-paster, I want shadow, radius, motion, and blur galleries, so that I can see every tier side-by-side and pick one.
 
@@ -164,7 +174,8 @@ Live, visual reference at `/docs/tokens` (or subpages) for every token family: c
 - [ ] Every code sample runs as shown if copy-pasted.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** copy-paster
 
 **US-4.3.5** — As an AI assistant, I want the token page headings to include stable token-name anchors, so that I can deep-link users to a specific token.
 
@@ -174,7 +185,8 @@ Live, visual reference at `/docs/tokens` (or subpages) for every token family: c
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** AI assistant
 
 ---
 
@@ -193,7 +205,8 @@ A reference page at `/docs/mixins` documenting every public mixin in `src/styles
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** Bootstrap migrant
 
 **US-4.4.2** — As a new user, I want each mixin entry to include an example call and the compiled CSS output, so that I know what my code will produce.
 
@@ -204,7 +217,8 @@ A reference page at `/docs/mixins` documenting every public mixin in `src/styles
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** new user
 
 **US-4.4.3** — As an AI assistant, I want mixins grouped into named families with stable anchor IDs, so that I can reference them consistently when generating user code.
 
@@ -215,7 +229,8 @@ A reference page at `/docs/mixins` documenting every public mixin in `src/styles
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** AI assistant
 
 **US-4.4.4** — As a theme author, I want a "component mixin contract" note on each component mixin, so that I know which tokens it reads and which a theme must define.
 
@@ -226,7 +241,8 @@ A reference page at `/docs/mixins` documenting every public mixin in `src/styles
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 ---
 
@@ -244,7 +260,8 @@ A searchable table at `/docs/utilities` listing every `.cia-*` class with purpos
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** copy-paster
 
 **US-4.5.2** — As a new user, I want utility classes grouped by family, so that I can find the spacing utilities without scanning the whole table.
 
@@ -255,7 +272,8 @@ A searchable table at `/docs/utilities` listing every `.cia-*` class with purpos
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** new user
 
 **US-4.5.3** — As a Bootstrap migrant, I want each utility row to render a live preview of the effect, so that I can confirm the class does what its name implies.
 
@@ -266,7 +284,8 @@ A searchable table at `/docs/utilities` listing every `.cia-*` class with purpos
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** Bootstrap migrant
 
 **US-4.5.4** — As an AI assistant, I want the utility table exposed as a machine-readable data source, so that I can enumerate valid classes without scraping HTML.
 
@@ -276,7 +295,8 @@ A searchable table at `/docs/utilities` listing every `.cia-*` class with purpos
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** AI assistant
 
 ---
 
@@ -294,7 +314,8 @@ A `/docs/migration` page with side-by-side comparisons for the most common Boots
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** Bootstrap migrant
 
 **US-4.6.2** — As a Bootstrap migrant, I want a "conceptual differences" intro explaining the mixin-first, theme-token model vs Bootstrap's utility-and-override model, so that I understand why some patterns don't map 1:1.
 
@@ -305,7 +326,8 @@ A `/docs/migration` page with side-by-side comparisons for the most common Boots
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** Bootstrap migrant
 
 **US-4.6.3** — As a Bootstrap migrant, I want a "gotchas" list — things I'll trip over on day one, so that I don't assume the system behaves like Bootstrap where it doesn't.
 
@@ -316,7 +338,8 @@ A `/docs/migration` page with side-by-side comparisons for the most common Boots
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** Bootstrap migrant
 
 ---
 
@@ -335,7 +358,8 @@ A `/docs/themes/authoring` page that walks a theme author from empty file to val
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** theme author
 
 **US-4.7.2** — As a theme author, I want guidance on palette selection and font pairing, so that my theme feels coherent rather than a random list of colors.
 
@@ -346,7 +370,8 @@ A `/docs/themes/authoring` page that walks a theme author from empty file to val
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-4.7.3** — As a theme author, I want instructions for running the theme validator and submitting to the repo, so that I know when my theme is done.
 
@@ -357,7 +382,8 @@ A `/docs/themes/authoring` page that walks a theme author from empty file to val
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 ---
 
@@ -375,7 +401,8 @@ A `/docs/icons/authoring` page covering how to drop an SVG into `public/icons/` 
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** icon author
 
 **US-4.8.2** — As an icon author, I want guidance on size and color control, and on mask vs background, so that I pick the right rendering technique for my use case.
 
@@ -386,7 +413,8 @@ A `/docs/icons/authoring` page covering how to drop an SVG into `public/icons/` 
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** icon author
 
 **US-4.8.3** — As an icon author, I want guidance on multi-color icons, so that I know the system's limits before I try to use a full-color illustration.
 
@@ -397,7 +425,8 @@ A `/docs/icons/authoring` page covering how to drop an SVG into `public/icons/` 
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** icon author
 
 ---
 
@@ -415,7 +444,8 @@ A `/docs/animation` page listing every shipped keyframe with a live demo tile pe
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** new user
 
 **US-4.9.2** — As a theme author, I want the animation grid to show the same keyframe across every shipped theme, so that I can feel the difference theme motion tokens make.
 
@@ -426,7 +456,8 @@ A `/docs/animation` page listing every shipped keyframe with a live demo tile pe
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** theme author
 
 **US-4.9.3** — As a screen-reader user, I want animations to respect `prefers-reduced-motion`, and I want the animation page to say so, so that I trust the system won't ignore my OS setting.
 
@@ -437,7 +468,8 @@ A `/docs/animation` page listing every shipped keyframe with a live demo tile pe
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** screen-reader user
 
 ---
 
@@ -455,7 +487,8 @@ A `/docs/a11y` page stating clearly what css-is-awesome does for accessibility (
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** new user
 
 **US-4.10.2** — As a screen-reader user, I want a clear "what the system does NOT do" section, so that I can set expectations for sites built on top of it.
 
@@ -466,7 +499,8 @@ A `/docs/a11y` page stating clearly what css-is-awesome does for accessibility (
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** screen-reader user
 
 **US-4.10.3** — As a Bootstrap migrant, I want a short a11y checklist I can run against my migrated pages, so that I catch regressions introduced by the swap.
 
@@ -477,7 +511,8 @@ A `/docs/a11y` page stating clearly what css-is-awesome does for accessibility (
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** Bootstrap migrant
 
 ---
 
@@ -496,7 +531,8 @@ A `/docs/recipes` page with common compositions built from the system's primitiv
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** L
+**Effort:** 7
+**Role:** copy-paster
 
 **US-4.11.2** — As a new user, I want each recipe to include short commentary on what's happening, so that I learn the idioms instead of just cargo-culting.
 
@@ -507,7 +543,8 @@ A `/docs/recipes` page with common compositions built from the system's primitiv
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** new user
 
 **US-4.11.3** — As an AI assistant, I want recipe entries tagged with the primitives they compose, so that I can suggest a recipe when a user describes a need in plain English.
 
@@ -517,7 +554,8 @@ A `/docs/recipes` page with common compositions built from the system's primitiv
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** AI assistant
 
 ---
 
@@ -535,7 +573,8 @@ A `/docs/faq` page answering the questions that come up repeatedly: why mixin-fi
 - [ ] Scannable — has headings, code blocks, and at-a-glance takeaways.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** Bootstrap migrant
 
 **US-4.12.2** — As a new user, I want practical how-do-I answers ("override a token", "prevent FOUC", "use with a CSS-in-JS library"), so that I can unblock myself on day-one friction.
 
@@ -546,7 +585,8 @@ A `/docs/faq` page answering the questions that come up repeatedly: why mixin-fi
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P2
-**Effort:** M
+**Effort:** 3
+**Role:** new user
 
 **US-4.12.3** — As an AI assistant, I want FAQ entries with stable anchor IDs per question, so that I can deep-link users to a specific answer.
 
@@ -556,7 +596,8 @@ A `/docs/faq` page answering the questions that come up repeatedly: why mixin-fi
 - [ ] Content is authoritative — reflects current code, not aspiration.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** AI assistant
 
 ---
 
@@ -575,7 +616,8 @@ Add a site-wide search that indexes every docs route and returns relevant hits w
 - [ ] Works on mobile viewports (320px, 375px, 414px) — modal is full-screen on narrow widths.
 
 **Priority:** P1
-**Effort:** L
+**Effort:** 7
+**Role:** search user
 
 **US-4.13.2** — As a visitor on desktop, I want the search input to be visible in the site header, so that I know the site is searchable without discovering a keyboard shortcut.
 
@@ -586,7 +628,8 @@ Add a site-wide search that indexes every docs route and returns relevant hits w
 - [ ] No layout shift (CLS) when the header renders.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on desktop
 
 **US-4.13.3** — As a system author, I want the search index to rebuild automatically as part of the site build, so that no doc page is ever missing from search.
 
@@ -597,7 +640,8 @@ Add a site-wide search that indexes every docs route and returns relevant hits w
 - [ ] A fallback message ("Search unavailable") renders if the index fails to load (search is the documented exception to the "works without JS" rule).
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** system author
 
 ---
 
@@ -616,7 +660,8 @@ The right-side TOC on every docs page should track the current scroll position a
 - [ ] Works on every docs route that renders a TOC.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** TOC scanner
 
 **US-4.14.2** — As a visitor on desktop, I want clicking a TOC entry to smooth-scroll to that heading, so that navigation feels polished.
 
@@ -627,7 +672,8 @@ The right-side TOC on every docs page should track the current scroll position a
 - [ ] Keyboard-accessible (Tab to the entry, Enter activates).
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on desktop
 
 **US-4.14.3** — As a visitor on mobile, I want the TOC to either collapse or move to a reachable location, so that it doesn't eat my screen.
 
@@ -638,7 +684,8 @@ The right-side TOC on every docs page should track the current scroll position a
 - [ ] No layout shift (CLS) when expanding/collapsing.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on mobile
 
 ---
 
@@ -658,7 +705,8 @@ Every docs page gets a footer with "Previous" and "Next" links based on the cano
 - [ ] Still works when JavaScript is disabled (static links, resolved at build time).
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** visitor on desktop
 
 **US-4.15.2** — As a system author, I want prev/next order to come from the same source as the sidebar, so that the two can never drift.
 
@@ -669,7 +717,8 @@ Every docs page gets a footer with "Previous" and "Next" links based on the cano
 - [ ] A unit test (or build-time check) asserts every docs page is referenced in the nav config.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 **US-4.15.3** — As a visitor on mobile, I want prev/next links to stack vertically and stay tappable, so that they work on a phone.
 
@@ -679,7 +728,8 @@ Every docs page gets a footer with "Previous" and "Next" links based on the cano
 - [ ] No layout shift (CLS).
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on mobile
 
 ---
 
@@ -697,7 +747,8 @@ Every docs page ships a small "Edit this page on GitHub" link that opens the sou
 - [ ] Link opens in a new tab with `rel="noopener noreferrer"`.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on desktop
 
 **US-4.16.2** — As a system author, I want the source-path resolution to live in one helper, so that adding a new page doesn't require wiring the link manually.
 
@@ -708,7 +759,8 @@ Every docs page ships a small "Edit this page on GitHub" link that opens the sou
 - [ ] The helper is covered by a unit test (even a trivial one) to lock the URL format.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 ---
 
@@ -726,7 +778,8 @@ Every route ships a full set of social-share meta tags (`og:title`, `og:descript
 - [ ] Twitter's Card Validator and a Slack unfurl both render the card correctly for at least `/` and `/docs`.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** social-share recipient
 
 **US-4.17.2** — As a system author, I want a default OG image that applies when a route doesn't declare its own, so that no page ever ships without a card.
 
@@ -737,7 +790,8 @@ Every route ships a full set of social-share meta tags (`og:title`, `og:descript
 - [ ] Any new route inherits the default automatically.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 **US-4.17.3** — As a visitor on desktop, I want the page `<title>` and meta description to match the OG card, so that browser tabs and search snippets stay consistent.
 
@@ -747,7 +801,8 @@ Every route ships a full set of social-share meta tags (`og:title`, `og:descript
 - [ ] No route uses a default placeholder like "Next.js App".
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on desktop
 
 ---
 
@@ -766,7 +821,8 @@ Replace the default Next.js 404 with a themed page that matches the rest of the 
 - [ ] No layout shift (CLS) on load.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on desktop
 
 **US-4.18.2** — As a search user, I want a search input on the 404 page, so that I can find what I was looking for without going home first.
 
@@ -777,7 +833,8 @@ Replace the default Next.js 404 with a themed page that matches the rest of the 
 - [ ] Keyboard-accessible.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** search user
 
 **US-4.18.3** — As a screen-reader user, I want the 404 page to announce itself clearly, so that I know a navigation error occurred.
 
@@ -788,7 +845,8 @@ Replace the default Next.js 404 with a themed page that matches the rest of the 
 - [ ] Lighthouse a11y score is ≥95 on the 404 page.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** screen-reader user
 
 ---
 
@@ -807,7 +865,8 @@ Ship a complete favicon set (`favicon.ico`, `favicon-16x16.png`, `favicon-32x32.
 - [ ] The favicon renders correctly in Chrome, Safari, and Firefox.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on desktop
 
 **US-4.19.2** — As a visitor on mobile, I want to install the site as a PWA and get a proper icon on my home screen, so that it feels like a real app.
 
@@ -818,7 +877,8 @@ Ship a complete favicon set (`favicon.ico`, `favicon-16x16.png`, `favicon-32x32.
 - [ ] The home-screen icon matches the declared 192/512 PNG.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on mobile
 
 **US-4.19.3** — As a visitor on desktop with dark-mode OS preference, I want a dark-variant favicon in Safari's pinned-tab / dark-tab rendering, so that the icon stays readable.
 
@@ -828,7 +888,8 @@ Ship a complete favicon set (`favicon.ico`, `favicon-16x16.png`, `favicon-32x32.
 - [ ] Verified in Safari and a dark-mode Chrome profile.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on desktop with dark-mode OS preference
 
 ---
 
@@ -847,7 +908,8 @@ Every `<pre>` on the site gets a small button in its top-right corner that copie
 - [ ] Keyboard-accessible (Tab, Enter/Space).
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** copy-paste user
 
 **US-4.20.2** — As a screen-reader user, I want the copy button to announce its action and result, so that I know the snippet was copied.
 
@@ -858,7 +920,8 @@ Every `<pre>` on the site gets a small button in its top-right corner that copie
 - [ ] Lighthouse a11y score ≥95 on any page that renders code blocks.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** screen-reader user
 
 **US-4.20.3** — As a visitor on a browser without `navigator.clipboard`, I want a graceful fallback, so that the button doesn't appear broken.
 
@@ -868,7 +931,8 @@ Every `<pre>` on the site gets a small button in its top-right corner that copie
 - [ ] The underlying `<pre>` remains selectable so manual copy still works.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on a browser without `navigator.clipboard`
 
 ---
 
@@ -887,7 +951,8 @@ Replace the hand-coded `<span className="tok-*">` highlighting with Shiki, run a
 - [ ] Still works when JavaScript is disabled.
 
 **Priority:** P1
-**Effort:** M
+**Effort:** 3
+**Role:** visitor on desktop
 
 **US-4.21.2** — As a system author, I want Shiki's theme to match the site's current theme tokens, so that highlighting doesn't clash with the surrounding UI.
 
@@ -898,7 +963,8 @@ Replace the hand-coded `<span className="tok-*">` highlighting with Shiki, run a
 - [ ] No FOUC on initial load.
 
 **Priority:** P1
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 **US-4.21.3** — As a system author, I want the Shiki build step to fail loudly on an unknown language, so that a typo'd code fence doesn't ship as plain text.
 
@@ -908,7 +974,8 @@ Replace the hand-coded `<span className="tok-*">` highlighting with Shiki, run a
 - [ ] Adding a new language requires one documented edit in the Shiki config.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 ---
 
@@ -927,7 +994,8 @@ Replace the hand-coded `<span className="tok-*">` highlighting with Shiki, run a
 - [ ] Works on mobile viewports (320px, 375px, 414px).
 
 **Priority:** P0
-**Effort:** M
+**Effort:** 3
+**Role:** visitor on mobile
 
 **US-4.22.2** — As a keyboard user, I want to open and close the mobile drawer with the keyboard, so that I can navigate without a touchscreen.
 
@@ -939,7 +1007,8 @@ Replace the hand-coded `<span className="tok-*">` highlighting with Shiki, run a
 - [ ] Lighthouse a11y score ≥95 on mobile viewports.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** keyboard user
 
 **US-4.22.3** — As a screen-reader user, I want the hamburger button and drawer to be announced correctly, so that I know the nav is there and how to use it.
 
@@ -950,7 +1019,8 @@ Replace the hand-coded `<span className="tok-*">` highlighting with Shiki, run a
 - [ ] Verified with VoiceOver on iOS and TalkBack on Android at least once.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** screen-reader user
 
 ---
 
@@ -969,7 +1039,8 @@ Every page ships a "Skip to content" link as the first focusable element. When f
 - [ ] Still works when JavaScript is disabled.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** keyboard user
 
 **US-4.23.2** — As a keyboard user, I want every interactive element to have a visible focus outline, so that I always know where I am.
 
@@ -980,7 +1051,8 @@ Every page ships a "Skip to content" link as the first focusable element. When f
 - [ ] Lighthouse a11y score ≥95 on a sampled page.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** keyboard user
 
 **US-4.23.3** — As a screen-reader user, I want landmark regions on every page, so that I can jump between sections.
 
@@ -991,7 +1063,8 @@ Every page ships a "Skip to content" link as the first focusable element. When f
 - [ ] Verified with a screen reader (VoiceOver or NVDA) on at least `/`, `/docs`, and the 404 page.
 
 **Priority:** P0
-**Effort:** S
+**Effort:** 1
+**Role:** screen-reader user
 
 ---
 
@@ -1009,7 +1082,8 @@ Clicking any internal link that targets a fragment (e.g. `/docs/buttons#variants
 - [ ] Works on every route that has headings.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** visitor on desktop
 
 **US-4.24.2** — As a visitor with `prefers-reduced-motion`, I want smooth scrolling to be suppressed, so that my accessibility preference is respected.
 
@@ -1019,7 +1093,8 @@ Clicking any internal link that targets a fragment (e.g. `/docs/buttons#variants
 - [ ] Verified by toggling "Reduce motion" in OS settings.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** visitor with `prefers-reduced-motion`
 
 **US-4.24.3** — As a system author, I want a single CSS variable (e.g. `--header-height`) to drive both the sticky header height and the anchor offset, so that the two can never drift.
 
@@ -1030,7 +1105,8 @@ Clicking any internal link that targets a fragment (e.g. `/docs/buttons#variants
 - [ ] Changing the variable updates both simultaneously.
 
 **Priority:** P2
-**Effort:** S
+**Effort:** 1
+**Role:** system author
 
 ---
 
