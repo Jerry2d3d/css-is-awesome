@@ -17,7 +17,7 @@
 //   @include container;            → 1280px max, responsive padding
 //   @include container(sm);        → 640px max
 //   @include container(full);      → no max-width, just padding
-//   @include container($px: xl);   → custom horizontal padding
+//   @include container($px: 6);    → custom horizontal padding (space key 6)
 
 $_container-widths: (
   sm:   40rem,
@@ -38,13 +38,13 @@ $_container-widths: (
     max-width: $max;
   }
 
-  $pad: $px or md;
+  $pad: $px or 4;
   $pad-val: map.get(t.$space, $pad) or $pad;
   padding-left: $pad-val;
   padding-right: $pad-val;
 
   @media screen and (min-width: map.get(s.$breakpoints, md)) {
-    $pad-up: if($px, $pad-val, map.get(t.$space, lg));
+    $pad-up: if($px, $pad-val, map.get(t.$space, 5));
     padding-left: $pad-up;
     padding-right: $pad-up;
   }
@@ -56,11 +56,11 @@ $_container-widths: (
 // Responsive CSS grid. Sensible defaults: N columns on desktop, 1 on mobile.
 // Usage:
 //   @include grid(3);                → 3 cols desktop, 1 col mobile
-//   @include grid(4, $gap: lg);      → 4 cols, large gap
+//   @include grid(4, $gap: 5);       → 4 cols, large gap (space key 5)
 //   @include grid(auto, $min: 250px);→ auto-fit, 250px minimum per item
 //   @include grid(2, $bp: sm);       → 2 cols from sm breakpoint
 
-@mixin grid($cols: 1, $gap: md, $bp: md, $min: null) {
+@mixin grid($cols: 1, $gap: 4, $bp: md, $min: null) {
   display: grid;
   gap: map.get(t.$space, $gap) or $gap;
 
@@ -165,9 +165,9 @@ $_container-widths: (
 // Vertical page section with consistent spacing.
 // Usage:
 //   section { @include section; }
-//   section { @include section($py: 4xl); }
+//   section { @include section($py: 9); }
 
-@mixin section($py: 3xl, $px: null) {
+@mixin section($py: 8, $px: null) {
   $py-val: map.get(t.$space, $py) or $py;
   padding-top: $py-val;
   padding-bottom: $py-val;
@@ -185,10 +185,10 @@ $_container-widths: (
 // Simple flex row/column with smart defaults.
 // Usage:
 //   @include row;              → horizontal, centered, md gap
-//   @include row($gap: lg);    → horizontal, large gap
+//   @include row($gap: 5);     → horizontal, large gap (space key 5)
 //   @include col;              → vertical stack, md gap
 
-@mixin row($gap: md, $align: center, $justify: flex-start, $wrap: wrap) {
+@mixin row($gap: 4, $align: center, $justify: flex-start, $wrap: wrap) {
   display: flex;
   flex-direction: row;
   align-items: $align;
@@ -197,7 +197,7 @@ $_container-widths: (
   gap: map.get(t.$space, $gap) or $gap;
 }
 
-@mixin col($gap: md, $align: stretch, $justify: flex-start) {
+@mixin col($gap: 4, $align: stretch, $justify: flex-start) {
   display: flex;
   flex-direction: column;
   align-items: $align;
@@ -209,7 +209,7 @@ $_container-widths: (
 // DIVIDER
 // ============================================================================
 
-@mixin divider($color: border-default, $spacing: md) {
+@mixin divider($color: border-default, $spacing: 4) {
   $space-val: map.get(t.$space, $spacing) or $spacing;
   border: none;
   border-top: 1px solid var(--#{$color});
@@ -217,7 +217,7 @@ $_container-widths: (
   margin-bottom: $space-val;
 }
 
-@mixin divider-vertical($color: border-default, $spacing: md) {
+@mixin divider-vertical($color: border-default, $spacing: 4) {
   $space-val: map.get(t.$space, $spacing) or $spacing;
   border: none;
   border-left: 1px solid var(--#{$color});

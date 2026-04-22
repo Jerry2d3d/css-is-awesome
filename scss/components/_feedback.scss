@@ -14,17 +14,17 @@
 //   .alert-success { @include alert(success); }
 //   .alert-error   { @include alert(error); }
 
-@mixin alert-base($py: sm, $px: md, $r: md, $border-width: 1px) {
+@mixin alert-base($py: 2, $px: 4, $r: md, $border-width: 1px) {
   display: flex;
   align-items: flex-start;
-  gap: m.space(sm);
+  gap: m.space(2);
   padding: m.space($py) m.space($px);
   border-radius: m.radius($r);
   border: $border-width solid transparent;
-  @include m.font(reg, sm);
+  @include m.font(reg, 2);
 }
 
-@mixin alert($status: info, $py: sm, $px: md, $r: md) {
+@mixin alert($status: info, $py: 2, $px: 4, $r: md) {
   @include alert-base($py: $py, $px: $px, $r: $r);
   background: m.color(#{$status}-subtle);
   border-color: m.color(#{$status}-default);
@@ -34,15 +34,15 @@
 // ----------------------------------------------------------------------------
 // TOAST
 // ----------------------------------------------------------------------------
-@mixin toast-base($py: sm, $px: md, $r: lg, $shadow: lg) {
+@mixin toast-base($py: 2, $px: 4, $r: lg, $shadow: 3) {
   display: flex;
   align-items: center;
-  gap: m.space(sm);
+  gap: m.space(2);
   padding: m.space($py) m.space($px);
   border-radius: m.radius($r);
   background: m.color(surface-default);
   box-shadow: m.shadow($shadow);
-  @include m.font(reg, sm);
+  @include m.font(reg, 2);
 }
 
 // ----------------------------------------------------------------------------
@@ -50,9 +50,9 @@
 // ----------------------------------------------------------------------------
 @mixin badge-base(
   $py: m.comp(badge-padding-y, 2xs),
-  $px: m.comp(badge-padding-x, xs),
+  $px: m.comp(badge-padding-x, 1),
   $r: m.comp(badge-radius, full),
-  $font-size: xs
+  $font-size: 1
 ) {
   display: inline-flex;
   align-items: center;
@@ -70,7 +70,7 @@
 // ----------------------------------------------------------------------------
 // TAG / CHIP
 // ----------------------------------------------------------------------------
-@mixin tag-base($py: 2xs, $px: sm, $r: md, $font-size: sm) {
+@mixin tag-base($py: 2xs, $px: 2, $r: md, $font-size: 2) {
   display: inline-flex;
   align-items: center;
   gap: m.space(2xs);

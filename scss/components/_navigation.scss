@@ -15,9 +15,9 @@
 
 @mixin navbar-base(
   $bg: background-navbar,
-  $py: sm,
-  $px: md,
-  $shadow: sm,
+  $py: 2,
+  $px: 4,
+  $shadow: 1,
   $sticky: false,
   $border: true
 ) {
@@ -42,23 +42,23 @@
   }
 }
 
-@mixin navbar-brand($gap: sm) {
+@mixin navbar-brand($gap: 2) {
   display: flex;
   align-items: center;
   gap: m.space($gap);
   text-decoration: none;
   color: m.color(text-primary);
-  @include m.font(bold, lg);
+  @include m.font(bold, 4);
 }
 
-@mixin navbar-nav($gap: xs) {
+@mixin navbar-nav($gap: 1) {
   display: flex;
   align-items: center;
   gap: m.space($gap);
   @include m.list-reset;
 }
 
-@mixin navbar-link($py: xs, $px: sm, $r: md) {
+@mixin navbar-link($py: 1, $px: 2, $r: md) {
   display: flex;
   align-items: center;
   gap: m.space(2xs);
@@ -66,7 +66,7 @@
   border-radius: m.radius($r);
   color: m.color(text-secondary);
   text-decoration: none;
-  @include m.font(medium, sm);
+  @include m.font(medium, 2);
   @include m.transition(color, background-color);
 
   &:hover {
@@ -84,26 +84,26 @@
 // ----------------------------------------------------------------------------
 // NAV (generic list navigation)
 // ----------------------------------------------------------------------------
-@mixin nav-base($direction: row, $gap: xs) {
+@mixin nav-base($direction: row, $gap: 1) {
   display: flex;
   flex-direction: $direction;
   gap: m.space($gap);
   @include m.list-reset;
 }
 
-@mixin nav-link($py: xs, $px: sm) {
+@mixin nav-link($py: 1, $px: 2) {
   @include navbar-link($py: $py, $px: $px);
 }
 
 // ----------------------------------------------------------------------------
 // BREADCRUMB
 // ----------------------------------------------------------------------------
-@mixin breadcrumb($gap: xs, $separator: "/") {
+@mixin breadcrumb($gap: 1, $separator: "/") {
   display: flex;
   align-items: center;
   gap: m.space($gap);
   @include m.list-reset;
-  @include m.font(reg, sm);
+  @include m.font(reg, 2);
 
   li + li::before {
     content: $separator;
@@ -136,10 +136,10 @@
   }
 }
 
-@mixin tab-item($py: sm, $px: md, $active-color: action-primary-default) {
+@mixin tab-item($py: 2, $px: 4, $active-color: action-primary-default) {
   padding: m.space($py) m.space($px);
   color: m.color(text-secondary);
-  @include m.font(medium, sm);
+  @include m.font(medium, 2);
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
@@ -169,7 +169,7 @@
   width: $size;
   height: $size;
   border-radius: m.radius($r);
-  @include m.font(medium, sm);
+  @include m.font(medium, 2);
   color: m.color(text-secondary);
   text-decoration: none;
   @include m.transition(background-color, color);

@@ -4,10 +4,15 @@
 // Mixin-first button system. Every parameter has a default from the theme.
 // Change one thing or everything — no specificity wars.
 //
+// Numeric scale keys are the source of truth (1..9). T-shirt keys still work
+// as aliases — both of the following produce identical output:
+//   .btn-small-numeric { @include btn-base($py: 1, $px: 2, $font-size: 2); }
+//   .btn-small-tshirt  { @include btn-base($py: xs, $px: sm, $font-size: sm); }
+//
 // Usage:
 //   .btn       { @include btn-base; }
-//   .btn-cta   { @include btn-primary($px: xl, $r: full); }
-//   .btn-small { @include btn-base($py: xs, $px: sm, $font-size: sm); }
+//   .btn-cta   { @include btn-primary($px: 6, $r: full); }
+//   .btn-small { @include btn-base($py: 1, $px: 2, $font-size: 2); }
 // ============================================================================
 @use 'sass:map';
 @use '../theme' as t;
@@ -18,8 +23,8 @@
 // BASE
 // ----------------------------------------------------------------------------
 @mixin btn-base(
-  $py: m.comp(btn-padding-y, xs),
-  $px: m.comp(btn-padding-x, md),
+  $py: m.comp(btn-padding-y, 1),
+  $px: m.comp(btn-padding-x, 4),
   $r: m.comp(btn-radius, md),
   $font-weight: m.comp(btn-font-weight, medium),
   $font-size: null
@@ -27,7 +32,7 @@
   @include m.button-reset;
   display: inline-flex;
   align-items: center;
-  gap: m.space(xs);
+  gap: m.space(1);
   font-weight: m.font-weight($font-weight);
   padding: m.space($py) m.space($px);
   border-radius: m.radius($r);
@@ -49,7 +54,7 @@
   $color: text-inverse,
   $py: null, $px: null, $r: null, $font-size: null
 ) {
-  @include btn-base($py: $py or m.comp(btn-padding-y, xs), $px: $px or m.comp(btn-padding-x, md), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  @include btn-base($py: $py or m.comp(btn-padding-y, 1), $px: $px or m.comp(btn-padding-x, 4), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
   background: m.color($bg);
   color: m.color($color);
 
@@ -65,7 +70,7 @@
   $color: text-inverse,
   $py: null, $px: null, $r: null, $font-size: null
 ) {
-  @include btn-base($py: $py or m.comp(btn-padding-y, xs), $px: $px or m.comp(btn-padding-x, md), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  @include btn-base($py: $py or m.comp(btn-padding-y, 1), $px: $px or m.comp(btn-padding-x, 4), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
   background: m.color($bg);
   color: m.color($color);
 
@@ -82,7 +87,7 @@
   $active-bg: interactive-active,
   $py: null, $px: null, $r: null, $font-size: null
 ) {
-  @include btn-base($py: $py or m.comp(btn-padding-y, xs), $px: $px or m.comp(btn-padding-x, md), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  @include btn-base($py: $py or m.comp(btn-padding-y, 1), $px: $px or m.comp(btn-padding-x, 4), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
   background: transparent;
   border: 1px solid m.color($border-color);
   color: m.color($color);
@@ -101,7 +106,7 @@
   $active-bg: interactive-active,
   $py: null, $px: null, $r: null, $font-size: null
 ) {
-  @include btn-base($py: $py or m.comp(btn-padding-y, xs), $px: $px or m.comp(btn-padding-x, md), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
+  @include btn-base($py: $py or m.comp(btn-padding-y, 1), $px: $px or m.comp(btn-padding-x, 4), $r: $r or m.comp(btn-radius, md), $font-size: $font-size);
   background: transparent;
   color: m.color($color);
 

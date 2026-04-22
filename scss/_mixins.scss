@@ -56,11 +56,14 @@
 // ============================================================================
 // SPACING FUNCTIONS (2026 System)
 // ============================================================================
-// UPDATED: 2026-02-06 - Use new $space map from theme
-// Uses 8-token scale (xs, sm, md, lg, xl, 2xl, 3xl, 4xl)
-// All values in rem for accessibility
+// UPDATED: 2026-04 - Numbered scale (1..9) is source of truth; t-shirt keys
+// (xs/sm/md/lg/xl/2xl/3xl/4xl) layer on top as aliases.
+// All values in rem for accessibility.
 //
-// Usage: padding: space(md);  // Returns var(--space-md, 1rem)
+// Usage:
+//   padding: space(4);    // Returns var(--space-4, 1rem)
+//   padding: space(md);   // Returns var(--space-md, 1rem)  (alias)
+// Both styles continue to work — themes declare both sets of custom props.
 // ============================================================================
 
 @function space($key) {
@@ -184,15 +187,15 @@ $_font-types: (
 // ============================================================================
 
 $_type-scale: (
-  display:    (size: 4xl, weight: bold,     lh: tight,  ls: tight),
-  heading-1:  (size: 3xl, weight: bold,     lh: tight,  ls: null),
-  heading-2:  (size: 2xl, weight: semibold, lh: tight,  ls: null),
-  heading-3:  (size: xl,  weight: semibold, lh: snug,   ls: null),
-  heading-4:  (size: lg,  weight: medium,   lh: normal, ls: null),
-  body:       (size: base, weight: normal,  lh: normal, ls: null),
-  body-sm:    (size: sm,  weight: normal,   lh: normal, ls: null),
-  caption:    (size: xs,  weight: normal,   lh: normal, ls: null),
-  overline:   (size: xs,  weight: semibold, lh: normal, ls: wide),
+  display:    (size: 8, weight: bold,     lh: 2, ls: tight),
+  heading-1:  (size: 7, weight: bold,     lh: 2, ls: null),
+  heading-2:  (size: 6, weight: semibold, lh: 2, ls: null),
+  heading-3:  (size: 5, weight: semibold, lh: 3, ls: null),
+  heading-4:  (size: 4, weight: medium,   lh: 4, ls: null),
+  body:       (size: 3, weight: normal,   lh: 4, ls: null),
+  body-sm:    (size: 2, weight: normal,   lh: 4, ls: null),
+  caption:    (size: 1, weight: normal,   lh: 4, ls: null),
+  overline:   (size: 1, weight: semibold, lh: 4, ls: wide),
 );
 
 @mixin type($preset) {
@@ -263,7 +266,7 @@ $_type-scale: (
   @return map.get(t.$theme-shadows-light, $level) or none;
 }
 
-@mixin elevation($level: md) {
+@mixin elevation($level: 2) {
   box-shadow: shadow($level);
 }
 
@@ -587,7 +590,7 @@ $_easings: (
 @mixin card-base(
   $p: _comp(card-padding, 4),
   $r: _comp(card-radius, lg),
-  $shadow: _comp(card-shadow, sm),
+  $shadow: _comp(card-shadow, 1),
   $bg: surface-default
 ) {
   @include inset($p);
@@ -624,7 +627,7 @@ $_easings: (
   $py: _comp(badge-padding-y, 0.5),
   $px: _comp(badge-padding-x, 2),
   $r: _comp(badge-radius, full),
-  $font-size: xs
+  $font-size: 1
 ) {
   display: inline-flex;
   align-items: center;
@@ -636,7 +639,7 @@ $_easings: (
 @mixin modal-base(
   $p: _comp(modal-padding, 6),
   $r: _comp(modal-radius, xl),
-  $shadow: _comp(modal-shadow, 2xl),
+  $shadow: _comp(modal-shadow, 5),
   $max-width: 500px
 ) {
   @include inset($p);
@@ -660,7 +663,7 @@ $_easings: (
   border-radius: radius($r);
   background: color($bg);
   color: color($color);
-  @include font(reg, xs);
+  @include font(reg, 1);
   white-space: nowrap;
 }
 
@@ -795,9 +798,9 @@ $_easings: (
 
 @mixin label-base {
   display: block;
-  @include font(medium, sm);
+  @include font(medium, 2);
   color: color(text-primary);
-  margin-bottom: space(xs);
+  margin-bottom: space(1);
 }
 
 @mixin button-primary {

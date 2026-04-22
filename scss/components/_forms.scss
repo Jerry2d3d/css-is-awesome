@@ -18,8 +18,8 @@
 // INPUT
 // ----------------------------------------------------------------------------
 @mixin input-base(
-  $py: m.comp(input-padding-y, xs),
-  $px: m.comp(input-padding-x, sm),
+  $py: m.comp(input-padding-y, 1),
+  $px: m.comp(input-padding-x, 2),
   $r: m.comp(input-radius, md),
   $border-width: m.comp(input-border-width, 1px),
   $bg: surface-default,
@@ -53,8 +53,8 @@
 // SELECT
 // ----------------------------------------------------------------------------
 @mixin select-base(
-  $py: m.comp(input-padding-y, xs),
-  $px: m.comp(input-padding-x, sm),
+  $py: m.comp(input-padding-y, 1),
+  $px: m.comp(input-padding-x, 2),
   $r: m.comp(input-radius, md),
   $bg: surface-default,
   $border-color: border-default
@@ -63,17 +63,17 @@
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23525252' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right m.space-raw(sm) center;
+  background-position: right m.space-raw(2) center;
   background-size: 1em;
-  padding-right: m.space-raw(xl);
+  padding-right: m.space-raw(6);
 }
 
 // ----------------------------------------------------------------------------
 // TEXTAREA
 // ----------------------------------------------------------------------------
 @mixin textarea-base(
-  $py: sm,
-  $px: sm,
+  $py: 2,
+  $px: 2,
   $r: m.comp(input-radius, md),
   $min-height: 6rem,
   $resize: vertical
@@ -221,17 +221,17 @@
 // ----------------------------------------------------------------------------
 // LABEL
 // ----------------------------------------------------------------------------
-@mixin label-base($size: sm, $weight: medium, $color: text-primary) {
+@mixin label-base($size: 2, $weight: medium, $color: text-primary) {
   display: block;
   @include m.font($weight, $size);
   color: m.color($color);
-  margin-bottom: m.space(xs);
+  margin-bottom: m.space(1);
 }
 
 // ----------------------------------------------------------------------------
 // FORM LAYOUT
 // ----------------------------------------------------------------------------
-@mixin form-layout($columns: 1, $gap: md) {
+@mixin form-layout($columns: 1, $gap: 4) {
   display: grid;
   gap: m.space($gap);
   @if $columns > 1 {
@@ -241,13 +241,13 @@
   }
 }
 
-@mixin form-group($gap: xs, $direction: column) {
+@mixin form-group($gap: 1, $direction: column) {
   display: flex;
   flex-direction: $direction;
   gap: m.space($gap);
 }
 
-@mixin form-row($gap: sm, $align: center) {
+@mixin form-row($gap: 2, $align: center) {
   display: flex;
   align-items: $align;
   gap: m.space($gap);
@@ -257,7 +257,7 @@
 // HELPER TEXT
 // ----------------------------------------------------------------------------
 @mixin form-help($color: text-muted) {
-  @include m.font(reg, xs);
+  @include m.font(reg, 1);
   color: m.color($color);
   margin-top: m.space(2xs);
 }

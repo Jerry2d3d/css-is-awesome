@@ -6,34 +6,34 @@
 
 $components: (
   // Button
-  btn-radius:           md,
-  btn-padding-y:        xs,
-  btn-padding-x:        md,
+  btn-radius:           md,   // radius is anchor-named; kept as t-shirt
+  btn-padding-y:        1,    // space numeric scale (1 == xs)
+  btn-padding-x:        4,    // space numeric scale (4 == md)
   btn-font-weight:      medium,
 
   // Card
   card-radius:          lg,
-  card-padding:         md,
-  card-shadow:          sm,
+  card-padding:         4,    // md
+  card-shadow:          1,    // sm
 
   // Input
   input-radius:         md,
-  input-padding-y:      xs,
-  input-padding-x:      sm,
+  input-padding-y:      1,    // xs
+  input-padding-x:      2,    // sm
   input-border-width:   1px,
 
   // Badge
   badge-radius:         full,
-  badge-padding-y:      xs,
-  badge-padding-x:      xs,
+  badge-padding-y:      1,    // xs
+  badge-padding-x:      1,    // xs
 
   // Modal
   modal-radius:         xl,
-  modal-padding:        lg,
-  modal-shadow:         2xl,
+  modal-padding:        5,    // lg
+  modal-shadow:         5,    // 2xl
 
   // Tooltip
   tooltip-radius:       md,
-  tooltip-padding-y:    xs,
-  tooltip-padding-x:    xs,
+  tooltip-padding-y:    1,    // xs
+  tooltip-padding-x:    1,    // xs
 ) !default;

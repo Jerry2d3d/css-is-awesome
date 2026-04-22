@@ -16,16 +16,16 @@
 @mixin table-base($striped: false, $hover: false, $bordered: false, $compact: false) {
   width: 100%;
   border-collapse: collapse;
-  @include m.font(reg, sm);
+  @include m.font(reg, 2);
 
   th, td {
     text-align: left;
-    padding: m.space(if($compact, xs, sm)) m.space(if($compact, sm, md));
+    padding: m.space(if($compact, 1, 2)) m.space(if($compact, 2, 4));
     border-bottom: 1px solid m.color(border-default);
   }
 
   th {
-    @include m.font(semibold, xs);
+    @include m.font(semibold, 1);
     color: m.color(text-secondary);
     text-transform: uppercase;
     letter-spacing: map.get(s.$letter-spacings, wide);
@@ -60,9 +60,9 @@
 // CARD
 // ----------------------------------------------------------------------------
 @mixin card-base(
-  $p: m.comp(card-padding, md),
+  $p: m.comp(card-padding, 4),
   $r: m.comp(card-radius, lg),
-  $shadow: m.comp(card-shadow, sm),
+  $shadow: m.comp(card-shadow, 1),
   $bg: surface-default,
   $border: false
 ) {
@@ -79,16 +79,16 @@
   }
 }
 
-@mixin card-header($pb: sm) {
+@mixin card-header($pb: 2) {
   padding-bottom: m.space($pb);
   border-bottom: 1px solid m.color(border-default);
-  margin-bottom: m.space(md);
+  margin-bottom: m.space(4);
 }
 
-@mixin card-footer($pt: sm) {
+@mixin card-footer($pt: 2) {
   padding-top: m.space($pt);
   border-top: 1px solid m.color(border-default);
-  margin-top: m.space(md);
+  margin-top: m.space(4);
 }
 
 @mixin card-interactive {
@@ -96,7 +96,7 @@
   @include m.transition(box-shadow, transform);
 
   &:hover {
-    box-shadow: m.shadow(md);
+    box-shadow: m.shadow(2);
     transform: translateY(-1px);
   }
 
@@ -119,14 +119,14 @@
   }
 }
 
-@mixin list-item($py: sm, $px: md) {
+@mixin list-item($py: 2, $px: 4) {
   display: flex;
   align-items: center;
-  gap: m.space(sm);
+  gap: m.space(2);
   padding: m.space($py) m.space($px);
 }
 
-@mixin list-item-interactive($py: sm, $px: md) {
+@mixin list-item-interactive($py: 2, $px: 4) {
   @include list-item($py: $py, $px: $px);
   cursor: pointer;
   @include m.transition(background-color);
@@ -153,7 +153,7 @@
   border-radius: m.radius($r);
   background: m.color($bg);
   color: m.color($color);
-  @include m.font(semibold, sm);
+  @include m.font(semibold, 2);
   flex-shrink: 0;
 }
 
