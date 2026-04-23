@@ -1,0 +1,12 @@
+@use 'mixins' as m;
+@use 'components/forms' as f;
+
+.label {
+  @include f.label-base;
+  display: inline-block;
+}
+
+.required {
+  color: m.color(error-default);
+  margin-left: 2px;
+}
