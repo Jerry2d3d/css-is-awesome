@@ -1,0 +1,63 @@
+@use 'mixins' as m;
+@use 'components/data' as d;
+
+.list {
+  @include d.list-base;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list.dividers > li + li {
+  border-top: 1px solid m.color(border-subtle);
+}
+
+.list.gap-none { gap: 0; }
+.list.gap-1 { gap: m.space(1); }
+.list.gap-2 { gap: m.space(2); }
+.list.gap-3 { gap: m.space(3); }
+.list.gap-4 { gap: m.space(4); }
+.list.gap-5 { gap: m.space(5); }
+
+.item {
+  @include d.list-item;
+  display: flex;
+  align-items: center;
+  gap: m.space(3);
+}
+
+.itemInteractive {
+  @include d.list-item-interactive;
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: m.space(3);
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: m.space(2) m.space(3);
+  border-radius: m.radius(md);
+  @include m.transition(background-color, color);
+  @include m.focus-ring;
+}
+
+.itemInteractive:hover {
+  background: m.color(interactive-hover);
+}
+
+.active {
+  background: m.color(action-primary-wash);
+  color: m.color(action-primary-default);
+}
+
+.leading,
+.trailing {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
