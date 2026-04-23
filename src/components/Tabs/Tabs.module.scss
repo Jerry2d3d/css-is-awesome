@@ -1,0 +1,54 @@
+@use 'mixins' as m;
+@use 'components/navigation' as nav;
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(3);
+}
+
+.tabs.vertical {
+  flex-direction: row;
+}
+
+.list {
+  @include nav.tabs-base;
+}
+
+.vertical .list {
+  flex-direction: column;
+  border-bottom: 0;
+  border-right: 1px solid m.color(border-default);
+}
+
+.trigger {
+  @include nav.tab-item;
+  all: unset;
+  cursor: pointer;
+  padding: m.space(2) m.space(4);
+  font-family: inherit;
+  color: m.color(text-secondary);
+  border-bottom: 2px solid transparent;
+  @include m.focus-ring;
+}
+
+.trigger.active {
+  color: m.color(action-primary-default);
+  border-bottom-color: m.color(action-primary-default);
+}
+
+.vertical .trigger {
+  border-bottom: 0;
+  border-right: 2px solid transparent;
+}
+
+.vertical .trigger.active {
+  border-right-color: m.color(action-primary-default);
+}
+
+.panel {
+  &:focus-visible {
+    outline: 2px solid m.color(border-focus);
+    outline-offset: 2px;
+  }
+}
