@@ -1110,11 +1110,66 @@ Clicking any internal link that targets a fragment (e.g. `/docs/buttons#variants
 
 ---
 
+### Feature 4.25: Launch-mode gate (coming-soon + announcement overlay)
+A runtime-toggleable mode that lets the deployed site switch between "under construction / coming soon" and the normal docs experience without a rebuild. Reused later as an announcement / update banner for release days and incident notices. The toggle lives in `public/flags.json` so the host can edit a single file to flip states.
+
+#### User Stories
+
+**US-4.25.1** — As a maintainer, I want to flip the site into "coming soon" mode by editing a single JSON file on the host, so that I can protect the docs experience while it's incomplete without rebuilding the site.
+
+**Acceptance criteria:**
+- [ ] `public/flags.json` exists with a `comingSoon: boolean` field and is served at `/flags.json`.
+- [ ] On every page, a small client hook fetches `/flags.json` on mount (with a short cache).
+- [ ] When `comingSoon: true`, the visible page content is replaced by a full-page overlay: logo, short "we're building this" copy, a visible theme picker (so the coming-soon page itself demonstrates the system), and optional email-signup stub.
+- [ ] When `comingSoon: false`, the overlay does not render and the docs site is normal.
+- [ ] Flipping `flags.json` on the host shows the change within one hard reload; no rebuild required.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** maintainer
+
+**US-4.25.2** — As a visitor hitting the site during coming-soon mode, I want the theme picker to still work on the overlay, so that the "under construction" page itself proves the system is alive.
+
+**Acceptance criteria:**
+- [ ] Theme picker renders inside the coming-soon overlay.
+- [ ] Clicking a theme re-skins the overlay immediately.
+- [ ] No layout shift, no hydration warning.
+- [ ] Basic copy + branding still visible on every shipped theme (passes eyeball check on Sketchbook / Graphite / Glass / Terminal).
+
+**Priority:** P1
+**Effort:** 1
+**Role:** visitor
+
+**US-4.25.3** — As a maintainer, I want to reuse the same flag mechanism for non-blocking announcements, so that release days can surface a banner without shipping a new build.
+
+**Acceptance criteria:**
+- [ ] `flags.json` supports an `announcement` object: `{ active: boolean, message: string, href?: string, status?: "info" | "success" | "warning" }`.
+- [ ] When `announcement.active: true` AND `comingSoon: false`, a dismissible banner renders at the top of every route.
+- [ ] Banner uses `<Alert>` component visuals for consistency.
+- [ ] Dismiss persists in `sessionStorage` for that message id so it doesn't nag on every page change.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** maintainer
+
+**US-4.25.4** — As a maintainer, I want the coming-soon page to be SEO-friendly, so that the site isn't indexed as empty while it's gated.
+
+**Acceptance criteria:**
+- [ ] When `comingSoon: true`, overlay renders `<meta name="robots" content="noindex, nofollow">` via `<Head>`.
+- [ ] When flag flips back, the meta tag disappears and the site becomes indexable again.
+- [ ] A one-line README section explains the flag file and the robots behavior.
+
+**Priority:** P2
+**Effort:** 1
+**Role:** maintainer
+
+---
+
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations — token contract and mixin API must be stable before they can be documented); Epic 2 (Themes & Icons — theme and icon authoring mechanics must be locked before their guides can be written); Epic 3 (React Component Library — component API must be locked before migration and recipes document component usage).
 - Blocks: real 1.0 launch — without real docs and a polished site shell, no one learns or adopts the system. Also blocks perceived polish for launch announcements (OG cards, favicons, PWA manifest, themed 404, mobile drawer).
 
 ## Priority
-P0 (blocker for 1.0): Features 4.1 Getting Started, 4.2 Install, 4.3 Tokens, 4.4 Mixins, 4.5 Utilities, 4.11 Recipes, 4.18 Custom 404, 4.19 Favicon + PWA, 4.20 Copy-to-clipboard, 4.22 Mobile nav, 4.23 Skip-to-content + keyboard polish.
+P0 (blocker for 1.0): Features 4.1 Getting Started, 4.2 Install, 4.3 Tokens, 4.4 Mixins, 4.5 Utilities, 4.11 Recipes, 4.18 Custom 404, 4.19 Favicon + PWA, 4.20 Copy-to-clipboard, 4.22 Mobile nav, 4.23 Skip-to-content + keyboard polish, 4.25 Launch-mode gate.
 P1 (wanted for 1.0): Features 4.6 Migration, 4.7 Theme Authoring, 4.8 Icon Authoring, 4.9 Animation, 4.10 Accessibility, 4.13 Search, 4.14 TOC auto-highlight, 4.15 Prev/next, 4.16 Edit on GitHub, 4.17 OpenGraph, 4.21 Shiki syntax highlighting.
 P2 (post-1.0): Feature 4.12 FAQ expansion, Feature 4.24 Smooth scroll + anchor offset, and any error-boundary / loading-state polish deferred out of the P0/P1 set.
