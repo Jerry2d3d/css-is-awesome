@@ -1,0 +1,51 @@
+@use 'mixins' as m;
+@use 'components/overlay' as ov;
+
+.menu {
+  @include ov.dropdown-menu;
+  z-index: 1050;
+  background: m.color(surface-raised);
+  color: m.color(text-primary);
+  border: 1px solid m.color(border-default);
+  padding: m.space(1);
+  min-width: 10rem;
+  animation: cia-dropdown-fade 120ms ease-out;
+
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+}
+
+.item {
+  @include ov.dropdown-item;
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: m.space(2);
+  width: 100%;
+  box-sizing: border-box;
+  padding: m.space(2) m.space(3);
+  border-radius: m.radius(sm);
+  cursor: pointer;
+  font-family: inherit;
+  color: m.color(text-primary);
+  @include m.focus-ring;
+}
+.item:hover:not(.disabled),
+.item:focus:not(.disabled) {
+  background: m.color(interactive-hover);
+}
+.item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.divider {
+  @include ov.dropdown-divider;
+  height: 1px;
+  background: m.color(border-subtle);
+  margin: m.space(1) 0;
+}
+
+@keyframes cia-dropdown-fade {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
