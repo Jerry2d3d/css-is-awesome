@@ -1,0 +1,19 @@
+@use 'mixins' as m;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(2);
+}
+
+.hint {
+  margin: 0;
+  font-size: m.font-size(sm);
+  color: m.color(text-muted);
+}
+
+.error {
+  margin: 0;
+  font-size: m.font-size(sm);
+  color: m.color(error-default);
+}
