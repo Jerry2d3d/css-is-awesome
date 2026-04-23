@@ -1,0 +1,48 @@
+@use 'mixins' as m;
+@use 'components/feedback' as fb;
+
+.alert {
+  @include fb.alert-base;
+  display: flex;
+  align-items: flex-start;
+  gap: m.space(3);
+}
+
+.icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  font-size: 1.25em;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 m.space(1);
+  font-weight: m.font-weight(semibold);
+}
+
+.message {
+  font-size: m.font-size(base);
+  line-height: m.line-height(normal);
+}
+
+.dismiss {
+  all: unset;
+  cursor: pointer;
+  font-size: 1.5em;
+  line-height: 1;
+  opacity: 0.6;
+  padding: 0 m.space(2);
+  &:hover { opacity: 1; }
+  @include m.focus-ring;
+}
+
+.info    { @include fb.alert($status: info); }
+.success { @include fb.alert($status: success); }
+.warning { @include fb.alert($status: warning); }
+.error   { @include fb.alert($status: error); }

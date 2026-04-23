@@ -1,0 +1,33 @@
+@use 'mixins' as m;
+@use 'components/feedback' as fb;
+
+.tag {
+  @include fb.tag-base;
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(1);
+  white-space: nowrap;
+}
+
+.removable { @include fb.tag-removable; }
+
+.icon {
+  display: inline-flex;
+  line-height: 1;
+}
+
+.label {
+  line-height: 1;
+}
+
+.remove {
+  all: unset;
+  cursor: pointer;
+  font-size: 1.1em;
+  line-height: 1;
+  opacity: 0.6;
+  padding: 0 m.space(1);
+  border-radius: 50%;
+  &:hover { opacity: 1; }
+  @include m.focus-ring;
+}

@@ -1,0 +1,23 @@
+@use 'mixins' as m;
+@use 'components/feedback' as fb;
+
+.spinner {
+  @include fb.spinner;
+  display: inline-block;
+}
+
+.sm { font-size: 0.875em; }
+.lg { font-size: 1.5em; }
+
+/* screen-reader-only label */
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

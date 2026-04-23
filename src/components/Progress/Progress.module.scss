@@ -1,0 +1,45 @@
+@use 'mixins' as m;
+@use 'components/feedback' as fb;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(1);
+  width: 100%;
+}
+
+.track {
+  @include fb.progress-track;
+  overflow: hidden;
+}
+
+.fill {
+  @include fb.progress-fill;
+  height: 100%;
+  transition: width 240ms var(--ease);
+}
+
+.sm .track { height: 0.25rem; }
+.lg .track { height: 0.75rem; }
+
+.label {
+  font-size: m.font-size(sm);
+  color: m.color(text-secondary);
+}
+
+/* Indeterminate animation */
+.indeterminate .fill {
+  width: 40%;
+  animation: cia-progress-indeterminate 1.5s linear infinite;
+}
+
+@keyframes cia-progress-indeterminate {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indeterminate .fill {
+    animation: cia-progress-indeterminate 3s linear infinite;
+  }
+}

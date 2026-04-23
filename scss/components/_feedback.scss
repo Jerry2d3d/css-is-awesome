@@ -136,3 +136,43 @@
   0%, 100% { opacity: 0.4; }
   50%      { opacity: 1; }
 }
+
+// ----------------------------------------------------------------------------
+// SKELETON
+// ----------------------------------------------------------------------------
+// A placeholder loading shape that shimmers across its surface while waiting
+// for real content. Respects prefers-reduced-motion — drops to a subtle
+// pulse instead of the shimmer sweep.
+@mixin skeleton(
+  $bg: surface-muted,
+  $highlight: surface-subtle,
+  $r: md
+) {
+  display: block;
+  background-color: m.color($bg);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    m.color($highlight) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  background-position: -100% 0;
+  border-radius: m.radius($r);
+  animation: cia-skeleton-shimmer 1.6s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    background-image: none;
+    animation: cia-skeleton-pulse 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes cia-skeleton-shimmer {
+  0%   { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes cia-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}

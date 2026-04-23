@@ -1,0 +1,22 @@
+@use 'mixins' as m;
+@use 'components/feedback' as fb;
+
+.badge {
+  @include fb.badge-base;
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(1);
+  white-space: nowrap;
+}
+
+.dot {
+  padding: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.info    { @include fb.badge($status: info); }
+.success { @include fb.badge($status: success); }
+.warning { @include fb.badge($status: warning); }
+.error   { @include fb.badge($status: error); }
