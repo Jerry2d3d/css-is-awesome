@@ -1,0 +1,23 @@
+@use 'mixins' as m;
+
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: m.space(2);
+}
+
+.icon {
+  position: absolute;
+  left: m.space(3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: m.color(text-muted);
+  pointer-events: none;
+  display: inline-flex;
+}
+
+.input {
+  padding-left: 2.5rem;
+  flex: 1;
+}
