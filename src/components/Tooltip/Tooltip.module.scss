@@ -1,0 +1,22 @@
+@use 'mixins' as m;
+@use 'components/overlay' as ov;
+
+.tooltip {
+  @include ov.tooltip-base;
+  z-index: 1100;
+  pointer-events: none;
+  user-select: none;
+  color: m.color(text-inverse);
+  background: m.color(surface-emphasis);
+  font-size: m.font-size(sm);
+  animation: cia-tooltip-fade 120ms ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes cia-tooltip-fade {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
