@@ -1,0 +1,46 @@
+@use 'mixins' as m;
+@use 'components/overlay' as ov;
+
+.backdrop {
+  @include ov.modal-backdrop;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: m.space(4);
+  z-index: 1000;
+}
+
+.dialog {
+  @include ov.modal-base;
+  position: relative;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.sm { max-width: 24rem; }
+.md { max-width: 32rem; }
+.lg { max-width: 48rem; }
+.xl { max-width: 64rem; }
+
+.header { @include ov.modal-header; }
+.title { margin: 0; font-size: m.font-size(4); font-weight: m.font-weight(semibold); }
+.body { }
+.footer { @include ov.modal-footer; display: flex; gap: m.space(2); justify-content: flex-end; }
+
+.close {
+  all: unset;
+  position: absolute;
+  top: m.space(3);
+  right: m.space(3);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: m.color(text-muted);
+  padding: m.space(1) m.space(2);
+  border-radius: m.radius(sm);
+  @include m.focus-ring;
+  &:hover { color: m.color(text-primary); }
+}
