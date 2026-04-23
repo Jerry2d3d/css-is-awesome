@@ -14,7 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning on <html>: the inline script below sets
+    // data-theme-id before React hydrates (FOUC prevention). That deliberate
+    // mutation differs from SSR output — we tell React not to warn.
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Flash-of-wrong-theme prevention: decide the theme file before first paint. */}
         <script
