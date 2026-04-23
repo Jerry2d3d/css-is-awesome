@@ -1,0 +1,41 @@
+@use 'mixins' as m;
+@use 'components/navigation' as nav;
+
+.breadcrumb {
+  display: block;
+}
+
+.list {
+  @include nav.breadcrumb;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: m.space(2);
+  font-size: m.font-size(sm);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.link {
+  color: m.color(text-link);
+  text-decoration: none;
+  @include m.transition(color);
+  &:hover { color: m.color(text-link-hover); text-decoration: underline; }
+  @include m.focus-ring;
+}
+
+.current {
+  color: m.color(text-secondary);
+  font-weight: m.font-weight(medium);
+}
+
+.separator {
+  color: m.color(text-muted);
+  user-select: none;
+}
