@@ -19,16 +19,18 @@ export default function RootLayout({
     // mutation differs from SSR output — we tell React not to warn.
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Flash-of-wrong-theme prevention: decide the theme file before first paint. */}
+        {/* Theme stylesheet — the ONE FILE that reskins the whole site.
+            MUST come before the FOUC script below so the script can find
+            and update this link before first paint. Swapped at runtime by
+            <ThemePicker>. */}
+        <link id="cia-theme-link" rel="stylesheet" href="/theme.css" />
+        {/* FOUC prevention: update the link above with the user's saved
+            theme (or OS prefers-color-scheme) before first paint. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem("cia-theme-file");if(!s){var dark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;s=dark?"graphite":"sketchbook";}var m={sketchbook:"/theme.css",press:"/themes/press/theme.css",graphite:"/themes/graphite/theme.css",glass:"/themes/glass/theme.css",cupertino:"/themes/cupertino/theme.css",terminal:"/themes/terminal/theme.css"};var href=m[s]||m.sketchbook;document.documentElement.setAttribute("data-theme-id",s);var el=document.getElementById("cia-theme-link");if(el)el.href=href;else{document.write('<link id="cia-theme-link" rel="stylesheet" href="'+href+'">');}}catch(e){}})();`,
+            __html: `(function(){try{var s=localStorage.getItem("cia-theme-file");if(!s){var dark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;s=dark?"graphite":"sketchbook";}var m={sketchbook:"/theme.css",press:"/themes/press/theme.css",graphite:"/themes/graphite/theme.css",glass:"/themes/glass/theme.css",cupertino:"/themes/cupertino/theme.css",terminal:"/themes/terminal/theme.css"};var href=m[s]||m.sketchbook;document.documentElement.setAttribute("data-theme-id",s);var el=document.getElementById("cia-theme-link");if(el)el.href=href;}catch(e){}})();`,
           }}
         />
-        {/* Theme stylesheet — the ONE FILE that reskins the whole site.
-            Swapped at runtime by <ThemePicker>. Kept in <head> so first
-            paint already has tokens. */}
-        <link id="cia-theme-link" rel="stylesheet" href="/theme.css" />
       </head>
       <body>
         {children}
