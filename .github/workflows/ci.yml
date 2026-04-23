@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-validate:
+    name: Build & Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (Next.js ESLint)
+        run: npm run lint
+
+      - name: Lint SCSS (stylelint)
+        run: npm run lint:scss
+
+      - name: Validate themes
+        run: npm run validate-themes
+
+      - name: Build library CSS bundles
+        run: npm run build:css:all
+
+      - name: Build docs site (Next.js static export)
+        run: npm run build
+
+      - name: Upload docs site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-site
+          path: out/
+          retention-days: 7
