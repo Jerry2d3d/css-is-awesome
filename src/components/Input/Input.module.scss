@@ -1,0 +1,25 @@
+@use 'mixins' as m;
+@use 'components/forms' as f;
+
+.input {
+  @include f.input-base;
+  width: 100%;
+}
+
+.sm {
+  font-size: m.font-size(1);
+  padding: m.space(1) m.space(2);
+}
+
+.lg {
+  font-size: m.font-size(5);
+  padding: m.space(3) m.space(5);
+}
+
+.invalid {
+  border-color: m.color(error-default);
+
+  &:focus {
+    outline-color: m.color(error-default);
+  }
+}
