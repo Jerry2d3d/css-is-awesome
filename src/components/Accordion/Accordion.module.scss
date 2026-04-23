@@ -1,0 +1,57 @@
+@use 'mixins' as m;
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid m.color(border-default);
+  border-radius: m.radius(md);
+  overflow: hidden;
+}
+
+.item + .item {
+  border-top: 1px solid m.color(border-default);
+}
+
+.trigger {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: m.space(3);
+  width: 100%;
+  box-sizing: border-box;
+  padding: m.space(3) m.space(4);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: m.font-weight(medium);
+  color: m.color(text-primary);
+  background: m.color(surface-default);
+  @include m.focus-ring;
+  @include m.transition(background-color, color);
+}
+
+.trigger:hover {
+  background: m.color(interactive-hover);
+}
+
+.caret {
+  display: inline-block;
+  transition: transform 200ms var(--ease);
+  color: m.color(text-muted);
+}
+
+.trigger.expanded .caret {
+  transform: rotate(90deg);
+}
+
+.panel {
+  padding: m.space(3) m.space(4);
+  background: m.color(surface-default);
+  color: m.color(text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret {
+    transition: none;
+  }
+}
