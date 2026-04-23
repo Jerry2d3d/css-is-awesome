@@ -1,0 +1,22 @@
+@use 'mixins' as m;
+@use 'components/forms' as f;
+
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(3);
+  width: 100%;
+}
+
+.input {
+  @include f.slider-base;
+  flex: 1;
+}
+
+.value {
+  min-width: 2.5em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: m.font-size(base);
+  color: m.color(text-secondary);
+}
