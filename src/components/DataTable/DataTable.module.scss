@@ -1,0 +1,101 @@
+@use 'mixins' as m;
+@use 'components/data' as d;
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: m.space(3);
+}
+
+.scroll {
+  @include d.table-responsive;
+  width: 100%;
+}
+
+.table {
+  @include d.table-base;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.striped tbody tr:nth-child(even) {
+  background: m.color(surface-muted);
+}
+
+.hoverable tbody tr:hover {
+  background: m.color(interactive-hover);
+}
+
+.bordered {
+  border: 1px solid m.color(border-default);
+}
+.bordered th,
+.bordered td {
+  border: 1px solid m.color(border-default);
+}
+
+.compact th,
+.compact td {
+  padding: m.space(1) m.space(2);
+}
+
+.headerCell {
+  text-align: start;
+  font-weight: m.font-weight(semibold);
+  padding: m.space(3);
+  border-bottom: 1px solid m.color(border-default);
+}
+
+.sortable .sortButton {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(1);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  @include m.focus-ring;
+}
+
+.stickyHeader thead th {
+  position: sticky;
+  top: 0;
+  background: m.color(surface-default);
+  z-index: 1;
+}
+
+.align-start  { text-align: start; }
+.align-center { text-align: center; }
+.align-end    { text-align: end; }
+
+.selectCol {
+  width: 2.5rem;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.selected {
+  background: m.color(info-subtle);
+}
+
+.empty {
+  text-align: center;
+  padding: m.space(6);
+  color: m.color(text-muted);
+}
+
+.paginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: m.space(3);
+  flex-wrap: wrap;
+}
+
+.count {
+  font-size: m.font-size(sm);
+  color: m.color(text-muted);
+}
