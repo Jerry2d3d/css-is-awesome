@@ -1,0 +1,16 @@
+@use 'mixins' as m;
+@use 'components/forms' as f;
+
+.textarea {
+  @include f.textarea-base;
+  width: 100%;
+  min-height: 6rem;
+}
+
+.invalid {
+  border-color: m.color(error-default);
+
+  &:focus {
+    outline-color: m.color(error-default);
+  }
+}
