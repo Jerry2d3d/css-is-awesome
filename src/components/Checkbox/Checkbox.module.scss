@@ -1,0 +1,23 @@
+@use 'mixins' as m;
+@use 'components/forms' as f;
+
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  @include f.check-base;
+}
+
+.label {
+  font-size: m.font-size(base);
+  color: m.color(text-primary);
+}
+
+.invalid {
+  border-color: m.color(error-default);
+}
