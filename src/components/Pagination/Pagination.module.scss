@@ -1,0 +1,53 @@
+@use 'mixins' as m;
+@use 'components/navigation' as nav;
+
+.pagination {
+  display: inline-flex;
+}
+
+.list {
+  @include nav.pagination;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.item {
+  @include nav.pagination-item;
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 m.space(2);
+  border-radius: m.radius(md);
+  font-family: inherit;
+  color: m.color(text-primary);
+  @include m.focus-ring;
+  @include m.transition(background-color, color);
+}
+
+.item:hover:not([disabled]) {
+  background: m.color(interactive-hover);
+}
+
+.item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.item.active {
+  background: m.color(action-primary-default);
+  color: m.color(text-inverse);
+}
+
+.dots {
+  padding: 0 m.space(2);
+  color: m.color(text-muted);
+  display: inline-flex;
+  align-items: center;
+}
