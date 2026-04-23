@@ -1,19 +1,10 @@
 "use client";
 import { useMemo, useState } from "react";
-import type { ReactElement, ReactNode } from "react";
+import type { ReactNode } from "react";
 import Checkbox from "@/components/Checkbox";
-import PaginationImport from "@/components/Pagination";
+import Pagination from "@/components/Pagination";
 import Skeleton from "@/components/Skeleton";
 import styles from "./DataTable.module.scss";
-
-// PaginationProps intersect HTMLAttributes<HTMLElement>, whose `onChange`
-// (ChangeEventHandler) conflicts with Pagination's custom `onChange(page)`.
-// Re-type locally so consumers of DataTable aren't affected by that upstream quirk.
-const Pagination = PaginationImport as unknown as (props: {
-  current: number;
-  total: number;
-  onChange: (page: number) => void;
-}) => ReactElement;
 
 export type ColumnAlign = "start" | "center" | "end";
 export type SortDirection = "asc" | "desc";

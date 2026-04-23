@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import type { HTMLAttributes } from "react";
 import styles from "./Pagination.module.scss";
 
-export type PaginationProps = HTMLAttributes<HTMLElement> & {
+export type PaginationProps = Omit<HTMLAttributes<HTMLElement>, "onChange"> & {
   current: number;
   total: number;             // total number of pages
   onChange: (page: number) => void;
