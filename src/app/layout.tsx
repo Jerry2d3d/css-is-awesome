@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ThemePicker from "@/components/ThemePicker";
+import LaunchGate from "@/components/LaunchGate";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -33,8 +33,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
-        <ThemePicker />
+        <LaunchGate>{children}</LaunchGate>
       </body>
     </html>
   );

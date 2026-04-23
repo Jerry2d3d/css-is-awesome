@@ -83,6 +83,25 @@ Verified at Phase 2: **2 KB gzipped** for core (tokens + resets), **10 KB gzippe
 
 Pre-1.0. Active development. Themes, animations, and the atomic mixin library are in place; docs content and npm publish are the remaining milestones. See [ROADMAP.md](./ROADMAP.md) for what's next and [CHANGELOG.md](./CHANGELOG.md) for what's shipped.
 
+## Launch mode / feature flags
+
+The site ships with a runtime feature-flag gate driven by `public/flags.json`:
+
+```json
+{
+  "version": 1,
+  "comingSoon": false,
+  "comingSoonMessage": "...",
+  "announcement": { "active": false, "id": "", "status": "info", "message": "", "href": "" }
+}
+```
+
+**Coming soon.** Set `"comingSoon": true` and the site renders a full-page "we're building this" overlay on every route (the theme picker is still visible). Flip back to `false` to restore the normal docs experience. No rebuild required — the flag is fetched at runtime.
+
+**Announcements.** Set `announcement.active: true` plus a unique `announcement.id` to show a dismissible banner on every route. Visitors can dismiss; the dismissal persists in `sessionStorage` keyed by `id`, so changing the id re-shows the banner.
+
+Flag changes on a static host are effective after the next hard reload.
+
 ## License
 
 MIT. See [LICENSE](./LICENSE).
