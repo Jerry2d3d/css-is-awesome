@@ -1,0 +1,76 @@
+@use 'mixins' as m;
+@use 'components/feedback' as fb;
+
+.stack {
+  position: fixed;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: m.space(2);
+  max-width: 22rem;
+  padding: m.space(4);
+  pointer-events: none;
+}
+
+.stack > * { pointer-events: auto; }
+
+.placement-top-right    { top: 0; right: 0; }
+.placement-top-left     { top: 0; left: 0; }
+.placement-top-center   { top: 0; left: 50%; transform: translateX(-50%); align-items: center; }
+.placement-bottom-right { bottom: 0; right: 0; }
+.placement-bottom-left  { bottom: 0; left: 0; }
+.placement-bottom-center{ bottom: 0; left: 50%; transform: translateX(-50%); align-items: center; }
+
+.toast {
+  @include fb.toast-base;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: m.space(3);
+  padding: m.space(3) m.space(4);
+  background: m.color(surface-default);
+  color: m.color(text-primary);
+  border: 1px solid m.color(border-default);
+  min-width: 16rem;
+  animation: cia-toast-in 160ms ease-out;
+
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+}
+
+.body { flex: 1; min-width: 0; }
+.title { margin: 0 0 m.space(1); font-weight: m.font-weight(semibold); }
+.description { font-size: m.font-size(sm); color: m.color(text-secondary); }
+
+.action {
+  all: unset;
+  cursor: pointer;
+  color: m.color(action-primary-default);
+  font-weight: m.font-weight(medium);
+  padding: m.space(1) m.space(2);
+  border-radius: m.radius(sm);
+  @include m.focus-ring;
+  &:hover { background: m.color(interactive-hover); }
+}
+
+.dismiss {
+  all: unset;
+  cursor: pointer;
+  font-size: 1.25em;
+  line-height: 1;
+  color: m.color(text-muted);
+  padding: 0 m.space(1);
+  border-radius: m.radius(sm);
+  @include m.focus-ring;
+  &:hover { color: m.color(text-primary); }
+}
+
+/* Status borders */
+.info    { border-left: 3px solid m.color(info-default); }
+.success { border-left: 3px solid m.color(success-default); }
+.warning { border-left: 3px solid m.color(warning-default); }
+.error   { border-left: 3px solid m.color(error-default); }
+
+@keyframes cia-toast-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
