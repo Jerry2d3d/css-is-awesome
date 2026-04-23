@@ -1,0 +1,59 @@
+name: Feature request
+description: Suggest an improvement or new capability
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Please frame it as a user story if you can.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the system would this affect?
+      options:
+        - Library SCSS
+        - React components
+        - Themes
+        - Docs site
+        - Theme picker
+        - Icons
+        - Animations
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-story
+    attributes:
+      label: Problem / user story
+      description: Frame the problem as a user story.
+      placeholder: As a X, I want Y, so that Z.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution
+      description: How would you like it to work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches did you think about?
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues and [roadmap epics](../../roadmap/epics/README.md)
+          required: true
+        - label: This is not already in the roadmap
+          required: true

@@ -1,0 +1,31 @@
+name: Question
+description: Ask how to use the system
+title: "[Q]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the [docs](./src/app/docs/) first. If discussions are enabled, they may be a better fit for open-ended questions.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Describe the outcome you're after.
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?
+      description: Include code snippets, approaches, or links.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Relevant version / commit SHA
+      placeholder: e.g. 0.3.1 or commit abc1234

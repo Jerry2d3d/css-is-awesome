@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/Jerry2d3d/css-is-awesome/discussions
+    about: For open-ended questions, ideas, or show-and-tell
+  - name: Security disclosure
+    url: https://github.com/Jerry2d3d/css-is-awesome/security/advisories/new
+    about: Report a security vulnerability privately (see SECURITY.md)

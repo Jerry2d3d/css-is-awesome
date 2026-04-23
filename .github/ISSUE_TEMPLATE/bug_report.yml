@@ -1,0 +1,87 @@
+name: Bug report
+description: Something broke; help us reproduce it
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please include enough detail for us to reproduce.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit SHA
+      description: Which version of the library or which commit are you on?
+      placeholder: e.g. 0.3.1 or commit abc1234
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the system is affected?
+      options:
+        - Library SCSS
+        - React components
+        - Themes
+        - Docs site
+        - Theme picker
+        - Icons
+        - Animations
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Reproduction steps
+      description: Please provide numbered steps to reproduce the issue.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened? Include any error messages.
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser / OS / Node version
+      placeholder: e.g. Chrome 120 / macOS 14 / Node 20.10
+
+  - type: textarea
+    id: minimal-repro
+    attributes:
+      label: Minimal reproduction link or snippet
+      description: CodeSandbox / StackBlitz / GitHub repo / local snippet.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues for duplicates
+          required: true
+        - label: I can reproduce on the latest `main`
+          required: true
+        - label: I've checked the [CONTRIBUTING guide](../CONTRIBUTING.md)
+          required: true

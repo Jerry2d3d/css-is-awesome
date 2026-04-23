@@ -1,0 +1,62 @@
+name: Theme submission
+description: Submit a theme for inclusion
+title: "[Theme]: "
+labels: ["theme"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening this issue, please read [CONTRIBUTING-THEMES.md](../../CONTRIBUTING-THEMES.md) and run the validator.
+
+  - type: input
+    id: theme-name
+    attributes:
+      label: Theme name
+      placeholder: e.g. Midnight Neon
+    validations:
+      required: true
+
+  - type: textarea
+    id: mood
+    attributes:
+      label: Mood / short description (1-2 lines)
+      description: What's the vibe of this theme?
+    validations:
+      required: true
+
+  - type: textarea
+    id: inspiration
+    attributes:
+      label: Inspiration (color refs, product, era, palette source)
+      description: What inspired this theme? Link references if you can.
+
+  - type: input
+    id: validator-output
+    attributes:
+      label: Validator output
+      description: Paste the last line of `node scripts/theme-validator.js <path>`.
+      placeholder: OK — 123 tokens declared
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Loom of the theme applied to `/showcase`
+      description: Drop images here or link a Loom walkthrough.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: Contract validation passes
+          required: true
+        - label: Color contrast on body text ≥ WCAG AA
+          required: true
+        - label: No new tokens introduced beyond the contract
+          required: true
+        - label: I'm the author or have permission
+          required: true
