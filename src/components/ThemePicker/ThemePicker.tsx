@@ -3,57 +3,38 @@
 import styles from "./ThemePicker.module.scss";
 import { useEffect, useState } from "react";
 
-type Theme = { id: string; label: string; href: string };
+type Theme = { id: string; label: string };
 
 const THEMES: Theme[] = [
-  { id: "sketchbook", label: "Sketchbook", href: "/theme.css" },
-  { id: "press",      label: "Press",      href: "/themes/press/theme.css" },
-  { id: "graphite",   label: "Graphite",   href: "/themes/graphite/theme.css" },
-  { id: "glass",      label: "Glass",      href: "/themes/glass/theme.css" },
-  { id: "cupertino",  label: "Cupertino",  href: "/themes/cupertino/theme.css" },
-  { id: "terminal",   label: "Terminal",   href: "/themes/terminal/theme.css" },
+  { id: "sketchbook", label: "Sketchbook" },
+  { id: "press",      label: "Press" },
+  { id: "graphite",   label: "Graphite" },
+  { id: "glass",      label: "Glass" },
+  { id: "cupertino",  label: "Cupertino" },
+  { id: "terminal",   label: "Terminal" },
 ];
 
-const STORAGE_KEY = "cia-theme-file";
-const LINK_ID = "cia-theme-link";
+const COOKIE_NAME = "cia-theme";
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
-function applyTheme(id: string, persist: boolean = false) {
-  const t = THEMES.find((x) => x.id === id) || THEMES[0];
-  const link = document.getElementById(LINK_ID) as HTMLLinkElement | null;
-  if (link) link.href = t.href;
-  document.documentElement.setAttribute("data-theme-id", t.id);
-  if (persist) localStorage.setItem(STORAGE_KEY, t.id);
+function applyTheme(id: string) {
+  document.documentElement.setAttribute("data-theme", id);
+  document.cookie = `${COOKIE_NAME}=${id}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
 }
 
 export default function ThemePicker() {
+  // Initial state mirrors what SSR rendered — read the attribute the server
+  // already set from the cookie. Avoids hydration mismatch and FOUC.
   const [active, setActive] = useState<string>("sketchbook");
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    const initial =
-      saved ??
-      (window.matchMedia?.("(prefers-color-scheme: dark)").matches
-        ? "graphite"
-        : "sketchbook");
-    setActive(initial);
-    applyTheme(initial);
-
-    const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
-    if (!mq) return;
-    const onChange = (e: MediaQueryListEvent) => {
-      // Only react if no manual choice is saved.
-      if (localStorage.getItem(STORAGE_KEY)) return;
-      const next = e.matches ? "graphite" : "sketchbook";
-      setActive(next);
-      applyTheme(next);
-    };
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    const current = document.documentElement.getAttribute("data-theme") ?? "sketchbook";
+    setActive(current);
   }, []);
 
   function choose(id: string) {
     setActive(id);
-    applyTheme(id, true);
+    applyTheme(id);
   }
 
   return (
