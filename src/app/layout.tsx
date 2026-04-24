@@ -18,11 +18,16 @@ export default function RootLayout({
     // data-theme-id before React hydrates (FOUC prevention). That deliberate
     // mutation differs from SSR output — we tell React not to warn.
     <html lang="en" suppressHydrationWarning>
-      {/* suppressHydrationWarning on <head>: Next 15 auto-injects <meta charset>
-          into head which may render in a different position than our raw <link>.
-          That child-order mismatch is expected — we silence it here. */}
-      <head suppressHydrationWarning>
-        {/* Theme stylesheet — the ONE FILE that reskins the whole site.
+      <body>
+        {/* Theme stylesheet + FOUC script live at the top of <body>, not in
+            <head>. Next 15 + React 19 strictly validate <head> child order
+            against its auto-injected metadata tags; raw <link>/<script>
+            children of <head> trigger a hydration mismatch. In <body> the
+            CSS still applies globally (browsers honor <link rel="stylesheet">
+            anywhere), and the inline script still runs synchronously before
+            any visible content paints.
+
+            Theme stylesheet — the ONE FILE that reskins the whole site.
             MUST come before the FOUC script below so the script can find
             and update this link before first paint. Swapped at runtime by
             <ThemePicker>. */}
@@ -34,8 +39,6 @@ export default function RootLayout({
             __html: `(function(){try{var s=localStorage.getItem("cia-theme-file");if(!s){var dark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;s=dark?"graphite":"sketchbook";}var m={sketchbook:"/theme.css",press:"/themes/press/theme.css",graphite:"/themes/graphite/theme.css",glass:"/themes/glass/theme.css",cupertino:"/themes/cupertino/theme.css",terminal:"/themes/terminal/theme.css"};var href=m[s]||m.sketchbook;document.documentElement.setAttribute("data-theme-id",s);var el=document.getElementById("cia-theme-link");if(el)el.href=href;}catch(e){}})();`,
           }}
         />
-      </head>
-      <body>
         <LaunchGate>{children}</LaunchGate>
       </body>
     </html>
