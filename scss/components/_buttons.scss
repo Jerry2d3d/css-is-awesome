@@ -125,3 +125,19 @@
   @include m.focus-ring;
   @include m.interactive;
 }
+
+@mixin buttonold($button-type) {
+  @if #{$button-type} == action {
+    @content;
+    background-color: #636363;
+    border: 1px solid #00b9f4;
+  } @else if #{$button-type} == disabled {
+    @content;
+    background-color: #636363;
+    border: 1px solid #636363;
+  } @else if #{$button-type} == info {
+    @content;
+    background-color: #636363;
+    border: 1px solid #00b9f4;
+  }
+}
