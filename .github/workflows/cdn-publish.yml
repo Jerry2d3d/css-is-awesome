@@ -1,0 +1,208 @@
+# CDN publish workflow
+#
+# Purpose:
+#   Runs after semantic-release publishes a GitHub Release (and, crucially, after
+#   the sibling release pipeline has already `npm publish`ed the package). jsDelivr
+#   auto-mirrors any npm tarball's file tree at:
+#     https://cdn.jsdelivr.net/npm/css-is-awesome@<version>/<path>
+#   so we don't publish to the CDN ourselves. Instead this workflow:
+#     1. Smoke-checks that the expected files resolve on jsDelivr (best-effort).
+#     2. Bundles dist/* + public/theme(s) into .tar.gz + .zip archives and
+#        attaches them to the existing GitHub Release for direct download.
+#     3. Appends a "CDN ready" section (with an HTML marker) to the Release body
+#        so consumers have one-click copy-paste URLs.
+#
+# Env:
+#   GITHUB_TOKEN  - auto-provided by Actions; used for Release asset upload and
+#                   PATCHing the Release body.
+#
+# Dependency: the package `css-is-awesome` must already be live on npm when this
+# fires. semantic-release in the sibling wave publishes to npm BEFORE creating the
+# GitHub Release, so the `release: published` trigger is a safe point to query
+# jsDelivr (with retries to absorb 1-3 min CDN lag).
+
+name: CDN publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  cdn-artifacts:
+    name: Bundle, upload, verify CDN
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TAG: ${{ github.event.release.tag_name }}
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all CSS bundles
+        run: npm run build:css:all
+
+      - name: Validate themes
+        run: npm run validate-themes
+
+      - name: Stage CDN bundle contents
+        id: stage
+        run: |
+          set -euo pipefail
+          STAGE="cdn-bundle"
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE/dist" "$STAGE/public"
+
+          # Core CSS artifacts
+          cp dist/css-is-awesome.css              "$STAGE/dist/"
+          cp dist/css-is-awesome.min.css          "$STAGE/dist/"
+          cp dist/css-is-awesome.core.min.css     "$STAGE/dist/"
+          cp dist/css-is-awesome.utilities.min.css "$STAGE/dist/"
+
+          # Default theme + six-theme catalog
+          cp public/theme.css "$STAGE/public/theme.css"
+          cp -R public/themes "$STAGE/public/themes"
+
+          echo "Staged contents:"
+          find "$STAGE" -type f | sort
+
+          echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Create tar.gz + zip archives
+        id: archives
+        run: |
+          set -euo pipefail
+          STAGE="${{ steps.stage.outputs.stage }}"
+          BASENAME="css-is-awesome-${TAG}-cdn-bundle"
+
+          tar -czf "${BASENAME}.tar.gz" -C "$STAGE" .
+          ( cd "$STAGE" && zip -r "../${BASENAME}.zip" . )
+
+          ls -lh "${BASENAME}.tar.gz" "${BASENAME}.zip"
+
+          echo "tar=${BASENAME}.tar.gz" >> "$GITHUB_OUTPUT"
+          echo "zip=${BASENAME}.zip"    >> "$GITHUB_OUTPUT"
+
+      - name: Attach archives to existing Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: |
+            ${{ steps.archives.outputs.tar }}
+            ${{ steps.archives.outputs.zip }}
+          fail_on_unmatched_files: true
+
+      - name: Smoke-check jsDelivr endpoints (best-effort)
+        id: smoke
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+
+          # Canonical URLs consumers will paste into <link> tags.
+          URLS=(
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.min.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.core.min.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.utilities.min.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/theme.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/themes/press/theme.css"
+          )
+
+          SUMMARY="$GITHUB_STEP_SUMMARY"
+          {
+            echo "## jsDelivr smoke-check"
+            echo ""
+            echo "Tag: \`${TAG}\`"
+            echo ""
+            echo "| URL | Status |"
+            echo "| --- | --- |"
+          } >> "$SUMMARY"
+
+          OVERALL_OK=1
+          for url in "${URLS[@]}"; do
+            OK=""
+            for attempt in 1 2 3 4 5; do
+              if curl -fsSL -o /dev/null "$url"; then
+                OK="yes"
+                echo "OK  ($attempt/5) $url"
+                break
+              fi
+              echo "miss ($attempt/5) $url"
+              sleep 30
+            done
+            if [ -n "$OK" ]; then
+              echo "| \`$url\` | OK |" >> "$SUMMARY"
+            else
+              echo "| \`$url\` | MISSING (after 5 retries) |" >> "$SUMMARY"
+              OVERALL_OK=0
+            fi
+          done
+
+          if [ "$OVERALL_OK" -eq 0 ]; then
+            echo "::warning::One or more jsDelivr URLs were not resolvable after retries. CDN propagation may still be catching up; check again in a few minutes."
+          fi
+
+      - name: Append "CDN ready" section to Release body (idempotent)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RELEASE_ID: ${{ github.event.release.id }}
+        run: |
+          set -euo pipefail
+
+          # Fetch current release body.
+          CURRENT_BODY="$(curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${REPO}/releases/${RELEASE_ID}" \
+            | node -e "let s=''; process.stdin.on('data',d=>s+=d); process.stdin.on('end',()=>{ const b=JSON.parse(s).body||''; process.stdout.write(b); })")"
+
+          if printf '%s' "$CURRENT_BODY" | grep -q '<!-- cdn-published -->'; then
+            echo "CDN ready section already present; skipping append."
+            exit 0
+          fi
+
+          # Build CDN section with printf so we don't need a column-0 heredoc
+          # terminator (which would break this YAML block scalar's indentation).
+          CDN_BLOCK=$(printf '%s\n' \
+            '<!-- cdn-published -->' \
+            '### CDN ready' \
+            '' \
+            'Via jsDelivr (cached globally, no auth):' \
+            '' \
+            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.min.css\`" \
+            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/theme.css\`" \
+            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/themes/<theme>/theme.css\`" \
+            '' \
+            'Or download the bundle attached to this release.')
+
+          # Join existing body + two newlines + CDN block, JSON-encode, PATCH.
+          NEW_BODY="$(printf '%s\n\n%s' "$CURRENT_BODY" "$CDN_BLOCK")"
+
+          PAYLOAD="$(node -e "
+            let body = process.argv[1];
+            process.stdout.write(JSON.stringify({ body }));
+          " "$NEW_BODY")"
+
+          curl -fsSL -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${REPO}/releases/${RELEASE_ID}" \
+            -d "$PAYLOAD" \
+            -o /dev/null
+
+          echo "Release body updated with CDN ready section."
