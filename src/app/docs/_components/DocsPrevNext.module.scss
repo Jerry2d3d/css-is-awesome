@@ -1,0 +1,38 @@
+.prevNext {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--hair-soft);
+}
+.prev, .next {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--hair-soft);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 180ms var(--ease), background-color 180ms var(--ease);
+}
+.prev:hover, .next:hover {
+  border-color: var(--ai);
+  background-color: var(--paper-raised, var(--paper));
+}
+.next {
+  text-align: right;
+  grid-column: 2;
+}
+.dir {
+  font-family: var(--font-script);
+  font-size: 1rem;
+  color: var(--shu);
+  line-height: 1;
+}
+.label {
+  font-family: var(--font-display, var(--font-serif));
+  font-size: 1.15rem;
+  line-height: 1.2;
+}

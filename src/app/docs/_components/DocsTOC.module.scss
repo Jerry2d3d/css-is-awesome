@@ -1,10 +1,3 @@
-/* ============================================================
-   Docs page (/docs) — CSS Module (scoped, camelCase classes).
-   Imported from page.tsx as `styles` and applied via className={styles.x}.
-   Only holds the on-this-page table of contents; the left-hand
-   sidebar lives in src/components/DocsSidebar.module.scss.
-   ============================================================ */
-
 .toc {
   font-size: 0.9rem;
   align-self: start;
@@ -38,6 +31,7 @@
   margin-left: -1px;
   line-height: 1.5;
   transition: color 180ms var(--ease), border-color 180ms var(--ease);
+  text-decoration: none;
 }
 .toc a:hover { color: var(--ink); }
 .toc a.isActive {
@@ -45,3 +39,4 @@
   border-left-color: var(--ai);
   font-weight: 600;
 }
+.toc .sub a { padding-left: 1.5rem; font-size: 0.85rem; }
