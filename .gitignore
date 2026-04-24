@@ -16,3 +16,9 @@ next-env.d.ts
 
 # Claude Code state (agent worktrees, local config)
 .claude/
+
+# Playwright (report + transient results only — baseline screenshots
+# under tests/__screenshots__/ ARE committed so PRs visibly diff).
+playwright-report/
+test-results/
+/playwright/.cache/

@@ -46,6 +46,9 @@
     "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:utilities && npm run build:css:min",
     "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
     "validate-themes": "node scripts/theme-validator.js --all",
+    "test": "playwright test",
+    "test:update-snapshots": "playwright test --update-snapshots",
+    "playwright:install": "playwright install chromium --with-deps",
     "prepublishOnly": "npm run build:css:all"
   },
   "keywords": [
@@ -78,7 +81,9 @@
     }
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
     "@eslint/eslintrc": "^3.2.0",
+    "@playwright/test": "^1.59.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.0",
     "@semantic-release/git": "^10.0.1",
@@ -95,6 +100,7 @@
     "react-dom": "^19.0.0",
     "sass": "^1.97.1",
     "semantic-release": "^24.2.0",
+    "serve": "^14.2.6",
     "stylelint": "^17.8.0",
     "stylelint-config-standard-scss": "^17.0.0",
     "typescript": "^5.7.0"

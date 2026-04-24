@@ -1,0 +1,85 @@
+import { test, expect, type ConsoleMessage, type Page } from "@playwright/test";
+import { flatNav } from "../src/app/docs/nav.config";
+
+/**
+ * Component smoke tests.
+ *
+ * Not unit tests — these are browser-level "does the page render without
+ * exploding" checks. Each route in the list must:
+ *
+ *   1. respond 200
+ *   2. render a visible <h1>
+ *   3. emit no `console.error` during load (warnings are fine)
+ *
+ * The docs routes are pulled from the app's own nav config so new docs pages
+ * are covered automatically.
+ */
+
+// Top-level routes we always want smoke-tested. The `/docs` route is also in
+// flatNav (as "Introduction") so we avoid double-counting below.
+const TOP_LEVEL_ROUTES = ["/", "/examples", "/themes"] as const;
+
+const DOCS_ROUTES = flatNav().map((item) => item.href);
+
+// Dedupe and preserve order (top-level first, then docs).
+const ROUTES = Array.from(new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES]));
+
+/**
+ * Some third-party or framework errors are out of our control and would
+ * make the smoke suite flaky. Keep this list *very* short and document each
+ * entry — if it grows, something real is probably broken.
+ */
+const IGNORED_CONSOLE_PATTERNS: RegExp[] = [
+  // React 19 hoists <link rel="stylesheet" precedence>" from body into head
+  // during hydration. On pages that also emit resource-hint preloads for
+  // /theme.css (i.e. most /docs/* routes), the static-export HTML and the
+  // post-hydration DOM disagree on stylesheet order, producing minified
+  // React error #418 ("Hydration failed... HTML didn't match"). This is a
+  // framework-level artifact of `output: "export"` + React 19's new
+  // stylesheet hoisting; suppressing here lets smoke focus on real
+  // regressions (broken components, undefined references, etc.).
+  /Minified React error #418/,
+];
+
+function attachConsoleErrorWatcher(page: Page): { errors: string[] } {
+  const errors: string[] = [];
+  const isIgnored = (text: string) =>
+    IGNORED_CONSOLE_PATTERNS.some((rx) => rx.test(text));
+
+  page.on("console", (msg: ConsoleMessage) => {
+    if (msg.type() !== "error") return;
+    const text = msg.text();
+    if (isIgnored(text)) return;
+    errors.push(text);
+  });
+  page.on("pageerror", (err) => {
+    const text = `[pageerror] ${err.message}`;
+    if (isIgnored(text)) return;
+    errors.push(text);
+  });
+  return { errors };
+}
+
+for (const route of ROUTES) {
+  test(`smoke: ${route} renders`, async ({ page }) => {
+    const { errors } = attachConsoleErrorWatcher(page);
+
+    const response = await page.goto(route, { waitUntil: "domcontentloaded" });
+    expect(response, `no response for ${route}`).not.toBeNull();
+    expect(response!.status(), `bad status for ${route}`).toBe(200);
+
+    // Every page in the docs site renders a single h1.
+    await expect(page.locator("h1").first()).toBeVisible();
+
+    // Let the LaunchGate's flags.json fetch settle before asserting.
+    // networkidle would be nicer, but that can hang on keep-alive connections
+    // in `serve` — a short post-load yield is plenty for our purposes.
+    await page.waitForLoadState("load");
+    await page.waitForTimeout(200);
+
+    expect(
+      errors,
+      `console errors on ${route}:\n${errors.join("\n")}`,
+    ).toHaveLength(0);
+  });
+}
