@@ -15,11 +15,35 @@ export const docsNav: DocsNavSection[] = [
       { label: "Tokens", href: "/docs/tokens" },
       { label: "Mixins", href: "/docs/mixins" },
       { label: "Utility classes", href: "/docs/utilities" },
+      { label: "Animation", href: "/docs/animation" },
+      { label: "Accessibility", href: "/docs/a11y" },
+    ],
+  },
+  {
+    title: "Patterns",
+    items: [
+      { label: "Recipes", href: "/docs/recipes" },
+    ],
+  },
+  {
+    title: "Authoring",
+    items: [
+      { label: "Themes", href: "/docs/authoring/themes" },
+      { label: "Icons", href: "/docs/authoring/icons" },
     ],
   },
   {
     title: "Migration",
-    items: [{ label: "From Bootstrap", href: "/docs/migration-bootstrap" }],
+    items: [
+      { label: "From Bootstrap", href: "/docs/migration-bootstrap" },
+      { label: "From Tailwind", href: "/docs/migration-tailwind" },
+    ],
+  },
+  {
+    title: "Help",
+    items: [
+      { label: "FAQ", href: "/docs/faq" },
+    ],
   },
 ];
 
