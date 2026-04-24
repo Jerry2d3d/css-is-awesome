@@ -18,7 +18,10 @@ export default function RootLayout({
     // data-theme-id before React hydrates (FOUC prevention). That deliberate
     // mutation differs from SSR output — we tell React not to warn.
     <html lang="en" suppressHydrationWarning>
-      <head>
+      {/* suppressHydrationWarning on <head>: Next 15 auto-injects <meta charset>
+          into head which may render in a different position than our raw <link>.
+          That child-order mismatch is expected — we silence it here. */}
+      <head suppressHydrationWarning>
         {/* Theme stylesheet — the ONE FILE that reskins the whole site.
             MUST come before the FOUC script below so the script can find
             and update this link before first paint. Swapped at runtime by
