@@ -1,9 +1,28 @@
 /* ============================================================
-   THEME — Sketchbook
+   THEME — Consolidated (css-is-awesome)
    -----------------------------------------------------------
-   This is the ONE FILE users swap to reskin their site.
-   Replace this file with any other theme.css to change the
-   entire look & feel. Tokens only — no component CSS lives here.
+   Path A: one stylesheet, six themes. React 19 + Next 15 no
+   longer reliably support runtime <link href> mutation for
+   theme swaps, so the idiomatic replacement is a single CSS
+   file gated by an <html data-theme="..."> attribute set
+   server-side from a cookie.
+
+   STRUCTURE
+   -----------------------------------------------------------
+   This file contains ALL six built-in themes as
+   `[data-theme="<name>"] { ... }` blocks. The attribute is
+   expected to be set on the <html> element; when it isn't,
+   the `:root:not([data-theme])` fallback below selects
+   Sketchbook as the default so this file still works as a
+   drop-in stylesheet with no HTML changes.
+
+   Blocks in source order (do not reorder):
+     1. sketchbook (default — also matches :root:not([data-theme]))
+     2. press
+     3. graphite
+     4. glass
+     5. cupertino
+     6. terminal
 
    TOKEN CONTRACT
    -----------------------------------------------------------
@@ -16,12 +35,19 @@
    is what guarantees a clean one-file swap.
 
    Validate this file:
-     node scripts/theme-validator.js public/theme.css
+     node scripts/theme-validator.js --all
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
 
-:root {
+/* ============================================================
+   THEME — Sketchbook  (DEFAULT)
+   -----------------------------------------------------------
+   Also selected by :root:not([data-theme]) so this stylesheet
+   works standalone with no attribute set.
+   ============================================================ */
+[data-theme="sketchbook"],
+:root:not([data-theme]) {
   /* Surfaces — warm paper */
   --paper:        #F7F3EA;
   --paper-raised: #FDFAF2;
@@ -222,3 +248,1110 @@
   --z-popover:  1060;
   --z-tooltip:  1070;
 }
+
+/* ============================================================
+   THEME — Press
+   -----------------------------------------------------------
+   Mood: T-Magazine / Stripe Press / Apple Newsroom editorial
+   newsprint. Classical measure, thin hairlines, dramatic serif
+   display, a single press-red accent.
+   ============================================================ */
+[data-theme="press"] {
+  /* Surfaces — warm newsprint */
+  --paper:        #FAFAF7;
+  --paper-raised: #FFFFFF;
+  --paper-sunk:   #F2F1EC;
+  --paper-glass:  rgba(255, 255, 255, 0.80);
+
+  /* Ink — warm near-black */
+  --ink:        #0A0A0A;
+  --ink-soft:   #555555;
+  --ink-faint:  #8A8A86;
+  --graphite:   #1A1A1A;
+  --muted:      #A8A6A0;
+
+  /* Rules / hairlines — thin editorial rules */
+  --guide:      #1A1A1A;
+  --guide-soft: #D9D7D1;
+  --hair:       #1A1A1A;
+  --hair-soft:  #ECEAE4;
+
+  /* Primary accent — near-ink editorial link (not a bright hue) */
+  --ai:         #1A1A1A;
+  --ai-ink:     #0A0A0A;
+  --ai-wash:    #ECEAE4;
+
+  /* Seal — press red (the single editorial accent) */
+  --shu:        #D93025;
+  --shu-wash:   #FBEAE8;
+
+  /* Pull-quote / marginalia — warm gold */
+  --ochre:      #B5873A;
+  --ochre-wash: #F4EBD6;
+
+  /* Code surface — keep editorial (ink slab) */
+  --code-bg:     #0A0A0A;
+  --code-ink:    #FAFAF7;
+  --code-muted:  #8A8A86;
+  --code-accent: #E8B96E;
+  --code-green:  #B8C57A;
+  --code-blue:   #94AFC9;
+
+  /* Typography */
+  --font-display: 'Playfair Display', 'Tiempos', 'Fraunces', Georgia, serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'Playfair Display', 'Tiempos', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+
+  /* Radius — editorial is tight, very square */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 4px;
+
+  /* Shadows — minimal, single-layer, editorial flat */
+  --shadow-sm:  0 1px 2px rgba(10, 10, 10, .05);
+  --shadow-md:  0 6px 24px rgba(10, 10, 10, .06);
+  --shadow-lg:  0 18px 48px rgba(10, 10, 10, .09);
+  --shadow-xl:  0 28px 64px rgba(10, 10, 10, .12);
+  --shadow-2xl: 0 40px 96px rgba(10, 10, 10, .18);
+
+  /* Blur — editorial doesn't use it; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — editorial doesn't use it; declared transparent */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — editorial reads slower than digital */
+  --duration-fast:   200ms;
+  --duration-normal: 280ms;
+  --duration-slow:   420ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     -----------------------------------------------------------
+     Bridge the library's expected names to this theme's native
+     palette. Components can now write m.color(surface-default)
+     or var(--surface-default) and reskin with the theme
+     automatically.
+     ---------------------------------------------------------- */
+
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive (hover / active wash layers) — ink overlays on paper */
+  --interactive-hover:  rgba(10, 10, 10, 0.05);
+  --interactive-active: rgba(10, 10, 10, 0.10);
+
+  /* Brand (identity — action-primary references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action (primary / secondary / tertiary) */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback / status (high-level semantic) */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text).
+     Press has no indigo; --ai is a near-ink editorial tone. */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success. Restrained editorial green (desaturated). */
+  --success-default: #2F7A3A;
+  --success-subtle:  #E3EEDF;
+  --success-text:    #1F5228;
+
+  /* Status — warning. Warm editorial ochre. */
+  --warning-default: #A86A1A;
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #6B4512;
+
+  /* Status — error. Press red IS the error color. */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #8A1D15;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     Numeric scales mirror Sketchbook so rhythm is consistent.
+     ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — mirrors --r-* with standard names so
+     `m.radius(size)` in the library finds --radius-<size>.
+     Press is editorial and angular: xl stays tight (4px). */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   6px;
+  --radius-full: 9999px;
+
+  /* Typography — base body font + key scale slots.
+     Press body is Inter (--font-sans). */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* ----------------------------------------------------------
+     OPTIONAL COMPONENT OVERRIDES (Feature 1.3)
+     -----------------------------------------------------------
+     Press is editorial newsprint: very tight radii (2–4px),
+     shadowless cards (rules, not lifts), flat panels.
+     Overrides are sparse — only the choices that define the
+     editorial voice, defaults carry the rest.
+     ---------------------------------------------------------- */
+  --btn-radius:    var(--r-sm);            /* 2px — near-square control */
+  --card-radius:   var(--r-sm);            /* 2px — boxed layout */
+  --card-shadow:   none;                   /* editorial is flat */
+  --card-border:   1px solid var(--hair);  /* thin ink rule instead */
+  --input-radius:  var(--r-sm);            /* 2px — text field */
+  --modal-radius:  var(--r-md);            /* 3px — still tight */
+}
+
+/* ============================================================
+   THEME — Graphite
+   -----------------------------------------------------------
+   Mood: Space Gray MacBook aluminum + Xcode dark. Warm dark
+   grays — never purple-black, never gamery. The inset rim-
+   highlights on --glow-* are what sell the milled-metal edge.
+   ============================================================ */
+[data-theme="graphite"] {
+  /* Surfaces — milled aluminum chassis (dark) */
+  --paper:        #1A1A1C;
+  --paper-raised: #242426;
+  --paper-sunk:   #141416;
+  --paper-glass:  rgba(36, 36, 38, 0.72);
+
+  /* Ink — warm whites on dark */
+  --ink:        #F5F5F7;
+  --ink-soft:   #C7C7CC;
+  --ink-faint:  #98989D;
+  --graphite:   #AEAEB2;
+  --muted:      #636366;
+
+  /* Construction lines — translucent white hairlines */
+  --guide:      rgba(255, 255, 255, 0.16);
+  --guide-soft: rgba(255, 255, 255, 0.08);
+  --hair:       rgba(255, 255, 255, 0.12);
+  --hair-soft:  rgba(255, 255, 255, 0.06);
+
+  /* Primary accent — Apple dark-mode system blue */
+  --ai:         #0A84FF;
+  --ai-ink:     #409CFF;
+  --ai-wash:    rgba(10, 132, 255, 0.14);
+
+  /* Seal — Apple dark-mode red (reserve for emphasis) */
+  --shu:        #FF453A;
+  --shu-wash:   rgba(255, 69, 58, 0.14);
+
+  /* Draft / marginalia — Apple amber */
+  --ochre:      #FF9F0A;
+  --ochre-wash: rgba(255, 159, 10, 0.12);
+
+  /* Code surface — Xcode deep */
+  --code-bg:     #0D0D0F;
+  --code-ink:    #E8E8ED;
+  --code-muted:  #6C6C71;
+  --code-accent: #FFB86C;
+  --code-green:  #A8E6A1;
+  --code-blue:   #9AD4F7;
+
+  /* Typography — SF system stack */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'New York', 'Iowan Old Style', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
+
+  /* Radius — Apple UI standard */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+
+  /* Shadows — deep drop on black */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.65);
+  --shadow-2xl: 0 28px 70px rgba(0, 0, 0, 0.75);
+
+  /* Blur — graphite doesn't use it; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — inset rim-highlight that sells milled aluminum */
+  --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --glow-md: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --glow-lg: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 12px 40px rgba(0, 0, 0, 0.55);
+
+  /* Motion — Apple-snappy */
+  --duration-fast:   160ms;
+  --duration-normal: 220ms;
+  --duration-slow:   340ms;
+  --ease:            cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     -----------------------------------------------------------
+     Bridge the library's expected names to this theme's native
+     palette. Components can now write m.color(surface-default)
+     or var(--surface-default) and reskin with the theme
+     automatically.
+     ---------------------------------------------------------- */
+
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive (hover / active wash layers) — translucent WHITE on dark */
+  --interactive-hover:  rgba(255, 255, 255, 0.06);
+  --interactive-active: rgba(255, 255, 255, 0.10);
+
+  /* Brand (identity — action-primary usually references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action (primary / secondary / tertiary) */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback / status (high-level semantic) */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text) */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(10, 132, 255, 0.14);
+  --info-text:    #409CFF;
+
+  /* Status — success (Apple dark-mode green) */
+  --success-default: #30D158;
+  --success-subtle:  rgba(48, 209, 88, 0.14);
+  --success-text:    #5FE37F;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(255, 159, 10, 0.14);
+  --warning-text:    #FFB340;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(255, 69, 58, 0.14);
+  --error-text:    #FF6961;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / motion / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — mirrors --r-* with standard names so
+     `m.radius(size)` in the library finds --radius-<size>. */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography — base body font + key scale slots */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}
+
+/* ============================================================
+   THEME — Liquid Glass
+   -----------------------------------------------------------
+   Mood: visionOS / iOS Liquid Glass. Pastel-tint base, frosted
+   translucent surfaces, dual-inset rim-light. --blur-* is the
+   star — pair with --paper-glass for the signature look.
+   ============================================================ */
+[data-theme="glass"] {
+  /* Surfaces — frosted translucent over a lavender-tint base */
+  --paper:        #F4EEFF;
+  --paper-raised: #FFFFFF;
+  --paper-sunk:   #E8E0F5;
+  --paper-glass:  rgba(255, 255, 255, 0.55);
+
+  /* Ink — warm near-black, Apple style */
+  --ink:        #1D1D1F;
+  --ink-soft:   #3A3A3C;
+  --ink-faint:  #8E8E93;
+  --graphite:   #2C2C2E;
+  --muted:      #6E6E73;
+
+  /* Construction lines — glass doesn't like hard edges */
+  --guide:      rgba(29, 29, 31, 0.14);
+  --guide-soft: rgba(29, 29, 31, 0.10);
+  --hair:       rgba(29, 29, 31, 0.08);
+  --hair-soft:  rgba(29, 29, 31, 0.04);
+
+  /* Primary accent — iOS indigo */
+  --ai:         #5E5CE6;
+  --ai-ink:     #3634A3;
+  --ai-wash:    rgba(94, 92, 230, 0.12);
+
+  /* Seal — iOS system pink (draft / emphasis) */
+  --shu:        #FF375F;
+  --shu-wash:   rgba(255, 55, 95, 0.12);
+
+  /* Draft / marginalia — iOS orange */
+  --ochre:      #FF9500;
+  --ochre-wash: rgba(255, 149, 0, 0.14);
+
+  /* Code surface */
+  --code-bg:     rgba(29, 29, 31, 0.82);
+  --code-ink:    #F5F5F7;
+  --code-muted:  #9A9AA0;
+  --code-accent: #FFD60A;
+  --code-green:  #30D158;
+  --code-blue:   #64D2FF;
+
+  /* Typography — SF system stack */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Radius — soft and large, iOS-style */
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 24px;
+
+  /* Shadows — floaty with a cool-blue undertone */
+  --shadow-sm:  0 2px 10px rgba(31, 38, 135, 0.06);
+  --shadow-md:  0 8px 32px rgba(31, 38, 135, 0.10);
+  --shadow-lg:  0 24px 60px rgba(31, 38, 135, 0.14);
+  --shadow-xl:  0 40px 80px rgba(31, 38, 135, 0.18);
+  --shadow-2xl: 0 56px 112px rgba(31, 38, 135, 0.24);
+
+  /* Blur — the star of this theme; pair with --paper-glass */
+  --blur-sm: blur(14px) saturate(160%);
+  --blur-md: blur(22px) saturate(170%);
+  --blur-lg: blur(30px) saturate(180%);
+
+  /* Glow — dual-inset rim highlight (catches light like visionOS) */
+  --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.70);
+  --glow-md:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.20),
+    inset 1px 0 0 rgba(255, 255, 255, 0.35),
+    inset -1px 0 0 rgba(255, 255, 255, 0.20);
+  --glow-lg:
+    inset 0 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.25),
+    inset 2px 0 0 rgba(255, 255, 255, 0.45),
+    inset -2px 0 0 rgba(255, 255, 255, 0.25),
+    inset 0 0 40px rgba(255, 255, 255, 0.15);
+
+  /* Motion */
+  --duration-fast:   180ms;
+  --duration-normal: 240ms;
+  --duration-slow:   380ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     -----------------------------------------------------------
+     Bridge the library's expected names to this theme's native
+     palette. Components can now write m.color(surface-default)
+     or var(--surface-default) and reskin with the theme
+     automatically.
+     ---------------------------------------------------------- */
+
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive (hover / active wash layers)
+     Kept subtle so glass translucency reads through. */
+  --interactive-hover:  rgba(29, 29, 31, 0.04);
+  --interactive-active: rgba(29, 29, 31, 0.08);
+
+  /* Brand (identity — action-primary usually references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action (primary / secondary / tertiary) */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback / status (high-level semantic) */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text) */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(94, 92, 230, 0.12);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (iOS system green) */
+  --success-default: #34C759;
+  --success-subtle:  rgba(52, 199, 89, 0.12);
+  --success-text:    #1E8838;
+
+  /* Status — warning (iOS system orange) */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(255, 149, 0, 0.12);
+  --warning-text:    #B36600;
+
+  /* Status — error (iOS system pink) */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(255, 55, 95, 0.12);
+  --error-text:    #A3193A;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / motion / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — mirrors --r-* with standard names so
+     `m.radius(size)` in the library finds --radius-<size>. */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography — base body font + key scale slots */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}
+
+/* ============================================================
+   THEME — Cupertino
+   -----------------------------------------------------------
+   Mood: AppKit macOS panels. Diffuse lifts, vibrancy blurs,
+   soft radii. Cupertino doesn't glow — it lifts.
+   ============================================================ */
+[data-theme="cupertino"] {
+  /* Surfaces — AppKit panels */
+  --paper:        #F5F5F7;
+  --paper-raised: #FFFFFF;
+  --paper-sunk:   #E9E9EC;
+  --paper-glass:  rgba(255, 255, 255, 0.72);
+
+  /* Ink — warm black, never pure */
+  --ink:        #1D1D1F;
+  --ink-soft:   #3A3A3C;
+  --ink-faint:  #8E8E93;
+  --graphite:   #2C2C2E;
+  --muted:      #6E6E73;
+
+  /* Hairlines / guides */
+  --guide:      #D2D2D7;
+  --guide-soft: #E5E5EA;
+  --hair:       #D2D2D7;
+  --hair-soft:  #E5E5EA;
+
+  /* Primary accent — system blue */
+  --ai:         #0071E3;
+  --ai-ink:     #0058B0;
+  --ai-wash:    #E5F0FB;
+
+  /* Seal — system red */
+  --shu:        #FF3B30;
+  --shu-wash:   #FFEAE8;
+
+  /* Accent — system orange / amber */
+  --ochre:      #FF9F0A;
+  --ochre-wash: #FFF4E0;
+
+  /* Code surface — native Xcode dark */
+  --code-bg:     #1C1C1E;
+  --code-ink:    #F2F2F7;
+  --code-muted:  #8E8E93;
+  --code-accent: #FF9F0A;
+  --code-green:  #30D158;
+  --code-blue:   #64D2FF;
+
+  /* Typography — SF system stack */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   ui-serif, 'New York', 'Iowan Old Style', 'Palatino', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', 'Menlo', Consolas, monospace;
+
+  /* Radius — AppKit corners */
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 14px;
+
+  /* Shadows — small, diffuse, lifted */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.04);
+
+  /* Blur — vibrancy (Cupertino's signature) */
+  --blur-sm: blur(20px) saturate(180%);
+  --blur-md: blur(30px) saturate(180%);
+  --blur-lg: blur(40px) saturate(180%);
+
+  /* Glow — Cupertino doesn't glow, it lifts */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — Apple-snappy */
+  --duration-fast:   160ms;
+  --duration-normal: 220ms;
+  --duration-slow:   320ms;
+  --ease:            cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     -----------------------------------------------------------
+     Bridge the library's expected names to this theme's native
+     palette. Components can now write m.color(surface-default)
+     or var(--surface-default) and reskin with the theme
+     automatically.
+     ---------------------------------------------------------- */
+
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive (hover / active wash layers) — macOS faint ink overlay */
+  --interactive-hover:  rgba(0, 0, 0, 0.04);
+  --interactive-active: rgba(0, 0, 0, 0.08);
+
+  /* Brand (identity — action-primary usually references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action (primary / secondary / tertiary) */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback / status (high-level semantic) */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text) */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (macOS system green) */
+  --success-default: var(--code-green);
+  --success-subtle:  rgba(48, 209, 88, 0.12);
+  --success-text:    #1E8838;
+
+  /* Status — warning (macOS system orange) */
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #B36600;
+
+  /* Status — error (macOS system red) */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(255, 59, 48, 0.12);
+  --error-text:    #A8281F;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / motion / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — mirrors --r-* with standard names so
+     `m.radius(size)` in the library finds --radius-<size>. */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Shadow — higher-elevation slots (AppKit floating surfaces) */
+  --shadow-xl:  0 20px 50px rgba(0, 0, 0, 0.14), 0 4px 10px rgba(0, 0, 0, 0.05);
+  --shadow-2xl: 0 28px 70px rgba(0, 0, 0, 0.20), 0 6px 14px rgba(0, 0, 0, 0.06);
+
+  /* Typography — base body font + key scale slots (SF Pro stack) */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* ----------------------------------------------------------
+     OPTIONAL COMPONENT OVERRIDES (Feature 1.3)
+     -----------------------------------------------------------
+     Cupertino expresses AppKit UI: softly rounded controls,
+     diffuse card lift, larger panel radii. Overrides are
+     intentionally sparse — pick the ones that carry the
+     identity of the OS, leave the rest on library defaults.
+     ---------------------------------------------------------- */
+  --btn-radius:    var(--r-md);            /* 10px — AppKit control */
+  --card-radius:   var(--r-lg);            /* 14px — panel corner */
+  --card-shadow:   var(--shadow-sm);       /* diffuse, lifted */
+  --input-radius:  var(--r-sm);            /* 8px — text field */
+  --modal-radius:  var(--r-lg);            /* matches panel */
+  --tooltip-radius: var(--r-sm);           /* bezel tooltip */
+}
+
+/* ============================================================
+   THEME — Terminal (VT100 CRT Phosphor)
+   -----------------------------------------------------------
+   Mood: Deep warm black CRT chassis + phosphor-green ink.
+   Every font slot points at --font-mono to keep the CRT pure
+   while still honouring the full contract.
+   ============================================================ */
+[data-theme="terminal"] {
+  /* Surfaces — deep warm black chassis + phosphor haze */
+  --paper:        #0A0E0A;
+  --paper-raised: #0F140F;
+  --paper-sunk:   #070A07;
+  --paper-glass:  rgba(79, 224, 120, 0.06);
+
+  /* Ink — phosphor green on the tube */
+  --ink:        #4FE078;
+  --ink-soft:   #2A8B42;
+  --ink-faint:  #1E5E2F;
+  --graphite:   #1A3D22;
+  --muted:      #2A8B42;
+
+  /* Scanlines / rule lines */
+  --guide:      #1E5E2F;
+  --guide-soft: #143618;
+  --hair:       #2A8B42;
+  --hair-soft:  #1E5E2F;
+
+  /* Primary accent — cyan (interactive links in a terminal) */
+  --ai:         #7FDBFF;
+  --ai-ink:     #5AB3D4;
+  --ai-wash:    rgba(127, 219, 255, 0.10);
+
+  /* Seal — error red */
+  --shu:        #FF5A5A;
+  --shu-wash:   rgba(255, 90, 90, 0.10);
+
+  /* Accent — warning amber */
+  --ochre:      #F0A030;
+  --ochre-wash: rgba(240, 160, 48, 0.10);
+
+  /* Code surface */
+  --code-bg:     #070A07;
+  --code-ink:    #4FE078;
+  --code-muted:  #2A8B42;
+  --code-accent: #F0A030;
+  --code-green:  #8FFCA8;
+  --code-blue:   #7FDBFF;
+
+  /* Typography — mono everywhere (see FONT NOTE in header) */
+  --font-mono:    'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;
+  --font-sans:    var(--font-mono);
+  --font-serif:   var(--font-mono);
+  --font-display: var(--font-mono);
+  --font-script:  var(--font-mono);
+
+  /* Radius — a CRT has hard pixel corners */
+  --r-sm: 0;
+  --r-md: 0;
+  --r-lg: 0;
+
+  /* Shadows — a CRT doesn't cast, it emits. Keep subtle. */
+  --shadow-sm: 0 0 0 1px rgba(79, 224, 120, 0.20);
+  --shadow-md: 0 0 0 1px rgba(79, 224, 120, 0.30), 0 0 12px rgba(79, 224, 120, 0.15);
+  --shadow-lg: 0 0 0 1px rgba(79, 224, 120, 0.40), 0 0 24px rgba(79, 224, 120, 0.25);
+  --shadow-xl: 0 0 0 1px rgba(79, 224, 120, 0.50), 0 0 36px rgba(79, 224, 120, 0.30);
+  --shadow-2xl: 0 0 0 1px rgba(79, 224, 120, 0.60), 0 0 56px rgba(79, 224, 120, 0.40);
+
+  /* Blur — terminal has no frosted glass; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — phosphor halo (this is where the theme sings) */
+  --glow-sm: 0 0 4px rgba(79, 224, 120, 0.25);
+  --glow-md: 0 0 8px rgba(79, 224, 120, 0.35);
+  --glow-lg: 0 0 16px rgba(79, 224, 120, 0.45);
+
+  /* Motion — terminals are instant */
+  --duration-fast:   100ms;
+  --duration-normal: 140ms;
+  --duration-slow:   220ms;
+  --ease:            cubic-bezier(0.2, 0.0, 0.2, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     -----------------------------------------------------------
+     Bridge the library's expected names to this theme's native
+     palette. Components can now write m.color(surface-default)
+     or var(--surface-default) and reskin with the theme
+     automatically.
+     ---------------------------------------------------------- */
+
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive (hover / active wash layers) — phosphor-green translucent overlays */
+  --interactive-hover:  rgba(79, 224, 120, 0.08);
+  --interactive-active: rgba(79, 224, 120, 0.15);
+
+  /* Brand (identity — action-primary usually references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action (primary / secondary / tertiary) */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback / status (high-level semantic) */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text) — cyan */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(127, 219, 255, 0.12);
+  --info-text:    #7FDBFF;
+
+  /* Status — success — bright phosphor */
+  --success-default: #8FFCA8;
+  --success-subtle:  rgba(143, 252, 168, 0.12);
+  --success-text:    #8FFCA8;
+
+  /* Status — warning — amber */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(240, 160, 48, 0.12);
+  --warning-text:    var(--ochre);
+
+  /* Status — error — red */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(255, 90, 90, 0.12);
+  --error-text:    #FF7A7A;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / motion / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility — natural scale, same as Sketchbook) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — CRT has hard pixel corners, so every slot is 0 */
+  --radius-sm:   0;
+  --radius-md:   0;
+  --radius-lg:   0;
+  --radius-xl:   0;
+  --radius-full: 0;
+
+  /* Typography — mono body + key scale slots (15px matches CRT body setting) */
+  --font-primary: var(--font-mono);
+  --font-size-base: 15px;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers (layering is universal) */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* ----------------------------------------------------------
+     OPTIONAL COMPONENT OVERRIDES (Feature 1.3)
+     -----------------------------------------------------------
+     Terminal-specific component expressions: zero radii on
+     buttons/cards/inputs and a subtle phosphor glow on cards
+     instead of a drop shadow.
+     ---------------------------------------------------------- */
+  --btn-radius:   0;
+  --card-radius:  0;
+  --input-radius: 0;
+  --card-shadow:  var(--glow-sm);
+  --card-border:  1px solid var(--ink-faint);
+}
+
+/* ============================================================
+   END OF THEMES
+   -----------------------------------------------------------
+   Reminder: when no `data-theme` attribute is set on <html>,
+   the Sketchbook block above still wins via
+   `:root:not([data-theme])`. Server-side code is expected to
+   render <html data-theme="..."> from a cookie; this file
+   remains a valid drop-in with no attribute required.
+   ============================================================ */
