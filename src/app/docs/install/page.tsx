@@ -80,7 +80,7 @@ export default function InstallPage() {
       <h2 id="download">Download a theme file</h2>
       <p>Every shipped theme is a single <code>theme.css</code> file. Grab one, place it in your project, and link to it. This path also works for any custom theme you self-host — the file is just tokens on <code>:root</code>.</p>
       <ul>
-        <li><a href="/themes/sketchbook/theme.css" download>sketchbook</a> &mdash; warm paper, sumi ink, indigo accent</li>
+        <li><a href="/theme.css" download="theme-sketchbook.css">sketchbook</a> &mdash; warm paper, sumi ink, indigo accent</li>
         <li><a href="/themes/press/theme.css" download>press</a> &mdash; editorial newsprint</li>
         <li><a href="/themes/graphite/theme.css" download>graphite</a> &mdash; neutral grayscale utility</li>
         <li><a href="/themes/glass/theme.css" download>glass</a> &mdash; translucent surfaces, soft light</li>
