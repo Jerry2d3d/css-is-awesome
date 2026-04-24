@@ -1,3 +1,4 @@
+"use client";
 import Example from "@/components/Example";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
@@ -71,7 +72,7 @@ export default function RecipesPage() {
               gap: "var(--space-md)",
               maxWidth: "360px",
             }}
-            onSubmit={(e) => e.preventDefault()}
+            action="#"
           >
             <FormField label="Email" hint="We only use this for sign-in.">
               <Input type="email" placeholder="you@studio.com" autoComplete="email" />

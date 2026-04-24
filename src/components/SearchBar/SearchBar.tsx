@@ -1,3 +1,4 @@
+"use client";
 import { forwardRef, useState } from "react";
 import type { FormHTMLAttributes } from "react";
 import Input from "@/components/Input";

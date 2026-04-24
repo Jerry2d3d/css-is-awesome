@@ -1,3 +1,4 @@
+"use client";
 import { forwardRef, useState } from "react";
 import type { HTMLAttributes } from "react";
 import styles from "./Avatar.module.scss";

@@ -1,3 +1,4 @@
+"use client";
 import { createContext, forwardRef, useContext, useId, useState } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import styles from "./Tabs.module.scss";

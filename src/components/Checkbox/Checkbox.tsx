@@ -1,3 +1,4 @@
+"use client";
 import { forwardRef, useEffect, useRef } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
 import styles from "./Checkbox.module.scss";
