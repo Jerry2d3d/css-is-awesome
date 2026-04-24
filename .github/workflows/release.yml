@@ -1,0 +1,69 @@
+# Release pipeline — publishes css-is-awesome to npm and creates a GitHub Release.
+#
+# Trigger: runs after the CI workflow succeeds on a push to `main`. CI must be
+# green before release-lane runs (we gate on workflow_run.conclusion below).
+#
+# Secrets required (configure under repo Settings -> Secrets and variables -> Actions):
+#   NPM_TOKEN     — an npm automation token with publish rights on the
+#                   `css-is-awesome` package. Add before the first release.
+#   GITHUB_TOKEN  — provided automatically by GitHub Actions; semantic-release
+#                   uses it to cut the GitHub Release and push the CHANGELOG /
+#                   package.json bump commit back to main.
+#
+# Do not run this locally — semantic-release is configured to publish on green CI only.
+name: Release
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Publish to npm + GitHub Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only run if CI succeeded on a push event to main.
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build library CSS bundles
+        run: npm run build:css:all
+
+      - name: Validate themes
+        run: npm run validate-themes
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release

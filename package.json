@@ -5,11 +5,31 @@
   "main": "dist/css-is-awesome.css",
   "style": "dist/css-is-awesome.css",
   "sass": "scss/main.scss",
+  "exports": {
+    ".": {
+      "sass": "./scss/main.scss",
+      "style": "./dist/css-is-awesome.css",
+      "default": "./dist/css-is-awesome.css"
+    },
+    "./core": "./dist/css-is-awesome.core.css",
+    "./utilities": "./dist/css-is-awesome.utilities.css",
+    "./min": "./dist/css-is-awesome.min.css",
+    "./scss/*": "./scss/*.scss",
+    "./theme": "./public/theme.css",
+    "./themes/*": "./public/themes/*/theme.css",
+    "./figma-tokens": "./figma-tokens/tokens.json",
+    "./figma-tokens/*": "./figma-tokens/*",
+    "./package.json": "./package.json"
+  },
   "files": [
     "scss",
     "dist",
     "figma-tokens",
-    "README.md"
+    "public/theme.css",
+    "public/themes",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "scripts": {
     "dev": "next dev -p 5173",
@@ -25,7 +45,8 @@
     "build:css:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
     "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:utilities && npm run build:css:min",
     "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
-    "validate-themes": "node scripts/theme-validator.js --all"
+    "validate-themes": "node scripts/theme-validator.js --all",
+    "prepublishOnly": "npm run build:css:all"
   },
   "keywords": [
     "css",
@@ -42,19 +63,38 @@
     "type": "git",
     "url": "git+https://github.com/Jerry2d3d/css-is-awesome.git"
   },
-  "dependencies": {
-    "next": "^15.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "sass": "^1.77.0"
+  },
+  "peerDependenciesMeta": {
+    "sass": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.0",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.1",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.0.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "sass": "^1.97.1",
+    "semantic-release": "^24.2.0",
     "stylelint": "^17.8.0",
     "stylelint-config-standard-scss": "^17.0.0",
     "typescript": "^5.7.0"
