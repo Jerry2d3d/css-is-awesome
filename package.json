@@ -1,6 +1,6 @@
 {
   "name": "css-is-awesome",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A token-driven SCSS design system with light/dark theming, semantic color tokens, and a 800+ LOC mixin API.",
   "main": "dist/css-is-awesome.css",
   "style": "dist/css-is-awesome.css",
