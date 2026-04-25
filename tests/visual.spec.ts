@@ -14,16 +14,6 @@ import { test, expect } from "@playwright/test";
  * first paint. We set the cookie via `context.addCookies` so the script
  * picks it up on the initial SSR pass.
  *
- * Defensive step: on /docs/* routes the app currently logs a React #418
- * hydration mismatch (a known artifact of React 19's stylesheet hoisting
- * + static export), and when that happens React reconciles <html> back to
- * the static default of "sketchbook" — wiping the attribute we set. Since
- * we're testing the *theme CSS*, not the *hydration pathway*, we
- * re-assert `data-theme` via `page.evaluate` after hydration settles. The
- * cookie is still set, so when the source bug is fixed this test will
- * continue to work unchanged (and the redundant assignment becomes a
- * harmless no-op).
- *
  * Snapshots live at `tests/__screenshots__/` (per the config's
  * snapshotPathTemplate). First run generates baselines; they're committed
  * to the repo so PRs visibly diff.
@@ -69,19 +59,13 @@ for (const theme of THEMES) {
 
         await page.goto(route, { waitUntil: "domcontentloaded" });
         await page.waitForLoadState("load");
-        // Let LaunchGate resolve its flags.json fetch and render ThemePicker,
-        // and let React hydration settle (or fail — see the file-level note
-        // about React #418 on /docs/*).
+        // Let LaunchGate resolve its flags.json fetch and render
+        // ThemePicker, and let hydration settle.
         await page.waitForTimeout(400);
 
-        // Force the selected theme onto <html> regardless of whether
-        // React's hydration-mismatch reset happened. This is a one-line
-        // assignment exactly equivalent to what the app's inline script
-        // does on first paint.
-        await page.evaluate(
-          (t) => document.documentElement.setAttribute("data-theme", t),
-          theme,
-        );
+        // Sanity-check: the pre-paint script has applied the cookie's
+        // theme to <html data-theme>. If this fails the screenshot below
+        // would silently capture the wrong theme.
         await expect(page.locator("html")).toHaveAttribute(
           "data-theme",
           theme,

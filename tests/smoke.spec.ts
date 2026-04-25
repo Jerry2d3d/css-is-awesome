@@ -29,17 +29,7 @@ const ROUTES = Array.from(new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES]));
  * make the smoke suite flaky. Keep this list *very* short and document each
  * entry — if it grows, something real is probably broken.
  */
-const IGNORED_CONSOLE_PATTERNS: RegExp[] = [
-  // React 19 hoists <link rel="stylesheet" precedence>" from body into head
-  // during hydration. On pages that also emit resource-hint preloads for
-  // /theme.css (i.e. most /docs/* routes), the static-export HTML and the
-  // post-hydration DOM disagree on stylesheet order, producing minified
-  // React error #418 ("Hydration failed... HTML didn't match"). This is a
-  // framework-level artifact of `output: "export"` + React 19's new
-  // stylesheet hoisting; suppressing here lets smoke focus on real
-  // regressions (broken components, undefined references, etc.).
-  /Minified React error #418/,
-];
+const IGNORED_CONSOLE_PATTERNS: RegExp[] = [];
 
 function attachConsoleErrorWatcher(page: Page): { errors: string[] } {
   const errors: string[] = [];
