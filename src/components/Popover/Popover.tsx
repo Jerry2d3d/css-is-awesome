@@ -117,7 +117,7 @@ const Content = forwardRef<HTMLDivElement, PopoverContentProps>(
         window.removeEventListener("resize", place);
         window.removeEventListener("scroll", place, true);
       };
-    }, [open, placement]);
+    }, [open, placement, triggerRef]);
 
     useEffect(() => {
       if (!open) return;
@@ -135,7 +135,7 @@ const Content = forwardRef<HTMLDivElement, PopoverContentProps>(
         document.removeEventListener("mousedown", onDocClick);
         document.removeEventListener("keydown", onKey);
       };
-    }, [open, setOpen]);
+    }, [open, setOpen, triggerRef]);
 
     if (!open) return null;
 

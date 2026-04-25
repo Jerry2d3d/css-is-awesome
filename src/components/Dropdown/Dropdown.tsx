@@ -29,7 +29,7 @@ export type DropdownProps = {
 };
 
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
-  ({ open: controlled, defaultOpen = false, onOpenChange, children }, _ref) => {
+  ({ open: controlled, defaultOpen = false, onOpenChange, children }) => {
     const [internal, setInternal] = useState(defaultOpen);
     const isControlled = controlled !== undefined;
     const open = isControlled ? (controlled as boolean) : internal;
@@ -53,7 +53,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 );
 Dropdown.displayName = "Dropdown";
 
-const Trigger = forwardRef<HTMLElement, { children: ReactElement }>(({ children }, _ref) => {
+const Trigger = forwardRef<HTMLElement, { children: ReactElement }>(({ children }) => {
   const { open, setOpen, triggerRef, menuRef, menuId, triggerId } = useDropdown("<Dropdown.Trigger>");
   if (!isValidElement(children)) return children;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
