@@ -6,7 +6,9 @@
   right: 2rem;
   padding: 8px 16px;
   border: 2px solid var(--ochre);
-  color: var(--ochre);
+  /* Text uses --warning-text (deeper ochre) to clear WCAG AA 4.5:1 against
+     --ochre-wash; the ochre border still carries the marginalia colour. */
+  color: var(--warning-text);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;

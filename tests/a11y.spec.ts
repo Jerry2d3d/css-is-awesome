@@ -29,28 +29,21 @@ const A11Y_ROUTES = [
 const BLOCKING_IMPACTS = new Set(["serious", "critical"]);
 
 /**
- * Pre-existing axe rule IDs we currently accept, per-route, because the
- * underlying markup predates this test suite. Tracked for follow-up; the
- * test continues to fail on any *other* serious/critical rule, including
- * any new occurrence of a rule not listed here.
+ * Pre-existing axe rule IDs we currently accept, per-route. Tracked for
+ * follow-up; the test continues to fail on any *other* serious/critical
+ * rule, including any new occurrence of a rule not listed here.
  *
- * Policy: tighten these as issues are fixed. Do not add new entries
- * without a linked bug.
+ * Policy: tighten these as issues are fixed. Do not add new entries without
+ * a linked bug.
+ *
+ * The seven serious-impact violations that originally populated this list
+ * (color-contrast on /, link-in-text-block on /docs|install|tokens,
+ * scrollable-region-focusable on /docs, aria-prohibited-attr on tokens,
+ * aria-hidden-focus on recipes) were fixed at source and removed on the
+ * pre-launch a11y pass. The map is intentionally left as `{}` so the next
+ * regression has a clear, empty baseline to violate.
  */
-const KNOWN_ISSUES: Record<string, string[]> = {
-  // DraftStamp + footer pick up theme-driven muted text that dips below
-  // WCAG AA contrast on the sketchbook default.
-  "/": ["color-contrast"],
-  // In-prose links styled by color alone (not underlined) in the docs
-  // typography scale.
-  "/docs": ["link-in-text-block", "scrollable-region-focusable"],
-  "/docs/install": ["link-in-text-block"],
-  // Token swatches use aria-label on div (axe wants landmark/role); plus
-  // link-in-text-block again in prose.
-  "/docs/tokens": ["aria-prohibited-attr", "link-in-text-block"],
-  // Decorative panel uses aria-hidden while containing a focusable child.
-  "/docs/recipes": ["aria-hidden-focus"],
-};
+const KNOWN_ISSUES: Record<string, string[]> = {};
 
 for (const route of A11Y_ROUTES) {
   test(`a11y: ${route} has no serious/critical violations`, async ({ page }) => {

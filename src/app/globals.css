@@ -222,6 +222,20 @@ hr,
 .docs-content p,
 .docs-content li { color: var(--ink-soft); }
 
+/* In-prose links: distinguish by more than colour (WCAG 1.4.1 / axe
+   link-in-text-block). The global `a` rule animates an underline on hover;
+   inside body prose we keep it visible at rest so it reads as a link without
+   relying on the indigo / ink-soft contrast alone. */
+.docs-content p a,
+.docs-content li a,
+.docs-content dd a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: currentColor;
+  border-bottom: 0;
+}
+
 /* Example block — code demo w/ preview + source */
 .example {
   margin: 1.5rem 0 2rem;

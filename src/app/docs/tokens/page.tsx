@@ -86,10 +86,14 @@ function Swatches({ items }: { items: Swatch[] }) {
     <>
       {items.map((s) => (
         <div key={s.token} className={styles.swatch}>
+          {/* Chip is purely decorative — the visible token name below names
+              it. Marking the chip aria-hidden keeps the accessible name
+              clean and avoids axe's aria-prohibited-attr (aria-label on a
+              role-less <div>). */}
           <div
             className={styles.swatchChip}
             style={{ background: `var(${s.token})` }}
-            aria-label={s.token}
+            aria-hidden="true"
           />
           <span className={styles.swatchLabel}>{s.token}</span>
         </div>

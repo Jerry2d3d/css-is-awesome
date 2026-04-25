@@ -438,8 +438,15 @@ export default function RecipesPage() {
             <div>
               <Button variant="primary">Open dialog</Button>
             </div>
+            {/* The static modal demo below is a non-interactive preview of the
+                dialog shell — the live, portal-rendered version is on the
+                components gallery. We use `inert` (React 19, native HTML)
+                instead of `aria-hidden`: it removes the focusable Cancel /
+                Delete buttons from the tab order AND hides the subtree from
+                assistive tech, which is exactly what axe's `aria-hidden-focus`
+                rule wants. */}
             <div
-              aria-hidden="true"
+              inert
               style={{
                 border: "1px solid var(--border-default)",
                 borderRadius: "8px",

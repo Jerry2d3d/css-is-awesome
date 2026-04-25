@@ -24,7 +24,21 @@ function Preview({
 }
 
 function Code({ children }: { children: ReactNode }) {
-  return <pre className={styles.code}>{children}</pre>;
+  // <pre> is horizontally scrollable (overflow-x: auto). axe's
+  // `scrollable-region-focusable` rule requires a tabindex and a label so
+  // keyboard-only users can pan the code preview. The label is intentionally
+  // generic; per-example labelling is overkill for what is documentation
+  // syntax-highlighting, but the region must be reachable.
+  return (
+    <pre
+      className={styles.code}
+      tabIndex={0}
+      role="region"
+      aria-label="Code sample"
+    >
+      {children}
+    </pre>
+  );
 }
 
 Example.Preview = Preview;
