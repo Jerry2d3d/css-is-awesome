@@ -126,18 +126,48 @@
   @include m.interactive;
 }
 
-@mixin buttonold($button-type) {
-  @if #{$button-type} == action {
-    @content;
-    background-color: #636363;
-    border: 1px solid #00b9f4;
-  } @else if #{$button-type} == disabled {
-    @content;
-    background-color: #636363;
-    border: 1px solid #636363;
-  } @else if #{$button-type} == info {
-    @content;
-    background-color: #636363;
-    border: 1px solid #00b9f4;
+// ----------------------------------------------------------------------------
+// PRESET ROUTER — btn-preset
+// ----------------------------------------------------------------------------
+// Picks a named preset (action / disabled / info) and applies the matching
+// per-preset mixin on top of btn-base. Router stays small. To add a new
+// preset: write a `_btn-preset-<name>` mixin below and add one @else if branch.
+//
+// All values are token-driven — theme swap reskins automatically. Any token
+// is overridable via named args. `$args...` forwards to btn-base for sizing.
+//
+// Usage:
+//   .my-action  { @include btn-preset(action); }
+//   .my-info    { @include btn-preset(info, $border: brand-primary); }
+//   .my-special { @include btn-preset(action, $px: 6) { letter-spacing: 0.05em; } }
+// ----------------------------------------------------------------------------
+@mixin btn-preset(
+  $type,
+  $bg: surface-muted,
+  $border: null,
+  $args...
+) {
+  @include btn-base($args...);
+  background-color: m.color($bg);
+
+  @if      $type == action   { @include _btn-preset-action($border); }
+  @else if $type == disabled { @include _btn-preset-disabled($border); }
+  @else if $type == info     { @include _btn-preset-info($border); }
+  @else {
+    @error "btn-preset(): unknown type '#{$type}'. Expected: action, disabled, info.";
   }
+
+  @content;
+}
+
+// Per-preset mixins — small, local, easy to grow without bloating the router.
+@mixin _btn-preset-action($border: null) {
+  border: 1px solid m.color($border or info-default);
+}
+@mixin _btn-preset-disabled($border: null) {
+  border: 1px solid m.color($border or border-default);
+  @include m.disabled;
+}
+@mixin _btn-preset-info($border: null) {
+  border: 1px solid m.color($border or info-default);
 }
