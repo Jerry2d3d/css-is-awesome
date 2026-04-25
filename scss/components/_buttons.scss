@@ -1,18 +1,24 @@
 // ============================================================================
 // BUTTONS
 // ============================================================================
-// Mixin-first button system. Every parameter has a default from the theme.
-// Change one thing or everything — no specificity wars.
+// Mixin-first button system. One router (`btn`) covers every variant.
+// Each variant is a small private mixin; the router stays small no matter
+// how many variants you add.
 //
-// Numeric scale keys are the source of truth (1..9). T-shirt keys still work
-// as aliases — both of the following produce identical output:
+// Numeric scale keys are the source of truth (1..9). T-shirt keys still
+// work as aliases — both of the following produce identical output:
 //   .btn-small-numeric { @include btn-base($py: 1, $px: 2, $font-size: 2); }
 //   .btn-small-tshirt  { @include btn-base($py: xs, $px: sm, $font-size: sm); }
 //
 // Usage:
 //   .btn       { @include btn-base; }
-//   .btn-cta   { @include btn-primary($px: 6, $r: full); }
-//   .btn-small { @include btn-base($py: 1, $px: 2, $font-size: 2); }
+//   .btn-cta   { @include btn(primary, $px: 6, $r: full); }
+//   .btn-warn  { @include btn(warning); }
+//   .btn-edit  { @include btn(outline) { letter-spacing: 0.05em; } }
+//
+// To add a new variant: write a `_btn-<name>` private mixin below and add
+// one branch to the router. Status variants (info/success/warning/error)
+// are FREE — they share `_btn-status` via token interpolation.
 // ============================================================================
 @use 'sass:map';
 @use '../theme' as t;
@@ -20,7 +26,7 @@
 @use '../mixins' as m;
 
 // ----------------------------------------------------------------------------
-// BASE
+// BASE — shared structural rules (display, padding, radius, focus-ring, …)
 // ----------------------------------------------------------------------------
 @mixin btn-base(
   $py: 1,
@@ -45,76 +51,93 @@
 }
 
 // ----------------------------------------------------------------------------
-// VARIANTS
+// ROUTER — btn($variant)
 // ----------------------------------------------------------------------------
-@mixin btn-primary(
-  $bg: action-primary-default,
-  $bg-hover: action-primary-hover,
-  $bg-active: action-primary-active,
-  $color: text-inverse,
-  $py: null, $px: null, $r: null, $font-size: null
+// One mixin handles every variant. Defaults come from the theme contract;
+// every token is overridable via named args. `$args...` forwards to
+// btn-base for sizing (`$py`, `$px`, `$r`, `$font-weight`, `$font-size`).
+@mixin btn(
+  $variant,
+  $bg: null, $bg-hover: null, $bg-active: null,
+  $color: null, $border: null,
+  $args...
 ) {
-  @include btn-base($py: $py or 1, $px: $px or 4, $r: $r or md, $font-size: $font-size);
-  background: m.color($bg);
-  color: m.color($color);
+  @include btn-base($args...);
 
-  &:hover { background: m.color($bg-hover); }
-  &:active { background: m.color($bg-active); }
-  &:disabled, &[disabled] { @include m.disabled; }
-}
-
-@mixin btn-secondary(
-  $bg: action-secondary-default,
-  $bg-hover: action-secondary-hover,
-  $bg-active: action-secondary-active,
-  $color: text-inverse,
-  $py: null, $px: null, $r: null, $font-size: null
-) {
-  @include btn-base($py: $py or 1, $px: $px or 4, $r: $r or md, $font-size: $font-size);
-  background: m.color($bg);
-  color: m.color($color);
-
-  &:hover { background: m.color($bg-hover); }
-  &:active { background: m.color($bg-active); }
-  &:disabled, &[disabled] { @include m.disabled; }
-}
-
-@mixin btn-outline(
-  $border-color: border-default,
-  $color: text-primary,
-  $hover-bg: interactive-hover,
-  $hover-border: border-focus,
-  $active-bg: interactive-active,
-  $py: null, $px: null, $r: null, $font-size: null
-) {
-  @include btn-base($py: $py or 1, $px: $px or 4, $r: $r or md, $font-size: $font-size);
-  background: transparent;
-  border: 1px solid m.color($border-color);
-  color: m.color($color);
-
-  &:hover {
-    background: m.color($hover-bg);
-    border-color: m.color($hover-border);
+  @if      $variant == primary   { @include _btn-solid(action-primary-default,   action-primary-hover,   action-primary-active,   $bg, $bg-hover, $bg-active, $color); }
+  @else if $variant == secondary { @include _btn-solid(action-secondary-default, action-secondary-hover, action-secondary-active, $bg, $bg-hover, $bg-active, $color); }
+  @else if $variant == outline   { @include _btn-outline($color, $border); }
+  @else if $variant == ghost     { @include _btn-ghost($color); }
+  @else if $variant == info or
+           $variant == success or
+           $variant == warning or
+           $variant == error     { @include _btn-status($variant, $bg, $border, $color); }
+  @else if $variant == disabled  { @include _btn-disabled($bg, $border); }
+  @else if $variant == action    { @include _btn-status(info, $bg, $border, $color); } // back-compat alias for old buttonold
+  @else {
+    @error "btn(): unknown variant '#{$variant}'. Expected one of: primary, secondary, outline, ghost, info, success, warning, error, disabled, action.";
   }
-  &:active { background: m.color($active-bg); }
-  &:disabled, &[disabled] { @include m.disabled; }
+
+  @content;
 }
 
-@mixin btn-ghost(
-  $color: text-primary,
-  $hover-bg: interactive-hover,
-  $active-bg: interactive-active,
-  $py: null, $px: null, $r: null, $font-size: null
+// ----------------------------------------------------------------------------
+// PER-VARIANT PRIVATE MIXINS — small, local, easy to grow.
+// ----------------------------------------------------------------------------
+
+// Solid variants — same shape, different default tokens. Used by primary,
+// secondary, and any future "filled" variant (e.g. tertiary).
+@mixin _btn-solid(
+  $default, $hover, $active,
+  $bg: null, $bg-hover: null, $bg-active: null, $color: null
 ) {
-  @include btn-base($py: $py or 1, $px: $px or 4, $r: $r or md, $font-size: $font-size);
-  background: transparent;
-  color: m.color($color);
-
-  &:hover { background: m.color($hover-bg); }
-  &:active { background: m.color($active-bg); }
+  background: m.color($bg or $default);
+  color: m.color($color or text-inverse);
+  &:hover  { background: m.color($bg-hover  or $hover); }
+  &:active { background: m.color($bg-active or $active); }
   &:disabled, &[disabled] { @include m.disabled; }
 }
 
+// Outline variant — transparent bg, visible border, hover bg + border swap.
+@mixin _btn-outline($color: null, $border: null) {
+  background: transparent;
+  border: 1px solid m.color($border or border-default);
+  color: m.color($color or text-primary);
+  &:hover  {
+    background: m.color(interactive-hover);
+    border-color: m.color(border-focus);
+  }
+  &:active { background: m.color(interactive-active); }
+  &:disabled, &[disabled] { @include m.disabled; }
+}
+
+// Ghost variant — transparent bg, no border, hover bg only.
+@mixin _btn-ghost($color: null) {
+  background: transparent;
+  color: m.color($color or text-primary);
+  &:hover  { background: m.color(interactive-hover); }
+  &:active { background: m.color(interactive-active); }
+  &:disabled, &[disabled] { @include m.disabled; }
+}
+
+// Status variants — token interpolation. Adding a new status is FREE if the
+// tokens exist in the contract: <status>-subtle, <status>-default, <status>-text.
+@mixin _btn-status($status, $bg: null, $border: null, $color: null) {
+  background: m.color($bg or #{$status}-subtle);
+  border: 1px solid m.color($border or #{$status}-default);
+  color: m.color($color or #{$status}-text);
+}
+
+// Disabled state — looks disabled AND disables interaction.
+@mixin _btn-disabled($bg: null, $border: null) {
+  background: m.color($bg or surface-muted);
+  border: 1px solid m.color($border or border-default);
+  @include m.disabled;
+}
+
+// ----------------------------------------------------------------------------
+// ICON BUTTON — different shape (square, no padding system), kept separate.
+// ----------------------------------------------------------------------------
 @mixin btn-icon($size: 2.5rem, $r: md) {
   @include m.button-reset;
   @include m.flex-center;
@@ -124,50 +147,4 @@
   @include m.transition(background-color, color);
   @include m.focus-ring;
   @include m.interactive;
-}
-
-// ----------------------------------------------------------------------------
-// PRESET ROUTER — btn-preset
-// ----------------------------------------------------------------------------
-// Picks a named preset (action / disabled / info) and applies the matching
-// per-preset mixin on top of btn-base. Router stays small. To add a new
-// preset: write a `_btn-preset-<name>` mixin below and add one @else if branch.
-//
-// All values are token-driven — theme swap reskins automatically. Any token
-// is overridable via named args. `$args...` forwards to btn-base for sizing.
-//
-// Usage:
-//   .my-action  { @include btn-preset(action); }
-//   .my-info    { @include btn-preset(info, $border: brand-primary); }
-//   .my-special { @include btn-preset(action, $px: 6) { letter-spacing: 0.05em; } }
-// ----------------------------------------------------------------------------
-@mixin btn-preset(
-  $type,
-  $bg: surface-muted,
-  $border: null,
-  $args...
-) {
-  @include btn-base($args...);
-  background-color: m.color($bg);
-
-  @if      $type == action   { @include _btn-preset-action($border); }
-  @else if $type == disabled { @include _btn-preset-disabled($border); }
-  @else if $type == info     { @include _btn-preset-info($border); }
-  @else {
-    @error "btn-preset(): unknown type '#{$type}'. Expected: action, disabled, info.";
-  }
-
-  @content;
-}
-
-// Per-preset mixins — small, local, easy to grow without bloating the router.
-@mixin _btn-preset-action($border: null) {
-  border: 1px solid m.color($border or info-default);
-}
-@mixin _btn-preset-disabled($border: null) {
-  border: 1px solid m.color($border or border-default);
-  @include m.disabled;
-}
-@mixin _btn-preset-info($border: null) {
-  border: 1px solid m.color($border or info-default);
 }
