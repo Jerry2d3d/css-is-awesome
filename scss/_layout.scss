@@ -30,8 +30,7 @@ $_container-widths: (
 
 @mixin container($size: xl, $px: null) {
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
 
   $max: map.get($_container-widths, $size);
   @if $max and $max != none {
@@ -40,13 +39,11 @@ $_container-widths: (
 
   $pad: $px or 4;
   $pad-val: map.get(t.$space, $pad) or $pad;
-  padding-left: $pad-val;
-  padding-right: $pad-val;
+  padding-inline: $pad-val;
 
   @media screen and (min-width: map.get(s.$breakpoints, md)) {
     $pad-up: if($px, $pad-val, map.get(t.$space, 5));
-    padding-left: $pad-up;
-    padding-right: $pad-up;
+    padding-inline: $pad-up;
   }
 }
 
@@ -169,13 +166,11 @@ $_container-widths: (
 
 @mixin section($py: 8, $px: null) {
   $py-val: map.get(t.$space, $py) or $py;
-  padding-top: $py-val;
-  padding-bottom: $py-val;
+  padding-block: $py-val;
 
   @if $px {
     $px-val: map.get(t.$space, $px) or $px;
-    padding-left: $px-val;
-    padding-right: $px-val;
+    padding-inline: $px-val;
   }
 }
 
@@ -212,16 +207,14 @@ $_container-widths: (
 @mixin divider($color: border-default, $spacing: 4) {
   $space-val: map.get(t.$space, $spacing) or $spacing;
   border: none;
-  border-top: 1px solid var(--#{$color});
-  margin-top: $space-val;
-  margin-bottom: $space-val;
+  border-block-start: 1px solid var(--#{$color});
+  margin-block: $space-val;
 }
 
 @mixin divider-vertical($color: border-default, $spacing: 4) {
   $space-val: map.get(t.$space, $spacing) or $spacing;
   border: none;
-  border-left: 1px solid var(--#{$color});
-  margin-left: $space-val;
-  margin-right: $space-val;
+  border-inline-start: 1px solid var(--#{$color});
+  margin-inline: $space-val;
   align-self: stretch;
 }

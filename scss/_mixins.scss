@@ -250,6 +250,7 @@ $_loaded-fonts: () !default;
   } @else {
     $_loaded-fonts: map.set($_loaded-fonts, $name, (url: $url, fallback: $fallback)) !global;
     @at-root {
+      /* stylelint-disable-next-line no-invalid-position-at-import-rule, import-notation -- @at-root lifts this @import to the top of the compiled stylesheet (valid position); url() notation is required because Sass rejects the bare-string form inside @at-root. */
       @import url(#{$url});
     }
   }
@@ -569,13 +570,11 @@ $_easings: (
 }
 
 @mixin inset-x($size: 4) {
-  padding-left: space($size);
-  padding-right: space($size);
+  padding-inline: space($size);
 }
 
 @mixin inset-y($size: 4) {
-  padding-top: space($size);
-  padding-bottom: space($size);
+  padding-block: space($size);
 }
 
 @mixin squish($y: 2, $x: 4) {

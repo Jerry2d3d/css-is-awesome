@@ -26,6 +26,7 @@
       "ignoreProperties": ["font-family", "/^--font/"],
       "ignoreKeywords": ["BlinkMacSystemFont", "currentColor"],
       "camelCaseSvgKeywords": true
-    }]
+    }],
+    "declaration-no-important": true
   }
 }

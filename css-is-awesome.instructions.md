@@ -1,0 +1,368 @@
+---
+applyTo: "**"
+---
+
+# css-is-awesome — system instructions
+
+Authoring rules for css-is-awesome itself AND for consumer apps that use it. Drop this file at the repo root of any project that consumes the library; AI assistants (Cursor, GitHub Copilot, Claude Code, etc.) will pick it up via the `applyTo:` glob.
+
+## TL;DR — three consumer tiers, pick the lowest one that works for you
+
+1. **Drop-in (HTML, no build).** Link `dist/css-is-awesome.css` and a theme file. Use `.cia-*` utility classes in markup. Themes swap via `<html data-theme="press">`.
+2. **React.** Import a shipped component (`<Button variant="primary">`). Components are token-driven and theme-swap-safe out of the box.
+3. **Power user (SCSS).** `@use 'css-is-awesome/scss/mixins' as m;` and `@include btn(primary, $px: 6) { … }` to deviate from defaults.
+
+You only write per-component SCSS when you're deviating from a base mixin. If you're applying the default look, use Tier 1 or Tier 2.
+
+---
+
+## File structure (React components)
+
+Each component lives in its own folder under `src/components/`:
+
+```
+src/components/Button/
+├── Button.tsx               (PascalCase — the component file)
+├── Button.module.scss       (PascalCase — the styles, OPTIONAL)
+├── button.types.ts          (kebab-case — types, OPTIONAL)
+└── index.ts                 (re-export barrel)
+```
+
+- **Component file** — PascalCase: `Button.tsx`.
+- **Style module** — PascalCase: `Button.module.scss`. **Optional** — only create when you're overriding a base mixin or adding component-specific styles. Don't create empty SCSS files.
+- **Types file** — kebab-case: `button.types.ts`. **Optional** — only when prop unions are non-trivial (multiple discriminated variants, exported sub-types, generic constraints). Tiny components can keep types inline in the .tsx file.
+- **Barrel** — `index.ts` re-exports default + named exports.
+
+---
+
+## Styling — when to write SCSS, when not to
+
+### Don't write SCSS when
+
+You're applying the default mixin output. Use `<Button variant="primary">` in React, or `class="cia-btn cia-btn-primary"` in HTML (when component utilities are available — see Tier 1).
+
+### Do write SCSS when
+
+You're deviating from a base mixin's defaults. Then:
+
+```scss
+// MyButton.module.scss
+@use 'css-is-awesome/scss/components/buttons' as b;
+
+.myCta { @include b.btn(primary, $px: 6, $r: full); }
+```
+
+### Mixin-first
+
+Every visual primitive in the library is a mixin (`btn-base`, `card-base`, `input-base`, `tag`, etc.) plus a router (`btn($variant)`, `alert($status)`, `badge($status)`). Variants are reached by name, not by class. The mixin is the API; classes (utilities + React component classes) are consumers of it.
+
+### Apply token-driven values, not literals
+
+```scss
+// Yes — token-driven, theme-swap-safe.
+padding-block: m.space(2);
+color: m.color(text-primary);
+border-radius: m.radius(md);
+
+// No — literal, breaks theme-swap.
+padding: 8px;
+color: #2A241E;
+border-radius: 4px;
+```
+
+Tokens come from the theme contract (`scripts/theme-contract.json` — 123 required slots). Themes swap via `<html data-theme="press">` and every token resolves to the active theme's value.
+
+### No `!important`
+
+Banned. Stylelint enforces (`declaration-no-important: true`). Sole exception: inside `@media (prefers-reduced-motion: reduce)` overrides for accessibility, where `!important` is the canonical pattern (and explicitly disabled with a comment).
+
+If you're tempted to reach for `!important`, the right answer is one of: (a) use `:where(...)` to drop the library selector to specificity 0, (b) override the relevant CSS variable, (c) call the mixin with explicit args.
+
+### Logical properties — required for new code
+
+Use `padding-block` / `padding-inline` / `margin-block` / `margin-inline` / `border-block-start` / etc. Don't use `padding-top` / `margin-left` / `border-left` etc. unless you specifically need physical (rare).
+
+```scss
+/* Yes */
+padding-block: m.space(2);
+padding-inline: m.space(4);
+margin-block-end: m.space(3);
+border-block-end: 1px solid m.color(border-default);
+
+/* No */
+padding-top: m.space(2);
+padding-bottom: m.space(2);
+padding-left: m.space(4);
+padding-right: m.space(4);
+margin-bottom: m.space(3);
+border-bottom: 1px solid m.color(border-default);
+```
+
+Logical properties auto-flip for RTL languages (Arabic, Hebrew) and vertical writing modes. The library's internal mixins emit logical properties.
+
+> **Note on the public utility classes (`.cia-mt-*`, `.cia-mr-*`, `.cia-pl-*`, etc.):** these still emit physical properties in v1.x to preserve API stability for early adopters. They will migrate to logical properties in v2.x.
+
+### Pseudo-elements over decorative DOM
+
+Decorative? Use `::before` / `::after`. Functional (focusable, interactive, semantic)? Use a real element.
+
+```tsx
+// Yes — decoration via pseudo-element
+<button className="my-btn-with-shine">Save</button>
+
+// .my-btn-with-shine::after { content: ""; ... }
+
+// No — decoration via wrapper
+<button>
+  <span className="shine-overlay" />
+  Save
+</button>
+```
+
+Pseudo-elements aren't focusable, aren't tab stops, screen readers ignore them by default — exactly what you want for decoration.
+
+### Sizing units
+
+Order of preference: **rem → em → vw/vh → ch → %**.
+
+- `rem` for spacing, font sizes, layout (consistent scale, scales with user font preferences).
+- `em` for sizes relative to current element font size.
+- `vw` / `vh` (or `svw` / `svh`) for viewport-relative layout. Use common fractions: `25vw`, `50vw`, `75vw`.
+- `ch` for text-width sizing.
+- `%` only when the size genuinely must be a percentage of the parent (`width: 100%` to fill).
+
+---
+
+## HTML & semantic structure
+
+### Use native interactive elements
+
+```tsx
+// Yes
+<button onClick={handleClose}>Close</button>
+<a href="/about">About</a>
+<dialog open={isOpen}>...</dialog>
+<input type="checkbox" />
+
+// No — never
+<div onClick={handleClose}>Close</div>
+<span onClick={navigate}>About</span>
+<div role="dialog">...</div>           // unless you're doing something a real <dialog> can't
+```
+
+Native elements come with keyboard handling, focus management, and screen-reader semantics for free. `<div onclick>` requires re-implementing all three; people miss steps.
+
+Enforced by `eslint-plugin-jsx-a11y` (already in `next/core-web-vitals`).
+
+### Form controls need labels
+
+```tsx
+// Yes
+<label htmlFor="email">Email</label>
+<input id="email" type="email" />
+
+// or wrap
+<label>
+  Email
+  <input type="email" />
+</label>
+
+// or use the FormField component
+<FormField label="Email"><Input type="email" /></FormField>
+```
+
+### Element hierarchy guidance
+
+For new components, prefer the most semantic native root: `<button>` for a button, `<dialog>` for a modal, `<table>` for tabular data, `<nav>` for navigation, `<article>` for self-contained content blocks, `<section>` for major content groupings. **Avoid `<div>` as the root unless no semantic element fits.**
+
+The library does NOT enforce a single root element across all components — `Button` is `<button>`, `Modal` is `<dialog>`, `DataTable` is `<table>`, etc.
+
+### No same-element nesting
+
+Never nest an element inside the same element type:
+
+- No `<div>` inside `<div>`. Find the semantic tag that belongs there (`<header>`, `<nav>`, `<aside>`, `<section>`, `<article>`).
+- No `<span>` inside `<span>`. Same — pick the semantic inline tag.
+- No `<p>` inside `<p>`. Browsers will silently break this; the inner `<p>` closes the outer.
+
+### Minimal DOM
+
+Every element must earn its place. If removing it changes nothing visually or semantically, remove it. Use pseudo-elements for decoration (see above).
+
+---
+
+## TypeScript
+
+### `type` for props, `interface` for data models
+
+```ts
+// Component props
+type ButtonProps = {
+  variant?: "primary" | "secondary" | "outline" | "ghost";
+  onClick?: () => void;
+};
+
+// Data entities
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+```
+
+`type` for value shapes, function signatures, unions, intersections. `interface` for entities that might be extended (API responses, domain objects, things you might `extends` later).
+
+### Co-locate types
+
+Tiny components keep types inline in the `.tsx`. Components with non-trivial type surface (`DataTable`, `Tabs`, `Modal` with a discriminated prop union) extract types into a sibling `component-name.types.ts`:
+
+```
+src/components/DataTable/
+├── DataTable.tsx           // component logic only
+├── data-table.types.ts     // Column<T>, SortState, DataTableProps<T>, etc.
+└── DataTable.module.scss
+```
+
+---
+
+## Component authoring
+
+### Arrow-function default export
+
+```tsx
+const Button = (props: ButtonProps) => {
+  // ...
+};
+export default Button;
+
+// Named-only (no default) is fine for pure helpers, but components default-export.
+```
+
+For compound components (`Tabs.List`, `Tabs.Trigger`, `Tabs.Panel`), export a default that has named properties attached: `Tabs.List = TabsList; export default Tabs;` — this is the React convention for compound components.
+
+### Internal helpers use arrow functions
+
+```tsx
+const handleClose = () => { ... };
+const formatLabel = (name: string) => name.replace(/-/g, " ");
+```
+
+### Event handlers prefixed `handle`
+
+`handleClose`, `handleSelect`, `handleToggle`, `handleKey`. Prop callbacks for handlers stay as `onClose`, `onSelect`, etc. (the `on*` is the React prop convention; `handle*` is the local function convention).
+
+### Class-name joining via array
+
+```tsx
+className={[styles.btn, variant && styles[variant], className].filter(Boolean).join(" ")}
+```
+
+Don't use template-string concat. Don't reach for `clsx`/`classnames` for the simple cases — the array+filter+join idiom is sufficient and dependency-free.
+
+### State management
+
+- Local `useState` for component-specific UI state (open/close, selected item, loading).
+- Lift to context only when multiple unrelated components need the same data.
+- No global stores in this library — consumers can wire their own.
+
+### Conditional rendering
+
+```tsx
+// Guard clause for early null
+if (!open) return null;
+
+// Inline ternary for simple branches
+return (
+  <section>
+    {loading ? <Spinner /> : <List items={items} />}
+  </section>
+);
+```
+
+---
+
+## Theming
+
+### One file = one theme
+
+Each theme is a `[data-theme="<name>"] { ... }` block declaring all 123 contract tokens. `public/theme.css` ships all six themes consolidated; per-theme files at `public/themes/<name>/theme.css` are also published for download.
+
+### Add a theme
+
+1. Read `scripts/theme-contract.json` — declare every token.
+2. Run `npm run validate-themes` to confirm the contract.
+3. Add the theme name to `ThemePicker`'s `THEMES` array and the layout's `VALID_THEMES` set.
+4. Optionally add a `[data-theme="<name>"]` block to the consolidated `public/theme.css`.
+
+See `/docs/authoring/themes` for the full guide.
+
+### Add a one-off page font
+
+```scss
+// page.module.scss
+@use 'css-is-awesome/scss/mixins' as m;
+
+// Common case — Google Fonts. Optionally alias to a theme token.
+@include m.font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap', $alias: display);
+
+// Self-hosted
+@include m.font-load-local('Untitled Sans', '/fonts/UntitledSans.woff2');
+
+.headline { @include m.font(reg, 7, $family: 'Pacifico'); }
+```
+
+`font-load` is idempotent (calling twice is safe), `@error`s on URL conflicts, and optionally aliases the font to a theme token (`$alias: display` writes `--font-display: 'Pacifico'` in the local scope so consumers keep using token vocabulary).
+
+---
+
+## Accessibility
+
+- Native interactive elements (above) are the foundation.
+- All images have `alt` text.
+- Form controls have `<label>` (above).
+- Use `role` and `aria-*` only when native semantics are insufficient — e.g., disclosure widgets, custom dropdowns, ARIA live regions.
+- Keyboard navigation works: dialogs trap focus, Escape closes overlays, arrow keys cycle through tab lists.
+- Focus rings come from `m.focus-ring` (or `:focus-visible`) — don't remove the outline without a replacement.
+- Honor `prefers-reduced-motion` — animation mixins do this automatically; don't fight it.
+- Color is never the only cue — pair status colors with an icon or text label.
+
+---
+
+## Versioning & contributions
+
+- **SemVer** post-1.0 strictly. Breaking changes bump major. See `VERSIONING.md`.
+- **Conventional Commits** drive the auto-changelog. `feat:`, `fix:`, `chore:`, `docs:`, `refactor:` etc.
+- **CONTRIBUTING.md** has the full setup, PR, and review flow.
+- **`.github/ISSUE_TEMPLATE/`** for bug reports, feature requests, theme submissions.
+
+---
+
+## Decision tree — which tier should I use?
+
+**Q: Are you in a React app?**
+
+- **No** → Tier 1 (drop-in CSS). Link `dist/css-is-awesome.css` + a theme. Use `.cia-*` utilities.
+- **Yes** → Q2.
+
+**Q2: Are you building UI from our shipped components (`<Button>`, `<Card>`, `<Input>`, etc.)?**
+
+- **Yes** → Tier 2 (React components). Use the components as-is. No SCSS file in your project.
+- **No, I'm building a new component** → Q3.
+
+**Q3: Does your new component just need the library's default look applied?**
+
+- **Yes** → Compose `.cia-*` utility classes in `className`, OR use our React components as primitives. **No SCSS file needed.**
+- **No, I need to deviate** → Tier 3 (SCSS). Write `Component.module.scss`, `@use 'css-is-awesome/scss/mixins' as m;`, `@include btn(primary, $px: 6) { /* deviations */ }`.
+
+---
+
+## Anti-patterns (don't do these)
+
+- Adding `!important` to "win" a specificity fight. Use `:where()` or CSS variables.
+- Hardcoding hex colors / pixel values. Always go through tokens or mixin args.
+- Creating an empty `*.module.scss` to satisfy a convention. The file is optional.
+- Using `<div onclick>` instead of `<button>`. Native elements first, always.
+- Same-element nesting (`<div>` in `<div>`, `<p>` in `<p>`).
+- Wrapper divs for purely decorative effects. Use `::before` / `::after`.
+- Template-string `className` concatenation. Use `[a, b].filter(Boolean).join(" ")`.
+- Reaching for `next/font` or runtime CSS-in-JS. Tokens + mixins + theme contract are the system.

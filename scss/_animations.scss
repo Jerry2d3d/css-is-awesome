@@ -123,8 +123,10 @@ $_speeds: (
   animation-timing-function: $timing;
 
   @media (prefers-reduced-motion: reduce) {
+    /* stylelint-disable declaration-no-important -- !important is the canonical pattern for honoring prefers-reduced-motion: it must override any inline animation declared by component author or third-party CSS. */
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* stylelint-enable declaration-no-important */
   }
 }
 
@@ -195,9 +197,11 @@ $_speeds: (
 // ----------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
+    /* stylelint-disable declaration-no-important -- !important is the canonical pattern for the global reduced-motion safety net: it must override any animation/transition declared anywhere in the document. */
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    /* stylelint-enable declaration-no-important */
   }
 }
