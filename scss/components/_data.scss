@@ -119,20 +119,21 @@
   }
 }
 
-@mixin list-item($py: 2, $px: 4) {
+// Usage:
+//   li { @include list-item; }
+//   li { @include list-item($interactive: true); }
+@mixin list-item($py: 2, $px: 4, $interactive: false) {
   display: flex;
   align-items: center;
   gap: m.space(2);
   padding: m.space($py) m.space($px);
-}
 
-@mixin list-item-interactive($py: 2, $px: 4) {
-  @include list-item($py: $py, $px: $px);
-  cursor: pointer;
-  @include m.transition(background-color);
-
-  &:hover { background: m.color(interactive-hover); }
-  &:active { background: m.color(interactive-active); }
+  @if $interactive {
+    cursor: pointer;
+    @include m.transition(background-color);
+    &:hover  { background: m.color(interactive-hover); }
+    &:active { background: m.color(interactive-active); }
+  }
 }
 
 // ----------------------------------------------------------------------------

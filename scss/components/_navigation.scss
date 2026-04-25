@@ -84,15 +84,12 @@
 // ----------------------------------------------------------------------------
 // NAV (generic list navigation)
 // ----------------------------------------------------------------------------
+// `nav-link` was an alias for `navbar-link`; use `navbar-link` directly.
 @mixin nav-base($direction: row, $gap: 1) {
   display: flex;
   flex-direction: $direction;
   gap: m.space($gap);
   @include m.list-reset;
-}
-
-@mixin nav-link($py: 1, $px: 2) {
-  @include navbar-link($py: $py, $px: $px);
 }
 
 // ----------------------------------------------------------------------------

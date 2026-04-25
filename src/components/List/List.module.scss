@@ -27,7 +27,7 @@
 }
 
 .itemInteractive {
-  @include d.list-item-interactive;
+  @include d.list-item($interactive: true);
   all: unset;
   display: flex;
   align-items: center;

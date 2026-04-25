@@ -70,7 +70,16 @@
 // ----------------------------------------------------------------------------
 // TAG / CHIP
 // ----------------------------------------------------------------------------
-@mixin tag-base($py: 2xs, $px: 2, $r: md, $font-size: 2) {
+// Usage:
+//   .tag       { @include tag; }
+//   .tag-x     { @include tag($removable: true); }
+@mixin tag(
+  $py: 2xs,
+  $px: 2,
+  $r: md,
+  $font-size: 2,
+  $removable: false
+) {
   display: inline-flex;
   align-items: center;
   gap: m.space(2xs);
@@ -80,11 +89,10 @@
   background: m.color(surface-muted);
   color: m.color(text-primary);
   border: 1px solid m.color(border-default);
-}
 
-@mixin tag-removable {
-  @include tag-base;
-  padding-right: m.space(2xs);
+  @if $removable {
+    padding-right: m.space(2xs);
+  }
 }
 
 // ----------------------------------------------------------------------------

@@ -2,14 +2,14 @@
 @use 'components/feedback' as fb;
 
 .tag {
-  @include fb.tag-base;
+  @include fb.tag;
   display: inline-flex;
   align-items: center;
   gap: m.space(1);
   white-space: nowrap;
 }
 
-.removable { @include fb.tag-removable; }
+.removable { @include fb.tag($removable: true); }
 
 .icon {
   display: inline-flex;
