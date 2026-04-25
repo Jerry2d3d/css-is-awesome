@@ -7,6 +7,7 @@
 @use 'sass:map';
 @use 'sass:list';
 @use 'sass:meta';
+@use 'sass:string';
 @use 'theme' as t;
 @use 'system' as s;
 
@@ -156,14 +157,32 @@ $_font-types: (
   black-it:    (weight: black, style: italic),
 );
 
-// Font mixin - accepts size as token name OR value
+// Font mixin - accepts size as token name OR value.
+// $family handling: if it's a registered name (loaded via font-load), wraps
+// with quotes + the registered fallback. If it's a custom string with a comma
+// or var() reference, passes through as-is. If it's a single-word name that
+// is NOT registered, fails loudly with @error so typos surface at compile.
 @mixin font($type: reg, $size: null, $lh: null, $ls: null, $family: null) {
   $cfg: map.get($_font-types, $type) or map.get($_font-types, reg);
   font-weight: font-weight(map.get($cfg, weight));
   font-style: map.get($cfg, style);
-  
-  @if $family { font-family: $family; }
-  
+
+  @if $family {
+    $is-string: meta.type-of($family) == 'string';
+    $is-bare-name: $is-string
+                   and not string.index('#{$family}', ',')
+                   and not string.index('#{$family}', 'var(');
+    @if $is-bare-name {
+      $registered: map.get($_loaded-fonts, $family);
+      @if not $registered {
+        @error "font(): family '#{$family}' is not loaded. Call `@include font-load('#{$family}', '<url>')` first. Loaded fonts: #{map.keys($_loaded-fonts)}.";
+      }
+      font-family: '#{$family}', #{map.get($registered, fallback)};
+    } @else {
+      font-family: $family;
+    }
+  }
+
   @if $size {
     $size-val: map.get(s.$font-sizes, $size);
     @if $size-val {
@@ -172,7 +191,7 @@ $_font-types: (
       font-size: $size;
     }
   }
-  
+
   @if $lh {
     $lh-val: map.get(s.$line-heights, $lh);
     @if $lh-val {
@@ -181,7 +200,7 @@ $_font-types: (
       line-height: $lh;
     }
   }
-  
+
   @if $ls {
     $ls-val: map.get(s.$letter-spacings, $ls);
     @if $ls-val {
@@ -189,6 +208,87 @@ $_font-types: (
     } @else {
       letter-spacing: $ls;
     }
+  }
+}
+
+// ============================================================================
+// ONE-OFF PAGE FONTS — load + (optional) theme-token alias
+// ----------------------------------------------------------------------------
+// `font-load()` registers a font once and emits the `@import url(...)` once
+// per compile. Passing `$alias: display` (or any of the theme font tokens —
+// display, script, serif, sans, mono, primary) writes a local
+// `--font-#{$alias}: '<name>', <fallback>` so the rest of the page can keep
+// using the existing token vocabulary.
+//
+// Apply via the existing `font()` mixin — it validates the family name
+// against the registry and fails loudly on typos.
+//
+// Sister `font-load-local()` covers self-hosted woff2/ttf/etc. via @font-face.
+//
+// Usage:
+//   // Common case — Google Fonts:
+//   @include font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+//   .headline { @include font(reg, 7, $family: 'Pacifico'); }
+//
+//   // Theme-token override — page-scoped:
+//   @include font-load('Pacifico', '<url>', $alias: display);
+//   // now `var(--font-display)` resolves to Pacifico for this scope
+//
+//   // Self-hosted:
+//   @include font-load-local('Untitled Sans', '/fonts/UntitledSans.woff2');
+//   .body { @include font(reg, 3, $family: 'Untitled Sans'); }
+// ============================================================================
+$_loaded-fonts: () !default;
+
+@mixin font-load($name, $url, $alias: null, $fallback: sans-serif) {
+  $existing: map.get($_loaded-fonts, $name);
+  @if $existing {
+    @if map.get($existing, url) != $url {
+      @error "font-load(): '#{$name}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One name, one URL.";
+    }
+    // Same name + URL = no-op. Emit nothing — registry already has it.
+  } @else {
+    $_loaded-fonts: map.set($_loaded-fonts, $name, (url: $url, fallback: $fallback)) !global;
+    @at-root {
+      @import url(#{$url});
+    }
+  }
+
+  @if $alias {
+    --font-#{$alias}: '#{$name}', #{$fallback};
+  }
+}
+
+@mixin font-load-local(
+  $name,
+  $src,
+  $weight: 400,
+  $style: normal,
+  $display: swap,
+  $alias: null,
+  $fallback: sans-serif
+) {
+  $existing: map.get($_loaded-fonts, $name);
+  @if $existing {
+    @if map.get($existing, src) != $src {
+      @error "font-load-local(): '#{$name}' is already registered with a different src. Existing: #{map.get($existing, src)}. New: #{$src}. One name, one src.";
+    }
+    // Same name + src = no-op.
+  } @else {
+    $_loaded-fonts: map.set($_loaded-fonts, $name, (src: $src, fallback: $fallback)) !global;
+    @at-root {
+      @font-face {
+        font-family: '#{$name}';
+        src: url(#{$src}) format('woff2');
+        font-weight: $weight;
+        font-style: $style;
+        font-display: $display;
+      }
+    }
+  }
+
+  @if $alias {
+    --font-#{$alias}: '#{$name}', #{$fallback};
   }
 }
 

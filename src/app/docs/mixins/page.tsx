@@ -282,7 +282,7 @@ export default function DocsMixinsPage() {
       </p>
 
       <h3 id="font"><code>font</code></h3>
-      <p>Sets weight, style, size, line-height, letter-spacing from one call. Size/lh/ls accept a token name or a literal value.</p>
+      <p>Sets weight, style, size, line-height, letter-spacing from one call. Size/lh/ls accept a token name or a literal value. Pass <code>$family</code> to set a font-family — if it&apos;s a name registered via <code>font-load</code>, the registered fallback is auto-applied; if it&apos;s a CSS-native value (with comma or <code>var()</code>), it passes through; if it&apos;s a single-word name that isn&apos;t loaded, the build fails with <code>@error</code> so typos surface at compile time.</p>
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">font</span>(<span className="tok-val">$type: reg, $size: null, $lh: null, $ls: null, $family: null</span>);
 {"\n"}
@@ -290,6 +290,21 @@ export default function DocsMixinsPage() {
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.font(medium, $size: 4, $lh: 2)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
+
+      <h3 id="font-load"><code>font-load</code> &amp; <code>font-load-local</code></h3>
+      <p>Drop a one-off font into a single page or section without forking the theme. <code>font-load</code> registers a Google Fonts URL once (idempotent across the compile), emits the <code>@import</code>, and optionally aliases the loaded family to one of the theme&apos;s font tokens (<code>display</code>, <code>script</code>, <code>serif</code>, <code>sans</code>, <code>mono</code>, <code>primary</code>) so the rest of the page can keep using <code>var(--font-display)</code> with no further changes. <code>font-load-local</code> is the sister mixin for self-hosted woff2/ttf via <code>@font-face</code>.</p>
+      <Example>
+        <Example.Code><span className="tok-com">{"// Load + apply (Google Fonts)"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">'Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap'</span>);
+{"\n"}<span className="tok-sel">.headline</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.font(reg, 7, $family: 'Pacifico')</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// Load + alias to a theme token (page-scoped --font-display override)"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">{"'Pacifico', '<url>', $alias: display"}</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// Self-hosted file"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);</Example.Code>
+      </Example>
+      <p>Tip: drop the <code>font-load</code> call inside a per-route CSS Module (e.g. <code>src/app/special-landing/page.module.scss</code>) and Next will scope the font download to that route only — pages that don&apos;t import the module never see the font in their network tab.</p>
 
       <h3 id="type"><code>type</code></h3>
       <p>Applies a named type-scale preset: size + weight + line-height + letter-spacing in one include.</p>
