@@ -64,16 +64,11 @@
 ) {
   @include btn-base($args...);
 
-  @if      $variant == primary   { @include _btn-solid(action-primary-default,   action-primary-hover,   action-primary-active,   $bg, $bg-hover, $bg-active, $color); }
-  @else if $variant == secondary { @include _btn-solid(action-secondary-default, action-secondary-hover, action-secondary-active, $bg, $bg-hover, $bg-active, $color); }
-  @else if $variant == outline   { @include _btn-outline($color, $border); }
-  @else if $variant == ghost     { @include _btn-ghost($color); }
-  @else if $variant == info or
+  @if      $variant == primary   { @include _btn-solid(action-primary-default,   action-primary-hover,   action-primary-active,   $bg, $bg-hover, $bg-active, $color); } @else if $variant == secondary { @include _btn-solid(action-secondary-default, action-secondary-hover, action-secondary-active, $bg, $bg-hover, $bg-active, $color); } @else if $variant == outline   { @include _btn-outline($color, $border); } @else if $variant == ghost     { @include _btn-ghost($color); } @else if $variant == info or
            $variant == success or
            $variant == warning or
-           $variant == error     { @include _btn-status($variant, $bg, $border, $color); }
-  @else if $variant == disabled  { @include _btn-disabled($bg, $border); }
-  @else if $variant == action    { @include _btn-status(info, $bg, $border, $color); } // back-compat alias for old buttonold
+           $variant == error     { @include _btn-status($variant, $bg, $border, $color); } @else if $variant == disabled  { @include _btn-disabled($bg, $border); } @else if $variant == action    { @include _btn-status(info, $bg, $border, $color); }
+// back-compat alias for old buttonold
   @else {
     @error "btn(): unknown variant '#{$variant}'. Expected one of: primary, secondary, outline, ghost, info, success, warning, error, disabled, action.";
   }

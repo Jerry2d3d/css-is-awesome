@@ -29,7 +29,8 @@
     "public/themes",
     "README.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "css-is-awesome.instructions.md"
   ],
   "scripts": {
     "dev": "next dev -p 5173",
