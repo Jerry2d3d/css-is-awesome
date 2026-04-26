@@ -1,0 +1,190 @@
+// ============================================================================
+// BARE-TAG STYLING — Optional Pico-style drop-in
+// ============================================================================
+// Default behaviour of css-is-awesome is to leave bare HTML alone. Tokens,
+// utilities, mixins, and React components ship — bare <button>, <table>, <h1>
+// stay browser-default until the consumer styles them.
+//
+// This recipe styles the most common bare tags using existing mixins. It is
+// OPT-IN. If you want it, add this line ONCE in your app's SCSS entry:
+//
+//   @use 'css-is-awesome/scss/recipes/bare-tags';
+//
+// Or copy the contents into your own SCSS and edit to taste.
+//
+// Specificity is normal (single-tag selectors, 0,0,1). To override, write any
+// class-based selector and it wins automatically:
+//
+//   .checkout button { background: gold; }   // wins, (0,1,1) > (0,0,1)
+//
+// Heads up: bare-tag styling is global. If you mount third-party React
+// components that render their own <button> internally (Radix, react-select,
+// react-datepicker, cmdk), they WILL inherit these rules. Either skip this
+// recipe and write your own scoped wrappers, or scope this recipe by copying
+// it into a `.cia-prose { … }` block in your own SCSS.
+// ============================================================================
+@use '../mixins' as m;
+@use '../components/buttons' as b;
+@use '../components/forms' as f;
+@use '../components/data' as d;
+
+// ----------------------------------------------------------------------------
+// TYPOGRAPHY
+// ----------------------------------------------------------------------------
+h1 { @include m.type(heading-1); margin-block: m.space(5) m.space(3); }
+h2 { @include m.type(heading-2); margin-block: m.space(5) m.space(3); }
+h3 { @include m.type(heading-3); margin-block: m.space(4) m.space(2); }
+h4 { @include m.type(heading-4); margin-block: m.space(4) m.space(2); }
+h5 { @include m.type(heading-4); margin-block: m.space(3) m.space(2); }
+h6 {
+  @include m.type(body);
+  font-weight: m.font-weight(semibold);
+  margin-block: m.space(3) m.space(2);
+}
+
+p {
+  margin-block: 0 m.space(3);
+}
+
+small {
+  font-size: m.font-size(2);
+}
+
+blockquote {
+  margin-block: m.space(4);
+  margin-inline: 0;
+  padding-block: m.space(2);
+  padding-inline: m.space(4);
+  border-inline-start: 4px solid m.color(border-default);
+  color: m.color(text-secondary);
+  font-style: italic;
+}
+
+// ----------------------------------------------------------------------------
+// CODE
+// ----------------------------------------------------------------------------
+code,
+kbd,
+samp {
+  font-family: m.font-family(mono);
+  font-size: 0.9em;
+  background: m.color(surface-subtle);
+  padding-inline: m.space(1);
+  border-radius: m.radius(sm);
+}
+
+pre {
+  font-family: m.font-family(mono);
+  font-size: m.font-size(2);
+  background: m.color(surface-subtle);
+  padding: m.space(3);
+  border-radius: m.radius(md);
+  overflow-x: auto;
+  margin-block: m.space(3);
+
+  code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// LISTS
+// ----------------------------------------------------------------------------
+ul,
+ol {
+  margin-block: 0 m.space(3);
+  padding-inline-start: m.space(5);
+}
+
+li {
+  margin-block-end: m.space(1);
+}
+
+// ----------------------------------------------------------------------------
+// STRUCTURAL
+// ----------------------------------------------------------------------------
+hr {
+  border: none;
+  border-block-start: 1px solid m.color(border-default);
+  margin-block: m.space(5);
+}
+
+figure {
+  margin-block: m.space(4);
+  margin-inline: 0;
+}
+
+figcaption {
+  font-size: m.font-size(2);
+  color: m.color(text-secondary);
+  margin-block-start: m.space(1);
+}
+
+// ----------------------------------------------------------------------------
+// TABLES
+// ----------------------------------------------------------------------------
+table {
+  @include d.table-base;
+  margin-block: m.space(3);
+}
+
+// ----------------------------------------------------------------------------
+// FORMS — bare tags get base styling. Variants via class or @include.
+// ----------------------------------------------------------------------------
+button {
+  @include b.btn(primary);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  @include f.input-base;
+}
+
+select   { @include f.select-base; }
+textarea { @include f.textarea-base; }
+label    { @include f.label-base; }
+
+fieldset {
+  border: 1px solid m.color(border-default);
+  border-radius: m.radius(md);
+  padding: m.space(4);
+  margin-block: m.space(3);
+}
+
+legend {
+  padding-inline: m.space(2);
+  font-weight: m.font-weight(semibold);
+}
+
+// ----------------------------------------------------------------------------
+// INTERACTIVE
+// ----------------------------------------------------------------------------
+details {
+  margin-block: m.space(2);
+
+  > summary {
+    cursor: pointer;
+    padding: m.space(2);
+    font-weight: m.font-weight(medium);
+    border-radius: m.radius(md);
+    @include m.transition(background-color);
+
+    &:hover {
+      background: m.color(interactive-hover);
+    }
+  }
+
+  > summary + * {
+    padding: m.space(2);
+  }
+}

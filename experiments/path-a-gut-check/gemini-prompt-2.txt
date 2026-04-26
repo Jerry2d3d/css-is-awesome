@@ -1,0 +1,40 @@
+You are a senior web designer with 20 years of experience. Real-talk feedback only — no diplomatic hedging.
+
+CONTEXT: Solo developer building a CSS/SCSS design system called 'css-is-awesome'. v1.0 has tokens, mixins, React components, utility classes (cia- prefix), 6 themes, CSS Modules.
+
+He's been deciding whether to add a "bare-tag styling" layer (Path A: library ships cascade layers + :where() pre-styling button, h1, table, etc. globally so consumer writes <button> and gets a styled button automatically).
+
+Now he's pushed back with HIS OWN approach.
+
+JERRY'S APPROACH:
+- Library ships: tokens, mixins, React components, utility classes
+- Library does NOT ship pre-styled bare tags
+- Consumer's path:
+  - Has <button> with nothing → default HTML button (browser styled)
+  - Wants quick styling → adds class: <button class="cia-btn-primary">
+  - Wants real styling → writes in their own SCSS:
+      button { @include cia.btn(primary); }
+    Done. One line per tag they want styled.
+  - Wants component reuse → uses React <Button variant="primary" />
+- No @layer, no :where() plumbing in the library at all
+- Library = vocabulary; consumer = composition
+
+OPTIONAL ENHANCEMENT (Claude proposed): ship an opt-in recipe file:
+  // scss/recipes/_bare-tags.scss
+  // Author writes: @use 'css-is-awesome/scss/recipes/bare-tags';
+  // Gets: button, h1, table, etc. all styled in one line
+That keeps the default non-invasive but gives a one-line opt-in for those who want Pico-style.
+
+PRO: Library has zero HTML opinions. No layer/where machinery to explain. Consumer wrote button {} themselves, owns the cascade. Three lines of their own SCSS gets full styling. Mixin-first stays the focus.
+
+CON: "Drop the CSS file and use" no longer literally true. They get tokens + utilities, but bare HTML is browser-unstyled until they write the SCSS. Pitch becomes "drop CSS + write 5-10 lines of SCSS to style bare tags you care about."
+
+QUESTION: From a 20-year WEB DESIGNER perspective, evaluate Jerry's approach honestly.
+
+1. Does it match the "easy and simple drop-in" promise better than Path A, or worse?
+2. From an authoring/designer POV, what actually changes day-to-day?
+3. Is "library = vocabulary, consumer = composition" a sound philosophy, or polite "you do the work"?
+4. Is the optional recipe file a smart escape hatch or unnecessary complexity?
+5. Verdict: Jerry's approach, Path A, or something else?
+
+Under 250 words. No hedging.

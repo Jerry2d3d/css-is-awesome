@@ -44,6 +44,61 @@ export default function DocsMixinsPage() {
         omitted.
       </p>
 
+      <h2 id="bare-tag-recipe">Bare-tag styling (opt-in)</h2>
+      <p>
+        By default the library does not touch bare HTML — drop the CSS and
+        you get tokens, utilities and React components, but raw{" "}
+        <code>&lt;button&gt;</code>, <code>&lt;table&gt;</code> and{" "}
+        <code>&lt;h1&gt;</code> stay browser-default. That keeps the library
+        non-invasive: dropping it into an existing project never silently
+        restyles your nav links or third-party components.
+      </p>
+      <p>
+        If you want a Pico-style &quot;drop-in and it looks decent&quot;
+        experience, add the bare-tags recipe in <strong>one line</strong> at
+        the top of your app&apos;s SCSS entry:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-com">{"// your-app.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/recipes/bare-tags'</span>;
+{"\n"}
+{"\n"}<span className="tok-com">{"// done — h1-h6, p, code, pre, hr, ul, ol, table,"}</span>
+{"\n"}<span className="tok-com">{"// button, input, select, textarea, label, details"}</span>
+{"\n"}<span className="tok-com">{"// all styled with the active theme."}</span></Example.Code>
+      </Example>
+      <p>
+        The recipe uses normal selectors (specificity <code>0,0,1</code>) — no{" "}
+        <code>@layer</code> or <code>:where()</code> machinery. Override
+        anything with any class-based selector and it wins automatically:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">.checkout</span> <span className="tok-prop">button</span> {"{"}
+{"\n"}  <span className="tok-prop">background</span>: <span className="tok-val">gold</span>; <span className="tok-com">{"// (0,1,1) > (0,0,1) — wins"}</span>
+{"\n"}{"}"}</Example.Code>
+      </Example>
+      <p>
+        <strong>Heads up:</strong> bare-tag styling is global. If you mount
+        third-party React components that render their own{" "}
+        <code>&lt;button&gt;</code> internally (Radix, react-select,
+        react-datepicker, cmdk), they will inherit these rules. Either skip
+        the recipe and write your own scoped wrappers, or copy the recipe
+        contents into a <code>.cia-prose</code> wrapper in your own SCSS to
+        scope it.
+      </p>
+      <p>
+        Prefer to roll your own? The recipe is just one-line includes per
+        tag — copy the file or write your own:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/mixins'</span> <span className="tok-sel">as</span> <span className="tok-prop">m</span>;
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/components/buttons'</span> <span className="tok-sel">as</span> <span className="tok-prop">b</span>;
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/components/data'</span> <span className="tok-sel">as</span> <span className="tok-prop">d</span>;
+{"\n"}
+{"\n"}<span className="tok-prop">button</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary)</span>; {"}"}
+{"\n"}<span className="tok-prop">table</span>  {"{"} <span className="tok-prop">@include</span> <span className="tok-val">d.table-base</span>; {"}"}
+{"\n"}<span className="tok-prop">h1</span>     {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.type(heading-1)</span>; {"}"}</Example.Code>
+      </Example>
+
       <h2 id="layout">Layout</h2>
       <p>
         Layout mixins cover flex helpers, responsive grids, page-level
