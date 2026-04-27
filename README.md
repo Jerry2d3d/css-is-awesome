@@ -15,7 +15,7 @@ One CSS file. Six voices. Swap the file, the whole site reskins. Built to be sma
 <link rel="stylesheet" href="path/to/css-is-awesome.min.css">
 ```
 
-Until the package lands on npm + jsDelivr, point at a local copy of `dist/css-is-awesome.min.css`. Then use utility classes (`cia-flex`, `cia-p-md`) or component classes (`btn btn--primary`, `card`, `alert`).
+Until the package lands on npm + jsDelivr, point at a local copy of `dist/css-is-awesome.min.css`. Then use utility classes (`cia-flex`, `cia-p-md`) or single-class components (`cia-btn-primary`, `cia-card`, `cia-alert`).
 
 ### 2. SCSS with mixin API
 
@@ -25,14 +25,14 @@ npm install css-is-awesome
 ```
 
 ```scss
-@use 'css-is-awesome/scss/mixins' as m;
+@use 'css-is-awesome/scss/components/buttons' as b;
 
 .my-cta {
-  @include m.btn-primary($px: xl, $r: full);
+  @include b.btn(primary, $px: 6, $r: full);
 }
 ```
 
-50+ atomic mixins — `btn-base`, `card-base`, `input-base`, `check-base`, `switch-base`, `tab-item`, `badge-base`, `alert-base`, `modal-base`, `tooltip-base`, `dropdown-*`, `nav-*`, `pagination`, `breadcrumb`, `avatar`, and more. Every parameter overridable.
+Author your own class names; the mixin handles the variant. 50+ atomic mixins — `btn(variant)`, `card-base`, `input-base`, `check-base`, `switch-base`, `tab-item`, `badge-base`, `alert-base`, `modal-base`, `tooltip-base`, `dropdown-*`, `nav-*`, `pagination`, `breadcrumb`, `avatar`, and more. Every parameter overridable.
 
 ## Themes
 

@@ -32,7 +32,7 @@ export default function DocsPage() {
 {"\n"}<span className="tok-sel">{"<body>"}</span>
 {"\n"}  <span className="tok-sel">{"<main"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-container"</span><span className="tok-sel">{">"}</span>
 {"\n"}    <span className="tok-sel">{"<h1>"}</span>Hello, sketchbook<span className="tok-sel">{"</h1>"}</span>
-{"\n"}    <span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn cia-btn--primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
+{"\n"}    <span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
 {"\n"}  <span className="tok-sel">{"</main>"}</span>
 {"\n"}<span className="tok-sel">{"</body>"}</span>
 {"\n"}<span className="tok-sel">{"</html>"}</span></Example.Code>
@@ -60,12 +60,12 @@ export default function DocsPage() {
             single markup change.
           </Card>
         </Example.Preview>
-        <Example.Code><span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn cia-btn--primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
-{"\n"}<span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn cia-btn--outline"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Read the docs<span className="tok-sel">{"</a>"}</span>
+        <Example.Code><span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
+{"\n"}<span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-outline"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Read the docs<span className="tok-sel">{"</a>"}</span>
 {"\n"}
 {"\n"}<span className="tok-sel">{"<article"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-card"</span><span className="tok-sel">{">"}</span>
-{"\n"}  <span className="tok-sel">{"<h4"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-card__title"</span><span className="tok-sel">{">"}</span>Warm paper, sumi ink<span className="tok-sel">{"</h4>"}</span>
-{"\n"}  <span className="tok-sel">{"<p"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-card__body"</span><span className="tok-sel">{">"}</span>The card inherits its paper colour, border and serif title from the active theme.<span className="tok-sel">{"</p>"}</span>
+{"\n"}  <span className="tok-sel">{"<h4"}</span><span className="tok-sel">{">"}</span>Warm paper, sumi ink<span className="tok-sel">{"</h4>"}</span>
+{"\n"}  <span className="tok-sel">{"<p"}</span><span className="tok-sel">{">"}</span>The card inherits its paper colour, border and serif title from the active theme.<span className="tok-sel">{"</p>"}</span>
 {"\n"}<span className="tok-sel">{"</article>"}</span></Example.Code>
       </Example>
 

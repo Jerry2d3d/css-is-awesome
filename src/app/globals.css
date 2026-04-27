@@ -289,18 +289,18 @@ hr,
 }
 .btn:hover { background: var(--ink); color: var(--paper); }
 .btn:focus-visible { outline: 2px solid var(--ai); outline-offset: 3px; }
-.btn--primary {
+.btn-primary {
   background: var(--ink);
   color: var(--paper);
 }
-.btn--primary:hover { background: var(--ai-ink); border-color: var(--ai-ink); }
-.btn--outline { background: transparent; }
-.btn--ghost {
+.btn-primary:hover { background: var(--ai-ink); border-color: var(--ai-ink); }
+.btn-outline { background: transparent; }
+.btn-ghost {
   border-color: transparent;
   color: var(--ink-soft);
   background: transparent;
 }
-.btn--ghost:hover { color: var(--ink); background: var(--paper-sunk); border-color: transparent; }
+.btn-ghost:hover { color: var(--ink); background: var(--paper-sunk); border-color: transparent; }
 
 /* ============================================================
    CARDS (shared demo component)

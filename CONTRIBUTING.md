@@ -214,7 +214,7 @@ ESLint and Stylelint do most of the work. Run `npm run lint:fix` and `npm run li
 | ---------------- | ------------------------------------------------------------------- |
 | Utility classes  | Always prefixed `cia-` (e.g. `cia-flex`, `cia-p-md`)                |
 | Component CSS Modules | Local class names are camelCase (`.primary`, not `.btn-primary`) |
-| Global library classes | Published BEM where it ships as global CSS (`btn btn--primary`) |
+| Global library classes | Single-class, no BEM. `cia-btn-primary` (one class, fully styled). Variants are mixin args — `@include btn(primary)` — not `--modifier` suffixes |
 | Tokens           | Snake-kebab custom properties (`--paper-raised`, `--ink-soft`)       |
 | Mixin params     | Leading `$`, short names with theme-sourced defaults                 |
 | Typescript       | No `any`, exhaustive prop unions, named exports from each component |

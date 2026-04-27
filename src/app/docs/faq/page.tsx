@@ -77,13 +77,13 @@ export default function FaqPage() {
         classes in HTML.
       </p>
       <Example>
-        <Example.Code><span className="tok-com">{"/* mixin-first (recommended) */"}</span>
+        <Example.Code><span className="tok-com">{"/* mixin-first (recommended) — author your own class, variant is a mixin arg */"}</span>
 {"\n"}<span className="tok-sel">.save-btn</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.button(primary)</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary)</span>;
 {"\n"}{"}"}
 {"\n"}
 {"\n"}<span className="tok-com">{"<!-- utilities exist as escape hatches, not the default -->"}</span>
-{"\n"}<span className="tok-sel">{"<button"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn cia-btn--primary"</span><span className="tok-sel">{">"}</span>Save<span className="tok-sel">{"</button>"}</span></Example.Code>
+{"\n"}<span className="tok-sel">{"<button"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span><span className="tok-sel">{">"}</span>Save<span className="tok-sel">{"</button>"}</span></Example.Code>
       </Example>
       <p>
         The <code>.cia-*</code> utility classes exist as escape hatches

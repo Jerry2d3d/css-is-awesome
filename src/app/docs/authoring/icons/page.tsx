@@ -177,7 +177,7 @@ export default function DocsAuthoringIconsPage() {
         </Example.Preview>
         <Example.Code><span className="tok-com">{"// The SVG stroke is currentColor, so it inherits the button's ink."}</span>
 {"\n"}<span className="tok-com">{"// Re-skin via the theme picker — the icon re-colors on the same frame."}</span>
-{"\n"}<span className="tok-sel">{"<button"}</span> <span className="tok-prop">class</span>=<span className="tok-val">&quot;cia-btn cia-btn--primary&quot;</span><span className="tok-sel">{">"}</span>
+{"\n"}<span className="tok-sel">{"<button"}</span> <span className="tok-prop">class</span>=<span className="tok-val">&quot;cia-btn-primary&quot;</span><span className="tok-sel">{">"}</span>
 {"\n"}  <span className="tok-sel">{"<span"}</span> <span className="tok-prop">aria-hidden</span>=<span className="tok-val">&quot;true&quot;</span><span className="tok-sel">{">"}</span>
 {"\n"}    <span className="tok-sel">{"<svg"}</span> <span className="tok-prop">viewBox</span>=<span className="tok-val">&quot;0 0 24 24&quot;</span> <span className="tok-prop">fill</span>=<span className="tok-val">&quot;none&quot;</span> <span className="tok-prop">stroke</span>=<span className="tok-val">&quot;currentColor&quot;</span>
 {"\n"}         <span className="tok-prop">stroke-width</span>=<span className="tok-val">&quot;1.8&quot;</span> <span className="tok-prop">width</span>=<span className="tok-val">&quot;16&quot;</span> <span className="tok-prop">height</span>=<span className="tok-val">&quot;16&quot;</span><span className="tok-sel">{">"}</span>

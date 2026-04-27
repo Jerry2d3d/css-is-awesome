@@ -59,7 +59,7 @@ export default function ThemeTile({
         <Button variant="primary" onClick={applyTheme}>
           Preview
         </Button>
-        <a className="btn btn--ghost" href={href} download>
+        <a className="btn btn-ghost" href={href} download>
           Download
         </a>
       </div>

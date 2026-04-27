@@ -140,7 +140,7 @@ export default function DocsMixinsPage() {
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">flex-between</span>;
 {"\n"}
-{"\n"}<span className="tok-sel">.card__header</span> {"{"}
+{"\n"}<span className="tok-sel">.toolbar</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex-between</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
@@ -382,7 +382,7 @@ export default function DocsMixinsPage() {
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">truncate</span>(<span className="tok-val">$lines: 1</span>);
 {"\n"}
-{"\n"}<span className="tok-sel">.card__desc</span> {"{"}
+{"\n"}<span className="tok-sel">.headline</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.truncate(2)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
@@ -596,14 +596,13 @@ export default function DocsMixinsPage() {
           <Button variant="ghost" href="#">Ghost</Button>
         </Example.Preview>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">btn-base</span>(<span className="tok-val">$py: 1, $px: 4, $r: md, $font-weight: medium, $font-size: null</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-primary</span>(<span className="tok-val">$bg, $bg-hover, $bg-active, $color, $py, $px, $r, $font-size</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-secondary</span>(<span className="tok-val">...</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-outline</span>(<span className="tok-val">...</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-ghost</span>(<span className="tok-val">...</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn</span>(<span className="tok-val">$variant, $bg, $bg-hover, $bg-active, $color, $border, $args...</span>);
+{"\n"}<span className="tok-com">{"// $variant: primary | secondary | outline | ghost | info | success | warning | error | disabled"}</span>
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-icon</span>(<span className="tok-val">$size: 2.5rem, $r: md</span>);
 {"\n"}
-{"\n"}<span className="tok-sel">.cia-btn--primary</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn-primary</span>; {"}"}
-{"\n"}<span className="tok-sel">.cia-btn--outline</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn-outline</span>; {"}"}</Example.Code>
+{"\n"}<span className="tok-com">{"// Author your own class — variant is a mixin arg, not a --modifier suffix"}</span>
+{"\n"}<span className="tok-sel">.hero-cta</span>      {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary)</span>; {"}"}
+{"\n"}<span className="tok-sel">.checkout-cancel</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn(outline)</span>; {"}"}</Example.Code>
       </Example>
 
       <h3 id="data-mixins">Data display — cards, lists, tables, avatars</h3>
