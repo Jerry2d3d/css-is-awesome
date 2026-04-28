@@ -13,11 +13,11 @@ One CSS file. Six voices. Swap the file, the whole site reskins. Built to be sma
 ### 1. Drop-in CSS (zero build)
 
 ```html
-<!-- coming soon — see Phase 5 in ROADMAP.md -->
-<link rel="stylesheet" href="path/to/css-is-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/public/theme.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/dist/css-is-awesome.min.css">
 ```
 
-Until the package lands on npm + jsDelivr, point at a local copy of `dist/css-is-awesome.min.css`. Then use utility classes (`cia-flex`, `cia-p-md`) or single-class components (`cia-btn-primary`, `cia-card`, `cia-alert`).
+jsDelivr auto-mirrors npm. Theme stylesheet first (it sets the tokens), library second. Then use utility classes (`cia-flex`, `cia-p-md`) or single-class components (`cia-btn-primary`, `cia-card`, `cia-alert`). For Subresource Integrity hashes see [`/docs/install#cdn-sri`](./src/app/docs/install/page.tsx).
 
 ### 2. SCSS with mixin API
 
