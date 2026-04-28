@@ -11,11 +11,28 @@ automated releases.
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-04-25
+### Added — Documentation
 
-First public release. The library, its docs, the theme system, the React
-component layer, the test pipeline, and the release/CDN automation all
-land together — designed as one system, shipped as one cake.
+- [`THREE-TIERS.md`](./THREE-TIERS.md) — top-level doc for the canonical
+  three-tier authoring story (drop-in classes, SCSS mixins, bare tags),
+  same-button-three-ways demo, router architecture, and a picking-a-tier
+  table.
+- New docs route `/docs/three-tiers` dogfoods the same story with live
+  Button previews next to each tier's code. Sidebar nav: "Three tiers"
+  sits between Introduction and Install under Getting started.
+
+### Changed — Documentation
+
+- README "Two ways to use it" → "Three ways to use it" with a Tier 3
+  bare-tags section and a link to `THREE-TIERS.md`.
+
+## [0.6.0] - 2026-04-25
+
+First public release — the npm + CDN cut. The library, its docs, the
+theme system, the React component layer, the test pipeline, and the
+release/CDN automation all land together — designed as one system,
+shipped as one cake. v1.0.0 is reserved for after the CDN smoke is
+verified live and the API has stabilised in production usage.
 
 ### Added — Library
 

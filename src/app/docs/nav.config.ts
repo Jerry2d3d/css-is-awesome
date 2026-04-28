@@ -6,6 +6,7 @@ export const docsNav: DocsNavSection[] = [
     title: "Getting started",
     items: [
       { label: "Introduction", href: "/docs" },
+      { label: "Three tiers", href: "/docs/three-tiers" },
       { label: "Install", href: "/docs/install" },
     ],
   },

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LaunchGate from "@/components/LaunchGate";
+import { asset } from "@/lib/asset";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export default function RootLayout({
         {/* React 19 hoists <link rel="stylesheet"> with precedence into <head>
             for us — no raw <head> children, no hydration mismatch.
             theme.css holds all six themes as [data-theme="..."] blocks. */}
-        <link rel="stylesheet" precedence="default" href="/theme.css" />
+        <link rel="stylesheet" precedence="default" href={asset("/theme.css")} />
         <LaunchGate>{children}</LaunchGate>
       </body>
     </html>

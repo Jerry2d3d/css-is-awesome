@@ -44,6 +44,61 @@ export default function DocsMixinsPage() {
         omitted.
       </p>
 
+      <h2 id="bare-tag-recipe">Bare-tag styling (opt-in)</h2>
+      <p>
+        By default the library does not touch bare HTML — drop the CSS and
+        you get tokens, utilities and React components, but raw{" "}
+        <code>&lt;button&gt;</code>, <code>&lt;table&gt;</code> and{" "}
+        <code>&lt;h1&gt;</code> stay browser-default. That keeps the library
+        non-invasive: dropping it into an existing project never silently
+        restyles your nav links or third-party components.
+      </p>
+      <p>
+        If you want a Pico-style &quot;drop-in and it looks decent&quot;
+        experience, add the bare-tags recipe in <strong>one line</strong> at
+        the top of your app&apos;s SCSS entry:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-com">{"// your-app.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/recipes/bare-tags'</span>;
+{"\n"}
+{"\n"}<span className="tok-com">{"// done — h1-h6, p, code, pre, hr, ul, ol, table,"}</span>
+{"\n"}<span className="tok-com">{"// button, input, select, textarea, label, details"}</span>
+{"\n"}<span className="tok-com">{"// all styled with the active theme."}</span></Example.Code>
+      </Example>
+      <p>
+        The recipe uses normal selectors (specificity <code>0,0,1</code>) — no{" "}
+        <code>@layer</code> or <code>:where()</code> machinery. Override
+        anything with any class-based selector and it wins automatically:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">.checkout</span> <span className="tok-prop">button</span> {"{"}
+{"\n"}  <span className="tok-prop">background</span>: <span className="tok-val">gold</span>; <span className="tok-com">{"// (0,1,1) > (0,0,1) — wins"}</span>
+{"\n"}{"}"}</Example.Code>
+      </Example>
+      <p>
+        <strong>Heads up:</strong> bare-tag styling is global. If you mount
+        third-party React components that render their own{" "}
+        <code>&lt;button&gt;</code> internally (Radix, react-select,
+        react-datepicker, cmdk), they will inherit these rules. Either skip
+        the recipe and write your own scoped wrappers, or copy the recipe
+        contents into a <code>.cia-prose</code> wrapper in your own SCSS to
+        scope it.
+      </p>
+      <p>
+        Prefer to roll your own? The recipe is just one-line includes per
+        tag — copy the file or write your own:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/mixins'</span> <span className="tok-sel">as</span> <span className="tok-prop">m</span>;
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/components/buttons'</span> <span className="tok-sel">as</span> <span className="tok-prop">b</span>;
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/components/data'</span> <span className="tok-sel">as</span> <span className="tok-prop">d</span>;
+{"\n"}
+{"\n"}<span className="tok-prop">button</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary)</span>; {"}"}
+{"\n"}<span className="tok-prop">table</span>  {"{"} <span className="tok-prop">@include</span> <span className="tok-val">d.table-base</span>; {"}"}
+{"\n"}<span className="tok-prop">h1</span>     {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.type(heading-1)</span>; {"}"}</Example.Code>
+      </Example>
+
       <h2 id="layout">Layout</h2>
       <p>
         Layout mixins cover flex helpers, responsive grids, page-level
@@ -85,7 +140,7 @@ export default function DocsMixinsPage() {
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">flex-between</span>;
 {"\n"}
-{"\n"}<span className="tok-sel">.card__header</span> {"{"}
+{"\n"}<span className="tok-sel">.toolbar</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex-between</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
@@ -327,7 +382,7 @@ export default function DocsMixinsPage() {
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">truncate</span>(<span className="tok-val">$lines: 1</span>);
 {"\n"}
-{"\n"}<span className="tok-sel">.card__desc</span> {"{"}
+{"\n"}<span className="tok-sel">.headline</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.truncate(2)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
@@ -520,7 +575,7 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">fa-spin</span>(<span className="tok-val">$name, $size, $style</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">:root</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.fa-load</span>; {"}"}
-{"\n"}<span className="tok-sel">.icon--check</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.fa-icon(check)</span>; {"}"}</Example.Code>
+{"\n"}<span className="tok-sel">.icon-check</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.fa-icon(check)</span>; {"}"}</Example.Code>
       </Example>
 
       <h2 id="components">Component mixins</h2>
@@ -541,14 +596,13 @@ export default function DocsMixinsPage() {
           <Button variant="ghost" href="#">Ghost</Button>
         </Example.Preview>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">btn-base</span>(<span className="tok-val">$py: 1, $px: 4, $r: md, $font-weight: medium, $font-size: null</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-primary</span>(<span className="tok-val">$bg, $bg-hover, $bg-active, $color, $py, $px, $r, $font-size</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-secondary</span>(<span className="tok-val">...</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-outline</span>(<span className="tok-val">...</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-ghost</span>(<span className="tok-val">...</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn</span>(<span className="tok-val">$variant, $bg, $bg-hover, $bg-active, $color, $border, $args...</span>);
+{"\n"}<span className="tok-com">{"// $variant: primary | secondary | outline | ghost | info | success | warning | error | disabled"}</span>
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">btn-icon</span>(<span className="tok-val">$size: 2.5rem, $r: md</span>);
 {"\n"}
-{"\n"}<span className="tok-sel">.cia-btn--primary</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn-primary</span>; {"}"}
-{"\n"}<span className="tok-sel">.cia-btn--outline</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn-outline</span>; {"}"}</Example.Code>
+{"\n"}<span className="tok-com">{"// Author your own class — variant is a mixin arg, not a --modifier suffix"}</span>
+{"\n"}<span className="tok-sel">.hero-cta</span>      {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary)</span>; {"}"}
+{"\n"}<span className="tok-sel">.checkout-cancel</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">b.btn(outline)</span>; {"}"}</Example.Code>
       </Example>
 
       <h3 id="data-mixins">Data display — cards, lists, tables, avatars</h3>

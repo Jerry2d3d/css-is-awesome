@@ -1,0 +1,89 @@
+# GitHub Pages deploy — publishes the static-exported docs site to
+# https://<user>.github.io/css-is-awesome/.
+#
+# Trigger: runs after the CI workflow succeeds on a push to `main`.
+# CI must be green before we deploy (gated on workflow_run.conclusion).
+#
+# Repo setup (one-time):
+#   Settings -> Pages -> Source: "GitHub Actions"
+#
+# Build flag: NEXT_BASE_PATH=/css-is-awesome ensures Next.js prefixes
+# every internal href + asset URL so routes resolve under the repo
+# subpath. For a custom domain, drop the env var and add a CNAME file
+# to public/ (Next.js copies public/* into out/ automatically).
+
+name: Deploy docs to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build static export
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Only run if CI succeeded on a push to main. workflow_dispatch has
+    # no associated workflow_run, so allow it through unconditionally.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build library CSS bundles
+        run: npm run build:css:all
+
+      - name: Build docs site (static export)
+        env:
+          NEXT_BASE_PATH: /css-is-awesome
+        run: npm run build
+
+      - name: Add .nojekyll
+        # Stops GitHub Pages' Jekyll preprocessor from ignoring _next/.
+        run: touch out/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

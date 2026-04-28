@@ -35,7 +35,12 @@
 //   $theme-fa-path          — URL where FA woff2 files live. Default:
 //                             '/webfonts'.
 //   $theme-fa-style         — default FA family (solid|regular|light|
-//                             thin|brands). Default: solid.
+//                             thin|brands|duotone). Default: solid.
+//   $theme-fa-pro           — flip to `true` if you've licensed Font
+//                             Awesome 6 Pro. Adds Light / Thin / Duotone
+//                             to fa-load and switches Solid / Regular to
+//                             the "Font Awesome 6 Pro" family. Default:
+//                             false (Free).
 //   $theme-icon-fa-map      — map of semantic-name → FA unicode codepoint.
 //
 // ----------------------------------------------------------------------------
@@ -199,38 +204,77 @@
 // FONT AWESOME ICONS
 // ============================================================================
 // Opt-in. Only use if your project is already on Font Awesome.
-// Configure $theme-fa-path and $theme-icon-fa-map in scss/theme/_icons.scss.
+// Configure $theme-fa-path, $theme-icon-fa-map, and (for licensed users)
+// $theme-fa-pro in scss/theme/_icons.scss.
 // ============================================================================
 
 // FA family config — maps a style name to (font-family, font-weight).
-// Extend here if you self-host additional FA families (duotone, sharp, etc).
-$_fa-styles: (
+// Two maps: Free ships Solid + Regular + Brands; Pro adds Light + Thin +
+// Duotone and renames Solid/Regular to the "Font Awesome 6 Pro" family.
+// $_fa-styles is selected based on t.$theme-fa-pro.
+$_fa-styles-free: (
   solid:   ('Font Awesome 6 Free', 900),
   regular: ('Font Awesome 6 Free', 400),
-  light:   ('Font Awesome 6 Pro', 300),
-  thin:    ('Font Awesome 6 Pro', 100),
   brands:  ('Font Awesome 6 Brands', 400),
 );
 
+$_fa-styles-pro: (
+  solid:   ('Font Awesome 6 Pro', 900),
+  regular: ('Font Awesome 6 Pro', 400),
+  light:   ('Font Awesome 6 Pro', 300),
+  thin:    ('Font Awesome 6 Pro', 100),
+  brands:  ('Font Awesome 6 Brands', 400),
+  duotone: ('Font Awesome 6 Duotone', 900),
+);
+
+@function _fa-styles($pro) {
+  @if $pro { @return $_fa-styles-pro; }
+  @return $_fa-styles-free;
+}
+
+@function _fa-family($pro) {
+  @if $pro { @return 'Font Awesome 6 Pro'; }
+  @return 'Font Awesome 6 Free';
+}
+
+$_fa-styles: _fa-styles(t.$theme-fa-pro);
+
 // ----------------------------------------------------------------------------
-// @mixin fa-load
-// Emits @font-face rules for self-hosted Font Awesome 6 Free + Brands.
+// @mixin fa-load($pro)
+// Emits @font-face rules for self-hosted Font Awesome 6.
 // Call this exactly once (e.g. in main.scss) if you ship FA woff2 files.
 // Skip this mixin entirely if you load FA via their CDN/kit.
 //
-// Example:
-//   @include m.fa-load;  // drop into main.scss if self-hosting
+// Free (default):  Solid + Regular + Brands.
+// Pro:             also Light + Thin + Duotone, with Solid / Regular
+//                  switched to the "Font Awesome 6 Pro" family.
+//
+// To turn Pro on, set the global flag once and `fa-load` plus `fa()` both
+// follow:
+//
+//   @use 'css-is-awesome/scss/theme/icons' with ($fa-pro: true);
+//   @use 'css-is-awesome/scss/main';
+//   :root { @include m.fa-load; }
+//
+// The $pro parameter here is an escape hatch — useful if you only want to
+// flip the @font-face emission (e.g. hybrid setups). Most projects should
+// set the global so fa-load and fa() agree on the family map.
+//
+// Drop the woff2 files for the weights you ship at $theme-fa-path; missing
+// files won't error, they just won't render until you add them.
 // ----------------------------------------------------------------------------
-@mixin fa-load {
+@mixin fa-load($pro: t.$theme-fa-pro) {
+  $family: _fa-family($pro);
+
   @font-face {
-    font-family: 'Font Awesome 6 Free';
+    font-family: $family;
     font-style: normal;
     font-weight: 400;
     font-display: block;
     src: url('#{t.$theme-fa-path}/fa-regular-400.woff2') format('woff2');
   }
   @font-face {
-    font-family: 'Font Awesome 6 Free';
+    font-family: $family;
     font-style: normal;
     font-weight: 900;
     font-display: block;
@@ -242,6 +286,30 @@ $_fa-styles: (
     font-weight: 400;
     font-display: block;
     src: url('#{t.$theme-fa-path}/fa-brands-400.woff2') format('woff2');
+  }
+
+  @if $pro {
+    @font-face {
+      font-family: 'Font Awesome 6 Pro';
+      font-style: normal;
+      font-weight: 300;
+      font-display: block;
+      src: url('#{t.$theme-fa-path}/fa-light-300.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Font Awesome 6 Pro';
+      font-style: normal;
+      font-weight: 100;
+      font-display: block;
+      src: url('#{t.$theme-fa-path}/fa-thin-100.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Font Awesome 6 Duotone';
+      font-style: normal;
+      font-weight: 900;
+      font-display: block;
+      src: url('#{t.$theme-fa-path}/fa-duotone-900.woff2') format('woff2');
+    }
   }
 }
 

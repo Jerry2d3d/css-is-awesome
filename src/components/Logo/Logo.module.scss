@@ -2,7 +2,7 @@
    Logo component — CSS Module (scoped, camelCase classes).
    Big "CSS IS AWESOME" meme logo on a sketchbook stage with
    construction-lines SVG and caption. Mirrors the global
-   .logo-stage / .logo / .overflow / .logo-stage__caption
+   .logo-stage / .logo / .overflow / .logo-stage-caption
    rules in globals.css, but scoped and built from library mixins.
    ============================================================ */
 @use 'mixins' as m;

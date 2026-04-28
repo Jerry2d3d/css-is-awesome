@@ -1,10 +1,18 @@
 {
   "name": "css-is-awesome",
-  "version": "1.0.0",
+  "version": "0.6.0",
   "description": "A token-driven SCSS design system with light/dark theming, semantic color tokens, and a 800+ LOC mixin API.",
+  "homepage": "https://github.com/Jerry2d3d/css-is-awesome#readme",
+  "bugs": {
+    "url": "https://github.com/Jerry2d3d/css-is-awesome/issues"
+  },
   "main": "dist/css-is-awesome.css",
   "style": "dist/css-is-awesome.css",
   "sass": "scss/main.scss",
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
   "exports": {
     ".": {
       "sass": "./scss/main.scss",
@@ -12,10 +20,28 @@
       "default": "./dist/css-is-awesome.css"
     },
     "./core": "./dist/css-is-awesome.core.css",
+    "./core.css": "./dist/css-is-awesome.core.css",
     "./utilities": "./dist/css-is-awesome.utilities.css",
+    "./utilities.css": "./dist/css-is-awesome.utilities.css",
     "./min": "./dist/css-is-awesome.min.css",
+    "./min.css": "./dist/css-is-awesome.min.css",
+    "./scss": "./scss/main.scss",
+    "./scss/main": "./scss/main.scss",
+    "./scss/mixins": "./scss/_mixins.scss",
+    "./scss/generator": "./scss/_generator.scss",
+    "./scss/utilities": "./scss/_utilities.scss",
+    "./scss/animations": "./scss/_animations.scss",
+    "./scss/icons": "./scss/_icons.scss",
+    "./scss/layout": "./scss/_layout.scss",
+    "./scss/system": "./scss/_system.scss",
+    "./scss/theme": "./scss/theme/_index.scss",
+    "./scss/theme/*": "./scss/theme/_*.scss",
+    "./scss/components": "./scss/components/_index.scss",
+    "./scss/components/*": "./scss/components/_*.scss",
+    "./scss/recipes/*": "./scss/recipes/_*.scss",
     "./scss/*": "./scss/*.scss",
     "./theme": "./public/theme.css",
+    "./theme.css": "./public/theme.css",
     "./themes/*": "./public/themes/*/theme.css",
     "./figma-tokens": "./figma-tokens/tokens.json",
     "./figma-tokens/*": "./figma-tokens/*",

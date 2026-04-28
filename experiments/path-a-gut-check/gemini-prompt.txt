@@ -1,0 +1,43 @@
+You are a senior web designer with 20 years of experience. Real-talk feedback only — no diplomatic hedging.
+
+CONTEXT: A solo developer is building a CSS/SCSS design system called 'css-is-awesome'. The original vision he sold himself on:
+
+- Drop in a single CSS file + a theme file
+- Site immediately looks decent
+- No required classes for common HTML
+- Optionally use SCSS mixins for custom components
+- Three tiers of consumption: (1) drop-in CSS, (2) React component layer, (3) SCSS mixin layer
+
+System is at v1.0. Has 120+ mixins, 123-token contract, 6 themes. Components use CSS Modules. Public utility classes use a 'cia-' prefix.
+
+THE QUESTION ON THE TABLE: Should he add a "bare-tag styling" layer using cascade layers + :where()? Implementation:
+
+@layer reset, base, components, utilities, overrides;
+
+@layer base {
+  :where(button) { /* btn-base mixin: padding, radius, focus-ring */ }
+  :where(button[data-variant=outline]) { /* outline variant */ }
+  :where(table) { /* table-base */ }
+  :where(h1)..:where(h6) { /* typography scale */ }
+  :where(p), :where(blockquote), :where(code), :where(pre), :where(hr),
+  :where(input), :where(select), :where(textarea) { /* etc */ }
+}
+
+CONSUMER EXPERIENCE WITH IT:
+- Writes <button>Save</button> → gets styled button, no class
+- Writes <button data-variant=outline>Cancel</button> → outline variant
+- Writes their own .checkout button { background: gold } → wins automatically (zero-spec :where() loses to anything)
+- Third-party React libs (Radix, react-select) → their styles win automatically
+- CSS Modules → win automatically
+- Override fights → impossible
+
+TRADE-OFF: The @layer + :where() machinery is internal SCSS. Consumers never write those keywords. But it IS new internal complexity. The original pitch was "easy and simple."
+
+QUESTION: From a 20-year WEB DESIGNER perspective (not dev), give your honest take.
+
+1. Does this serve the "drop-in-and-it-looks-decent" promise, or contradict it?
+2. From an authoring experience POV — designer sitting in front of HTML — what actually changes day-to-day?
+3. Does this push the system from "lite token library" toward "opinionated framework" (Pico.css territory)? Is that the right move?
+4. Ship it or skip it?
+
+Under 250 words. No diplomatic hedging. If it's a bad idea say so.

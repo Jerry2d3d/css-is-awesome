@@ -11,14 +11,14 @@ export default function Home() {
 
       <main className={styles.landing}>
         <div className={styles.inner}>
+          <Logo />
+
           <div className={styles.wordmark}>
             <h1 className={styles.display}>CSS is <em>Awesome</em></h1>
             <div className={styles.sub}>
               <span>— a tiny design system —</span>
             </div>
           </div>
-
-          <Logo />
 
           <nav className={styles.mainNav} aria-label="Primary">
             <Link href="/" className={styles.isActive}>Home</Link>

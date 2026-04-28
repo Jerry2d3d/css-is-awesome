@@ -114,7 +114,7 @@ export default function DocsA11yPage() {
             <span className="cia-sr-only">Close dialog</span>
           </Button>
         </Example.Preview>
-        <Example.Code><span className="tok-sel">{"<button"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn cia-btn--ghost"</span><span className="tok-sel">{">"}</span>
+        <Example.Code><span className="tok-sel">{"<button"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-ghost"</span><span className="tok-sel">{">"}</span>
 {"\n"}  <span className="tok-sel">{"<span"}</span> <span className="tok-prop">aria-hidden</span>=<span className="tok-val">"true"</span><span className="tok-sel">{">"}</span>×<span className="tok-sel">{"</span>"}</span>
 {"\n"}  <span className="tok-sel">{"<span"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-sr-only"</span><span className="tok-sel">{">"}</span>Close dialog<span className="tok-sel">{"</span>"}</span>
 {"\n"}<span className="tok-sel">{"</button>"}</span></Example.Code>
