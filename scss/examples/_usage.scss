@@ -141,49 +141,51 @@
   &:hover { background: m.color(interactive-hover); }
 }
 
-// Alert with FA icon
+// Alert with FA icon — single-class router pattern (no BEM modifiers).
+// Variant lives in the class name, not as a `--modifier`. The base mixin
+// stays a base; status-specific styling is its own standalone class.
 .alert {
   @include m.card-base($p: sm);
   @include m.inline(sm);
-  
-  &--info {
-    background: m.color(info-subtle);
-    @include m.border(3px, solid, info-default, left);
-    
-    &::before {
-      @include i.fa(info, solid, 1.25em);
-      color: m.color(info-default);
-    }
+}
+
+.alert-info {
+  background: m.color(info-subtle);
+  @include m.border(3px, solid, info-default, left);
+
+  &::before {
+    @include i.fa(info, solid, 1.25em);
+    color: m.color(info-default);
   }
-  
-  &--success {
-    background: m.color(success-subtle);
-    @include m.border(3px, solid, success-default, left);
-    
-    &::before {
-      @include i.fa(check, solid, 1.25em);
-      color: m.color(success-default);
-    }
+}
+
+.alert-success {
+  background: m.color(success-subtle);
+  @include m.border(3px, solid, success-default, left);
+
+  &::before {
+    @include i.fa(check, solid, 1.25em);
+    color: m.color(success-default);
   }
-  
-  &--warning {
-    background: m.color(warning-subtle);
-    @include m.border(3px, solid, warning-default, left);
-    
-    &::before {
-      @include i.fa(warning, solid, 1.25em);
-      color: m.color(warning-default);
-    }
+}
+
+.alert-warning {
+  background: m.color(warning-subtle);
+  @include m.border(3px, solid, warning-default, left);
+
+  &::before {
+    @include i.fa(warning, solid, 1.25em);
+    color: m.color(warning-default);
   }
-  
-  &--error {
-    background: m.color(error-subtle);
-    @include m.border(3px, solid, error-default, left);
-    
-    &::before {
-      @include i.fa(error, solid, 1.25em);
-      color: m.color(error-default);
-    }
+}
+
+.alert-error {
+  background: m.color(error-subtle);
+  @include m.border(3px, solid, error-default, left);
+
+  &::before {
+    @include i.fa(error, solid, 1.25em);
+    color: m.color(error-default);
   }
 }
 
@@ -208,24 +210,25 @@
   }
 }
 
-// Navbar with icons
+// Navbar with icons — single-class child elements, not BEM `__element`.
+// Author-side code names its own classes (`navbar-logo`, `navbar-menu-btn`).
 .navbar {
   @include m.flex-between;
   @include m.inset-y(sm);
   @include m.inset-x(md);
   @include m.border(1px, solid, border-default, bottom);
-  
-  &__logo {
-    @include i.svg-bg(logo, 32px);
-  }
-  
-  &__menu-btn {
-    @include m.button-reset;
-    @include i.svg(menu, 24px);
-    
-    @include m.tablet {
-      display: none;
-    }
+}
+
+.navbar-logo {
+  @include i.svg-bg(logo, 32px);
+}
+
+.navbar-menu-btn {
+  @include m.button-reset;
+  @include i.svg(menu, 24px);
+
+  @include m.tablet {
+    display: none;
   }
 }
 

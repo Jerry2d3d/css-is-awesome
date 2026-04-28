@@ -1,7 +1,7 @@
 /* ============================================================
    LogoMark component — CSS Module (scoped).
    Small 3-row logo mark used inside SiteHeader's brand link.
-   Mirrors the global .logo--sm rules in globals.css, but scoped
+   Mirrors the global .logo-sm rules in globals.css, but scoped
    and built from library mixins.
    ============================================================ */
 @use 'mixins' as m;
