@@ -75,8 +75,8 @@ p { margin: 0 0 1em; color: var(--ink-soft); }
   letter-spacing: 0;
   line-height: 1;
 }
-.script--lg { font-size: 1.9em; }
-.script--md { font-size: 1.5em; }
+.script-lg { font-size: 1.9em; }
+.script-md { font-size: 1.5em; }
 
 .presents {
   font-family: var(--font-script);
@@ -165,7 +165,7 @@ hr,
 }
 .logo-stage .logo .overflow { margin-left: -0.02em; }
 
-.logo-stage__caption {
+.logo-stage-caption {
   position: absolute;
   bottom: 8px;
   right: 36px;
@@ -177,7 +177,7 @@ hr,
   pointer-events: none;
 }
 
-.logo--sm {
+.logo-sm {
   --logo-size: 32px;
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
@@ -191,7 +191,7 @@ hr,
   overflow: visible;
   background: var(--paper-raised);
 }
-.logo--sm > span { font-size: 7px; display: block; white-space: nowrap; }
+.logo-sm > span { font-size: 7px; display: block; white-space: nowrap; }
 
 /* ============================================================
    DOCS SHELL — shared layout for /docs and /examples
@@ -245,12 +245,12 @@ hr,
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
-.example__preview {
+.example-preview {
   padding: 2rem 1.5rem;
   background: var(--paper-raised);
   border-bottom: 1px solid var(--hair-soft);
 }
-.example__code {
+.example-code {
   margin: 0;
   padding: 1.1rem 1.25rem;
   background: var(--code-bg);

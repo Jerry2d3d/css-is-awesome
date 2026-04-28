@@ -575,7 +575,7 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">fa-spin</span>(<span className="tok-val">$name, $size, $style</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">:root</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.fa-load</span>; {"}"}
-{"\n"}<span className="tok-sel">.icon--check</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.fa-icon(check)</span>; {"}"}</Example.Code>
+{"\n"}<span className="tok-sel">.icon-check</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.fa-icon(check)</span>; {"}"}</Example.Code>
       </Example>
 
       <h2 id="components">Component mixins</h2>
