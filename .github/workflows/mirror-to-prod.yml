@@ -1,0 +1,71 @@
+# Mirror main into prod-css-is-awesome.
+#
+# Trigger: runs after the CI workflow succeeds on a push to `main`.
+# Hostinger's hPanel auto-pulls from prod-css-is-awesome, so this
+# workflow is what makes "push to main" eventually reach
+# https://cssisawesome.com.
+#
+# Conflict policy: public/flags.json is owned by the prod branch
+# (prod-only flag flips like comingSoon and announcements live there,
+# not on main). The .gitattributes file on prod-css-is-awesome maps
+# that path to `merge=ours`; this workflow wires the corresponding
+# merge driver before merging so the prod copy always wins.
+#
+# Other conflicts fail the workflow loudly — manual intervention is
+# the right call there, since the prod branch isn't supposed to drift
+# from main on anything except flags.json.
+
+name: Mirror main → prod-css-is-awesome
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mirror-to-prod
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    name: Merge main into prod-css-is-awesome
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main')
+    steps:
+      - name: Checkout prod-css-is-awesome
+        uses: actions/checkout@v4
+        with:
+          ref: prod-css-is-awesome
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Wire merge=ours driver (for public/flags.json)
+        run: git config merge.ours.driver true
+
+      - name: Merge main
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          MERGE_BASE="$(git merge-base HEAD origin/main || true)"
+          if [ "$(git rev-parse origin/main)" = "$MERGE_BASE" ]; then
+            echo "prod-css-is-awesome already contains origin/main; nothing to mirror."
+            exit 0
+          fi
+          git merge --no-edit origin/main
+
+      - name: Push prod
+        run: git push origin prod-css-is-awesome
