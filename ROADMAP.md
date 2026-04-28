@@ -184,7 +184,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [ ] GitHub Release with bundled zip download (for non-npm users)
 - [ ] `package.json` `exports` field for correct module resolution
 
-**Release:** `v1.0.0` — first production release. SemVer begins.
+**Release:** `v0.6.0` — first npm + CDN cut. SemVer begins; v1.0.0 is reserved for once the CDN smoke is verified live and the API has stabilised in production usage (Phase 6+).
 
 ---
 

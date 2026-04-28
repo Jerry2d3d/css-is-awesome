@@ -26,11 +26,13 @@ automated releases.
 - README "Two ways to use it" → "Three ways to use it" with a Tier 3
   bare-tags section and a link to `THREE-TIERS.md`.
 
-## [1.0.0] - 2026-04-25
+## [0.6.0] - 2026-04-25
 
-First public release. The library, its docs, the theme system, the React
-component layer, the test pipeline, and the release/CDN automation all
-land together — designed as one system, shipped as one cake.
+First public release — the npm + CDN cut. The library, its docs, the
+theme system, the React component layer, the test pipeline, and the
+release/CDN automation all land together — designed as one system,
+shipped as one cake. v1.0.0 is reserved for after the CDN smoke is
+verified live and the API has stabilised in production usage.
 
 ### Added — Library
 
