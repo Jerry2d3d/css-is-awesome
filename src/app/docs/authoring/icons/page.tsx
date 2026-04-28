@@ -238,6 +238,27 @@ export default function DocsAuthoringIconsPage() {
         <code>scss/_icons.scss</code>) for teams already on a Font Awesome
         kit — it is disabled by default.
       </p>
+      <p>
+        FA 6 Free is the default; flip <code>$fa-pro: true</code> in your
+        theme config and <code>fa-load</code> emits Light / Thin / Duotone
+        alongside Solid / Regular / Brands, with the family map switched to{" "}
+        <code>Font Awesome 6 Pro</code> automatically.
+      </p>
+      <Example>
+        <Example.Code><span className="tok-com">{"// app.scss — turn Pro on once, fa-load + fa() both follow"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">&apos;css-is-awesome/scss/theme/icons&apos;</span> <span className="tok-sel">with</span> (<span className="tok-prop">$fa-pro</span>: <span className="tok-val">true</span>);
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">&apos;css-is-awesome/scss/main&apos;</span>;
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">&apos;css-is-awesome/scss/icons&apos;</span> <span className="tok-sel">as</span> <span className="tok-prop">i</span>;
+{"\n"}
+{"\n"}<span className="tok-sel">:root</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">i.fa-load</span>; {"}"}
+{"\n"}<span className="tok-sel">.note::before</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">i.fa(check, light)</span>; {"}"}</Example.Code>
+      </Example>
+      <p>
+        Drop the woff2 files for the weights you ship at{" "}
+        <code>$theme-fa-path</code> (default <code>/webfonts</code>). Missing
+        files don&rsquo;t error — they just don&rsquo;t render until you add
+        them, so you can ramp up to the full Pro set incrementally.
+      </p>
 
       <h2 id="further-reading">Further reading</h2>
       <ul>

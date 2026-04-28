@@ -15,6 +15,14 @@ $icon-svg-alias: (
 $fa-path: '/webfonts' !default;
 $fa-style: solid !default;
 
+// Set to `true` if you've licensed Font Awesome 6 Pro and want the Pro
+// families wired in automatically. When enabled, `fa-load` emits
+// @font-face rules for Light / Thin / Duotone alongside Solid / Regular /
+// Brands, and `fa()` resolves to the Pro family name. Drop the woff2 files
+// for whichever weights you ship at $fa-path — missing files are harmless,
+// they just won't render until you add them.
+$fa-pro: false !default;
+
 $icon-fa-map: (
   // Navigation
   menu:           '\f0c9',
