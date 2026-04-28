@@ -66,7 +66,11 @@ export default function LaunchGate({ children }: { children: ReactNode }) {
           <div className={styles.overlayLogo}>
             <Logo caption="overflow intentional" />
           </div>
-          <h1 className={styles.overlayTitle}>Coming soon</h1>
+          <div className={styles.overlayWordmark}>
+            <h1 className={styles.overlayDisplay}>CSS is <em>Awesome</em></h1>
+            <div className={styles.overlaySub}>— a tiny design system —</div>
+          </div>
+          <h2 className={styles.overlayTitle}>Coming soon</h2>
           <p className={styles.overlayMessage}>
             {flags.comingSoonMessage ??
               "We're putting the finishing touches on css-is-awesome. Back very soon."}
