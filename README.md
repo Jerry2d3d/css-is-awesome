@@ -6,7 +6,9 @@
 
 One CSS file. Six voices. Swap the file, the whole site reskins. Built to be small enough to read in an afternoon.
 
-## Two ways to use it
+## Three ways to use it
+
+> Full breakdown in [THREE-TIERS.md](./THREE-TIERS.md). All three resolve to the same router mixin per component — mix them freely in one app.
 
 ### 1. Drop-in CSS (zero build)
 
@@ -33,6 +35,20 @@ npm install css-is-awesome
 ```
 
 Author your own class names; the mixin handles the variant. 50+ atomic mixins — `btn(variant)`, `card-base`, `input-base`, `check-base`, `switch-base`, `tab-item`, `badge-base`, `alert-base`, `modal-base`, `tooltip-base`, `dropdown-*`, `nav-*`, `pagination`, `breadcrumb`, `avatar`, and more. Every parameter overridable.
+
+### 3. Bare tags (opt-in Pico-mode)
+
+```scss
+@use 'css-is-awesome/scss/recipes/bare-tags';
+```
+
+```html
+<button>Save</button>
+<table>…</table>
+<input type="email">
+```
+
+One line styles the whole site. Zero classes. Any class-based selector you add wins automatically (specificity `0,0,1`, no `:where()` / `@layer`).
 
 ## Themes
 
