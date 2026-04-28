@@ -11,6 +11,21 @@ automated releases.
 
 ## [Unreleased]
 
+### Added — Documentation
+
+- [`THREE-TIERS.md`](./THREE-TIERS.md) — top-level doc for the canonical
+  three-tier authoring story (drop-in classes, SCSS mixins, bare tags),
+  same-button-three-ways demo, router architecture, and a picking-a-tier
+  table.
+- New docs route `/docs/three-tiers` dogfoods the same story with live
+  Button previews next to each tier's code. Sidebar nav: "Three tiers"
+  sits between Introduction and Install under Getting started.
+
+### Changed — Documentation
+
+- README "Two ways to use it" → "Three ways to use it" with a Tier 3
+  bare-tags section and a link to `THREE-TIERS.md`.
+
 ## [1.0.0] - 2026-04-25
 
 First public release. The library, its docs, the theme system, the React
