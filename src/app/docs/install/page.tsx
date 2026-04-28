@@ -1,5 +1,6 @@
 import Example from "@/components/Example";
 import Badge from "@/components/Badge";
+import { asset } from "@/lib/asset";
 
 export default function InstallPage() {
   return (
@@ -118,12 +119,12 @@ export default function InstallPage() {
       <h2 id="download">Download a theme file</h2>
       <p>Every shipped theme is a single <code>theme.css</code> file. Grab one, place it in your project, and link to it. This path also works for any custom theme you self-host — the file is just tokens on <code>:root</code>.</p>
       <ul>
-        <li><a href="/theme.css" download="theme-sketchbook.css">sketchbook</a> &mdash; warm paper, sumi ink, indigo accent</li>
-        <li><a href="/themes/press/theme.css" download>press</a> &mdash; editorial newsprint</li>
-        <li><a href="/themes/graphite/theme.css" download>graphite</a> &mdash; neutral grayscale utility</li>
-        <li><a href="/themes/glass/theme.css" download>glass</a> &mdash; translucent surfaces, soft light</li>
-        <li><a href="/themes/cupertino/theme.css" download>cupertino</a> &mdash; Apple-flavored system look</li>
-        <li><a href="/themes/terminal/theme.css" download>terminal</a> &mdash; monospace green-on-black</li>
+        <li><a href={asset("/theme.css")} download="theme-sketchbook.css">sketchbook</a> &mdash; warm paper, sumi ink, indigo accent</li>
+        <li><a href={asset("/themes/press/theme.css")} download>press</a> &mdash; editorial newsprint</li>
+        <li><a href={asset("/themes/graphite/theme.css")} download>graphite</a> &mdash; neutral grayscale utility</li>
+        <li><a href={asset("/themes/glass/theme.css")} download>glass</a> &mdash; translucent surfaces, soft light</li>
+        <li><a href={asset("/themes/cupertino/theme.css")} download>cupertino</a> &mdash; Apple-flavored system look</li>
+        <li><a href={asset("/themes/terminal/theme.css")} download>terminal</a> &mdash; monospace green-on-black</li>
       </ul>
       <p>Drop the file into your project (for example <code>public/themes/</code> or <code>assets/css/</code>) and reference it with a standard <code>&lt;link&gt;</code>, paired with the compiled library.</p>
       <Example>

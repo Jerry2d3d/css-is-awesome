@@ -3,6 +3,10 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// When deploying to GitHub Pages under <user>.github.io/<repo>/, the workflow
+// sets NEXT_BASE_PATH=/<repo>. Empty in dev / preview / custom-domain builds.
+const basePath = process.env.NEXT_BASE_PATH || "";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Static export so the docs site can deploy to any static host.
@@ -10,6 +14,14 @@ const nextConfig = {
   // so SSG is perfectly compatible.
   output: "export",
   trailingSlash: true,
+  basePath,
+  assetPrefix: basePath || undefined,
+  // Expose basePath to client code so raw <link>/<a> hrefs and fetch()
+  // calls into public/ can prefix themselves. (next/link prefixes routes
+  // automatically, but assets in public/ are user-managed.)
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   images: {
     unoptimized: true,
   },

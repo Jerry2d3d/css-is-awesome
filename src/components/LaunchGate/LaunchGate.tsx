@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import ThemePicker from "@/components/ThemePicker";
+import { asset } from "@/lib/asset";
 import styles from "./LaunchGate.module.scss";
 
 type Flags = {
@@ -25,7 +26,7 @@ export default function LaunchGate({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/flags.json", { cache: "no-cache" })
+    fetch(asset("/flags.json"), { cache: "no-cache" })
       .then((r) => (r.ok ? r.json() : null))
       .then((data: Flags | null) => {
         if (cancelled) return;
