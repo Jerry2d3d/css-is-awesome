@@ -1,0 +1,5 @@
+# Auto-mirror from main into this branch (prod-css-is-awesome) preserves
+# public/flags.json — the prod-only flag flips (comingSoon, announcements)
+# live here, never on main. The "ours" merge driver is wired in the
+# mirror-to-prod GitHub Actions workflow.
+public/flags.json merge=ours
