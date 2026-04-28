@@ -1,0 +1,74 @@
+You are a senior front-end developer with 20 years of experience (jQuery → Backbone → Angular → React → Next 15). Real-talk feedback only — no diplomatic hedging. If something is bad say so.
+
+CONTEXT: A solo developer (Jerry) is building 'css-is-awesome' — a mixin-first SCSS design system. v1.0 has tokens, 6 themes (one-file swap), 120+ mixins, React components with CSS Modules, utility classes (cia- prefix), and as of today an opt-in bare-tags recipe.
+
+He just removed BEM from every doc/example/internal style file. The new canonical authoring story has three tiers, all sharing ONE source of truth (the `btn(variant)` router mixin):
+
+==========================================
+TIER 1 — Drop-in CSS + HTML (no build)
+==========================================
+
+  <link rel="stylesheet" href="css-is-awesome.min.css">
+  <link rel="stylesheet" href="theme-sketchbook.css">
+
+  <a class="cia-btn-primary" href="/start">Get started</a>
+  <a class="cia-btn-outline" href="/docs">Read docs</a>
+  <article class="cia-card">…</article>
+
+Single class per element. No BEM. No two-class chains.
+
+==========================================
+TIER 2 — SCSS mixins + HTML (with build)
+==========================================
+
+  @use 'css-is-awesome/scss/components/buttons' as b;
+  @use 'css-is-awesome/scss/components/data'    as d;
+  @use 'css-is-awesome/scss/mixins'             as m;
+
+  .hero-cta {
+    @include b.btn(primary, $px: 6, $r: full);
+    @include m.elevation(2);
+  }
+  .checkout-cancel { @include b.btn(outline); }
+  .product-card    { @include d.card-base($shadow: 2); }
+
+  <a class="hero-cta">Buy now</a>
+  <article class="product-card">…</article>
+
+Consumer authors their own class names; mixins handle the styling.
+
+==========================================
+TIER 3 — Opt-in bare-tag recipe (no classes)
+==========================================
+
+  // app.scss — ONE line styles the whole site
+  @use 'css-is-awesome/scss/recipes/bare-tags';
+
+  <button>Save</button>
+  <table>…</table>
+  <input type="email">
+
+The recipe uses normal selectors (specificity 0,0,1) — NO @layer, NO :where(). Class-based overrides win automatically.
+
+==========================================
+ARCHITECTURE
+==========================================
+
+  - Single source of truth: one mixin per component (btn, card, input)
+  - btn() is a router with private mixins — variant is an arg, not a class modifier
+  - Tier 1 = router output baked into single utility classes (.cia-btn-primary, .cia-btn-outline, etc.)
+  - Tier 2 = direct router @include in author SCSS
+  - Tier 3 = router @include applied to bare tag selectors via the recipe
+  - React components (4th tier, not asked about) wrap the same mixins
+
+QUESTIONS — answer from a 20-year FRONT-END DEV perspective. Under 250 words. No diplomatic hedging.
+
+1. Is the "one router mixin, three consumption surfaces" architecture genuinely well-designed, or is it just clever-looking?
+2. How does this compare to:
+   - Tailwind v4 (utility-first, no semantic classes)
+   - Bootstrap 5 (BEM-ish, plus utility classes)
+   - Radix/Headless UI + custom CSS Modules
+   For the kind of dev who has to maintain a real product, which one wins?
+3. The bare-tag recipe uses specificity 0,0,1 with no :where()/@layer escape hatches. Is that a footgun, or does the "your override wins" math actually work in practice with React + CSS Modules + third-party libs?
+4. Concrete dev-experience smells you can spot from the snippet?
+5. Verdict: would you put this in a real product, recommend it to a junior, both, or neither?
