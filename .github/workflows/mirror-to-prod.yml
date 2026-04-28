@@ -1,9 +1,11 @@
-# Mirror main into prod-css-is-awesome.
+# Manual gate — promote main to prod-css-is-awesome.
 #
-# Trigger: runs after the CI workflow succeeds on a push to `main`.
-# Hostinger's hPanel auto-pulls from prod-css-is-awesome, so this
-# workflow is what makes "push to main" eventually reach
-# https://cssisawesome.com.
+# Trigger: ONLY runs when you click "Run workflow" in the Actions tab.
+# Pushes to main do NOT auto-mirror to prod anymore. This is the deploy
+# button — click it when you're ready for cssisawesome.com to move.
+#
+# By default the workflow mirrors origin/main. Pass a different ref or
+# SHA via the input box if you want to ship from an earlier point.
 #
 # Conflict policy: public/flags.json is owned by the prod branch
 # (prod-only flag flips like comingSoon and announcements live there,
@@ -15,14 +17,15 @@
 # the right call there, since the prod branch isn't supposed to drift
 # from main on anything except flags.json.
 
-name: Mirror main → prod-css-is-awesome
+name: Promote to prod (manual)
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      ref:
+        description: "Commit SHA, branch, or tag to promote onto prod (default: main)"
+        required: false
+        default: "main"
 
 permissions:
   contents: write
@@ -32,15 +35,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  mirror:
-    name: Merge main into prod-css-is-awesome
+  promote:
+    name: Merge into prod-css-is-awesome
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
-       github.event.workflow_run.head_branch == 'main')
     steps:
       - name: Checkout prod-css-is-awesome
         uses: actions/checkout@v4
@@ -56,16 +54,33 @@ jobs:
       - name: Wire merge=ours driver (for public/flags.json)
         run: git config merge.ours.driver true
 
-      - name: Merge main
+      - name: Resolve ref + show what's about to ship
+        id: target
         run: |
           set -euo pipefail
-          git fetch origin main
-          MERGE_BASE="$(git merge-base HEAD origin/main || true)"
-          if [ "$(git rev-parse origin/main)" = "$MERGE_BASE" ]; then
-            echo "prod-css-is-awesome already contains origin/main; nothing to mirror."
+          REF="${{ inputs.ref }}"
+          git fetch origin "$REF" --tags
+          # Prefer the remote ref shape (origin/<branch>); fall back to raw ref/SHA.
+          if git rev-parse --verify --quiet "origin/$REF" >/dev/null; then
+            TARGET="origin/$REF"
+          else
+            TARGET="$REF"
+          fi
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "Promoting $TARGET onto prod-css-is-awesome:"
+          echo "----"
+          git log --oneline "HEAD..$TARGET" || true
+          echo "----"
+
+      - name: Merge
+        run: |
+          set -euo pipefail
+          TARGET="${{ steps.target.outputs.target }}"
+          if git merge-base --is-ancestor "$TARGET" HEAD; then
+            echo "prod-css-is-awesome already contains $TARGET; nothing to promote."
             exit 0
           fi
-          git merge --no-edit origin/main
+          git merge --no-edit "$TARGET"
 
       - name: Push prod
         run: git push origin prod-css-is-awesome
