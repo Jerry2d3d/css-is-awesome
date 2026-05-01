@@ -8,7 +8,6 @@
 @use 'mixins' as m;
 @use 'animations';
 @use 'utilities';
-@use 'app-styles';
 
 // ----------------------------------------------------------------------------
 // GENERATE CSS VARIABLES
@@ -62,7 +61,3 @@ a {
 :focus:not(:focus-visible) {
   outline: none;
 }
-
-// ----------------------------------------------------------------------------
-// APP STYLES (Project-owned — never overwritten by boilerplate)
-// ----------------------------------------------------------------------------

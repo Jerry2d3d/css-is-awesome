@@ -3,7 +3,6 @@
 // ============================================================================
 @use 'generator';
 @use 'mixins' as m;
-@use 'app-styles';
 
 @include generator.generate-theme;
 
