@@ -21,7 +21,7 @@ Extends the theme ecosystem from "six colored swatches" into a complete, audited
 ## Features
 
 ### Feature 2.1: Per-theme icon packs
-Each of the 5 non-Sketchbook themes gets its own `public/themes/{name}/icons/` folder containing SVGs that match the theme's visual language. The starter set is the same 8 icons Sketchbook ships (edit, download, check, close, search, menu, arrow-right, chevron-down) so swap is 1:1. Icons are authored as single-color SVGs optimized for CSS-mask rendering.
+Each of the 5 non-Sketchbook themes gets its own `public/themes/{name}/icons/` folder containing SVGs that match the theme's visual language. The starter set is the same 8 icons Sketchbook ships (edit, download, check, close, search, menu, arrow-right, chevron-down) so swap is 1:1. Icons are authored as single-color SVGs optimized for CSS-mask rendering. The canonical glyph list (per pack, per tier) is maintained in `roadmap/icons-proposal.md`; this feature implements its Sketchbook-equivalent override slice for the other 5 themes, while Feature 2.10 handles the bundled core pack.
 
 #### User Stories
 
@@ -60,7 +60,7 @@ Each of the 5 non-Sketchbook themes gets its own `public/themes/{name}/icons/` f
 **Role:** designer
 
 ### Feature 2.2: Theme-aware icon swap
-Today `$theme-icon-path` is a global. This feature makes the icon set swap together with the theme: loading `themes/terminal/theme.css` should also point the svg mixin at `themes/terminal/icons/`. Must work without JavaScript and without the consumer editing config.
+Today `$theme-icon-path` is a global. This feature makes the icon set swap together with the theme: loading `themes/terminal/theme.css` should also point the svg mixin at `themes/terminal/icons/`. Must work without JavaScript and without the consumer editing config. The runtime mechanism (`--icon-path` custom property read by the svg mixin) is the same primitive Feature 2.11 formalizes for arbitrary icon-pack switching — this feature scopes it to per-theme override folders, Feature 2.11 generalizes it to top-level packs (lucide / phosphor / heroicons).
 
 #### User Stories
 
@@ -326,6 +326,159 @@ Each shipped theme gets an explicit light/dark disposition: companion shipped, o
 **Effort:** 1
 **Role:** accessibility reviewer
 
+### Feature 2.9: Browser-based themes editor (/themes/editor)
+A pure client-side theme editor at `/themes/editor` that lets anyone draft, preview, and download a contract-valid `theme.css` without cloning the repo or editing files. Side panel exposes a control for every contract slot (surfaces, ink, lines, primary, seal, accent, code, type, radius, shadow, blur, glow, motion). Live preview renders a sample page (buttons, cards, forms, code blocks, icons) inside an iframe so style writes don't bleed into the docs chrome. Three top-level actions: "Start from theme X" (any of the 6 shipped themes plus the boilerplate from Feature 2.12), "Reset," and "Download theme.css" (Blob → `<a download>`). Edits autosave to localStorage so a tab close doesn't lose work. Validation runs in-browser against a JS port of `scripts/theme-contract.json` and blocks download when any required token is missing or malformed.
+
+#### User Stories
+
+**US-2.9.1** — As a theme author, I want to draft a complete theme entirely in the browser without touching files, so that I can iterate on a design before committing to a PR scaffold.
+
+**Acceptance criteria:**
+- [ ] `/themes/editor` ships as a static page; no server, no auth, no network calls beyond initial assets.
+- [ ] Side panel renders one control per contract slot (color picker for color tokens; numeric/select for radius/shadow/blur/glow/motion; font-family text input for type tokens).
+- [ ] Live preview iframe re-renders within one paint frame of any control change.
+- [ ] Preview sample page covers: H1/H2, paragraph, primary+secondary button, card, input, code block, icon row.
+- [ ] No theme styles leak from the iframe into the host page.
+
+**Priority:** P0
+**Effort:** 13
+**Role:** theme author
+
+**US-2.9.2** — As a new user, I want to start from a preset (any shipped theme or the boilerplate) and tweak from there, so that I'm never staring at a blank slate.
+
+**Acceptance criteria:**
+- [ ] "Start from theme X" dropdown lists all 6 shipped themes plus the boilerplate (Feature 2.12).
+- [ ] Selecting a preset replaces all current control values with that theme's tokens and re-renders the preview.
+- [ ] "Reset" returns to whichever preset was last loaded (not always Sketchbook).
+- [ ] Switching presets after edits prompts before discarding unsaved work.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** new user
+
+**US-2.9.3** — As a theme author, I want the download to produce a contract-valid `theme.css` that passes `node scripts/theme-validator.js` on first save, so that the editor's output is trustworthy and not "draft quality."
+
+**Acceptance criteria:**
+- [ ] In-browser validator is a JS port of `scripts/theme-contract.json` and is kept in lockstep with it (single source of truth, regenerated at build).
+- [ ] Download button is disabled with an inline error list while validation fails.
+- [ ] Generated `theme.css` includes every required token, scoped under a configurable selector (default `[data-theme="custom"]`).
+- [ ] Round-tripping: downloading a file, then loading it via "Start from theme" reproduces the same control state byte-for-byte.
+
+**Priority:** P0
+**Effort:** 5
+**Role:** theme author
+
+**US-2.9.4** — As a new user, I want my in-progress edits to survive a tab close or accidental refresh, so that an hour of tweaking isn't lost to a stray Cmd-W.
+
+**Acceptance criteria:**
+- [ ] Every control change writes the working state to localStorage within 500ms (debounced).
+- [ ] On reload, the editor restores the last working state (preset + per-token overrides) and shows a "Resumed from autosave" badge.
+- [ ] A visible "Clear autosave" action wipes the stored state.
+- [ ] Storage key is namespaced (`cia.editor.v1`) so future schema changes can migrate cleanly.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** new user
+
+### Feature 2.10: Vendored Lucide core icon pack
+Replace the current 8-icon `public/icons/` flat folder with a vendored slice of [Lucide](https://lucide.dev) (MIT) covering the ~49 canonical "core" glyphs listed in `roadmap/icons-proposal.md` (8 already shipped + 41 to add: navigation, actions, status, communication, user/security, media). Files land under `public/icons/core/`. License attribution shipped at `public/icons/LICENSE-third-party`. The Sass default `$theme-icon-path` updates from `/icons` to `/icons/core` so consumers get a real default icon set out of the box, not an 8-glyph stub.
+
+#### User Stories
+
+**US-2.10.1** — As a consumer, I want `@include m.svg(<name>)` to resolve to a Lucide glyph by default for any of the 49 canonical core names, so that I don't have to vendor my own icons before I can render a "trash" or "settings" button.
+
+**Acceptance criteria:**
+- [ ] All 49 canonical core glyphs from `roadmap/icons-proposal.md` Pack 1 ship under `public/icons/core/<name>.svg`.
+- [ ] `$theme-icon-path` default in `scss/theme/_icons.scss` is updated to `/icons/core`.
+- [ ] Every glyph passes SVGO lint with zero warnings.
+- [ ] Every glyph renders cleanly through `m.svg()` at 16px and 24px (no clipping, no anti-alias artifacts) and inherits `currentColor`.
+- [ ] No glyph carries a hardcoded `fill=` attribute that would break mask-mode rendering.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-2.10.2** — As a consumer, I want clear attribution for the vendored Lucide icons, so that my project meets MIT's notice requirement without me reverse-engineering it.
+
+**Acceptance criteria:**
+- [ ] `public/icons/LICENSE-third-party` exists and contains the verbatim Lucide MIT license + upstream version/commit reference.
+- [ ] `public/icons/README.md` links to that file from a "Third-party assets" section.
+- [ ] Project root `LICENSE` (or NOTICE if used) references third-party attribution at `public/icons/LICENSE-third-party`.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** consumer
+
+### Feature 2.11: Icon pack switching mechanism
+Formalize a multi-pack icon model on top of the per-theme override primitive from Feature 2.2. Top-level subfolders `public/icons/{lucide,phosphor,heroicons}/` each ship the same canonical Pack 1 names so a consumer can switch the entire visual voice by overriding `$theme-icon-path` (e.g. `'/icons/phosphor'`). Themes can additionally bind a pack to themselves by declaring `--icon-path` in their `theme.css`, which the `m.svg` mixin reads at render time — so loading a theme automatically loads its preferred pack with no extra config. Already partially documented at `public/icons/README.md:172`; this feature promotes that note into a first-class authoring surface with worked examples and contract checks.
+
+#### User Stories
+
+**US-2.11.1** — As a consumer, I want to swap the entire icon visual language across my app by changing one Sass variable, so that I can match my theme's brand voice without re-importing every component.
+
+**Acceptance criteria:**
+- [ ] At least 2 alternate packs (Phosphor and Heroicons, both permissively licensed) ship under `public/icons/<pack>/` with the same canonical names as `core`.
+- [ ] Setting `$theme-icon-path: '/icons/phosphor'` in a consumer config changes every `m.svg` call site to render Phosphor glyphs with no other code changes.
+- [ ] Each alternate pack carries its own `LICENSE-third-party` notice and is referenced from `public/icons/README.md`.
+- [ ] An icon-contract validator fails CI if any alternate pack is missing a canonical name from the core list.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-2.11.2** — As a theme author, I want to bind my theme to a specific icon pack via my `theme.css`, so that loading my theme loads its intended icon voice without the consumer editing Sass config.
+
+**Acceptance criteria:**
+- [ ] Theme CSS may declare `--icon-path: '/icons/phosphor';` on its theme selector and the `m.svg` mixin honors it at render time.
+- [ ] Resolution order is documented: theme `--icon-path` > consumer `$theme-icon-path` > library default (`/icons/core`).
+- [ ] `theme-contract.json` lists `--icon-path` as an optional token with a string-URL value type.
+- [ ] At least one shipped theme (e.g. Cupertino or Glass) declares `--icon-path` as a worked example.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** theme author
+
+**US-2.11.3** — As a theme author, I want the icon-pack-switching model documented as a first-class authoring surface, so that I can pick a strategy (use core, bind a public pack, override with my own folder) without reading source.
+
+**Acceptance criteria:**
+- [ ] `public/icons/README.md` "Per-theme icon packs" section is rewritten to cover all three modes (consumer override, theme-bound `--icon-path`, per-theme override folder) with one worked example each.
+- [ ] The Feature 2.4 authoring guide cross-links to the icons README's pack-switching section.
+- [ ] Resolution-order diagram or table is included so the precedence between `--icon-path`, `$theme-icon-path`, and per-theme override folders is unambiguous.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** theme author
+
+### Feature 2.12: Boilerplate theme
+A 7th built-in theme at `public/themes/boilerplate/theme.css` that ships with the library's default token values — no opinionated visual identity yet. Its job is to be the cleanest possible "Start from this" preset for the editor (Feature 2.9) and the most legible "what does the contract actually require" reference for theme authors. Must pass `node scripts/theme-validator.js --all`. Visible on `/themes` and included in the bundled `public/theme.css` as a 7th `[data-theme="boilerplate"]` block. Real visual design lands in a follow-up story; the placeholder version unblocks the editor and the authoring guide.
+
+#### User Stories
+
+**US-2.12.1** — As a theme author, I want a `boilerplate` theme that is just the contract's default values made explicit, so that I can fork it as the most-neutral possible starting point.
+
+**Acceptance criteria:**
+- [ ] `public/themes/boilerplate/theme.css` exists with every required token from `scripts/theme-contract.json` set to a sensible default (no missing tokens, no opinionated brand choices).
+- [ ] `node scripts/theme-validator.js --all` passes with the new theme included.
+- [ ] The file is added as a 7th `[data-theme="boilerplate"]` block to bundled `public/theme.css`.
+- [ ] `/themes` gallery (Feature 2.3 thumbnails) renders the boilerplate alongside the other 6.
+- [ ] Boilerplate also passes the Feature 2.6 contrast audit and the Feature 2.7 size budget.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** theme author
+
+**US-2.12.2** — As a designer, I want the boilerplate theme to eventually have a real, distinct visual identity (not just default tokens), so that it earns its slot on `/themes` rather than reading as a debug stub.
+
+**Acceptance criteria:**
+- [ ] A design pass replaces placeholder defaults with an opinionated, shippable look (palette, type, radius, shadow language) distinct from the other 6 themes.
+- [ ] The redesign keeps every token name and contract; only values change.
+- [ ] Updated theme still passes validator, contrast audit, and size budget.
+- [ ] `/themes` thumbnail and any docs reference are refreshed.
+
+**Priority:** P1
+**Effort:** 5
+**Role:** designer
+
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations) — needs the token contract and theme validator in place before per-theme work can be audited consistently, and before `CONTRIBUTING-THEMES.md` has a stable reference surface.
 - Blocks: Epic 4 (Documentation Site) — the docs-site theme authoring page references this epic's icon-pack format and audit commands.
@@ -333,6 +486,6 @@ Each shipped theme gets an explicit light/dark disposition: companion shipped, o
 
 ## Priority
 P0 overall. Sub-priorities:
-- **P0** — contrast audit (2.6), first round of per-theme icon packs (2.1), theme-aware icon swap (2.2), authoring guide (2.4), dark-companion contrast parity (2.8.3).
-- **P1** — preview thumbnails (2.3), size/perf audit (2.7), dark companions content (2.8.1/2.8.2), icon comparison grid (2.1.3), PR template + CI gating (2.5.1/2.5.2).
+- **P0** — contrast audit (2.6), first round of per-theme icon packs (2.1), theme-aware icon swap (2.2), authoring guide (2.4), dark-companion contrast parity (2.8.3), browser-based themes editor (2.9), vendored Lucide core pack (2.10), icon pack switching mechanism (2.11), boilerplate theme placeholder (2.12.1).
+- **P1** — preview thumbnails (2.3), size/perf audit (2.7), dark companions content (2.8.1/2.8.2), icon comparison grid (2.1.3), PR template + CI gating (2.5.1/2.5.2), boilerplate theme real design (2.12.2).
 - **P2** — end-to-end community submission dry run (2.5.3).

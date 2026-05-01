@@ -260,6 +260,32 @@ A script enumerates every token pair that must meet WCAG contrast (text on surfa
 **Effort:** 1
 **Role:** CI system
 
+**US-5.5.4** — As a system author, I want the contrast audit folded into `scripts/theme-validator.js` and driven by `scripts/theme-contract.json`, so that one tool checks both token coverage and contrast in one pass.
+
+**Acceptance criteria:**
+- [ ] `scripts/theme-contract.json` declares a `contrastPairs` array mapping foreground tokens to background tokens with a required level (`AA-body` ≥ 4.5:1, `AA-large` ≥ 3:1, `AAA-body` ≥ 7:1).
+- [ ] `scripts/theme-validator.js` resolves each token reference to its computed color (handling `var()` chains, hex, rgb(), hsl(), and oklch()) and computes the WCAG 2.x contrast ratio per pair.
+- [ ] A failing pair is reported as `theme=<name> pair=<fg>-on-<bg> ratio=<n>:1 required=<level>` and exits non-zero.
+- [ ] Both consolidated `[data-theme="..."]` and per-file `:root { ... }` shapes are supported (matching existing validator detection).
+- [ ] Zero npm runtime dependencies (stdlib only) — preserves the validator's Path A constraint.
+- [ ] No duplicate logic with `scripts/contrast-audit.js`; the audit script either delegates to the validator or is removed in favor of a single entrypoint, and `tests/README.md` documents the consolidation.
+
+**Priority:** P1
+**Effort:** 5
+**Role:** system author
+
+**US-5.5.5** — As a theme author, I want the validator to tell me which pair failed and by how much, so that I can adjust one token instead of re-tuning the whole palette.
+
+**Acceptance criteria:**
+- [ ] On failure, the validator prints a table with columns: pair, foreground hex, background hex, computed ratio, required ratio, deficit.
+- [ ] The deficit column shows the delta (e.g. `-0.7:1`) so the author knows how much darker/lighter the token must move.
+- [ ] A `--explain <pair>` flag prints the full resolution chain (`--cia-fg-muted` → `var(--cia-gray-600)` → `#6b7280`) so an author can see which raw token to change.
+- [ ] Documented in the theme authoring guide (Epic 2) and linked from the failure output.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** theme author
+
 ### Feature 5.6: Lighthouse baseline
 Every route gets a Lighthouse run via `@lhci/cli` (or equivalent). A JSON baseline is committed to the repo. PRs that drop any category score more than the configured delta fail CI.
 
@@ -366,6 +392,31 @@ Every PR measures `dist/*.css` (library output) and `.next/static/css/*` (site o
 **Priority:** P2
 **Effort:** 3
 **Role:** maintainer
+
+**US-5.7.6** — As a CI system, I want hard absolute byte budgets on the published library bundles, so that the "tiny by default" claim is enforceable, not aspirational.
+
+**Acceptance criteria:**
+- [ ] `tests/bundle-size/budgets.json` declares absolute gzipped budgets: `dist/css-is-awesome.core.min.css` ≤ 3 KB, `dist/css-is-awesome.min.css` (full) ≤ 12 KB, and a per-route Next.js editor hydration budget (initial value documented and tunable).
+- [ ] `scripts/bundle-size.js` measures gzipped size of each declared artifact and exits non-zero on any over-budget file.
+- [ ] The CI step runs on every PR (Feature 5.12) and blocks merge on failure — independent of the baseline-delta gate (US-5.7.1) so a "small but over-budget" file still fails.
+- [ ] Each budget line has an inline comment in `budgets.json` justifying the number against a competitor reference (Tailwind reset, Pico, Bootstrap reboot).
+- [ ] The published `README.md` "size" badge is generated from the same measurement so the marketing number cannot drift from the gate.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** CI system
+
+**US-5.7.7** — As a consumer, I want a public size dashboard or badge on the docs site, so that I can see at a glance how cia compares to competing systems.
+
+**Acceptance criteria:**
+- [ ] The docs site renders a size table showing `core.min.css`, `full.min.css`, and the hydrated editor-route cost in raw and gzipped bytes, generated from the latest CI run.
+- [ ] The table includes a column for at least three competitor references (Tailwind preflight + utilities, Bootstrap reboot, Pico) updated by a documented script.
+- [ ] The numbers are dynamically updated on release (not hand-maintained) and dated.
+- [ ] Source is the same `bundle-size.js` artifact CI uses, ensuring marketing claims and gate enforcement match.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** consumer
 
 ### Feature 5.8: Browser matrix verification
 Playwright runs the full suite against Chromium, Firefox, and WebKit. A documented manual-test plan covers iOS Safari and Android Chrome at mobile viewport sizes, since headless WebKit does not perfectly emulate mobile Safari.
@@ -950,9 +1001,121 @@ Four starter templates that let a consumer go from zero to "css-is-awesome runni
 **Effort:** 3
 **Role:** maintainer
 
+### Feature 5.22: Zero-JS interactive component primitives
+A set of pure-CSS interactive primitives — tabs, accordion, modal, popover, tooltip — implemented with `:has()`, the native popover API (`[popover]`), and `@container` queries, with no JavaScript required for open/close/active behavior. Consumers get working interactive components before any JS bundle downloads. Where a feature is not yet universal (e.g. older Safari), a documented progressive-enhancement fallback is provided. This is the single biggest 2026 differentiator vs shadcn/ui (which requires React + Radix), Bootstrap (which requires its JS bundle), and daisyUI (which depends on host-framework JS for non-trivial widgets). Browser-compatibility testing is a first-class deliverable, not an afterthought.
+
+#### User Stories
+
+**US-5.22.1** — As a system author, I want a documented design pattern and shared SCSS partial for zero-JS interactive primitives, so that every primitive uses the same checked-input / `:has()` / `[popover]` conventions instead of five different bespoke approaches.
+
+**Acceptance criteria:**
+- [ ] `scss/components/_interactive-primitives.scss` (or similar) defines shared mixins: `cia-disclosure()`, `cia-popover()`, `cia-tabset()`, `cia-tooltip()`.
+- [ ] A design-pattern document under `roadmap/decisions/` records the chosen toggle mechanism (label-for-checkbox vs `[popover]` vs `:target` vs `details`) per primitive and the rationale.
+- [ ] Every primitive's markup pattern is a single block of HTML in a docs-site demo (no React state, no event handlers) that works when JS is disabled.
+- [ ] The pattern document covers the focus-management contract per primitive and references WAI-ARIA Authoring Practices.
+- [ ] No Stimulus, Alpine, or Vue-style directive sneaks into the SCSS — strict zero-JS rule enforced by a lint check on the source files.
+
+**Priority:** P2
+**Effort:** 5
+**Role:** system author
+
+**US-5.22.2** — As a consumer, I want tabs, accordion, modal, popover, and tooltip components I can drop into plain HTML, so that I get working interactivity before my JS bundle downloads (or with no JS at all).
+
+**Acceptance criteria:**
+- [ ] Each of the five primitives ships as a documented HTML pattern + SCSS mixin: tabs, accordion, modal (via `[popover]`), popover, tooltip.
+- [ ] Each primitive works with JavaScript disabled in the browser (verified via a Playwright test with JS off).
+- [ ] Each primitive has a docs-site demo page showing the bare HTML, the styled output, and the JS-off state side by side.
+- [ ] Each primitive carries a jest-axe assertion (Feature 5.2) and a keyboard checklist entry (Feature 5.9).
+- [ ] Each primitive includes documented progressive-enhancement guidance for the consumer to layer on JS for advanced behavior (e.g. animation, async content) without breaking the JS-off baseline.
+- [ ] Bundle impact on `dist/css-is-awesome.core.min.css` from the full primitive set is measured and stays under the budget (US-5.7.6).
+
+**Priority:** P2
+**Effort:** 13
+**Role:** consumer
+
+**US-5.22.3** — As a CI system, I want a browser-matrix compatibility test that verifies each primitive on Chromium, Firefox, and WebKit (and headless mobile WebKit), so that "works without JS" doesn't silently regress on a browser that lacks `:has()` or `[popover]`.
+
+**Acceptance criteria:**
+- [ ] A Playwright matrix runs each primitive's demo page on Chromium, Firefox, and WebKit with `javaScriptEnabled: false`.
+- [ ] Open/close/active interactions are exercised via real keyboard and pointer events, asserting the visible state changes.
+- [ ] A documented fallback is verified for any primitive that does not work in a tier-2 browser; CI fails if a primitive silently no-ops on a supported browser without a fallback.
+- [ ] The matrix results table is uploaded as a PR artifact and surfaces per-primitive per-browser pass/fail.
+- [ ] Browser baseline (`@supports` chains, fallback strategy) is documented in the primitive's docs page.
+
+**Priority:** P2
+**Effort:** 7
+**Role:** CI system
+
+**US-5.22.4** — As an accessibility reviewer, I want each zero-JS primitive to satisfy the same a11y bar as a fully scripted component, so that "no JS" never becomes "no accessibility".
+
+**Acceptance criteria:**
+- [ ] Each primitive's demo passes axe-core at AA in every in-repo theme (extends Feature 5.2).
+- [ ] Focus-trap / focus-restore behavior for modal and popover is verified via a Playwright keyboard test.
+- [ ] Screen-reader announcements for each primitive are documented in `tests/manual/screen-reader-checklist.md` (Feature 5.9) and tested at least once before release.
+- [ ] Reduced-motion preferences are honored (no transitions for users with `prefers-reduced-motion: reduce`).
+- [ ] Forced-colors mode (Windows High Contrast) is tested and documented per primitive.
+
+**Priority:** P2
+**Effort:** 5
+**Role:** accessibility reviewer
+
+### Feature 5.23: Intrinsic layout mixins
+A set of container-query-driven layout mixins — `@include stack()`, `@include cluster()`, `@include switcher()`, `@include sidebar()`, `@include cover()`, `@include grid-auto()` — inspired by Every Layout. They replace media-query-based responsive layout for the majority of cases by reacting to the parent container's size rather than the viewport. Consumers compose layouts without breakpoints, and the same component renders correctly in a sidebar, a card, or a full-width region without per-context overrides.
+
+#### User Stories
+
+**US-5.23.1** — As a system author, I want every intrinsic-layout mixin defined in one SCSS partial with a shared API surface, so that the mixins compose predictably and don't grow into snowflakes.
+
+**Acceptance criteria:**
+- [ ] `scss/mixins/_intrinsic-layout.scss` (or similar) defines: `stack($space)`, `cluster($space, $align)`, `switcher($threshold, $space, $limit)`, `sidebar($side, $side-width, $content-min, $space)`, `cover($min-height, $space)`, `grid-auto($min, $space)`.
+- [ ] Every mixin uses `@container` queries (not `@media`) where size-responsive behavior is required.
+- [ ] Every mixin's parameters default to existing system tokens (`$space-3`, etc.) so a zero-arg call produces a sensible result.
+- [ ] A design-pattern document under `roadmap/decisions/` records the parameter naming convention and rationale (named after Every Layout, mapped to cia tokens).
+- [ ] Output CSS is idempotent: calling the same mixin twice on the same selector emits no duplicate declarations.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** system author
+
+**US-5.23.2** — As a consumer, I want to compose responsive layouts with `@include stack()`, `@include cluster()`, etc., without writing media queries, so that my components adapt to their container instead of the viewport.
+
+**Acceptance criteria:**
+- [ ] Each mixin has a docs-site page with: usage example, rendered demo at multiple container sizes (resizable iframe or `<resizable>` widget), parameter table, and "when to use vs when not to".
+- [ ] At least one full-page docs example composes three mixins to build a real layout (e.g. a card grid with sidebar + cluster + stack) with no `@media` rules.
+- [ ] Each mixin has a Storybook story (Feature 5.18) demonstrating the container-driven behavior.
+- [ ] A migration note explains how to replace common Bootstrap row/col patterns with the intrinsic equivalents.
+
+**Priority:** P2
+**Effort:** 5
+**Role:** consumer
+
+**US-5.23.3** — As a CI system, I want an automated visual-regression run that resizes a container and snapshots the layout, so that intrinsic layout breakage is caught even though it isn't viewport-driven.
+
+**Acceptance criteria:**
+- [ ] The visual-regression suite (Feature 5.4) includes a "container-size matrix" page per mixin that resizes the parent container at fixed widths (e.g. 240, 480, 720, 960px) and captures a snapshot at each.
+- [ ] Diffs in any container-size snapshot fail the build (per existing visual-regression rules).
+- [ ] Each snapshot is named `{mixin}--{containerWidth}` for easy review.
+- [ ] Documented in `tests/visual/README.md` alongside the page × theme matrix.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** CI system
+
+**US-5.23.4** — As a theme author / consumer, I want intrinsic layout mixins to honor the system's spacing scale and respect `prefers-reduced-motion`, so that intrinsic layouts feel consistent with the rest of cia.
+
+**Acceptance criteria:**
+- [ ] Every spacing parameter resolves to a token from `$space` by default; passing a raw value emits a deprecation warning at compile time (Sass `@warn`).
+- [ ] Layout transitions (e.g. switcher's reflow) are zero-duration under `prefers-reduced-motion: reduce`.
+- [ ] A linter or sass-true test asserts that every mixin's compiled output uses `var(--cia-space-*)` references, not inlined values.
+- [ ] Documented in the theme-authoring guide (Epic 2) so theme authors know how mixins interact with token overrides.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** theme author
+
 ## Dependencies
 - Blocks: 1.0 release (no publish without tests, CI, and release automation; every quality claim is unverified without this epic).
 - Blocked by: Epic 3 (React Component Library — components must exist before unit tests and Storybook stories can cover them). Partial work can proceed against any components that land early, but the suite is not complete until Epic 3 closes.
 
 ## Priority
-P0 (blocker for 1.0) — accessibility tests, color contrast audit, bundle-size regression gate, CI pipeline, docs-site production deploy, npm publish hygiene, release automation, Storybook install, pre-commit hooks, and `dev:watch` are P0. Unit tests, visual regression, Lighthouse baseline, end-to-end smoke, TypeScript token definitions, Storybook stories per component, visual-testing harness, preview deploys, and starter templates are P1. Coverage thresholds, full browser matrix automation, screen-reader run logs, and bundle analyzer are P2.
+P0 (blocker for 1.0) — accessibility tests, color contrast audit, bundle-size regression gate, absolute bundle-byte budgets (US-5.7.6), CI pipeline, docs-site production deploy, npm publish hygiene, release automation, Storybook install, pre-commit hooks, and `dev:watch` are P0. Unit tests, visual regression, Lighthouse baseline, end-to-end smoke, TypeScript token definitions, Storybook stories per component, visual-testing harness, preview deploys, contrast audit consolidated into theme-validator (US-5.5.4–5), and starter templates are P1. Coverage thresholds, full browser matrix automation, screen-reader run logs, bundle analyzer, public size dashboard, zero-JS interactive primitives (Feature 5.22), and intrinsic layout mixins (Feature 5.23) are P2 — the latter two are post-v1.0 differentiators that move cia from at-parity to best-in-class.

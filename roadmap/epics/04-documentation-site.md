@@ -1165,11 +1165,201 @@ A runtime-toggleable mode that lets the deployed site switch between "under cons
 
 ---
 
+### Feature 4.26: `/compare` page refresh
+The `/compare` route already ships a feature table comparing css-is-awesome to Bootstrap and Tailwind, but it stops at marketing copy and a verdict grid. This feature refreshes the page to carry the differentiator story end-to-end: the three-tier authoring model (Tier 1 utilities, Tier 2 mixins, Tier 3 component overrides), the one-file theme-swap model, the mixin-router pattern (`$theme-components` map), the contract validator pattern, the animation system, and the `cia-` namespace policy. Most importantly it lands a hard-numbers bundle-size table — cia core ~2 KB gzipped vs Bootstrap ~25 KB vs Tailwind compiled — so the differentiator argument runs on data, not adjectives. The existing `src/app/compare/page.tsx` is the surface to extend; this is a refresh, not a rebuild.
+
+#### User Stories
+
+**US-4.26.1** — As a Bootstrap migrant evaluating alternatives, I want a hard-numbers bundle-size table on `/compare`, so that I can justify the swap with measured byte counts instead of marketing claims.
+
+**Acceptance criteria:**
+- [ ] `/compare` renders a dedicated bundle-size section with measured numbers for cia core gzipped, cia full gzipped, Bootstrap CSS gzipped, Bootstrap JS gzipped, and Tailwind compiled (typical app) gzipped.
+- [ ] Each number cites its measurement method (e.g. "minified + gzipped, measured against `dist/cia.min.css` at vX.Y.Z").
+- [ ] Numbers are sourced from a single config or generated artifact — not free-typed strings drifting from reality.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+- [ ] Scannable — the table is the focal element of the section.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** Bootstrap migrant evaluating alternatives
+
+**US-4.26.2** — As a new user reading `/compare`, I want the page to explain the three-tier authoring model, the mixin-router, the contract validator, the animation system, and the `cia-` namespace policy, so that I understand the differentiators before I see the verdict grid.
+
+**Acceptance criteria:**
+- [ ] Page renders a "What makes cia different" section covering: three-tier authoring (utilities / mixins / component overrides), one-file theme-swap, mixin-router (`$theme-components`), contract validator, animation system, and `cia-` namespace.
+- [ ] Each differentiator has a one-line claim plus a tiny code or markup example showing the pattern.
+- [ ] Live previews re-skin when the theme picker swaps themes.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** new user
+
+**US-4.26.3** — As an AI assistant generating "should I use cia" answers, I want the `/compare` differentiators to have stable anchor IDs, so that I can deep-link a user to a specific argument.
+
+**Acceptance criteria:**
+- [ ] Every differentiator section heading on `/compare` has a stable `#anchor` ID matching a slug of the heading.
+- [ ] The bundle-size table has a stable `#bundle-size` (or equivalent) anchor.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** AI assistant
+
+---
+
+### Feature 4.27: `/showcase` page (real pages, theme-swappable)
+A new top-level route at `/showcase` that hosts full, real-looking pages built entirely from the system: a marketing landing page, a blog post with hero + body + author card, a dashboard with sidebar + cards + table, and a 404. Every page is theme-swappable in one click via the existing `data-theme` attribute model — the same picker used elsewhere on the site re-skins all four showcase pages without a reload. This is the "show, don't tell" piece: nothing on the site today demonstrates the swap on real chrome at full page scale. It also dogfoods the system end-to-end and surfaces gaps faster than any unit test.
+
+#### User Stories
+
+**US-4.27.1** — As a new user evaluating cia, I want a `/showcase` index that lets me jump into a marketing landing, a blog post, a dashboard, and a 404 — all built with cia, all theme-swappable — so that I can see what the system actually produces at full page scale.
+
+**Acceptance criteria:**
+- [ ] `/showcase` route exists with an index that links to four sub-routes: `/showcase/landing`, `/showcase/blog`, `/showcase/dashboard`, `/showcase/404`.
+- [ ] Each sub-route renders a complete, real-looking page — not a fragment, not a card grid, but full chrome (header/hero/body/footer or equivalent).
+- [ ] Markup uses cia mixins, utilities, and component primitives — no per-page bespoke CSS that bypasses the system.
+- [ ] Every code sample (if shown inline) runs as shown if copy-pasted.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P0
+**Effort:** 7
+**Role:** new user
+
+**US-4.27.2** — As a visitor on `/showcase/*`, I want every page to re-skin in one click via the same theme picker used elsewhere, so that I can feel the theme-swap claim instead of just reading it.
+
+**Acceptance criteria:**
+- [ ] Every `/showcase/*` page renders the standard theme picker (`SiteHeader` or equivalent).
+- [ ] Picking a theme re-skins the entire page through `data-theme` — including hero, body, cards, tables, buttons, badges, table chrome.
+- [ ] No layout shift (CLS) or hydration warning on theme swap.
+- [ ] Live previews re-skin across every shipped theme (passes eyeball check on each in-repo theme).
+
+**Priority:** P0
+**Effort:** 3
+**Role:** visitor
+
+**US-4.27.3** — As a system author, I want the showcase pages to dogfood the public mixin and utility surface, so that gaps and rough edges show up in the showcase before they show up in user code.
+
+**Acceptance criteria:**
+- [ ] Every showcase page is built only from public mixins, utilities, and shipped React/HTML components — no private internal-only helpers.
+- [ ] A short README or page-level comment in each showcase route lists the primitives composed.
+- [ ] Adding a new shipped component or mixin family is followed by a showcase update issue (linked from this feature in the backlog).
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** system author
+
+**US-4.27.4** — As a screen-reader user, I want each showcase page to have proper landmarks, heading hierarchy, and labeled regions, so that the showcase models accessible defaults rather than visual-only chrome.
+
+**Acceptance criteria:**
+- [ ] Every showcase page has `<header>`, `<main>`, and `<footer>` landmarks; no more than one `<h1>`.
+- [ ] Dashboard showcase labels its sidebar `<nav>` and content `<main>` regions.
+- [ ] Lighthouse a11y score ≥95 on every showcase route.
+- [ ] Verified with VoiceOver or NVDA on at least the landing and dashboard routes.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** screen-reader user
+
+---
+
+### Feature 4.28: Bootstrap migration wedge (drop-in alongside)
+A new docs page (under `/docs/migration/bootstrap-wedge` or extending Feature 4.6) that shows how to drop css-is-awesome into an existing Bootstrap project without ripping Bootstrap out first. Three pieces: (1) a namespace-collision walkthrough proving that the `cia-*` prefix means classes can coexist with Bootstrap's `btn`, `card`, `row`, `col`, etc.; (2) a 20-line migration sample showing a real Bootstrap component being progressively replaced by Tier 2 cia mixins; (3) a side-by-side button comparison showing equivalent Bootstrap markup vs cia Tier 2 code, line by line, so the reader can see the swap concretely. Distinct from Feature 4.6 — that feature compares patterns; this feature shows incremental adoption inside a live Bootstrap codebase.
+
+#### User Stories
+
+**US-4.28.1** — As a Bootstrap migrant who can't do a full rewrite, I want a "drop cia in alongside Bootstrap" guide proving the namespaces don't collide, so that I can adopt incrementally.
+
+**Acceptance criteria:**
+- [ ] Page loads and is linked from the `/docs` nav or sidebar (under migration).
+- [ ] Section explicitly states the `cia-` prefix policy and walks through importing both stylesheets in the same page without conflicts.
+- [ ] A working example shows a Bootstrap component and a cia component on the same page, both rendering correctly.
+- [ ] Every code sample runs as shown if copy-pasted.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** Bootstrap migrant
+
+**US-4.28.2** — As a Bootstrap migrant, I want a roughly 20-line migration sample showing a Bootstrap component being progressively replaced by cia Tier 2 mixins, so that I can see what an incremental migration commit actually looks like.
+
+**Acceptance criteria:**
+- [ ] Page contains a "before / step / after" code progression of about 20 lines total.
+- [ ] Each step is a small, reviewable diff — not a wholesale rewrite.
+- [ ] Final state uses Tier 2 cia mixins (e.g. `@include btn-base`, `@include card-base`).
+- [ ] Every code sample runs as shown if copy-pasted.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** Bootstrap migrant
+
+**US-4.28.3** — As a Bootstrap migrant, I want a side-by-side button comparison (Bootstrap markup vs Tier 2 cia code), so that I can map a single concrete pattern in one glance.
+
+**Acceptance criteria:**
+- [ ] Page has a labeled side-by-side block showing Bootstrap button markup and equivalent cia Tier 2 code.
+- [ ] Adjacent prose calls out the differences (token-driven sizing, semantic mixins, no JS dependency).
+- [ ] Every code sample runs as shown if copy-pasted.
+- [ ] Live preview re-skins when the theme picker swaps themes.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** Bootstrap migrant
+
+---
+
+### Feature 4.29: Tailwind→Awesome migration CLI (post-1.0)
+A small command-line tool that parses Tailwind class strings (e.g. `flex items-center justify-between p-4 gap-2`) and suggests an equivalent semantic cia mixin (e.g. `@include hstack-between` with a spacing token). The CLI is the wedge for migrating from the dominant incumbent: it lowers the activation cost for Tailwind users curious about cia from "rewrite my templates by hand" to "pipe my classNames through one command and review the diff." Recommended location: a separate `packages/migrate-from-tailwind/` workspace (or `scripts/migrate-from-tailwind/` if monorepo isn't in place yet) so it can ship as its own npm package later without dragging the whole repo with it. Companion docs page lives under `/docs/migration/tailwind` or a new `/migrate` route. Post-1.0; this is wedge work, not launch-blocking.
+
+#### User Stories
+
+**US-4.29.1** — As a Tailwind user evaluating cia, I want a CLI that takes a Tailwind class string and prints an equivalent cia semantic mixin, so that I can see what my templates would look like without rewriting them by hand.
+
+**Acceptance criteria:**
+- [ ] A CLI binary (e.g. `npx @css-is-awesome/migrate-from-tailwind`) is published or runnable from the repo.
+- [ ] Input: a Tailwind class string (via argv, stdin, or a file path); Output: a suggested cia mixin call plus any residual utility classes that didn't map cleanly.
+- [ ] At least the layout primitives (`flex`, `items-*`, `justify-*`, `gap-*`, `p-*`, `m-*`, `text-*`, `bg-*`, `rounded-*`) are mapped.
+- [ ] Unmapped classes are passed through with a "no equivalent found" comment so the user can review and decide.
+- [ ] CLI exits 0 on success, non-zero on parse error, with a clear error message.
+
+**Priority:** P2
+**Effort:** 9
+**Role:** Tailwind user evaluating cia
+
+**US-4.29.2** — As a system author, I want the CLI to live in its own workspace package so it can be released independently, so that the migration tool can iterate without bumping the main library version.
+
+**Acceptance criteria:**
+- [ ] CLI source lives under `packages/migrate-from-tailwind/` (preferred) or `scripts/migrate-from-tailwind/` if the monorepo split isn't in place yet — the AC documents the chosen location.
+- [ ] The package has its own `package.json` with a `bin` entry and its own version.
+- [ ] The package builds and runs without any dependency on the main site or React app.
+- [ ] A short README in the package explains scope, supported classes, and known gaps.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** system author
+
+**US-4.29.3** — As a Tailwind migrant, I want a companion docs page explaining the CLI, the mapping table, and the known gaps, so that I trust the output before I let it touch my templates.
+
+**Acceptance criteria:**
+- [ ] A `/docs/migration/tailwind` (or `/migrate`) page exists, linked from the `/docs` migration section.
+- [ ] Page documents installation, CLI usage, the Tailwind→cia mapping table, and explicit known gaps (arbitrary values, plugins, dark: variants).
+- [ ] Every code sample runs as shown if copy-pasted.
+- [ ] Live previews (where applicable) re-skin when the theme picker swaps themes.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** Tailwind migrant
+
+---
+
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations — token contract and mixin API must be stable before they can be documented); Epic 2 (Themes & Icons — theme and icon authoring mechanics must be locked before their guides can be written); Epic 3 (React Component Library — component API must be locked before migration and recipes document component usage).
 - Blocks: real 1.0 launch — without real docs and a polished site shell, no one learns or adopts the system. Also blocks perceived polish for launch announcements (OG cards, favicons, PWA manifest, themed 404, mobile drawer).
 
 ## Priority
-P0 (blocker for 1.0): Features 4.1 Getting Started, 4.2 Install, 4.3 Tokens, 4.4 Mixins, 4.5 Utilities, 4.11 Recipes, 4.18 Custom 404, 4.19 Favicon + PWA, 4.20 Copy-to-clipboard, 4.22 Mobile nav, 4.23 Skip-to-content + keyboard polish, 4.25 Launch-mode gate.
-P1 (wanted for 1.0): Features 4.6 Migration, 4.7 Theme Authoring, 4.8 Icon Authoring, 4.9 Animation, 4.10 Accessibility, 4.13 Search, 4.14 TOC auto-highlight, 4.15 Prev/next, 4.16 Edit on GitHub, 4.17 OpenGraph, 4.21 Shiki syntax highlighting.
-P2 (post-1.0): Feature 4.12 FAQ expansion, Feature 4.24 Smooth scroll + anchor offset, and any error-boundary / loading-state polish deferred out of the P0/P1 set.
+P0 (blocker for 1.0): Features 4.1 Getting Started, 4.2 Install, 4.3 Tokens, 4.4 Mixins, 4.5 Utilities, 4.11 Recipes, 4.18 Custom 404, 4.19 Favicon + PWA, 4.20 Copy-to-clipboard, 4.22 Mobile nav, 4.23 Skip-to-content + keyboard polish, 4.25 Launch-mode gate, 4.26 `/compare` refresh, 4.27 `/showcase` page.
+P1 (wanted for 1.0): Features 4.6 Migration, 4.7 Theme Authoring, 4.8 Icon Authoring, 4.9 Animation, 4.10 Accessibility, 4.13 Search, 4.14 TOC auto-highlight, 4.15 Prev/next, 4.16 Edit on GitHub, 4.17 OpenGraph, 4.21 Shiki syntax highlighting, 4.28 Bootstrap migration wedge.
+P2 (post-1.0): Feature 4.12 FAQ expansion, Feature 4.24 Smooth scroll + anchor offset, Feature 4.29 Tailwind→Awesome migration CLI, and any error-boundary / loading-state polish deferred out of the P0/P1 set.

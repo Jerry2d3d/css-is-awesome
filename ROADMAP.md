@@ -123,6 +123,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 ### New pages
 - [x] **`/themes` gallery** — all 6 themes with live-swap preview + download per tile. Uses `ThemeTile` component.
 - [x] **`/compare` page** — honest three-column vs Tailwind vs Bootstrap with feature table and "where each wins" verdicts.
+- [ ] **`/compare` bundle-size table** — add three-tier story (core / utilities / full) with gzipped KB next to Tailwind + Bootstrap equivalents.
 - [ ] **`/docs` intro page** — still placeholder; replace with live theme-swap demo at top + real cia-* usage.
 - [ ] **`/showcase` page** — real-looking full pages (marketing / blog / dashboard / 404), all theme-swappable.
 
@@ -166,25 +167,40 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [x] `.cia-icon` component in base `styles.css` — `currentColor` + font-size sizing
 - [x] Seed sprite at `docs/icons.svg` (8 icons: edit, download, check, close, search, menu, arrow-right, chevron-down)
 - [x] Per-theme `icons.svg` slot documented — drop a replacement sprite in the theme folder to swap the pack
+- [ ] **Vendor Lucide as default `core` pack** — ~49 glyphs at `public/icons/core/`, MIT, with `LICENSE-third-party` notice. See [`roadmap/icons-proposal.md`](./roadmap/icons-proposal.md) for the full glyph list.
+- [ ] **Icon pack switching mechanism** — per-theme override folder (`public/themes/<name>/icons/<pack>/`) resolves before falling back to `core`; documented in CONTRACT.
 - [ ] Ship icon packs for Press, Graphite, Glass, Cupertino, Terminal
 - [ ] Icon index page listing every symbol by name
 
-**Release:** `v0.5.x` — theme system live, 6 themes shipped, animations + icon-pack mechanism in place.
+### Themes editor
+- [ ] **`/themes/editor` page** — browser-only theme builder; live preview, contract-slot controls (color pickers, sliders for radius/shadow/blur, type pickers), Blob download of `theme.css`, localStorage autosave, validates against `scripts/theme-contract.json` before download.
+
+### Boilerplate theme
+- [ ] **Hand-design `public/themes/boilerplate/theme.css`** — a neutral starter theme that ships as the recommended baseline for new consumers (clean defaults, no flourish, easy to override).
+
+**Release:** `v0.5.x` — theme system live, 6 themes shipped, animations + icon-pack mechanism in place, themes editor + boilerplate theme available.
 
 ---
 
-## Phase 5 — Distribution & CDN (v0.6)
+## Phase 5 — Distribution & CDN (v0.7)
 
-**Goal:** Make it as easy to use as Bootstrap.
+**Goal:** Cut the first real npm release and prove a downstream consumer can pull it from the registry.
 
-- [ ] Publish to npm (`npm publish --access public`)
+### Pre-publish (in order)
+- [ ] **Fix `_app-styles.scss` leak** — `scss/main.scss:11` currently pulls in docs-app styles; remove from the library entry so consumers don't inherit Next.js chrome.
+- [ ] **`npm pack` smoke test** — generate the tarball, install into a throwaway folder, import the SCSS + utilities CSS, confirm zero stray rules and correct module resolution.
+- [ ] **Hand-design boilerplate theme** at `public/themes/boilerplate/theme.css` (tracked in Phase 4.5 — this is the gating dependency for the registry consumer test).
+- [ ] **`npm publish` 0.6.1** (`npm publish --access public`) — first public registry cut.
+- [ ] **Boilerplate consumer install from registry** — real downstream project installs `css-is-awesome@0.6.1`, drops in the boilerplate theme, confirms full system + utilities work end-to-end.
+
+### Follow-on
 - [ ] Verify jsDelivr + unpkg auto-serve the `dist/` files
 - [ ] README "CDN" section with exact `<link>` tag
 - [ ] SRI hashes for security-conscious users
 - [ ] GitHub Release with bundled zip download (for non-npm users)
 - [ ] `package.json` `exports` field for correct module resolution
 
-**Release:** `v0.6.0` — first npm + CDN cut. SemVer begins; v1.0.0 is reserved for once the CDN smoke is verified live and the API has stabilised in production usage (Phase 6+).
+**Release:** `v0.7.0` — first npm + CDN cut. SemVer begins; v1.0.0 is reserved for once the CDN smoke is verified live and the API has stabilised in production usage (Phase 6+).
 
 ---
 
@@ -199,6 +215,20 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [ ] Badge suite in README (npm version, downloads, bundle size, license)
 - [ ] Contribution guide + issue templates
 - [ ] Storybook or Ladle instance for the (future) component library
+
+---
+
+## Phase 7 — Differentiators (post-v1.0)
+
+**Goal:** Move from "another design system" to "the obvious choice for SCSS-first teams who want zero-JS theming." Items from the Gemini critique that widen the moat once the foundations are stable.
+
+- [ ] **Zero-JS interactive components** — tabs, accordion, modal, popover, tooltip built on `:has()`, the popover API, and `@container`. Biggest moat vs shadcn — they need a runtime, we don't.
+- [ ] **A11y linter inside `theme-validator.js`** — WCAG contrast checks on every contract slot pair; CI fails any theme that breaks AA on text/surface combos.
+- [ ] **SCSS↔TS token bridge** — generate `tokens.d.ts` from the contract so consumers get type-safe token access in JS/TS.
+- [ ] **Intrinsic layout mixins** — stack/cluster/switcher (Every Layout patterns) as first-class mixins so consumers stop hand-rolling flex utilities.
+- [ ] **Tailwind→Awesome migration CLI** — parses Tailwind class strings in a project and suggests `cia-*` utility or mixin equivalents; lowest-friction path for migrants.
+- [ ] **`/showcase` page** — full real pages (marketing, blog, dashboard, 404) with one-click theme swap. The "see it work in production" pitch.
+- [ ] **Component depth audit** — catalog gaps vs Bootstrap (modal, toast, popover, tooltip, accordion, breadcrumb, pagination, badge, avatar, dropdown, offcanvas) and prioritize zero-JS implementations.
 
 ---
 
@@ -228,12 +258,19 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 1. ~~**Lock theme token API contract**~~ — done. 6 themes implement it.
 2. ~~**Wire `/themes` gallery page**~~ — done.
 3. ~~**Build `/compare` page**~~ — done.
-4. **Replace placeholder `/docs` copy** with real `cia-*` usage, token grids, mixin API reference, migration from Bootstrap.
-5. **Build `/showcase` page** — full-page examples (marketing / blog / dashboard / 404) with theme-swap toggle at top.
-6. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes.
-7. **Animation preview page** — grid of every keyframe × every theme.
-8. **Decide sizing scale** (t-shirt vs numbered) — shipping t-shirt now; numbered aliases can layer on non-breaking.
-9. **Phase 5: publish to npm + wire jsDelivr CDN** — first real release.
+4. **Fix `_app-styles.scss` leak** at `scss/main.scss:11` so the library entry stops pulling in docs-app styles.
+5. **`npm pack` smoke test** — install the tarball into a throwaway folder, verify clean output.
+6. **Hand-design `public/themes/boilerplate/theme.css`** — neutral baseline theme for new consumers.
+7. **`npm publish` 0.6.1** — first public registry cut.
+8. **Boilerplate consumer install from registry** — real downstream project pulls `css-is-awesome@0.6.1` and confirms end-to-end.
+9. **Update `/compare` page** — three-tier story (core / utilities / full) + bundle-size table next to Tailwind + Bootstrap.
+10. **Vendor Lucide as default `core` icon pack** at `public/icons/core/` (~49 glyphs, MIT, `LICENSE-third-party`).
+11. **Themes editor at `/themes/editor`** — browser-only live preview, contract-slot controls, Blob download, localStorage autosave, validates before download.
+12. **Replace placeholder `/docs` copy** with real `cia-*` usage, token grids, mixin API reference, migration from Bootstrap.
+13. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes.
+14. **Animation preview page** — grid of every keyframe × every theme.
+15. **Decide sizing scale** (t-shirt vs numbered) — shipping t-shirt now; numbered aliases can layer on non-breaking.
+16. **Phase 7 differentiators** (post-v1.0) — zero-JS components, a11y linter, TS token bridge, intrinsic layout mixins, Tailwind→Awesome CLI, `/showcase`, component depth audit.
 
 ---
 
