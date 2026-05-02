@@ -197,6 +197,8 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [ ] Verify jsDelivr + unpkg auto-serve the `dist/` files
 - [ ] README "CDN" section with exact `<link>` tag
 - [ ] SRI hashes for security-conscious users
+- [ ] **CDN review before v1.0** — is jsDelivr still the right call, or should we move to a self-hosted edge or alternate CDN? Audit uptime, cache hit rate, supply-chain posture, tracking concerns; decide stay or switch (see Epic 5 Feature 5.14 US-5.14.4).
+- [ ] **AI-agent instruction files** — `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` shipped at package root and whitelisted in `files`. Pointers to the deep `css-is-awesome.instructions.md`.
 - [ ] GitHub Release with bundled zip download (for non-npm users)
 - [ ] `package.json` `exports` field for correct module resolution
 

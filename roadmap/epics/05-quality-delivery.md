@@ -707,6 +707,21 @@ Before shipping 1.0, `package.json` must declare `exports`, a minimal `files` al
 - [ ] Running the site with a tampered file fails to load (manually verified once and noted in `DEPLOY.md`).
 
 **Priority:** P0
+**Effort:** 1
+**Role:** consumer
+
+**US-5.14.4** — As a release manager, I want a CDN-suitability review before cutting v1.0, so that we ship under a delivery story we've actually audited rather than defaulted into.
+
+**Acceptance criteria:**
+- [ ] Audit doc at `docs/release/cdn-review.md` (or similar) compares the current CDN strategy (jsDelivr auto-mirror + unpkg fallback) against at least three alternates: self-hosted edge (Cloudflare R2 + Workers), a different commercial CDN (e.g. KeyCDN, Bunny), and a "no-CDN, npm-only" stance.
+- [ ] Each option is scored on: free-for-OSS pricing, global edge presence, uptime track record, supply-chain posture (SRI support, mutability, signing), tracking/analytics behavior on served files, and how easy it is to migrate away from later.
+- [ ] Decision is recorded with reasoning ("stay on jsDelivr because X" or "move to Y because Z"), signed off in the v1.0 release checklist.
+- [ ] If the decision is to migrate, a migration story is filed against this epic with effort and target version before v1.0 ships.
+- [ ] Review is rerun before any subsequent major (v2.0+) so we don't sleepwalk into a CDN that became wrong.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** release manager
 **Effort:** 3
 **Role:** consumer
 

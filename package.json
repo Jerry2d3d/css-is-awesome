@@ -56,7 +56,10 @@
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
-    "css-is-awesome.instructions.md"
+    "css-is-awesome.instructions.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md"
   ],
   "scripts": {
     "dev": "next dev -p 5173",
