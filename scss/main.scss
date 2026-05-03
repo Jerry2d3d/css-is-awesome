@@ -4,10 +4,10 @@
 // This generates the actual CSS output.
 // Import this once at your app's root.
 // ============================================================================
-@use 'generator';
-@use 'mixins' as m;
-@use 'animations';
-@use 'utilities';
+@use './generator';
+@use './mixins' as m;
+@use './animations';
+@use './utilities';
 
 // ----------------------------------------------------------------------------
 // GENERATE CSS VARIABLES
