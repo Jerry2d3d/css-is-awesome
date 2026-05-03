@@ -1355,11 +1355,121 @@ A small command-line tool that parses Tailwind class strings (e.g. `flex items-c
 
 ---
 
+### Feature 4.30: `/components` — copy-paste HTML reference page
+A new top-level docs-site route (working name `/components`; final slug TBD) that sits between `/docs` (formal token tables and mixin API reference) and `/showcase` (full aspirational pages). It is reference-by-demonstration: every shipped component appears as **pure HTML + cia classes/mixins**, copy-paste ready, with a live preview, a "Copy HTML" button, and per-example metadata (which mixin generates this variant, which Tier 1 utility-class equivalents work, supported props/states). The page is a docs-site Next.js route only — the system itself remains pure styling, no React, no JavaScript components shipped from css-is-awesome. Modeled structurally on the Prism sandbox at `K:/Repo/ui-ux-builder/sandboxes/prism-theme/index.html` (sticky top-bar / left sidebar nav / scroll-spied content), it covers the same component sections — Foundations (tokens grid), Buttons, Badges, Inputs, Checkboxes/Radios/Switches, Alerts, Cards, Tables, Tabs, Avatars, Progress + Skeleton, Popover/Dialog — re-expressed in cia contract slots (`--paper`, `--ink`, `--ai`, etc.) instead of Prism's local tokens. Theme-swappable through the standard `data-theme` attribute, so a reader can toggle Prism Light, Prism Dark, Sketchbook, Press, etc. while reading. A future cross-link to Gremlin UI's React equivalent for each component lands in a follow-up release once Gremlin UI ships its first version — not in v1, no "coming soon" placeholders.
+
+#### User Stories
+
+**US-4.30.1** — As a docs-site dev / system author, I want a `/components` route to exist with the standard site chrome and a left-side section nav, so that there is a single home for copy-paste HTML reference content separate from `/docs` (API) and `/showcase` (full pages).
+
+**Acceptance criteria:**
+- [ ] Route renders at the chosen slug (resolves the `/components` vs `/patterns` vs `/reference` open question) and is linked from the top nav.
+- [ ] Page has a sticky section-nav sidebar (scroll-spied) listing every component section, modeled on the Prism sandbox layout.
+- [ ] The standard theme picker is wired in; switching themes re-skins every example through `data-theme` with no layout shift or hydration warning.
+- [ ] Page is deployed on the canonical site host and reachable from the production URL.
+- [ ] Content is authoritative — reflects current shipped mixins/utilities, not aspiration.
+
+**Priority:** P0
+**Effort:** 5
+**Role:** docs-site dev
+
+**US-4.30.2** — As a Tier 1 consumer / new user with no SCSS knowledge, I want to land on `/components`, find the component I need, and copy a snippet of HTML that renders correctly with cia loaded, so that I can ship a button or card without learning the mixin layer.
+
+**Acceptance criteria:**
+- [ ] Every example shows a complete, runnable HTML fragment using only `cia-*` utility classes (no `@include`, no SCSS).
+- [ ] Pasting the snippet into a page that loads cia core renders the example identically to the live preview shown on the docs page.
+- [ ] Each section has a one-line "what this is for" lede before the examples.
+- [ ] No example assumes a build step; the Tier 1 form runs against the CDN drop-in.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** Tier 1 consumer
+
+**US-4.30.3** — As a Tier 2 consumer with a Sass build, I want each example to show BOTH the Tier 1 utility-class form AND the equivalent Tier 2 mixin form side by side, so that I can pick the authoring path that fits my project without hunting through `/docs` separately.
+
+**Acceptance criteria:**
+- [ ] Every example renders two labeled tabs (or side-by-side panes): "Utilities (Tier 1)" and "Mixins (Tier 2)".
+- [ ] The two forms produce visually identical output, verified by an eyeball check on the live preview when each tab is selected.
+- [ ] Each tab has its own "Copy" button targeting only that tab's code.
+- [ ] When a component has no Tier 1 utility-class equivalent, the page states that explicitly instead of faking one.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** Tier 2 consumer
+
+**US-4.30.4** — As a docs-site dev, I want every component shipped under `scss/components/` (buttons, forms, feedback, overlay, navigation, data) to have at least one example on the page, so that the page is a complete reference instead of a curated subset.
+
+**Acceptance criteria:**
+- [ ] Page covers, at minimum: Foundations (tokens grid), Buttons (variants / sizes / icons), Badges, Inputs (text / search / disabled / error), Checkboxes / Radios / Switches, Alerts (info / success / warning / danger), Cards (basic / with header-footer / with media), Tables (basic / striped / sortable header chrome), Tabs (segmented / underline nav), Avatars (sizes / fallback / group), Progress + Skeleton, Popover / Dialog.
+- [ ] A coverage check (script or checklist) lists every directory under `scss/components/` and confirms each has at least one example on the page.
+- [ ] Adding a new component family in `scss/components/` is followed by a `/components` update issue (linked from this feature in the backlog).
+- [ ] Content is authoritative — reflects current shipped components, not aspiration.
+
+**Priority:** P0
+**Effort:** 7
+**Role:** docs-site dev
+
+**US-4.30.5** — As a consumer scanning the page, I want every example to carry consistent metadata — mixin name, Tier 1 utility-class equivalents, and the variant/state list — so that I can map each demo back to the shipping API in one glance.
+
+**Acceptance criteria:**
+- [ ] Every example block renders a metadata strip with: `mixin:` name, `utilities:` comma-separated `cia-*` classes (or "—" if none), and `variants:` short list (e.g. "primary, secondary, ghost, danger").
+- [ ] Metadata is sourced from a single config or generated artifact — not free-typed strings drifting from reality.
+- [ ] Metadata strip layout is identical across all sections so the eye can lock onto it.
+- [ ] Hovering or clicking a mixin name links to its entry on the formal `/docs` mixin reference (Feature 4.4).
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-4.30.6** — As any consumer, I want each example to have a one-click "Copy HTML" button that grabs only the markup (not the surrounding chrome, not the metadata, not the preview wrapper), so that what lands in my clipboard is exactly what I paste into my project.
+
+**Acceptance criteria:**
+- [ ] Every code block has a "Copy HTML" affordance reachable by mouse and keyboard.
+- [ ] The copied payload is the example markup verbatim — no example-card wrapper divs, no preview-only attributes, no docs-site framing.
+- [ ] Copy succeeds across modern Chromium / Firefox / Safari and falls back gracefully when the Clipboard API is unavailable.
+- [ ] A short toast or visual confirmation acknowledges the copy without breaking layout.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** consumer
+
+**US-4.30.7** — As a consumer who also uses (or evaluates) Gremlin UI, I want each component example on `/components` to link to the matching Gremlin UI React component, so that I can move from "here is the markup" to "here is the React import" without a second search. *(Deferred: ships in a follow-up release after Gremlin UI publishes its first version. No "coming soon" placeholders in v1.)*
+
+**Acceptance criteria:**
+- [ ] Once Gremlin UI publishes its first release, every example carries a "Gremlin UI →" link pointing at the matching React component (e.g. `@gremlin/ui/Button`).
+- [ ] Links are added by PR after Gremlin UI v0.1+ ships; until then, no badge, link, or placeholder appears on the page.
+- [ ] Cross-link metadata is sourced from the same config that drives mixin/utility metadata (US-4.30.5) so it stays in sync.
+- [ ] Content is authoritative — reflects current Gremlin UI exports, not aspiration.
+
+**Priority:** P2
+**Effort:** 1
+**Role:** consumer
+
+**US-4.30.8** — As an accessibility reviewer, I want every example on `/components` to be keyboard-navigable, focus-ring visible, and screen-reader-friendly out of the box, so that the page models accessible defaults rather than visual-only chrome.
+
+**Acceptance criteria:**
+- [ ] Every interactive example (buttons, inputs, choices, tabs, popover, dialog) is reachable and operable by keyboard alone.
+- [ ] Focus rings are visible on every interactive element across every shipped theme.
+- [ ] Examples use semantic HTML (`<button>`, `<label>`, `<input>`, `<table>`, `<nav>`, etc.) and ARIA only where semantics fall short.
+- [ ] An automated `axe` (or equivalent) lint runs on the route in CI and reports zero serious/critical violations.
+- [ ] Lighthouse a11y score ≥95 on the route.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** accessibility reviewer
+
+#### Open questions
+- **Route name** — `/components` vs `/patterns` vs `/reference`. Recommend `/components` as the most discoverable; "patterns" reads as compound layouts (already covered by `/showcase`) and "reference" overlaps with `/docs`.
+- **Ship `examples/` folder in the npm package?** A parallel directory of standalone HTML files for AI agents and offline use. Recommend **no for v0.7**; revisit once the docs page is stable and there is real demand from MCP / AI-assistant integrations (Epic 6).
+- **Gremlin UI cross-link timing** — confirmed deferred. Badges and links go live with Gremlin UI's first release; v1 of `/components` ships with no Gremlin UI references at all (no placeholders, no "coming soon").
+
+---
+
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations — token contract and mixin API must be stable before they can be documented); Epic 2 (Themes & Icons — theme and icon authoring mechanics must be locked before their guides can be written); Epic 3 (React Component Library — component API must be locked before migration and recipes document component usage).
 - Blocks: real 1.0 launch — without real docs and a polished site shell, no one learns or adopts the system. Also blocks perceived polish for launch announcements (OG cards, favicons, PWA manifest, themed 404, mobile drawer).
 
 ## Priority
-P0 (blocker for 1.0): Features 4.1 Getting Started, 4.2 Install, 4.3 Tokens, 4.4 Mixins, 4.5 Utilities, 4.11 Recipes, 4.18 Custom 404, 4.19 Favicon + PWA, 4.20 Copy-to-clipboard, 4.22 Mobile nav, 4.23 Skip-to-content + keyboard polish, 4.25 Launch-mode gate, 4.26 `/compare` refresh, 4.27 `/showcase` page.
+P0 (blocker for 1.0): Features 4.1 Getting Started, 4.2 Install, 4.3 Tokens, 4.4 Mixins, 4.5 Utilities, 4.11 Recipes, 4.18 Custom 404, 4.19 Favicon + PWA, 4.20 Copy-to-clipboard, 4.22 Mobile nav, 4.23 Skip-to-content + keyboard polish, 4.25 Launch-mode gate, 4.26 `/compare` refresh, 4.27 `/showcase` page, 4.30 `/components` copy-paste reference.
 P1 (wanted for 1.0): Features 4.6 Migration, 4.7 Theme Authoring, 4.8 Icon Authoring, 4.9 Animation, 4.10 Accessibility, 4.13 Search, 4.14 TOC auto-highlight, 4.15 Prev/next, 4.16 Edit on GitHub, 4.17 OpenGraph, 4.21 Shiki syntax highlighting, 4.28 Bootstrap migration wedge.
 P2 (post-1.0): Feature 4.12 FAQ expansion, Feature 4.24 Smooth scroll + anchor offset, Feature 4.29 Tailwind→Awesome migration CLI, and any error-boundary / loading-state polish deferred out of the P0/P1 set.
