@@ -54,14 +54,21 @@ One line styles the whole site. Zero classes. Any class-based selector you add w
 
 Six shipped. Swap by replacing `public/theme.css`:
 
-| Theme | Mood |
-|---|---|
-| Sketchbook | Warm washi paper, sumi ink, indigo accent (default) |
-| Press | Editorial newsprint, Playfair serif, press-red accent |
-| Graphite | Space-gray aluminum dark mode, system blue |
-| Glass | visionOS glassmorphism, iOS indigo, dual-rim highlights |
-| Cupertino | macOS Sonoma window, SF Pro, system blue |
-| Terminal | VT100 phosphor green, zero radii, CRT glow |
+| Theme            | Mood                                                          |
+|------------------|---------------------------------------------------------------|
+| sketchbook-light | Warm washi paper, sumi ink, indigo accent (default)           |
+| press-light      | Editorial newsprint, Playfair serif, press-red accent         |
+| graphite-dark    | Space-gray aluminum dark mode, system blue                    |
+| glass-light      | visionOS glassmorphism, iOS indigo, dual-rim highlights       |
+| cupertino-light  | macOS Sonoma window, SF Pro, system blue                      |
+| terminal         | VT100 phosphor green, zero radii, CRT glow (single-mode)      |
+
+Theme names carry a `-light` / `-dark` mode suffix since v0.7. Terminal is the
+intentional exception — a "terminal-light" is no longer terminal, the CRT
+chassis IS the theme. The unsuffixed v0.6 names (`sketchbook`, `press`,
+`graphite`, `glass`, `cupertino`) keep working through 0.7.x as backward-compat
+aliases and are removed in v0.8 — see [`MIGRATION.md`](./MIGRATION.md) and the
+[CHANGELOG](./CHANGELOG.md) for the timeline.
 
 Each theme is one file of CSS custom properties. Tokens only — no component rules. See `public/themes/` for the sources and `/themes` on the docs site for live previews + downloads. Full contract documented in [THEMING.md](./THEMING.md).
 

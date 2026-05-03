@@ -26,7 +26,7 @@ export default function DocsPage() {
 {"\n"}<span className="tok-sel">{"<head>"}</span>
 {"\n"}  <span className="tok-sel">{"<meta"}</span> <span className="tok-prop">charset</span>=<span className="tok-val">"utf-8"</span><span className="tok-sel">{">"}</span>
 {"\n"}  <span className="tok-sel">{"<title>"}</span>Hello, sketchbook<span className="tok-sel">{"</title>"}</span>
-{"\n"}  <span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/theme-sketchbook.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}  <span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/theme-sketchbook-light.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}  <span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/cia.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}<span className="tok-sel">{"</head>"}</span>
 {"\n"}<span className="tok-sel">{"<body>"}</span>
@@ -78,7 +78,7 @@ export default function DocsPage() {
       </p>
       <Example>
         <Example.Code><span className="tok-com">{"/* before — sketchbook */"}</span>
-{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/theme-sketchbook.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/theme-sketchbook-light.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}
 {"\n"}<span className="tok-com">{"/* after — brutalist */"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/theme-brutalist.css"</span><span className="tok-sel">{">"}</span></Example.Code>

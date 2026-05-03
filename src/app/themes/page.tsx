@@ -4,40 +4,44 @@ import ThemeTile from "@/components/ThemeTile";
 import type { ThemeTileProps } from "@/components/ThemeTile";
 import { asset } from "@/lib/asset";
 
+// Theme IDs use the v0.7 `-light`/`-dark` suffix convention. The
+// unsuffixed v0.6 names continue to resolve via alias selectors in
+// public/theme.css through 0.7.x; new code should use the suffixed
+// IDs below. Terminal is single-mode by design.
 const THEMES: ThemeTileProps[] = [
   {
-    id: "sketchbook",
+    id: "sketchbook-light",
     name: "Sketchbook",
     description: "Warm washi paper, sumi ink, indigo accent. The default voice.",
     href: asset("/theme.css"),
     swatches: { paper: "#F7F3EA", ink: "#2A241E", accent: "#1F3A5F", seal: "#C1272D" },
   },
   {
-    id: "press",
+    id: "press-light",
     name: "Press",
     description: "Editorial newsprint, Playfair serif, single press-red accent.",
-    href: asset("/themes/press/theme.css"),
+    href: asset("/themes/press-light/theme.css"),
     swatches: { paper: "#FAFAF7", ink: "#0A0A0A", accent: "#1A1A1A", seal: "#D93025" },
   },
   {
-    id: "graphite",
+    id: "graphite-dark",
     name: "Graphite",
     description: "Space-gray aluminum, Xcode dark, inset rim highlights.",
-    href: asset("/themes/graphite/theme.css"),
+    href: asset("/themes/graphite-dark/theme.css"),
     swatches: { paper: "#1A1A1C", ink: "#F5F5F7", accent: "#0A84FF", seal: "#FF453A" },
   },
   {
-    id: "glass",
+    id: "glass-light",
     name: "Glass",
     description: "visionOS glassmorphism — frosted sheets, iOS indigo, dual-rim highlights.",
-    href: asset("/themes/glass/theme.css"),
+    href: asset("/themes/glass-light/theme.css"),
     swatches: { paper: "#F4EEFF", ink: "#1D1D1F", accent: "#5E5CE6", seal: "#FF375F" },
   },
   {
-    id: "cupertino",
+    id: "cupertino-light",
     name: "Cupertino",
     description: "macOS Sonoma window — AppKit grays, SF Pro, system blue.",
-    href: asset("/themes/cupertino/theme.css"),
+    href: asset("/themes/cupertino-light/theme.css"),
     swatches: { paper: "#F5F5F7", ink: "#1D1D1F", accent: "#0071E3", seal: "#FF3B30" },
   },
   {

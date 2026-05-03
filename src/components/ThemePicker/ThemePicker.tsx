@@ -5,13 +5,18 @@ import { useEffect, useState } from "react";
 
 type Theme = { id: string; label: string };
 
+// Theme IDs use the v0.7 `-light`/`-dark` suffix convention. The
+// unsuffixed v0.6 names (`sketchbook`, `press`, `graphite`, `glass`,
+// `cupertino`) still resolve via the alias selectors in
+// public/theme.css through 0.7.x; new code should use the suffixed
+// IDs below. Terminal is single-mode by design.
 const THEMES: Theme[] = [
-  { id: "sketchbook", label: "Sketchbook" },
-  { id: "press",      label: "Press" },
-  { id: "graphite",   label: "Graphite" },
-  { id: "glass",      label: "Glass" },
-  { id: "cupertino",  label: "Cupertino" },
-  { id: "terminal",   label: "Terminal" },
+  { id: "sketchbook-light", label: "Sketchbook" },
+  { id: "press-light",      label: "Press" },
+  { id: "graphite-dark",    label: "Graphite" },
+  { id: "glass-light",      label: "Glass" },
+  { id: "cupertino-light",  label: "Cupertino" },
+  { id: "terminal",         label: "Terminal" },
 ];
 
 const COOKIE_NAME = "cia-theme";
@@ -25,10 +30,10 @@ function applyTheme(id: string) {
 export default function ThemePicker() {
   // Initial state mirrors what SSR rendered — read the attribute the server
   // already set from the cookie. Avoids hydration mismatch and FOUC.
-  const [active, setActive] = useState<string>("sketchbook");
+  const [active, setActive] = useState<string>("sketchbook-light");
 
   useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme") ?? "sketchbook";
+    const current = document.documentElement.getAttribute("data-theme") ?? "sketchbook-light";
     setActive(current);
   }, []);
 

@@ -200,7 +200,7 @@ node scripts/theme-validator.js public/themes/my-theme/theme.css
 Validate several:
 
 ```bash
-node scripts/theme-validator.js public/theme.css public/themes/press/theme.css
+node scripts/theme-validator.js public/theme.css public/themes/press-light/theme.css
 ```
 
 Sample **success** output:
@@ -209,7 +209,7 @@ Sample **success** output:
 theme-validator — contract v1 (123 required tokens)
 
 ✓ public/theme.css passes (123 tokens declared)
-✓ public/themes/press/theme.css passes (123 tokens declared)
+✓ public/themes/press-light/theme.css passes (123 tokens declared)
 
 OK — 2 theme file(s) validated
 ```
@@ -278,14 +278,14 @@ first.
 
 ## Reference — the six shipped themes
 
-| Theme      | File                                     | Mood                                                                 |
-| ---------- | ---------------------------------------- | -------------------------------------------------------------------- |
-| Sketchbook | `public/theme.css`                       | Warm washi paper, sumi ink, indigo accent (default light)            |
-| Press      | `public/themes/press/theme.css`          | Editorial newsprint, Playfair serif, single press-red accent         |
-| Graphite   | `public/themes/graphite/theme.css`       | Space-gray aluminum dark mode, system blue (default dark)            |
-| Glass      | `public/themes/glass/theme.css`          | visionOS glassmorphism, iOS indigo, dual-rim highlights              |
-| Cupertino  | `public/themes/cupertino/theme.css`      | macOS Sonoma window, SF Pro, system blue                             |
-| Terminal   | `public/themes/terminal/theme.css`       | VT100 phosphor green, zero radii, CRT glow                           |
+| Theme            | File                                          | Mood                                                                 |
+| ---------------- | --------------------------------------------- | -------------------------------------------------------------------- |
+| sketchbook-light | `public/theme.css`                            | Warm washi paper, sumi ink, indigo accent (default light)            |
+| press-light      | `public/themes/press-light/theme.css`         | Editorial newsprint, Playfair serif, single press-red accent         |
+| graphite-dark    | `public/themes/graphite-dark/theme.css`       | Space-gray aluminum dark mode, system blue (default dark)            |
+| glass-light      | `public/themes/glass-light/theme.css`         | visionOS glassmorphism, iOS indigo, dual-rim highlights              |
+| cupertino-light  | `public/themes/cupertino-light/theme.css`     | macOS Sonoma window, SF Pro, system blue                             |
+| terminal         | `public/themes/terminal/theme.css`            | VT100 phosphor green, zero radii, CRT glow (single-mode by design)   |
 
 Each ships under `public/themes/{slug}/theme.css` (or `public/theme.css`
 for the default). Read them as references — they demonstrate six

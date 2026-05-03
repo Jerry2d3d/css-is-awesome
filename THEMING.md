@@ -2,6 +2,22 @@
 
 css-is-awesome is fully themeable. Pick the method that fits your stack.
 
+## Built-in theme names (v0.7+)
+
+Theme names use a `-light` / `-dark` mode suffix:
+
+- `sketchbook-light` (default — also matches `:root:not([data-theme])`)
+- `press-light`
+- `graphite-dark`
+- `glass-light`
+- `cupertino-light`
+- `terminal` — intentionally single-mode, CRT phosphor by design
+
+The unsuffixed v0.6 names (`sketchbook`, `press`, `graphite`, `glass`,
+`cupertino`) are kept as backward-compat aliases through 0.7.x and removed in
+v0.8. See [`MIGRATION.md`](./MIGRATION.md) for the migration steps and
+[`CHANGELOG.md`](./CHANGELOG.md) for the timeline.
+
 ---
 
 ## Quick Brand Swap (3 lines)

@@ -8,7 +8,7 @@ Authoring rules for css-is-awesome itself AND for consumer apps that use it. Dro
 
 ## TL;DR — three consumer tiers, pick the lowest one that works for you
 
-1. **Drop-in (HTML, no build).** Link `dist/css-is-awesome.css` and a theme file. Use `.cia-*` utility classes in markup. Themes swap via `<html data-theme="press">`.
+1. **Drop-in (HTML, no build).** Link `dist/css-is-awesome.css` and a theme file. Use `.cia-*` utility classes in markup. Themes swap via `<html data-theme="press-light">`.
 2. **React.** Import a shipped component (`<Button variant="primary">`). Components are token-driven and theme-swap-safe out of the box.
 3. **Power user (SCSS).** `@use 'css-is-awesome/scss/mixins' as m;` and `@include btn(primary, $px: 6) { … }` to deviate from defaults.
 
@@ -70,7 +70,7 @@ color: #2A241E;
 border-radius: 4px;
 ```
 
-Tokens come from the theme contract (`scripts/theme-contract.json` — 123 required slots). Themes swap via `<html data-theme="press">` and every token resolves to the active theme's value.
+Tokens come from the theme contract (`scripts/theme-contract.json` — 123 required slots). Themes swap via `<html data-theme="press-light">` and every token resolves to the active theme's value.
 
 ### No `!important`
 
@@ -286,6 +286,8 @@ return (
 ### One file = one theme
 
 Each theme is a `[data-theme="<name>"] { ... }` block declaring all 123 contract tokens. `public/theme.css` ships all six themes consolidated; per-theme files at `public/themes/<name>/theme.css` are also published for download.
+
+Theme names carry a mode suffix (`-light` / `-dark`) since v0.7: `sketchbook-light` (default), `press-light`, `graphite-dark`, `glass-light`, `cupertino-light`, plus `terminal` (single-mode CRT, no suffix). The unsuffixed v0.6 names are kept as backward-compat aliases through 0.7.x and will be removed in v0.8 — see `MIGRATION.md`.
 
 ### Add a theme
 
