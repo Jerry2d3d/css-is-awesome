@@ -6,36 +6,18 @@
   "bugs": {
     "url": "https://github.com/Jerry2d3d/css-is-awesome/issues"
   },
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "dist/css-is-awesome.css",
   "style": "dist/css-is-awesome.css",
   "sass": "scss/main.scss",
   "sideEffects": [
     "**/*.css",
-    "**/*.scss",
-    "**/*.module.scss"
+    "**/*.scss"
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
       "sass": "./scss/main.scss",
       "style": "./dist/css-is-awesome.css",
-      "default": "./dist/index.mjs"
-    },
-    "./components/*": {
-      "types": "./dist/components/*/index.d.ts",
-      "import": "./dist/components/*/index.mjs",
-      "require": "./dist/components/*/index.js",
-      "default": "./dist/components/*/index.mjs"
-    },
-    "./theme-init": {
-      "types": "./dist/theme-init.d.ts",
-      "import": "./dist/theme-init.mjs",
-      "require": "./dist/theme-init.js",
-      "default": "./dist/theme-init.mjs"
+      "default": "./dist/css-is-awesome.css"
     },
     "./core": "./dist/css-is-awesome.core.css",
     "./core.css": "./dist/css-is-awesome.core.css",
@@ -94,14 +76,12 @@
     "build:css:utilities": "sass scss/utilities-only.scss dist/css-is-awesome.utilities.css --no-source-map",
     "build:css:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
     "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:utilities && npm run build:css:min",
-    "build:components": "tsup && node scripts/add-use-client.mjs && tsc -p tsconfig.lib.json && node scripts/copy-component-scss.mjs",
-    "build:all": "npm run build:css:all && npm run build:components",
     "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
     "validate-themes": "node scripts/theme-validator.js --all",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
     "playwright:install": "playwright install chromium --with-deps",
-    "prepublishOnly": "npm run build:all"
+    "prepublishOnly": "npm run build:css:all"
   },
   "keywords": [
     "css",
@@ -125,21 +105,9 @@
     "node": ">=20"
   },
   "peerDependencies": {
-    "next": ">=15.0.0",
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
     "sass": "^1.77.0"
   },
   "peerDependenciesMeta": {
-    "next": {
-      "optional": true
-    },
-    "react": {
-      "optional": true
-    },
-    "react-dom": {
-      "optional": true
-    },
     "sass": {
       "optional": true
     }
@@ -167,7 +135,6 @@
     "serve": "^14.2.6",
     "stylelint": "^17.8.0",
     "stylelint-config-standard-scss": "^17.0.0",
-    "tsup": "^8.5.1",
     "typescript": "^5.7.0"
   }
 }

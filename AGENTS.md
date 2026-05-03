@@ -70,21 +70,24 @@ Validator: `node scripts/theme-validator.js path/to/theme.css`. Every theme must
 
 ### Theme init (Next.js / SSR consumers)
 
-Setting `data-theme` in a `useEffect` causes a flash-of-default-theme before hydration. Use the inline-script helper to set the attribute synchronously on first paint:
+Setting `data-theme` in a `useEffect` causes a flash-of-default-theme before hydration. The fix is an inline `<script>` in `<head>` that runs synchronously before paint and sets the attribute from storage or system preference. css-is-awesome is a styling-only package, so there is no helper to import — paste the snippet directly into your layout:
 
 ```tsx
-// app/layout.tsx (Next.js App Router)
-import { getThemeInitScript } from "css-is-awesome/theme-init";
-
+// app/layout.tsx (Next.js App Router) — paste this <script> in <head>
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: getThemeInitScript({
-          defaultTheme: "prism-light",
-          darkTheme: "prism-dark",
-          storageKey: "app-theme",
-        }) }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('cia-theme');
+if(s){document.documentElement.setAttribute('data-theme',s);return;}
+if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+document.documentElement.setAttribute('data-theme','prism-dark');return;}
+document.documentElement.setAttribute('data-theme','prism-light');
+}catch(e){document.documentElement.setAttribute('data-theme','prism-light');}})();`,
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>
@@ -92,7 +95,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-`suppressHydrationWarning` on `<html>` is required — the inline script mutates the DOM before React hydrates, so React would otherwise warn about a server/client mismatch on `data-theme`.
+`suppressHydrationWarning` on `<html>` is required — the inline script mutates the DOM before React hydrates, so React would otherwise warn about a server/client mismatch on `data-theme`. Adjust the storage key and theme names (`'cia-theme'`, `'prism-light'`, `'prism-dark'`) to match your app.
 
 ## Where to read deeper
 
