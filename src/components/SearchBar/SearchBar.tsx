@@ -1,8 +1,8 @@
 "use client";
 import { forwardRef, useState } from "react";
 import type { FormHTMLAttributes } from "react";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
+import Input from "../Input";
+import Button from "../Button";
 import styles from "./SearchBar.module.scss";
 
 export type SearchBarProps = Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue"> & {

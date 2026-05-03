@@ -1,0 +1,39 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "incremental": false,
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
+    "jsx": "react-jsx",
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "rootDir": "src"
+  },
+  "include": ["src/components/**/*", "src/index.ts", "src/global.d.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "out",
+    ".next",
+    "scss",
+    "src/app",
+    "src/lib",
+    "src/components/Logo",
+    "src/components/LogoMark",
+    "src/components/Seal",
+    "src/components/DraftStamp",
+    "src/components/Post",
+    "src/components/Principle",
+    "src/components/TimelineItem",
+    "src/components/ThemeTile",
+    "src/components/DocsSidebar",
+    "src/components/SiteHeader",
+    "src/components/LaunchGate",
+    "src/components/Example",
+    "**/*.test.tsx",
+    "**/*.test.ts",
+    "**/*.stories.tsx"
+  ]
+}

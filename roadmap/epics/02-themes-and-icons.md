@@ -479,6 +479,192 @@ A 7th built-in theme at `public/themes/boilerplate/theme.css` that ships with th
 **Effort:** 5
 **Role:** designer
 
+### Feature 2.13: Universal light/dark pairing
+Every theme that makes sense as both light and dark ships both modes; themes that are intrinsically single-mode are documented as such. Closes the gap left by Feature 2.8 by enumerating the actual companion files to ship: Sketchbook Dark (charcoal-paper editorial), Press Dark (night-newsroom), Graphite Light (brushed-silver day mode), Glass Dark (visionOS dark glassmorphism), Cupertino Dark (macOS Dark). Terminal stays single-mode by design — CRT phosphor is intrinsically dark — and that decision is recorded explicitly. The already-shipped `public/themes/prism-light/theme.css` and `public/themes/prism-dark/theme.css` are the structural reference: same token contract on both files, same selector pattern (`[data-theme="<name>-light"]` / `[data-theme="<name>-dark"]`), same component-override block, with values retuned for surface inversion. Passes the Feature 2.6 contrast audit on both halves of every pair.
+
+#### User Stories
+
+**US-2.13.1** — As a consumer, I want a Sketchbook Dark companion that preserves Sketchbook's warm-paper editorial voice on a charcoal-paper canvas, so that I can ship Sketchbook to users who prefer dark mode without abandoning the brand identity.
+
+**Acceptance criteria:**
+- [ ] `public/themes/sketchbook-dark/theme.css` ships, scoped to `[data-theme="sketchbook-dark"]`.
+- [ ] Token contract matches `prism-dark/theme.css` structurally (same token names, same component-override block).
+- [ ] Visual treatment is "charcoal paper" — warm dark surfaces, not zinc-neutral — so the editorial voice carries from light to dark.
+- [ ] Passes the Feature 2.6 contrast audit and the Feature 2.7 size budget.
+- [ ] Bundled `public/theme.css` includes a `[data-theme="sketchbook-dark"]` block.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-2.13.2** — As a consumer, I want a Press Dark companion that reads like a night-newsroom redesign of Press, so that long-form reading content keeps its serif-editorial character after sunset.
+
+**Acceptance criteria:**
+- [ ] `public/themes/press-dark/theme.css` ships, scoped to `[data-theme="press-dark"]`.
+- [ ] Token contract matches the Prism reference structurally.
+- [ ] Visual treatment is "night newsroom" — desaturated dark paper, ivory ink, restrained accent — distinguishable from generic dark themes.
+- [ ] Passes the Feature 2.6 contrast audit and the Feature 2.7 size budget.
+- [ ] Bundled `public/theme.css` includes a `[data-theme="press-dark"]` block.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-2.13.3** — As a consumer, I want a Graphite Light companion that preserves Graphite's brushed-metal voice on a daytime canvas, so that I can use Graphite in light mode without losing the industrial identity.
+
+**Acceptance criteria:**
+- [ ] `public/themes/graphite-light/theme.css` ships, scoped to `[data-theme="graphite-light"]`.
+- [ ] Token contract matches the Prism reference structurally.
+- [ ] Visual treatment is "brushed silver" — light cool grays, polished-metal accent surfaces — distinguishable from Prism light.
+- [ ] Passes the Feature 2.6 contrast audit and the Feature 2.7 size budget.
+- [ ] Bundled `public/theme.css` includes a `[data-theme="graphite-light"]` block.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-2.13.4** — As a consumer, I want a Glass Dark companion that delivers visionOS-style dark glassmorphism, so that frosted UIs work in both light and dark contexts without re-authoring the blur/glow tokens.
+
+**Acceptance criteria:**
+- [ ] `public/themes/glass-dark/theme.css` ships, scoped to `[data-theme="glass-dark"]`.
+- [ ] Token contract matches the Prism reference structurally; `--blur-*` and `--glow-*` token slots are populated meaningfully (not `none`).
+- [ ] Visual treatment is "visionOS dark" — translucent dark surfaces, soft inner highlights, retuned glow values for dark backdrops.
+- [ ] Passes the Feature 2.6 contrast audit and the Feature 2.7 size budget.
+- [ ] Bundled `public/theme.css` includes a `[data-theme="glass-dark"]` block.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-2.13.5** — As a consumer, I want a Cupertino Dark companion that mirrors macOS Dark, so that Apple-platform-flavored apps feel native in both system appearances.
+
+**Acceptance criteria:**
+- [ ] `public/themes/cupertino-dark/theme.css` ships, scoped to `[data-theme="cupertino-dark"]`.
+- [ ] Token contract matches the Prism reference structurally.
+- [ ] Visual treatment is "macOS Dark" — system-grays palette, vibrancy-adjacent translucency, SF-aligned type and radii.
+- [ ] Passes the Feature 2.6 contrast audit and the Feature 2.7 size budget.
+- [ ] Bundled `public/theme.css` includes a `[data-theme="cupertino-dark"]` block.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-2.13.6** — As a designer, I want Terminal to stay single-mode by design with that decision recorded explicitly, so that no future contributor mistakes the missing companion for an oversight.
+
+**Acceptance criteria:**
+- [ ] `public/themes/terminal/theme.css` README/frontmatter includes `Mode: dark only` with rationale "CRT phosphor is intrinsically dark; a light companion would betray the visual concept."
+- [ ] `/themes` gallery shows a "Dark only" badge on the Terminal card (per Feature 2.8.2).
+- [ ] The pairing-decision page (US-2.13.7) lists Terminal as `single-mode by design` with the same rationale.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** designer
+
+**US-2.13.7** — As a theme author, I want a single docs page that records every theme's pairing decision, so that the project's stance on light/dark is unambiguous and reviewable.
+
+**Acceptance criteria:**
+- [ ] `/docs/themes/pairing` (or equivalent) lists every shipped theme with one of: "paired (light + dark)", "paired (light + dark, dark by default)", or "single-mode by design (dark only / light only)".
+- [ ] Each pairing decision includes a one-line rationale.
+- [ ] Page references Prism Light + Prism Dark as the canonical structural example contributors should mirror.
+- [ ] Page is linked from the Feature 2.4 authoring guide and from `CONTRIBUTING-THEMES.md`.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** theme author
+
+### Feature 2.14: Theme naming convention migration
+Pre-1.0 breaking change: every shipped theme's name carries an explicit `-light` or `-dark` suffix. `sketchbook` becomes `sketchbook-light`, `graphite` becomes `graphite-dark`, etc. The bundled `public/theme.css` keeps backward-compat aliases for one minor version (`[data-theme="sketchbook"]` aliases to `sketchbook-light`); after that minor version the unsuffixed selectors are removed. The migration unblocks Feature 2.15 (cross-theme mixing) by making the API consistent — no more guessing whether a name is "default light" or "the only mode that exists." Lands together with Feature 2.13 in v0.7 because the new companions need the new naming from day one.
+
+#### User Stories
+
+**US-2.14.1** — As a maintainer, I want every shipped theme folder, bundled `public/theme.css` selector, validator entry, and theme registry entry renamed to the suffixed convention, so that the codebase consistently reflects "every theme name carries a mode."
+
+**Acceptance criteria:**
+- [ ] `public/themes/<name>/` folders renamed to `<name>-light` or `<name>-dark` for every theme except Terminal (which already documents its mode separately) — or Terminal renamed to `terminal-dark` if we choose consistency over brevity (decision captured in PR).
+- [ ] Bundled `public/theme.css` `[data-theme="<old>"]` selectors updated to the suffixed names.
+- [ ] Backward-compat aliases added for one minor version: each old selector aliases to its new counterpart (e.g. `[data-theme="sketchbook"]` reuses the `sketchbook-light` block).
+- [ ] Theme validator, registry, and any internal lookup tables updated to the new names.
+- [ ] CHANGELOG entry under the v0.7 release marks this as a breaking change with the alias-grace-period note.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** maintainer
+
+**US-2.14.2** — As a consumer, I want a written migration guide that tells me exactly which `data-theme` strings changed, so that I can update my app's theme switcher in one pass.
+
+**Acceptance criteria:**
+- [ ] `/docs/themes/migration-v0.7` (or equivalent) lists the old name → new name table for every theme.
+- [ ] Page notes the alias grace period (one minor version) and the version in which unsuffixed names are removed.
+- [ ] Page includes a copy-pasteable find-and-replace recipe (regex or simple string list).
+- [ ] CHANGELOG and release notes link to this page.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** consumer
+
+**US-2.14.3** — As a maintainer, I want the alias grace period to expire on a tracked deadline, so that the backward-compat selectors don't quietly live forever.
+
+**Acceptance criteria:**
+- [ ] An issue is filed at the time of the v0.7 cut titled "Remove unsuffixed theme aliases in v0.8" and milestoned to v0.8.
+- [ ] When v0.8 is cut, the alias selectors are deleted from bundled `public/theme.css` and the migration page is updated to "aliases removed in v0.8."
+- [ ] The CHANGELOG entry for v0.8 notes the alias removal.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** maintainer
+
+### Feature 2.15: Cross-theme mixing
+A consumer picks separate themes for light and dark mode independently — for example Sketchbook Light for daytime and Graphite Dark for nighttime — using the existing `data-theme` attribute. Already supported by the model (Feature 2.14's naming convention makes every theme self-describe its mode); this feature adds the documented pattern, an optional helper, and a ThemePicker UI update so that the capability is discoverable without reading source. Cross-references Epic 1's `prefers-color-scheme` auto-detect — this feature swaps the `data-theme` value the auto-detect writes; it does not replace the detect mechanism.
+
+#### User Stories
+
+**US-2.15.1** — As a consumer, I want a documented pattern for picking different themes for light and dark mode using only `data-theme` and a few lines of JS, so that I can ship cross-theme mixing without depending on a library helper.
+
+**Acceptance criteria:**
+- [ ] `/docs/themes/cross-theme-mixing` (or equivalent) shows the canonical pattern: read `prefers-color-scheme`, read the consumer's per-mode preference from storage, write the matching `<name>-light` or `<name>-dark` value to `document.documentElement.dataset.theme`.
+- [ ] Page includes a complete copy-pasteable JS snippet (no framework required).
+- [ ] Page references Prism Light + Prism Dark as the worked example pair.
+- [ ] Page links to Feature 2.14's migration guide (the suffixed naming is what makes this pattern work).
+
+**Priority:** P1
+**Effort:** 1
+**Role:** consumer
+
+**US-2.15.2** — As a consumer, I want an optional `cross-theme-helper.js` utility that wires up `prefers-color-scheme`, localStorage, and the DOM update for me, so that I don't have to hand-roll the same 30 lines on every project.
+
+**Acceptance criteria:**
+- [ ] `cross-theme-helper.js` ships under `public/scripts/` (or equivalent) as a single dependency-free module.
+- [ ] Public API takes a light theme name + a dark theme name (e.g. `setupCrossTheme('sketchbook-light', 'graphite-dark')`) and handles: initial read of `prefers-color-scheme`, listening for system changes, persisting per-mode override to localStorage, writing `data-theme` to the document element.
+- [ ] Module is fully optional — the documented pattern (US-2.15.1) works without it.
+- [ ] Source is under 2 KB minified and ships an inline JSDoc usage example.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** consumer
+
+**US-2.15.3** — As a new user, I want the `/themes` ThemePicker UI to expose two dropdowns — Light theme and Dark theme — so that I can preview cross-theme mixing without writing code.
+
+**Acceptance criteria:**
+- [ ] ThemePicker renders two dropdowns: "Light theme" lists every theme whose name ends in `-light` (plus light-only single-mode themes); "Dark theme" lists every theme ending in `-dark` (plus dark-only single-mode themes like Terminal).
+- [ ] Selecting a value updates the stored per-mode preference and applies the matching theme based on current `prefers-color-scheme`.
+- [ ] A "Match system" toggle reverts to the OS preference for active mode.
+- [ ] Selections persist across page reloads.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** new user
+
+**US-2.15.4** — As a theme author, I want the cross-theme-mixing docs page to ship a worked example using Sketchbook Light + Graphite Dark, so that the pattern is concrete rather than abstract.
+
+**Acceptance criteria:**
+- [ ] Docs page (US-2.15.1) includes a live demo with `sketchbook-light` set as the light pick and `graphite-dark` set as the dark pick.
+- [ ] Demo lets the visitor flip the OS appearance (or a simulated toggle) and shows both themes resolving correctly.
+- [ ] Demo references Prism Light + Prism Dark as the "matched pair" alternative (vs. the deliberately-mixed Sketchbook + Graphite shown in the demo) so authors see both strategies.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** theme author
+
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations) — needs the token contract and theme validator in place before per-theme work can be audited consistently, and before `CONTRIBUTING-THEMES.md` has a stable reference surface.
 - Blocks: Epic 4 (Documentation Site) — the docs-site theme authoring page references this epic's icon-pack format and audit commands.
@@ -486,6 +672,6 @@ A 7th built-in theme at `public/themes/boilerplate/theme.css` that ships with th
 
 ## Priority
 P0 overall. Sub-priorities:
-- **P0** — contrast audit (2.6), first round of per-theme icon packs (2.1), theme-aware icon swap (2.2), authoring guide (2.4), dark-companion contrast parity (2.8.3), browser-based themes editor (2.9), vendored Lucide core pack (2.10), icon pack switching mechanism (2.11), boilerplate theme placeholder (2.12.1).
-- **P1** — preview thumbnails (2.3), size/perf audit (2.7), dark companions content (2.8.1/2.8.2), icon comparison grid (2.1.3), PR template + CI gating (2.5.1/2.5.2), boilerplate theme real design (2.12.2).
+- **P0** — contrast audit (2.6), first round of per-theme icon packs (2.1), theme-aware icon swap (2.2), authoring guide (2.4), dark-companion contrast parity (2.8.3), browser-based themes editor (2.9), vendored Lucide core pack (2.10), icon pack switching mechanism (2.11), boilerplate theme placeholder (2.12.1), universal light/dark pairing (2.13 — all five new companions, Terminal single-mode rationale, pairing-decision page; lands in v0.7), naming convention migration (2.14.1 + 2.14.2; ships with the new companions in v0.7 because the breaking name change drops here).
+- **P1** — preview thumbnails (2.3), size/perf audit (2.7), dark companions content (2.8.1/2.8.2), icon comparison grid (2.1.3), PR template + CI gating (2.5.1/2.5.2), boilerplate theme real design (2.12.2), naming-alias removal follow-up (2.14.3), cross-theme mixing (2.15 — pattern docs, optional helper, ThemePicker dual-dropdown, worked Sketchbook + Graphite example; can ship after v0.7 if it slips).
 - **P2** — end-to-end community submission dry run (2.5.3).

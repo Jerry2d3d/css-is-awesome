@@ -58,15 +58,41 @@ sass app.scss app.css --pkg-importer=node
 
 ## Theme system (1 file)
 
-A theme is a single CSS file declaring custom properties at `:root`. Replace `theme.css` to reskin the entire site. Six themes ship: sketchbook (default), press, graphite, glass, cupertino, terminal, plus a `boilerplate` starter.
+A theme is a single CSS file declaring custom properties at `:root`. Replace `theme.css` to reskin the entire site. Themes shipped: sketchbook (css-is-awesome's brand), press, graphite, glass, cupertino, terminal, prism-light + prism-dark.
 
 ```html
 <link rel="stylesheet" href="node_modules/css-is-awesome/dist/css-is-awesome.min.css">
 <link rel="stylesheet" href="node_modules/css-is-awesome/public/theme.css">
-<html data-theme="press"> <!-- swap to any theme name -->
+<html data-theme="prism-light"> <!-- swap to any theme name -->
 ```
 
 Validator: `node scripts/theme-validator.js path/to/theme.css`. Every theme must declare every contract token; the validator fails CI if not.
+
+### Theme init (Next.js / SSR consumers)
+
+Setting `data-theme` in a `useEffect` causes a flash-of-default-theme before hydration. Use the inline-script helper to set the attribute synchronously on first paint:
+
+```tsx
+// app/layout.tsx (Next.js App Router)
+import { getThemeInitScript } from "css-is-awesome/theme-init";
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: getThemeInitScript({
+          defaultTheme: "prism-light",
+          darkTheme: "prism-dark",
+          storageKey: "app-theme",
+        }) }} />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+`suppressHydrationWarning` on `<html>` is required — the inline script mutates the DOM before React hydrates, so React would otherwise warn about a server/client mismatch on `data-theme`.
 
 ## Where to read deeper
 

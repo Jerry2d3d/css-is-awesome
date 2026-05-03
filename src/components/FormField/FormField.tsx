@@ -1,7 +1,7 @@
 "use client";
 import { forwardRef, useId, isValidElement, cloneElement } from "react";
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
-import Label from "@/components/Label";
+import Label from "../Label";
 import styles from "./FormField.module.scss";
 
 export type FormFieldProps = Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
