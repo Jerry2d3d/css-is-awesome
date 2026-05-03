@@ -665,6 +665,84 @@ A consumer picks separate themes for light and dark mode independently — for e
 **Effort:** 1
 **Role:** theme author
 
+### Feature 2.16: Add-ons — drop-in themes, icon packs, animation extras
+Post-1.0 expansion model. Beyond the core themes (Feature 2.13) and the bundled Lucide / Phosphor / Heroicons packs (Features 2.10, 2.11), additional themes, icon packs, animation libraries, and mixin extras ship as **add-ons**: self-contained assets that depend on css-is-awesome but are distributed separately. Each add-on follows the same one-file model the system already enforces — a theme add-on is one `theme.css`, an icon-pack add-on is one folder of SVGs that satisfies the icon-pack contract from Feature 2.11, an animation add-on is a single SCSS partial of keyframes/mixins. No runtime; assets only. The styling-system equivalent of how shadcn distributes components: a curated catalog people pull from, each piece self-contained, no build required. Distribution mechanism (dedicated npm packages like `@css-is-awesome/themes-extra` and `@css-is-awesome/icons-phosphor` vs. a single registry / download index) is an open question. The same theme validator and icon-pack contract checks that gate in-core submissions (Features 2.5, 2.6, 2.7, 2.11) gate add-on submissions too — the difference is distribution surface, not quality bar. Cross-theme mixing (Feature 2.15) and naming conventions (Feature 2.14) apply to add-on themes unchanged.
+
+#### User Stories
+
+**US-2.16.1** — As a system author, I want a single CI-runnable validator entry point that checks any add-on (theme file, icon pack folder, animation partial) against its respective contract, so that add-on submissions are gated by the same quality bar as in-core assets without forking the validator.
+
+**Acceptance criteria:**
+- [ ] `npm run validate:addon -- --type=theme --path=<file>` runs `scripts/theme-validator.js` against an arbitrary `theme.css` outside the repo's `public/themes/` tree.
+- [ ] `npm run validate:addon -- --type=icons --path=<dir>` runs the icon-pack contract check from Feature 2.11 (canonical names present, SVGO clean, no hardcoded `fill=`, `currentColor` or solid black, no inline `style`).
+- [ ] `npm run validate:addon -- --type=animation --path=<file>` lints an animation SCSS partial against an "animation add-on contract" (keyframes namespaced under `cia-`, no global selectors, no JS).
+- [ ] All three subcommands share the same JSON output schema so downstream tooling (catalog, PR bots) reads them uniformly.
+- [ ] Validator is published as a CLI binary so add-on authors can run it from their own repos without cloning css-is-awesome.
+
+**Priority:** P2
+**Effort:** 5
+**Role:** system author
+
+**US-2.16.2** — As a theme author, I want a documented path to publish a new theme as an add-on package without merging into core, so that I can ship a niche or branded theme on my own release cadence.
+
+**Acceptance criteria:**
+- [ ] `CONTRIBUTING-THEMES.md` (already exists per Feature 2.5) gains an "Add-ons" section linking to a step-by-step add-on publishing guide.
+- [ ] Guide covers: scaffolding the add-on package layout, running the Feature 2.16.1 validator, declaring the css-is-awesome version compatibility range, naming conventions for the published artifact, and the catalog-submission step (US-2.16.4).
+- [ ] Guide includes a worked example (a fictional theme published as a standalone npm package or downloadable file).
+- [ ] Cross-references Feature 2.13 (light/dark pairing expectations apply to add-on themes too) and Feature 2.14 (suffixed naming convention applies to add-on themes too).
+
+**Priority:** P2
+**Effort:** 3
+**Role:** theme author
+
+**US-2.16.3** — As a contributor, I want an icon-pack-specific submission guide (`CONTRIBUTING-ICONS.md`), so that the rules for shipping an alternate icon pack as an add-on are as clear as the rules for shipping a theme.
+
+**Acceptance criteria:**
+- [ ] `CONTRIBUTING-ICONS.md` exists at the repo root, mirrors the structure of `CONTRIBUTING-THEMES.md`, and is referenced from the Feature 2.16.2 add-ons guide.
+- [ ] Document covers the icon-pack contract from Feature 2.11 (canonical names, SVGO, `currentColor`), licensing/attribution requirements, optional pack metadata (display name, version, source URL), and the validator command from US-2.16.1.
+- [ ] Document explicitly distinguishes "in-core pack" (lands under `public/icons/<pack>/`, ships in the bundle) from "add-on pack" (ships separately, consumer-installed) and notes that the contract is identical.
+- [ ] Document is linked from the Feature 2.4 authoring guide, the Feature 2.16.2 add-on publishing guide, and `public/icons/README.md`.
+
+**Priority:** P2
+**Effort:** 1
+**Role:** contributor
+
+**US-2.16.4** — As a consumer, I want a catalog page on the docs site that lists every shipped + community add-on, so that I can discover and install themes, icon packs, and animation libraries without trawling GitHub or npm.
+
+**Acceptance criteria:**
+- [ ] `/docs/add-ons` (or equivalent) renders a filterable catalog with cards for every shipped + accepted community add-on, grouped by type (themes / icon packs / animations / mixin extras).
+- [ ] Each card shows: name, type, author, version, license, css-is-awesome compatibility range, install command (or download link), and a live preview where applicable (theme thumbnail per Feature 2.3, icon grid per Feature 2.1.3).
+- [ ] Catalog data lives in a single source-of-truth manifest in the repo (e.g. `roadmap/add-ons-registry.json`) so adding an add-on is a one-line PR.
+- [ ] Catalog page is linked from `/themes` and `/docs/themes/authoring`.
+
+**Priority:** P2
+**Effort:** 5
+**Role:** consumer
+
+**US-2.16.5** — As a maintainer, I want a decided distribution mechanism for add-ons (dedicated npm packages, a single registry, a download index, or a hybrid), so that future add-on submissions follow one canonical path rather than ad-hoc per-asset.
+
+**Acceptance criteria:**
+- [ ] An ADR (architecture decision record) under `docs/decisions/` evaluates: (a) one npm package per add-on under a `@css-is-awesome/*` scope, (b) a single registry repo with a manifest + downloadable assets, (c) a hybrid where themes are downloads and icon packs are npm packages, (d) GitHub Releases on a dedicated `css-is-awesome-addons` repo.
+- [ ] ADR captures trade-offs for each option (discoverability, install ergonomics, version pinning, hosting cost, security review surface).
+- [ ] ADR concludes with a chosen mechanism and a rollout plan; all subsequent 2.16.x stories assume that mechanism.
+- [ ] **Open question** flagged here remains open until this story merges.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** maintainer
+
+**US-2.16.6** — As a maintainer, I want a governance policy for community add-ons covering versioning, deprecation, and security review (especially for SVG payloads), so that the catalog stays trustworthy as it grows.
+
+**Acceptance criteria:**
+- [ ] A `GOVERNANCE-ADDONS.md` document defines: SemVer expectations per add-on, the css-is-awesome compatibility-range declaration required of every add-on, the deprecation flow (when an add-on is unmaintained or breaks compatibility), and the catalog removal criteria.
+- [ ] Document defines a security review checklist for SVG add-ons: no embedded `<script>` or event-handler attrs, no external `xlink:href`, no inline `<style>` with @import, no foreignObject, SVGO clean — automated where possible via the Feature 2.16.1 validator.
+- [ ] Document defines a security review process for any add-on that ships JS (animation packs that include helper utilities, etc.) and either bans JS in add-ons outright or requires a manual maintainer review on each version bump.
+- [ ] Document is linked from the catalog page (US-2.16.4), `CONTRIBUTING-THEMES.md`, and `CONTRIBUTING-ICONS.md`.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** maintainer
+
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations) — needs the token contract and theme validator in place before per-theme work can be audited consistently, and before `CONTRIBUTING-THEMES.md` has a stable reference surface.
 - Blocks: Epic 4 (Documentation Site) — the docs-site theme authoring page references this epic's icon-pack format and audit commands.
@@ -674,4 +752,4 @@ A consumer picks separate themes for light and dark mode independently — for e
 P0 overall. Sub-priorities:
 - **P0** — contrast audit (2.6), first round of per-theme icon packs (2.1), theme-aware icon swap (2.2), authoring guide (2.4), dark-companion contrast parity (2.8.3), browser-based themes editor (2.9), vendored Lucide core pack (2.10), icon pack switching mechanism (2.11), boilerplate theme placeholder (2.12.1), universal light/dark pairing (2.13 — all five new companions, Terminal single-mode rationale, pairing-decision page; lands in v0.7), naming convention migration (2.14.1 + 2.14.2; ships with the new companions in v0.7 because the breaking name change drops here).
 - **P1** — preview thumbnails (2.3), size/perf audit (2.7), dark companions content (2.8.1/2.8.2), icon comparison grid (2.1.3), PR template + CI gating (2.5.1/2.5.2), boilerplate theme real design (2.12.2), naming-alias removal follow-up (2.14.3), cross-theme mixing (2.15 — pattern docs, optional helper, ThemePicker dual-dropdown, worked Sketchbook + Graphite example; can ship after v0.7 if it slips).
-- **P2** — end-to-end community submission dry run (2.5.3).
+- **P2** — end-to-end community submission dry run (2.5.3), add-ons distribution layer (2.16 — drop-in themes / icon packs / animation extras, validator CLI, `CONTRIBUTING-ICONS.md`, catalog page, distribution-mechanism ADR, governance policy; lands post-1.0 once the in-core surface is stable).

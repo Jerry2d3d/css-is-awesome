@@ -2,6 +2,26 @@
 
 A phased plan to turn the extracted SCSS system into a polished, Bootstrap-style distributable library. Each phase stands on its own and can ship independently.
 
+## Product architecture
+
+**Strategic decision (2026-05-03):** the umbrella is split into THREE distinct products. css-is-awesome is the styling system — it does NOT ship React/JS components. See [`roadmap/product-architecture.md`](./roadmap/product-architecture.md) for the full rationale.
+
+1. **css-is-awesome** (this repo) — the styling system whose themes pass a typed contract; one file swaps the entire skin. Pure SCSS + CSS, no React.
+2. **Add-ons** — themes, icon packs, animation libraries, mixin extras. Drop-in single-file assets, no build step. The existing one-file `theme.css` model is the template.
+3. **Gremlin UI** — FUTURE separate npm package: a React component library that depends on css-is-awesome for theming. Picks up the components currently sitting in `src/components/`. Name TBD ("Gremlin UI" / "Components are Awesome" / "Gremlin Components").
+4. **Gremlin Boilerplate** — FUTURE Next.js starter that pre-wires css-is-awesome + Gremlin UI + auth + an opinionated app shell. Evolves from `boiler-project-ai`.
+
+Gremlin UI and Gremlin Boilerplate are out of this repo's primary scope, but planning starts here so we don't paint ourselves into a corner.
+
+```
+Gremlin Boilerplate  ──►  Gremlin UI  ──►  css-is-awesome  ──►  Add-ons
+   (Next.js app)         (React lib)       (this repo)         (themes,
+                                                                icon packs,
+                                                                animations)
+```
+
+Dependency direction is one-way: lower layers never know about higher ones.
+
 ## Two views
 
 - **This file (phases):** delivery milestones — what ships in v0.1, v0.2, v0.5, v1.0, etc.
@@ -184,14 +204,15 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 
 ## Phase 5 — Distribution & CDN (v0.7)
 
-**Goal:** Cut the first real npm release and prove a downstream consumer can pull it from the registry.
+**Goal:** Cut the first real npm release as a styling-system-only package. css-is-awesome ships SCSS + CSS — no React, no TS modules. Components move out (see Phase 8).
 
 ### Pre-publish (in order)
+- [ ] **Revert React packaging from `feat/v0.7-port-fixes`** — strip the React bundle that was added today. Files to remove: `dist/components/`, `src/index.ts`, `tsup.config.ts`, `tsconfig.lib.json`, `scripts/add-use-client.mjs`, `scripts/copy-component-scss.mjs`. Drop the `tsup`/components scripts from `package.json` and the `exports` entries that point at `./components`. Keep `theme-init` as a documented snippet inside `AGENTS.md`, NOT a published TS module. Boilerplate copies its 17 wanted components from `src/components/` shadcn-style — a 30-min one-time job for the consumer.
 - [ ] **Fix `_app-styles.scss` leak** — `scss/main.scss:11` currently pulls in docs-app styles; remove from the library entry so consumers don't inherit Next.js chrome.
-- [ ] **`npm pack` smoke test** — generate the tarball, install into a throwaway folder, import the SCSS + utilities CSS, confirm zero stray rules and correct module resolution.
+- [ ] **`npm pack` smoke test** — generate the tarball, install into a throwaway folder, import the SCSS + utilities CSS, confirm zero stray rules, no `dist/components`, no TS entry, correct module resolution.
 - [ ] **Hand-design boilerplate theme** at `public/themes/boilerplate/theme.css` (tracked in Phase 4.5 — this is the gating dependency for the registry consumer test).
-- [ ] **`npm publish` 0.6.1** (`npm publish --access public`) — first public registry cut.
-- [ ] **Boilerplate consumer install from registry** — real downstream project installs `css-is-awesome@0.6.1`, drops in the boilerplate theme, confirms full system + utilities work end-to-end.
+- [ ] **`npm publish` 0.7.0** (`npm publish --access public`) — first public registry cut as a styling-only package.
+- [ ] **Boilerplate consumer install from registry** — real downstream project installs `css-is-awesome@0.7.0`, drops in the boilerplate theme, confirms full system + utilities work end-to-end. Consumer copies its own components from `src/components/` shadcn-style.
 
 ### Follow-on
 - [ ] Verify jsDelivr + unpkg auto-serve the `dist/` files
@@ -216,7 +237,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [ ] GitHub Action: CI (build + lint), Release (semver + npm publish + changelog)
 - [ ] Badge suite in README (npm version, downloads, bundle size, license)
 - [ ] Contribution guide + issue templates
-- [ ] Storybook or Ladle instance for the (future) component library
+- [ ] Storybook or Ladle instance — lives in Gremlin UI's repo, not here (see Phase 8).
 
 ---
 
@@ -234,9 +255,31 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 
 ---
 
+## Phase 8 — Companion products (post-1.0)
+
+**Goal:** Ship the React layer and the Next.js starter as separate products that depend on css-is-awesome. Naming for the React lib is still TBD: **"Gremlin UI"** vs **"Components are Awesome"** vs **"Gremlin Components"**.
+
+These live OUTSIDE this repo (separate package, separate semver, separate README). Tracked here so the strategic split is visible.
+
+### Gremlin UI (sister npm package)
+- [ ] **Trigger:** starts when css-is-awesome `1.0` ships AND the ~17 components the boilerplate already wants are stable in `src/components/`.
+- [ ] Stand up its own repo (or workspace package — see [`roadmap/product-architecture.md`](./roadmap/product-architecture.md) open question).
+- [ ] Migrate components from this repo's `src/components/` (or the rescoped subset from Epic 03).
+- [ ] Declare `css-is-awesome` as a peer dependency for theming.
+- [ ] Storybook or Ladle for the component catalog.
+- [ ] Independent semver, independent CHANGELOG.
+
+### Gremlin Boilerplate (Next.js starter)
+- [ ] **Trigger:** starts when Gremlin UI hits a usable `0.x` AND css-is-awesome `0.7+` is on the registry.
+- [ ] Evolve `boiler-project-ai` into the official starter.
+- [ ] Pre-wires css-is-awesome (theme + utilities) + Gremlin UI + auth + opinionated app shell.
+- [ ] One-command bootstrap (e.g. `npx create-gremlin-app`).
+- [ ] Documented as the recommended on-ramp for new full-stack projects.
+
+---
+
 ## Stretch / Future
 
-- [ ] Companion React component library (`@css-is-awesome/react`) — pulls from `boiler-project-ai` component inventory
 - [ ] Tailwind preset — expose tokens as a Tailwind config for dual-audience support
 - [ ] Figma library companion (auto-synced with tokens)
 - [ ] Animation/motion preset expansion (keyframe library)
@@ -260,19 +303,21 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 1. ~~**Lock theme token API contract**~~ — done. 6 themes implement it.
 2. ~~**Wire `/themes` gallery page**~~ — done.
 3. ~~**Build `/compare` page**~~ — done.
-4. **Fix `_app-styles.scss` leak** at `scss/main.scss:11` so the library entry stops pulling in docs-app styles.
-5. **`npm pack` smoke test** — install the tarball into a throwaway folder, verify clean output.
-6. **Hand-design `public/themes/boilerplate/theme.css`** — neutral baseline theme for new consumers.
-7. **`npm publish` 0.6.1** — first public registry cut.
-8. **Boilerplate consumer install from registry** — real downstream project pulls `css-is-awesome@0.6.1` and confirms end-to-end.
-9. **Update `/compare` page** — three-tier story (core / utilities / full) + bundle-size table next to Tailwind + Bootstrap.
-10. **Vendor Lucide as default `core` icon pack** at `public/icons/core/` (~49 glyphs, MIT, `LICENSE-third-party`).
-11. **Themes editor at `/themes/editor`** — browser-only live preview, contract-slot controls, Blob download, localStorage autosave, validates before download.
-12. **Replace placeholder `/docs` copy** with real `cia-*` usage, token grids, mixin API reference, migration from Bootstrap.
-13. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes.
-14. **Animation preview page** — grid of every keyframe × every theme.
-15. **Decide sizing scale** (t-shirt vs numbered) — shipping t-shirt now; numbered aliases can layer on non-breaking.
-16. **Phase 7 differentiators** (post-v1.0) — zero-JS components, a11y linter, TS token bridge, intrinsic layout mixins, Tailwind→Awesome CLI, `/showcase`, component depth audit.
+4. **Revert React packaging from `feat/v0.7-port-fixes`** — strip `dist/components/`, `src/index.ts`, `tsup.config.ts`, `tsconfig.lib.json`, `scripts/add-use-client.mjs`, `scripts/copy-component-scss.mjs`, related `package.json` scripts/exports. css-is-awesome ships styling only; components belong to Phase 8 / Gremlin UI.
+5. **Fix `_app-styles.scss` leak** at `scss/main.scss:11` so the library entry stops pulling in docs-app styles.
+6. **`npm pack` smoke test** — install the tarball into a throwaway folder, verify clean output (no `dist/components`, no TS entry).
+7. **Hand-design `public/themes/boilerplate/theme.css`** — neutral baseline theme for new consumers.
+8. **`npm publish` 0.7.0** — first public registry cut as a styling-only package.
+9. **Boilerplate consumer install from registry** — real downstream project pulls `css-is-awesome@0.7.0` and confirms end-to-end. Consumer copies components shadcn-style from `src/components/`.
+10. **Update `/compare` page** — three-tier story (core / utilities / full) + bundle-size table next to Tailwind + Bootstrap.
+11. **Vendor Lucide as default `core` icon pack** at `public/icons/core/` (~49 glyphs, MIT, `LICENSE-third-party`).
+12. **Themes editor at `/themes/editor`** — browser-only live preview, contract-slot controls, Blob download, localStorage autosave, validates before download.
+13. **Replace placeholder `/docs` copy** with real `cia-*` usage, token grids, mixin API reference, migration from Bootstrap.
+14. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes.
+15. **Animation preview page** — grid of every keyframe × every theme.
+16. **Decide sizing scale** (t-shirt vs numbered) — shipping t-shirt now; numbered aliases can layer on non-breaking.
+17. **Phase 7 differentiators** (post-v1.0) — zero-JS components, a11y linter, TS token bridge, intrinsic layout mixins, Tailwind→Awesome CLI, `/showcase`, component depth audit.
+18. **Phase 8 companion products** — Gremlin UI (React lib, name TBD) and Gremlin Boilerplate (Next.js starter), each event-triggered after css-is-awesome 1.0.
 
 ---
 
