@@ -1,23 +1,15 @@
 /* ============================================================
-   THEME — Terminal Light (Daylight Editor)
+   THEME — Terminal Light (Daylight Editor, gray paper)
    -----------------------------------------------------------
    Companion to Terminal Dark (the VT100 phosphor CRT). This is
-   "the same terminal, opened in daylight" — modern iTerm/VS Code
-   light-theme aesthetic. Off-white paper, near-black mono ink,
-   classic light-syntax accents (blue keywords, green strings,
-   orange numbers), still mono everywhere, still zero radii.
+   the same terminal opened in daylight — light gray paper,
+   near-black mono ink, classic light-syntax accents (blue
+   keywords, green strings, orange numbers). Mono everywhere,
+   zero radii, no glow.
 
-   What changes vs Terminal Dark
-     - paper: deep warm black  →  off-white #FAFAFA
-     - ink:   phosphor green   →  near-black #1A1A1A
-     - accent: cyan link       →  classic terminal blue (#0451A5)
-     - shadows: phosphor halo  →  subtle ink hairlines
-     - glow:  green bloom      →  none (daylight, not emission)
-
-   What stays
-     - All fonts point at --font-mono (terminal stays mono).
-     - All radii stay 0 (terminals are square).
-     - Motion stays fast (terminals are instant).
+   Paper is a clear light GRAY (not off-white) to match the
+   feel of a modern light-mode editor and read as "deliberately
+   light" rather than "default white."
 
    Pair partner: terminal-dark (use [data-theme="terminal-dark"]).
    ============================================================ */
@@ -25,40 +17,40 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
 
 [data-theme="terminal-light"] {
-  /* Surfaces — off-white paper, slight warm tint */
-  --paper:        #FAFAFA;
-  --paper-raised: #FFFFFF;
-  --paper-sunk:   #F0F0F0;
-  --paper-glass:  rgba(255, 255, 255, 0.85);
+  /* Surfaces — clear light gray paper, white-lift for raised panels */
+  --paper:        #E8E8E8;
+  --paper-raised: #F5F5F5;
+  --paper-sunk:   #D8D8D8;
+  --paper-glass:  rgba(232, 232, 232, 0.85);
 
   /* Ink — near-black mono ink */
   --ink:        #1A1A1A;
-  --ink-soft:   #4A4A4A;
+  --ink-soft:   #404040;
   --ink-faint:  #707070;
   --graphite:   #0A0A0A;
   --muted:      #909090;
 
-  /* Hairlines / grid rules — light gray */
-  --guide:      #C8C8C8;
-  --guide-soft: #DEDEDE;
-  --hair:       #D0D0D0;
-  --hair-soft:  #E8E8E8;
+  /* Hairlines / grid rules — medium gray */
+  --guide:      #B8B8B8;
+  --guide-soft: #C8C8C8;
+  --hair:       #C0C0C0;
+  --hair-soft:  #D8D8D8;
 
-  /* Primary accent — classic terminal blue (the VS Code "type/keyword" blue) */
+  /* Primary accent — classic terminal blue (VS Code keyword blue) */
   --ai:         #0451A5;
   --ai-ink:     #023268;
-  --ai-wash:    rgba(4, 81, 165, 0.08);
+  --ai-wash:    rgba(4, 81, 165, 0.10);
 
   /* Seal — error red */
   --shu:        #B91C1C;
-  --shu-wash:   rgba(185, 28, 28, 0.08);
+  --shu-wash:   rgba(185, 28, 28, 0.10);
 
   /* Accent — warning amber */
   --ochre:      #B45309;
-  --ochre-wash: rgba(180, 83, 9, 0.08);
+  --ochre-wash: rgba(180, 83, 9, 0.10);
 
-  /* Code surface — slight off-paper tint */
-  --code-bg:     #F5F5F5;
+  /* Code surface — slightly darker than paper for contrast */
+  --code-bg:     #DDDDDD;
   --code-ink:    #1A1A1A;
   --code-muted:  #707070;
   --code-accent: #B45309;  /* numbers / literals — orange */
@@ -77,19 +69,19 @@
   --r-md: 0;
   --r-lg: 0;
 
-  /* Shadows — subtle hairlines, no halo (it's daylight, not phosphor) */
-  --shadow-sm:  0 0 0 1px rgba(26, 26, 26, 0.06);
-  --shadow-md:  0 0 0 1px rgba(26, 26, 26, 0.08), 0 1px 2px rgba(26, 26, 26, 0.04);
-  --shadow-lg:  0 0 0 1px rgba(26, 26, 26, 0.10), 0 2px 4px rgba(26, 26, 26, 0.06);
-  --shadow-xl:  0 0 0 1px rgba(26, 26, 26, 0.12), 0 4px 8px rgba(26, 26, 26, 0.08);
-  --shadow-2xl: 0 0 0 1px rgba(26, 26, 26, 0.14), 0 8px 16px rgba(26, 26, 26, 0.10);
+  /* Shadows — subtle hairlines, no halo */
+  --shadow-sm:  0 0 0 1px rgba(26, 26, 26, 0.08);
+  --shadow-md:  0 0 0 1px rgba(26, 26, 26, 0.10), 0 1px 2px rgba(26, 26, 26, 0.06);
+  --shadow-lg:  0 0 0 1px rgba(26, 26, 26, 0.12), 0 2px 4px rgba(26, 26, 26, 0.08);
+  --shadow-xl:  0 0 0 1px rgba(26, 26, 26, 0.14), 0 4px 8px rgba(26, 26, 26, 0.10);
+  --shadow-2xl: 0 0 0 1px rgba(26, 26, 26, 0.16), 0 8px 16px rgba(26, 26, 26, 0.12);
 
   /* Blur — terminal has no frosted glass */
   --blur-sm: none;
   --blur-md: none;
   --blur-lg: none;
 
-  /* Glow — daylight, no emission. Declared transparent. */
+  /* Glow — daylight, no emission */
   --glow-sm: 0 0 0 transparent;
   --glow-md: 0 0 0 transparent;
   --glow-lg: 0 0 0 transparent;
@@ -129,9 +121,9 @@
   --border-emphasis:   var(--ink);
   --border-focus:      var(--ai);
 
-  /* Interactive overlays — ink-on-paper, dark wash */
-  --interactive-hover:  rgba(26, 26, 26, 0.04);
-  --interactive-active: rgba(26, 26, 26, 0.08);
+  /* Interactive overlays — ink-on-gray, dark wash */
+  --interactive-hover:  rgba(26, 26, 26, 0.05);
+  --interactive-active: rgba(26, 26, 26, 0.10);
 
   --brand-primary:        var(--ai);
   --brand-primary-hover:  var(--ai-ink);
@@ -155,22 +147,22 @@
   --feedback-error:    var(--shu);
 
   --info-default: var(--ai);
-  --info-subtle:  rgba(4, 81, 165, 0.08);
+  --info-subtle:  rgba(4, 81, 165, 0.10);
   --info-text:    var(--ai-ink);
 
   --success-default: #008833;
-  --success-subtle:  rgba(0, 136, 51, 0.08);
+  --success-subtle:  rgba(0, 136, 51, 0.10);
   --success-text:    #006622;
 
   --warning-default: var(--ochre);
-  --warning-subtle:  rgba(180, 83, 9, 0.08);
+  --warning-subtle:  rgba(180, 83, 9, 0.10);
   --warning-text:    #92400E;
 
   --error-default: var(--shu);
-  --error-subtle:  rgba(185, 28, 28, 0.08);
+  --error-subtle:  rgba(185, 28, 28, 0.10);
   --error-text:    #7F1D1D;
 
-  /* Space scale — same natural rem scale as Terminal Dark */
+  /* Space scale */
   --space-2xs: 0.25rem;
   --space-xs:  0.5rem;
   --space-sm:  0.75rem;
