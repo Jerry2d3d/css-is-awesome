@@ -2,6 +2,7 @@ import styles from "./SiteHeader.module.scss";
 import Link from "next/link";
 import LogoMark from "@/components/LogoMark";
 import LightDarkToggle from "@/components/LightDarkToggle";
+import ThemeSelect from "@/components/ThemeSelect";
 
 type NavId = "home" | "docs" | "themes" | "examples" | "compare" | "showcase" | "blog" | "about";
 
@@ -35,7 +36,10 @@ export default function SiteHeader({ current }: { current: NavId }) {
             </Link>
           ))}
         </nav>
-        <LightDarkToggle />
+        <div className={styles.themeControls}>
+          <ThemeSelect />
+          <LightDarkToggle />
+        </div>
       </div>
     </header>
   );

@@ -50,3 +50,8 @@
   color: var(--ink);
   border-bottom-color: var(--ink);
 }
+.themeControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

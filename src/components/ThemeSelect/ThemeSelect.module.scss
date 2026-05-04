@@ -1,0 +1,46 @@
+/* ============================================================
+   ThemeSelect — compact theme-family dropdown for the global
+   header. Native <select> for accessibility + zero popover state.
+   ============================================================ */
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 6px);
+  padding: 0.45rem 1.75rem 0.45rem 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 180ms var(--ease),
+    border-color 180ms var(--ease),
+    color 180ms var(--ease);
+
+  /* Custom dropdown chevron — uses currentColor so it follows ink */
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 9px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.select:hover {
+  background-color: var(--paper-sunk);
+  border-color: var(--ink-faint);
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--ai);
+  outline-offset: 2px;
+}
+
+.select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
