@@ -9,14 +9,15 @@ type Theme = { id: string; label: string };
 // unsuffixed v0.6 names (`sketchbook`, `press`, `graphite`, `glass`,
 // `cupertino`) still resolve via the alias selectors in
 // public/theme.css through 0.7.x; new code should use the suffixed
-// IDs below. Terminal is single-mode by design.
+// IDs below. Every theme now has paired light/dark — pick the family
+// here, the LightDarkToggle in the header flips the mode.
 const THEMES: Theme[] = [
   { id: "sketchbook-light", label: "Sketchbook" },
   { id: "press-light",      label: "Press" },
   { id: "graphite-dark",    label: "Graphite" },
   { id: "glass-light",      label: "Glass" },
   { id: "cupertino-light",  label: "Cupertino" },
-  { id: "terminal",         label: "Terminal" },
+  { id: "terminal-dark",    label: "Terminal" },
 ];
 
 const COOKIE_NAME = "cia-theme";

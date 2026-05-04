@@ -1,0 +1,201 @@
+/* ============================================================
+   THEME — Terminal Light (Daylight Editor)
+   -----------------------------------------------------------
+   Companion to Terminal Dark (the VT100 phosphor CRT). This is
+   "the same terminal, opened in daylight" — modern iTerm/VS Code
+   light-theme aesthetic. Off-white paper, near-black mono ink,
+   classic light-syntax accents (blue keywords, green strings,
+   orange numbers), still mono everywhere, still zero radii.
+
+   What changes vs Terminal Dark
+     - paper: deep warm black  →  off-white #FAFAFA
+     - ink:   phosphor green   →  near-black #1A1A1A
+     - accent: cyan link       →  classic terminal blue (#0451A5)
+     - shadows: phosphor halo  →  subtle ink hairlines
+     - glow:  green bloom      →  none (daylight, not emission)
+
+   What stays
+     - All fonts point at --font-mono (terminal stays mono).
+     - All radii stay 0 (terminals are square).
+     - Motion stays fast (terminals are instant).
+
+   Pair partner: terminal-dark (use [data-theme="terminal-dark"]).
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
+[data-theme="terminal-light"] {
+  /* Surfaces — off-white paper, slight warm tint */
+  --paper:        #FAFAFA;
+  --paper-raised: #FFFFFF;
+  --paper-sunk:   #F0F0F0;
+  --paper-glass:  rgba(255, 255, 255, 0.85);
+
+  /* Ink — near-black mono ink */
+  --ink:        #1A1A1A;
+  --ink-soft:   #4A4A4A;
+  --ink-faint:  #707070;
+  --graphite:   #0A0A0A;
+  --muted:      #909090;
+
+  /* Hairlines / grid rules — light gray */
+  --guide:      #C8C8C8;
+  --guide-soft: #DEDEDE;
+  --hair:       #D0D0D0;
+  --hair-soft:  #E8E8E8;
+
+  /* Primary accent — classic terminal blue (the VS Code "type/keyword" blue) */
+  --ai:         #0451A5;
+  --ai-ink:     #023268;
+  --ai-wash:    rgba(4, 81, 165, 0.08);
+
+  /* Seal — error red */
+  --shu:        #B91C1C;
+  --shu-wash:   rgba(185, 28, 28, 0.08);
+
+  /* Accent — warning amber */
+  --ochre:      #B45309;
+  --ochre-wash: rgba(180, 83, 9, 0.08);
+
+  /* Code surface — slight off-paper tint */
+  --code-bg:     #F5F5F5;
+  --code-ink:    #1A1A1A;
+  --code-muted:  #707070;
+  --code-accent: #B45309;  /* numbers / literals — orange */
+  --code-green:  #008833;  /* strings — green */
+  --code-blue:   #0451A5;  /* keywords — blue */
+
+  /* Typography — mono everywhere, like Terminal Dark */
+  --font-mono:    'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;
+  --font-sans:    var(--font-mono);
+  --font-serif:   var(--font-mono);
+  --font-display: var(--font-mono);
+  --font-script:  var(--font-mono);
+
+  /* Radius — terminals are square in any mode */
+  --r-sm: 0;
+  --r-md: 0;
+  --r-lg: 0;
+
+  /* Shadows — subtle hairlines, no halo (it's daylight, not phosphor) */
+  --shadow-sm:  0 0 0 1px rgba(26, 26, 26, 0.06);
+  --shadow-md:  0 0 0 1px rgba(26, 26, 26, 0.08), 0 1px 2px rgba(26, 26, 26, 0.04);
+  --shadow-lg:  0 0 0 1px rgba(26, 26, 26, 0.10), 0 2px 4px rgba(26, 26, 26, 0.06);
+  --shadow-xl:  0 0 0 1px rgba(26, 26, 26, 0.12), 0 4px 8px rgba(26, 26, 26, 0.08);
+  --shadow-2xl: 0 0 0 1px rgba(26, 26, 26, 0.14), 0 8px 16px rgba(26, 26, 26, 0.10);
+
+  /* Blur — terminal has no frosted glass */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — daylight, no emission. Declared transparent. */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — terminals are instant */
+  --duration-fast:   100ms;
+  --duration-normal: 140ms;
+  --duration-slow:   220ms;
+  --ease:            cubic-bezier(0.2, 0.0, 0.2, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive overlays — ink-on-paper, dark wash */
+  --interactive-hover:  rgba(26, 26, 26, 0.04);
+  --interactive-active: rgba(26, 26, 26, 0.08);
+
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  --feedback-info:     var(--ai);
+  --feedback-success:  #008833;
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  --info-default: var(--ai);
+  --info-subtle:  rgba(4, 81, 165, 0.08);
+  --info-text:    var(--ai-ink);
+
+  --success-default: #008833;
+  --success-subtle:  rgba(0, 136, 51, 0.08);
+  --success-text:    #006622;
+
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(180, 83, 9, 0.08);
+  --warning-text:    #92400E;
+
+  --error-default: var(--shu);
+  --error-subtle:  rgba(185, 28, 28, 0.08);
+  --error-text:    #7F1D1D;
+
+  /* Space scale — same natural rem scale as Terminal Dark */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — every slot is 0 */
+  --radius-sm:   0;
+  --radius-md:   0;
+  --radius-lg:   0;
+  --radius-xl:   0;
+  --radius-full: 0;
+
+  /* Typography — mono body, 15px matches Terminal Dark */
+  --font-primary:       var(--font-mono);
+  --font-size-base:     15px;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}

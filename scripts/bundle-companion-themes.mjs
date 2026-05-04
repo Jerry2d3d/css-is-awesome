@@ -32,6 +32,7 @@ const COMPANIONS = [
   "graphite-light",
   "glass-dark",
   "cupertino-dark",
+  "terminal-light",
 ];
 
 const bundle = await readFile(bundlePath, "utf8");

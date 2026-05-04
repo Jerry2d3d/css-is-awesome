@@ -45,9 +45,9 @@ const THEMES: ThemeTileProps[] = [
     swatches: { paper: "#F5F5F7", ink: "#1D1D1F", accent: "#0071E3", seal: "#FF3B30" },
   },
   {
-    id: "terminal",
+    id: "terminal-dark",
     name: "Terminal",
-    description: "VT100 phosphor green on deep black. Zero radii. All mono, all glow.",
+    description: "VT100 phosphor green on deep black. Zero radii. All mono, all glow. Pairs with Terminal Light (daylight editor) — toggle in header.",
     href: asset("/themes/terminal/theme.css"),
     swatches: { paper: "#0A0E0A", ink: "#4FE078", accent: "#7FDBFF", seal: "#FF5A5A" },
   },

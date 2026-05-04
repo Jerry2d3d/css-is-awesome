@@ -10,8 +10,8 @@ Breaking changes between css-is-awesome versions, and how to migrate.
 
 Every built-in theme name now carries a mode suffix so consumers can read
 intent at a glance. The defaults shipped before v0.7 were inconsistent
-(some had a suffix, most did not). Five of the six original themes are
-renamed; `terminal` stays single-mode by design.
+(some had a suffix, most did not). All six original themes are renamed
+and now ship paired light/dark modes.
 
 | v0.6 name      | v0.7 name           | Notes                                          |
 |----------------|---------------------|------------------------------------------------|
@@ -20,7 +20,7 @@ renamed; `terminal` stays single-mode by design.
 | `graphite`     | `graphite-dark`     | Graphite was always dark.                      |
 | `glass`        | `glass-light`       |                                                |
 | `cupertino`    | `cupertino-light`   |                                                |
-| `terminal`     | `terminal`          | Single-mode by design (CRT phosphor only).     |
+| `terminal`     | `terminal-dark`     | New `terminal-light` companion shipped — daylight editor. |
 
 ### Migration steps for consumers
 

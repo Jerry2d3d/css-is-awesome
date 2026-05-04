@@ -6,16 +6,33 @@ import styles from "./LightDarkToggle.module.scss";
 const STORAGE_KEY = "cia-theme";
 
 // Themes whose name does NOT carry a -light / -dark suffix but which are
-// intrinsically one mode by design. Terminal is dark-only (CRT phosphor).
-// Add other single-mode themes here as they ship.
-const SINGLE_MODE_DARK = new Set<string>(["terminal"]);
+// intrinsically one mode by design. Currently empty — all shipped themes
+// have both modes. Reserved for future single-mode designs.
+const SINGLE_MODE_DARK = new Set<string>([]);
 const SINGLE_MODE_LIGHT = new Set<string>([]);
 
+// Deprecated unsuffixed names that remain backward-compatible through 0.7.x
+// (US-2.14.3). When the user is on a deprecated alias, classify and toggle
+// against its canonical suffixed equivalent so the toggle still works.
+const ALIAS_TO_CANONICAL: Record<string, string> = {
+  sketchbook: "sketchbook-light",
+  press: "press-light",
+  graphite: "graphite-dark",
+  glass: "glass-light",
+  cupertino: "cupertino-light",
+  terminal: "terminal-dark",
+};
+
+function canonical(theme: string): string {
+  return ALIAS_TO_CANONICAL[theme] ?? theme;
+}
+
 function classifyMode(theme: string): { isDark: boolean; isLight: boolean } {
-  if (theme.endsWith("-dark") || SINGLE_MODE_DARK.has(theme)) {
+  const t = canonical(theme);
+  if (t.endsWith("-dark") || SINGLE_MODE_DARK.has(t)) {
     return { isDark: true, isLight: false };
   }
-  if (theme.endsWith("-light") || SINGLE_MODE_LIGHT.has(theme)) {
+  if (t.endsWith("-light") || SINGLE_MODE_LIGHT.has(t)) {
     return { isDark: false, isLight: true };
   }
   // Unknown / un-suffixed theme that isn't in our registry — treat as
@@ -24,14 +41,19 @@ function classifyMode(theme: string): { isDark: boolean; isLight: boolean } {
 }
 
 function canToggle(theme: string): boolean {
-  if (SINGLE_MODE_DARK.has(theme) || SINGLE_MODE_LIGHT.has(theme)) return false;
-  return theme.endsWith("-light") || theme.endsWith("-dark");
+  const t = canonical(theme);
+  if (SINGLE_MODE_DARK.has(t) || SINGLE_MODE_LIGHT.has(t)) return false;
+  return t.endsWith("-light") || t.endsWith("-dark");
 }
 
 function nextThemeName(theme: string, isDark: boolean): string {
+  // Always toggle against the canonical name — if a user is on the
+  // deprecated alias `terminal`, the next theme is terminal-light, not
+  // an undefined `terminal-dark`-but-spelled-without-suffix.
+  const t = canonical(theme);
   return isDark
-    ? theme.replace(/-dark$/, "-light")
-    : theme.replace(/-light$/, "-dark");
+    ? t.replace(/-dark$/, "-light")
+    : t.replace(/-light$/, "-dark");
 }
 
 export default function LightDarkToggle() {
