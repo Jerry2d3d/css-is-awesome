@@ -1,9 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
 import styles from "./LightDarkToggle.module.scss";
-
-// Keep in sync with the inline pre-hydration script documented in AGENTS.md.
-const STORAGE_KEY = "cia-theme";
+import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
 // Themes whose name does NOT carry a -light / -dark suffix but which are
 // intrinsically one mode by design. Currently empty — all shipped themes
@@ -57,16 +54,7 @@ function nextThemeName(theme: string, isDark: boolean): string {
 }
 
 export default function LightDarkToggle() {
-  // null on first render (server) and the actual theme name after hydration.
-  // Avoids a flash where the icon shows the wrong direction before we read
-  // <html data-theme>.
-  const [theme, setTheme] = useState<string | null>(null);
-
-  useEffect(() => {
-    const current =
-      document.documentElement.dataset.theme || "sketchbook-light";
-    setTheme(current);
-  }, []);
+  const theme = useThemeAttribute();
 
   // Pre-hydration placeholder (keeps layout from shifting).
   if (theme === null) {
@@ -86,12 +74,6 @@ export default function LightDarkToggle() {
 
   const handleClick = () => {
     if (!togglable) return;
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // localStorage unavailable (Safari private mode etc.) — silently skip.
-    }
     setTheme(next);
   };
 

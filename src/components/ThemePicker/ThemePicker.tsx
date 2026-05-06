@@ -1,13 +1,12 @@
 "use client";
 
 import styles from "./ThemePicker.module.scss";
-import { useEffect, useState } from "react";
+import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
 type Theme = { id: string; label: string };
 
 // Theme IDs use the v0.7 `-light`/`-dark` suffix convention. The
-// unsuffixed v0.6 names (`sketchbook`, `press`, `graphite`, `glass`,
-// `cupertino`) still resolve via the alias selectors in
+// unsuffixed v0.6 names still resolve via the alias selectors in
 // public/theme.css through 0.7.x; new code should use the suffixed
 // IDs below. Every theme now has paired light/dark — pick the family
 // here, the LightDarkToggle in the header flips the mode.
@@ -20,28 +19,28 @@ const THEMES: Theme[] = [
   { id: "terminal-dark",    label: "Terminal" },
 ];
 
-const COOKIE_NAME = "cia-theme";
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+// Match by family so the pressed state survives a light/dark flip
+// (sketchbook-dark still shows Sketchbook as active). Clicking a family
+// preserves the current mode to match ThemeSelect's behavior.
+function family(theme: string): string {
+  return theme.replace(/-(light|dark)$/, "");
+}
 
-function applyTheme(id: string) {
-  document.documentElement.setAttribute("data-theme", id);
-  document.cookie = `${COOKIE_NAME}=${id}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+const ALIAS_MODE: Record<string, "light" | "dark"> = {
+  sketchbook: "light", press: "light", graphite: "dark",
+  glass: "light", cupertino: "light", terminal: "dark",
+};
+
+function mode(theme: string): "light" | "dark" {
+  if (theme.endsWith("-dark")) return "dark";
+  if (theme.endsWith("-light")) return "light";
+  return ALIAS_MODE[theme] ?? "light";
 }
 
 export default function ThemePicker() {
-  // Initial state mirrors what SSR rendered — read the attribute the server
-  // already set from the cookie. Avoids hydration mismatch and FOUC.
-  const [active, setActive] = useState<string>("sketchbook-light");
-
-  useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme") ?? "sketchbook-light";
-    setActive(current);
-  }, []);
-
-  function choose(id: string) {
-    setActive(id);
-    applyTheme(id);
-  }
+  const active = useThemeAttribute() ?? "sketchbook-light";
+  const activeFamily = family(active);
+  const activeMode = mode(active);
 
   return (
     <div className={styles.picker} aria-label="Theme picker">
@@ -51,8 +50,8 @@ export default function ThemePicker() {
           <button
             key={t.id}
             type="button"
-            aria-pressed={active === t.id}
-            onClick={() => choose(t.id)}
+            aria-pressed={family(t.id) === activeFamily}
+            onClick={() => setTheme(`${family(t.id)}-${activeMode}`)}
           >
             {t.label}
           </button>

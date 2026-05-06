@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
 import styles from "./ThemeSelect.module.scss";
+import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
 // Compact theme-family picker for the global header. Pairs with
 // LightDarkToggle: this picks the family (Sketchbook, Press, Prism, …)
@@ -10,8 +10,6 @@ import styles from "./ThemeSelect.module.scss";
 //
 // For the bigger row-of-buttons picker used inside docs pages, see
 // src/components/ThemePicker/.
-
-const STORAGE_KEY = "cia-theme";
 
 const FAMILIES: { id: string; label: string }[] = [
   { id: "sketchbook", label: "Sketchbook" },
@@ -45,14 +43,7 @@ function getMode(theme: string): "light" | "dark" {
 }
 
 export default function ThemeSelect() {
-  // null until hydration so the icon/state matches what's on <html>.
-  const [theme, setTheme] = useState<string | null>(null);
-
-  useEffect(() => {
-    const current =
-      document.documentElement.dataset.theme || "sketchbook-light";
-    setTheme(current);
-  }, []);
+  const theme = useThemeAttribute();
 
   if (theme === null) {
     return (
@@ -73,14 +64,7 @@ export default function ThemeSelect() {
   function choose(nextFamily: string) {
     // Preserve current mode when switching families. Every shipped theme
     // has both modes, so <family>-<mode> always resolves.
-    const next = `${nextFamily}-${mode}`;
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // localStorage unavailable — silently skip.
-    }
-    setTheme(next);
+    setTheme(`${nextFamily}-${mode}`);
   }
 
   return (

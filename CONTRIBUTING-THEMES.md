@@ -120,8 +120,9 @@ one-file-swap guarantee.
 On first page load the docs app checks `prefers-color-scheme`. If the
 user has never picked manually, dark systems get **Graphite** by default
 and light systems get **Sketchbook**. Any manual choice in the
-ThemePicker persists in `localStorage` under the `cia-theme-file` key
-and overrides the OS from then on.
+ThemePicker, the header dropdown, or the light/dark toggle persists in
+a `cia-theme` cookie (read by the inline pre-hydration script in
+`src/app/layout.tsx`) and overrides the OS from then on.
 
 If your theme is a dark theme:
 
