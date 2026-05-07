@@ -29,7 +29,10 @@ export default function LaunchGate({ children }: { children: ReactNode }) {
   // The editor page mounts its own ThemeEditorDock pill bottom-right;
   // suppress the global ThemePicker there to avoid overlap. /themes/gallery
   // and every other route still get the global picker.
-  const showThemePicker = pathname !== "/themes";
+  // next.config has trailingSlash: true, so the actual pathname is
+  // "/themes/" — match both forms to be safe.
+  const editorRoute = pathname === "/themes" || pathname === "/themes/";
+  const showThemePicker = !editorRoute;
 
   useEffect(() => {
     let cancelled = false;
