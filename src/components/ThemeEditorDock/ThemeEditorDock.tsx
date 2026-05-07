@@ -1,13 +1,23 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./ThemeEditorDock.module.scss";
-import { CATALOG, GROUPS, type TokenSpec } from "./catalog";
+import {
+  CATALOG,
+  CATEGORIES,
+  SUB_PAGES,
+  type Category,
+  type TokenSpec,
+} from "./catalog";
 import { ColorRow, LengthRow, NumberRow, StringRow } from "./rows";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
 type Mode = "light" | "dark";
 const STYLE_TAG_ID = "cia-theme-overrides";
 const STORAGE_KEY = "cia-theme-overrides";
+// Paginate when a sub-page has more groups than this. Keeps the scroll
+// short and gives users a reliable "next page" affordance once token
+// counts grow.
+const GROUPS_PER_PAGE = 4;
 
 // Per-family overrides. Persisted to localStorage so each family
 // remembers its edits independently.
@@ -146,7 +156,56 @@ export default function ThemeEditorDock() {
   const [tabMode, setTabMode] = useState<Mode>(currentMode);
   useEffect(() => setTabMode(currentMode), [currentMode]);
 
-  const [openGroup, setOpenGroup] = useState<string | null>(GROUPS[0] ?? null);
+  const [category, setCategory] = useState<Category>("color");
+  const [subPageIdx, setSubPageIdx] = useState(0);
+  const [pageIdx, setPageIdx] = useState(0);
+  const subPages = SUB_PAGES[category];
+  const allGroups = subPages[subPageIdx]?.groups ?? [];
+  const totalPages = Math.max(1, Math.ceil(allGroups.length / GROUPS_PER_PAGE));
+  const safePageIdx = Math.min(pageIdx, totalPages - 1);
+  const visibleGroups = allGroups.slice(
+    safePageIdx * GROUPS_PER_PAGE,
+    (safePageIdx + 1) * GROUPS_PER_PAGE,
+  );
+  const [openGroup, setOpenGroup] = useState<string | null>(visibleGroups[0] ?? null);
+
+  const bodyRef = useRef<HTMLDivElement | null>(null);
+  const groupRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
+
+  // Category change: reset to first sub-page.
+  useEffect(() => {
+    setSubPageIdx(0);
+  }, [category]);
+
+  // Sub-page or category change: reset to page 0.
+  useEffect(() => {
+    setPageIdx(0);
+  }, [category, subPageIdx]);
+
+  // Page change (covers all of the above too): reset open group to the
+  // first on this page and scroll body to top.
+  useEffect(() => {
+    setOpenGroup(visibleGroups[0] ?? null);
+    if (bodyRef.current) bodyRef.current.scrollTop = 0;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, subPageIdx, safePageIdx]);
+
+  // When user clicks a group head to OPEN it, scroll its head to the top
+  // of the body so the newly-revealed rows are immediately visible.
+  function toggleGroup(groupName: string) {
+    if (openGroup === groupName) {
+      setOpenGroup(null);
+      return;
+    }
+    setOpenGroup(groupName);
+    requestAnimationFrame(() => {
+      const el = groupRefs.current.get(groupName);
+      const body = bodyRef.current;
+      if (!el || !body) return;
+      const elTop = el.offsetTop - body.offsetTop;
+      body.scrollTo({ top: elTop, behavior: "smooth" });
+    });
+  }
   const [overrides, setOverrides] = useState<OverridesByMode>({ light: {}, dark: {} });
   const [defaultsByMode, setDefaultsByMode] = useState<OverridesByMode>({ light: {}, dark: {} });
   const [nameInput, setNameInput] = useState<string>("");
@@ -308,20 +367,55 @@ export default function ThemeEditorDock() {
           ))}
         </div>
 
-        <div className={styles.body}>
-          {GROUPS.map((groupName) => {
+        <div className={styles.catTabs} role="tablist" aria-label="Token category">
+          {CATEGORIES.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              role="tab"
+              aria-selected={category === c.id}
+              className={[styles.catTab, category === c.id && styles.catTabActive].filter(Boolean).join(" ")}
+              onClick={() => setCategory(c.id)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+
+        {subPages.length > 1 && (
+          <div className={styles.subTabs} role="tablist" aria-label="Section">
+            {subPages.map((p, i) => (
+              <button
+                key={p.id}
+                type="button"
+                role="tab"
+                aria-selected={subPageIdx === i}
+                className={[styles.subTab, subPageIdx === i && styles.subTabActive].filter(Boolean).join(" ")}
+                onClick={() => setSubPageIdx(i)}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className={styles.body} ref={bodyRef}>
+          {visibleGroups.map((groupName) => {
             const isOpen = openGroup === groupName;
             const specs = byGroup.get(groupName) ?? [];
             return (
               <div
                 key={groupName}
+                ref={(el) => {
+                  groupRefs.current.set(groupName, el);
+                }}
                 className={[styles.group, isOpen && styles.groupOpen].filter(Boolean).join(" ")}
               >
                 <button
                   type="button"
                   className={styles.groupHead}
                   aria-expanded={isOpen}
-                  onClick={() => setOpenGroup(isOpen ? null : groupName)}
+                  onClick={() => toggleGroup(groupName)}
                 >
                   <span>
                     {groupName}{" "}
@@ -337,6 +431,32 @@ export default function ThemeEditorDock() {
               </div>
             );
           })}
+
+          {totalPages > 1 && (
+            <nav className={styles.paginator} aria-label="Section pages">
+              <button
+                type="button"
+                className={styles.pageBtn}
+                onClick={() => setPageIdx(Math.max(0, safePageIdx - 1))}
+                disabled={safePageIdx === 0}
+                aria-label="Previous page"
+              >
+                ←
+              </button>
+              <span className={styles.pageStatus}>
+                Page {safePageIdx + 1} of {totalPages}
+              </span>
+              <button
+                type="button"
+                className={styles.pageBtn}
+                onClick={() => setPageIdx(Math.min(totalPages - 1, safePageIdx + 1))}
+                disabled={safePageIdx >= totalPages - 1}
+                aria-label="Next page"
+              >
+                →
+              </button>
+            </nav>
+          )}
         </div>
 
         <footer className={styles.foot}>

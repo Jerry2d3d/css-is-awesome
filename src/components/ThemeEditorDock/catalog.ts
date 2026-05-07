@@ -241,3 +241,87 @@ export const CATALOG: TokenSpec[] = [
 export const GROUPS: string[] = Array.from(
   new Set(CATALOG.map((t) => t.group)),
 );
+
+// ---------- Categories — top-level tab nav inside the dock body ----------
+// Splits the 22 groups into broader sections so the user is not
+// scrolling through everything at once.
+
+export type Category = "color" | "layout" | "type" | "motion";
+
+export const CATEGORIES: { id: Category; label: string }[] = [
+  { id: "color",  label: "Color" },
+  { id: "layout", label: "Layout" },
+  { id: "type",   label: "Type" },
+  { id: "motion", label: "Motion" },
+];
+
+const GROUP_CATEGORY: Record<string, Category> = {
+  [G.paper]:       "color",
+  [G.ink]:         "color",
+  [G.surface]:     "color",
+  [G.border]:      "color",
+  [G.action]:      "color",
+  [G.brand]:       "color",
+  [G.status]:      "color",
+  [G.feedback]:    "color",
+  [G.ai]:          "color",
+  [G.code]:        "color",
+  [G.interactive]: "color",
+  [G.guide]:       "color",
+  [G.misc]:        "color",
+  [G.radius]:      "layout",
+  [G.rLegacy]:     "layout",
+  [G.space]:       "layout",
+  [G.blur]:        "layout",
+  [G.font]:        "type",
+  [G.fontMisc]:    "type",
+  [G.duration]:    "motion",
+  [G.ease]:        "motion",
+  [G.shadow]:      "motion",
+  [G.glow]:        "motion",
+  [G.z]:           "motion",
+};
+
+export function categoryFor(group: string): Category {
+  return GROUP_CATEGORY[group] ?? "color";
+}
+
+export function groupsForCategory(cat: Category): string[] {
+  return GROUPS.filter((g) => categoryFor(g) === cat);
+}
+
+// ---------- Sub-pages — within a category ----------
+// Categories with > ~5 groups split into named sub-pages to keep the
+// panel from becoming a long scroll. Categories that already fit on one
+// page have a single page entry and no sub-tab strip is rendered.
+
+export type SubPage = { id: string; label: string; groups: string[] };
+
+export const SUB_PAGES: Record<Category, SubPage[]> = {
+  color: [
+    {
+      id: "foundation",
+      label: "Foundation",
+      groups: [G.paper, G.ink, G.surface, G.border],
+    },
+    {
+      id: "components",
+      label: "Components",
+      groups: [G.action, G.brand, G.ai, G.code, G.interactive],
+    },
+    {
+      id: "status",
+      label: "Status",
+      groups: [G.status, G.feedback, G.guide],
+    },
+  ],
+  layout: [
+    { id: "all", label: "Layout", groups: groupsForCategory("layout") },
+  ],
+  type: [
+    { id: "all", label: "Type", groups: groupsForCategory("type") },
+  ],
+  motion: [
+    { id: "all", label: "Motion", groups: groupsForCategory("motion") },
+  ],
+};

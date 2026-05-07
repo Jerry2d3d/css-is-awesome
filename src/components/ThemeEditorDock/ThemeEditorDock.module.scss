@@ -15,9 +15,9 @@ $panel-width: 380px;
   height: 2.75rem;
   padding: 0 1.1rem;
   border-radius: 999px;
-  border: 1px solid var(--ink, currentColor);
-  background: var(--ink, currentColor);
-  color: var(--paper-default, #fff);
+  border: 1px solid var(--action-primary-default, var(--ink));
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 0.85rem;
   font-weight: 600;
@@ -27,6 +27,8 @@ $panel-width: 380px;
   transition: transform 150ms ease, opacity 150ms ease;
 
   &:hover {
+    background: var(--action-primary-hover, var(--ink));
+    border-color: var(--action-primary-hover, var(--ink));
     transform: translateY(-1px);
   }
   &[aria-expanded="true"] {
@@ -37,7 +39,7 @@ $panel-width: 380px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--ai, var(--paper-default));
+  background: var(--ai-ink, var(--text-inverse, #fff));
 }
 .modBadge {
   margin-left: 0.4rem;
@@ -68,7 +70,7 @@ $panel-width: 380px;
   z-index: 9998;
   display: flex;
   flex-direction: column;
-  background: var(--paper-raised, var(--paper-default));
+  background: var(--paper-raised, var(--paper, #fff));
   color: var(--ink, currentColor);
   border-left: 1px solid var(--hair, rgba(0, 0, 0, 0.12));
   transform: translateX(100%);
@@ -140,29 +142,150 @@ $panel-width: 380px;
   }
 }
 .tabActive {
-  background: var(--ink, currentColor);
-  color: var(--paper-default, #fff);
-  border-color: var(--ink, currentColor);
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
+  border-color: var(--action-primary-default, var(--ink));
 
   &:hover {
-    background: var(--ink, currentColor);
+    background: var(--action-primary-hover, var(--ink));
   }
 }
 
-.body {
+/* ---------- Category tab strip (Color / Layout / Type / Motion) ---------- */
+.catTabs {
+  display: flex;
+  gap: 0;
+  padding: 0.5rem 1rem 0;
+  border-bottom: 1px solid var(--hair);
+}
+.catTab {
   flex: 1;
-  overflow-y: auto;
+  height: 1.85rem;
+  padding: 0 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft, var(--text-muted));
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: var(--ink, currentColor);
+  }
+}
+.catTabActive {
+  color: var(--ink, currentColor);
+  border-bottom-color: var(--ai, var(--ink, currentColor));
+}
+
+/* ---------- Sub-page pills (shown only on Color category for now) --- */
+.subTabs {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--hair);
+  flex-wrap: wrap;
+}
+.subTab {
+  height: 1.5rem;
+  padding: 0 0.55rem;
+  border: 1px solid var(--hair);
+  background: transparent;
+  color: var(--ink-soft, var(--text-muted));
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.04));
+    color: var(--ink, currentColor);
+  }
+}
+.subTabActive {
+  background: var(--ai-wash, var(--paper-sunk));
+  border-color: var(--ai, var(--hair));
+  color: var(--ai, var(--ink, currentColor));
+  font-weight: 600;
+}
+
+/* ---------- Paginator (bottom of body, when sub-page > 1 page) ---- */
+.paginator {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-top: 1px solid var(--hair);
+}
+.pageBtn {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--hair);
+  background: var(--paper, #fff);
+  color: var(--ink, currentColor);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.04));
+    border-color: var(--ai, var(--ink, currentColor));
+  }
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+.pageStatus {
+  font-size: 0.78rem;
+  color: var(--ink-soft, var(--text-muted));
+  font-variant-numeric: tabular-nums;
+  min-width: 6rem;
+  text-align: center;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+.body::-webkit-scrollbar {
+  width: 8px;
+}
+.body::-webkit-scrollbar-thumb {
+  background: var(--hair);
+  border-radius: 4px;
+}
+.body::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-faint, var(--text-muted));
 }
 
 .group {
   border: 1px solid var(--hair);
   border-radius: var(--radius-md, 6px);
   overflow: hidden;
-  background: var(--paper-default);
+  background: var(--paper, #fff);
 }
 .groupHead {
   display: flex;
@@ -209,11 +332,12 @@ $panel-width: 380px;
 
 .row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.5rem;
   padding: 0.35rem 0;
   border-bottom: 1px dashed var(--hair-soft, transparent);
+  min-width: 0;
 }
 .row:last-child {
   border-bottom: 0;
@@ -238,27 +362,40 @@ $panel-width: 380px;
   font-size: 0.65rem;
   color: var(--ink-faint, var(--text-muted));
   letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
 }
 
 .colorCtrl {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.15rem;
+  gap: 0.4rem;
+  padding: 0.15rem 0.3rem 0.15rem 0.15rem;
   border: 1px solid var(--hair);
-  border-radius: var(--radius-sm, 4px);
-  background: var(--paper-default);
+  border-radius: 999px;
+  background: var(--paper, #fff);
 
   input[type="color"] {
     width: 1.6rem;
-    height: 1.4rem;
+    height: 1.6rem;
     border: 0;
     padding: 0;
     background: transparent;
     cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
   }
-  input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-  input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 3px; }
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 50%;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: 0;
+    border-radius: 50%;
+  }
+  input[type="color"]::-moz-color-swatch {
+    border: 0;
+    border-radius: 50%;
+  }
 
   input[type="text"] {
     width: 6.5rem;
@@ -279,15 +416,16 @@ $panel-width: 380px;
   gap: 0.4rem;
   border: 1px solid var(--hair);
   border-radius: var(--radius-sm, 4px);
-  background: var(--paper-default);
+  background: var(--paper, #fff);
   padding: 0.1rem 0.4rem;
+  flex-shrink: 0;
 
   input[type="range"] {
-    width: 5rem;
+    width: 4rem;
     accent-color: var(--ai, currentColor);
   }
   input[type="number"] {
-    width: 3rem;
+    width: 2.6rem;
     height: 1.4rem;
     border: 0;
     border-left: 1px solid var(--hair);
@@ -323,7 +461,7 @@ $panel-width: 380px;
   height: 1.85rem;
   border: 1px solid var(--hair);
   border-radius: var(--radius-sm, 4px);
-  background: var(--paper-default);
+  background: var(--paper, #fff);
   color: var(--ink, currentColor);
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.72rem;
@@ -359,7 +497,7 @@ $panel-width: 380px;
   height: 1.85rem;
   border: 1px solid var(--hair);
   border-radius: var(--radius-sm, 4px);
-  background: var(--paper-default);
+  background: var(--paper, #fff);
   color: var(--ink, currentColor);
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.78rem;
@@ -395,13 +533,13 @@ $panel-width: 380px;
   }
 }
 .btnPrimary {
-  background: var(--ink, currentColor);
-  color: var(--paper-default, #fff);
-  border-color: var(--ink, currentColor);
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
+  border-color: var(--action-primary-default, var(--ink));
 
   &:hover:not(:disabled) {
-    filter: brightness(1.1);
-    background: var(--ink, currentColor);
+    background: var(--action-primary-hover, var(--ink));
+    border-color: var(--action-primary-hover, var(--ink));
   }
 }
 
