@@ -87,6 +87,55 @@ function readDefault(token: string, themeId: string): string {
   return v;
 }
 
+// CSS-identifier-safe theme name. Lowercase letters, digits, and hyphens.
+function sanitizeName(input: string, fallback = "mytheme"): string {
+  const cleaned = (input || "").toLowerCase().trim()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+  return cleaned || fallback;
+}
+
+// Build a complete cia-conformant theme.css. Every block contains every
+// contract token so the output passes the validator standalone.
+function buildDownloadCSS(
+  name: string,
+  family: string,
+  defaults: { light: Record<string, string>; dark: Record<string, string> },
+  overrides: { light: Record<string, string>; dark: Record<string, string> },
+): string {
+  function lines(mode: "light" | "dark"): string {
+    return CATALOG.map((spec) => {
+      const v = overrides[mode][spec.token] || defaults[mode][spec.token];
+      return v ? `  ${spec.token}: ${v};` : `  ${spec.token}: ;  /* missing default */`;
+    }).join("\n");
+  }
+  const stamp = new Date().toISOString().slice(0, 10);
+  const header =
+    `/*\n` +
+    ` * ${name} — generated ${stamp} via the css-is-awesome theme editor\n` +
+    ` * Forked from "${family}". Drop in as theme.css and use:\n` +
+    ` *   <html data-theme="${name}-light">  or  data-theme="${name}-dark"\n` +
+    ` */\n\n`;
+  return (
+    header +
+    `[data-theme="${name}-light"] {\n${lines("light")}\n}\n\n` +
+    `[data-theme="${name}-dark"] {\n${lines("dark")}\n}\n`
+  );
+}
+
+function triggerDownload(filename: string, css: string): void {
+  const blob = new Blob([css], { type: "text/css;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 export default function ThemeEditorDock() {
   const activeTheme = useThemeAttribute() ?? "sketchbook-light";
   const family = getFamily(activeTheme);
@@ -100,6 +149,10 @@ export default function ThemeEditorDock() {
   const [openGroup, setOpenGroup] = useState<string | null>(GROUPS[0] ?? null);
   const [overrides, setOverrides] = useState<OverridesByMode>({ light: {}, dark: {} });
   const [defaultsByMode, setDefaultsByMode] = useState<OverridesByMode>({ light: {}, dark: {} });
+  const [nameInput, setNameInput] = useState<string>("");
+  // Default the name to "<family>-custom" whenever the family changes
+  // and the user hasn't typed their own name yet.
+  useEffect(() => setNameInput(`${family}-custom`), [family]);
 
   // Family changed: clear the style tag, read fresh defaults against the
   // unmodified theme, then load THIS family's persisted overrides (if any).
@@ -156,6 +209,12 @@ export default function ThemeEditorDock() {
 
   function reset() {
     setOverrides({ light: {}, dark: {} });
+  }
+
+  function download() {
+    const safeName = sanitizeName(nameInput, `${family}-custom`);
+    const css = buildDownloadCSS(safeName, family, defaultsByMode, overrides);
+    triggerDownload(`${safeName}.css`, css);
   }
 
   const hasOverrides =
@@ -281,22 +340,34 @@ export default function ThemeEditorDock() {
         </div>
 
         <footer className={styles.foot}>
-          <button
-            type="button"
-            className={styles.btn}
-            onClick={reset}
-            disabled={!hasOverrides}
-          >
-            Reset
-          </button>
-          <button
-            type="button"
-            className={[styles.btn, styles.btnPrimary].join(" ")}
-            disabled
-            title="Download lands in Phase 5"
-          >
-            ↓ Download theme
-          </button>
+          <label className={styles.nameRow}>
+            <span className={styles.nameLabel}>Theme name</span>
+            <input
+              type="text"
+              className={styles.nameInput}
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              spellCheck={false}
+              aria-label="Theme name for download"
+            />
+          </label>
+          <div className={styles.btnRow}>
+            <button
+              type="button"
+              className={styles.btn}
+              onClick={reset}
+              disabled={!hasOverrides}
+            >
+              Reset
+            </button>
+            <button
+              type="button"
+              className={[styles.btn, styles.btnPrimary].join(" ")}
+              onClick={download}
+            >
+              ↓ Download theme
+            </button>
+          </div>
         </footer>
       </aside>
     </>
