@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./ThemeEditorDock.module.scss";
 import {
   CATALOG,
   CATEGORIES,
-  groupsForCategory,
+  SUB_PAGES,
   type Category,
   type TokenSpec,
 } from "./catalog";
@@ -153,17 +153,43 @@ export default function ThemeEditorDock() {
   useEffect(() => setTabMode(currentMode), [currentMode]);
 
   const [category, setCategory] = useState<Category>("color");
-  const visibleGroups = useMemo(() => groupsForCategory(category), [category]);
+  const [subPageIdx, setSubPageIdx] = useState(0);
+  const subPages = SUB_PAGES[category];
+  const visibleGroups = subPages[subPageIdx]?.groups ?? [];
   const [openGroup, setOpenGroup] = useState<string | null>(visibleGroups[0] ?? null);
-  // When the category changes, reset the open group to the first one
-  // in that category and scroll the body back to the top.
+
+  const bodyRef = useRef<HTMLDivElement | null>(null);
+  const groupRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
+
+  // Category change: reset to first sub-page, first group, scroll top.
+  useEffect(() => {
+    setSubPageIdx(0);
+  }, [category]);
+
+  // Sub-page change (or category change via subPageIdx reset): reset open
+  // group to the first in this page, scroll body to top.
   useEffect(() => {
     setOpenGroup(visibleGroups[0] ?? null);
-    if (typeof document !== "undefined") {
-      const body = document.querySelector(`.${styles.body}`);
-      if (body) body.scrollTop = 0;
+    if (bodyRef.current) bodyRef.current.scrollTop = 0;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, subPageIdx]);
+
+  // When user clicks a group head to OPEN it, scroll its head to the top
+  // of the body so the newly-revealed rows are immediately visible.
+  function toggleGroup(groupName: string) {
+    if (openGroup === groupName) {
+      setOpenGroup(null);
+      return;
     }
-  }, [category, visibleGroups]);
+    setOpenGroup(groupName);
+    requestAnimationFrame(() => {
+      const el = groupRefs.current.get(groupName);
+      const body = bodyRef.current;
+      if (!el || !body) return;
+      const elTop = el.offsetTop - body.offsetTop;
+      body.scrollTo({ top: elTop, behavior: "smooth" });
+    });
+  }
   const [overrides, setOverrides] = useState<OverridesByMode>({ light: {}, dark: {} });
   const [defaultsByMode, setDefaultsByMode] = useState<OverridesByMode>({ light: {}, dark: {} });
   const [nameInput, setNameInput] = useState<string>("");
@@ -340,20 +366,40 @@ export default function ThemeEditorDock() {
           ))}
         </div>
 
-        <div className={styles.body}>
+        {subPages.length > 1 && (
+          <div className={styles.subTabs} role="tablist" aria-label="Section">
+            {subPages.map((p, i) => (
+              <button
+                key={p.id}
+                type="button"
+                role="tab"
+                aria-selected={subPageIdx === i}
+                className={[styles.subTab, subPageIdx === i && styles.subTabActive].filter(Boolean).join(" ")}
+                onClick={() => setSubPageIdx(i)}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className={styles.body} ref={bodyRef}>
           {visibleGroups.map((groupName) => {
             const isOpen = openGroup === groupName;
             const specs = byGroup.get(groupName) ?? [];
             return (
               <div
                 key={groupName}
+                ref={(el) => {
+                  groupRefs.current.set(groupName, el);
+                }}
                 className={[styles.group, isOpen && styles.groupOpen].filter(Boolean).join(" ")}
               >
                 <button
                   type="button"
                   className={styles.groupHead}
                   aria-expanded={isOpen}
-                  onClick={() => setOpenGroup(isOpen ? null : groupName)}
+                  onClick={() => toggleGroup(groupName)}
                 >
                   <span>
                     {groupName}{" "}

@@ -181,15 +181,60 @@ $panel-width: 380px;
   border-bottom-color: var(--ai, var(--ink, currentColor));
 }
 
+/* ---------- Sub-page pills (shown only on Color category for now) --- */
+.subTabs {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--hair);
+  flex-wrap: wrap;
+}
+.subTab {
+  height: 1.5rem;
+  padding: 0 0.55rem;
+  border: 1px solid var(--hair);
+  background: transparent;
+  color: var(--ink-soft, var(--text-muted));
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.04));
+    color: var(--ink, currentColor);
+  }
+}
+.subTabActive {
+  background: var(--ai-wash, var(--paper-sunk));
+  border-color: var(--ai, var(--hair));
+  color: var(--ai, var(--ink, currentColor));
+  font-weight: 600;
+}
+
 .body {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+.body::-webkit-scrollbar {
+  width: 8px;
+}
+.body::-webkit-scrollbar-thumb {
+  background: var(--hair);
+  border-radius: 4px;
+}
+.body::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-faint, var(--text-muted));
 }
 
 .group {

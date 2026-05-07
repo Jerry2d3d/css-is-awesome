@@ -289,3 +289,39 @@ export function categoryFor(group: string): Category {
 export function groupsForCategory(cat: Category): string[] {
   return GROUPS.filter((g) => categoryFor(g) === cat);
 }
+
+// ---------- Sub-pages — within a category ----------
+// Categories with > ~5 groups split into named sub-pages to keep the
+// panel from becoming a long scroll. Categories that already fit on one
+// page have a single page entry and no sub-tab strip is rendered.
+
+export type SubPage = { id: string; label: string; groups: string[] };
+
+export const SUB_PAGES: Record<Category, SubPage[]> = {
+  color: [
+    {
+      id: "foundation",
+      label: "Foundation",
+      groups: [G.paper, G.ink, G.surface, G.border],
+    },
+    {
+      id: "components",
+      label: "Components",
+      groups: [G.action, G.brand, G.ai, G.code, G.interactive],
+    },
+    {
+      id: "status",
+      label: "Status",
+      groups: [G.status, G.feedback, G.guide],
+    },
+  ],
+  layout: [
+    { id: "all", label: "Layout", groups: groupsForCategory("layout") },
+  ],
+  type: [
+    { id: "all", label: "Type", groups: groupsForCategory("type") },
+  ],
+  motion: [
+    { id: "all", label: "Motion", groups: groupsForCategory("motion") },
+  ],
+};
