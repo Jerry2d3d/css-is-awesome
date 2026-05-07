@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import Logo from "@/components/Logo";
 import ThemePicker from "@/components/ThemePicker";
@@ -24,6 +25,11 @@ const DISMISSED_STORAGE_PREFIX = "cia-announcement-dismissed:";
 export default function LaunchGate({ children }: { children: ReactNode }) {
   const [flags, setFlags] = useState<Flags | null>(null);
   const [announcementDismissed, setAnnouncementDismissed] = useState(false);
+  const pathname = usePathname();
+  // The editor page mounts its own ThemeEditorDock pill bottom-right;
+  // suppress the global ThemePicker there to avoid overlap. /themes/gallery
+  // and every other route still get the global picker.
+  const showThemePicker = pathname !== "/themes";
 
   useEffect(() => {
     let cancelled = false;
@@ -79,7 +85,7 @@ export default function LaunchGate({ children }: { children: ReactNode }) {
             Try the theme picker — the system works even while we're still building the site.
           </p>
         </div>
-        <ThemePicker />
+        {showThemePicker && <ThemePicker />}
       </div>
     );
   }
@@ -126,7 +132,7 @@ export default function LaunchGate({ children }: { children: ReactNode }) {
         </div>
       )}
       {children}
-      <ThemePicker />
+      {showThemePicker && <ThemePicker />}
     </>
   );
 }
