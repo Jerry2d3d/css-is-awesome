@@ -178,7 +178,7 @@ export default function AuthoringThemesPage() {
       <h2 id="step-by-step">Step by step</h2>
       <ol>
         <li>
-          Copy <code>public/themes/press/theme.css</code> (or any shipped
+          Copy <code>public/themes/press-light/theme.css</code> (or any shipped
           theme) as a starting point. Press is a good editorial baseline;
           Cupertino is a good rounded/soft baseline; Terminal is a good
           dark-mode baseline.

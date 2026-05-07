@@ -1,6 +1,7 @@
 /* ============================================================
-   THEME — Liquid Glass
+   THEME — Liquid Glass (light)
    -----------------------------------------------------------
+   Standalone file for `[data-theme="glass-light"]` consumers.
    This is the ONE FILE users swap to reskin their site.
    Replace this file with any other theme.css to change the
    entire look & feel. Tokens only — no component CSS lives here.

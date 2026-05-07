@@ -1,9 +1,8 @@
 // ============================================================================
 // CORE - Tokens + resets only (no utilities)
 // ============================================================================
-@use 'generator';
-@use 'mixins' as m;
-@use 'app-styles';
+@use './generator';
+@use './mixins' as m;
 
 @include generator.generate-theme;
 

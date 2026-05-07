@@ -25,6 +25,8 @@
     "./utilities.css": "./dist/css-is-awesome.utilities.css",
     "./min": "./dist/css-is-awesome.min.css",
     "./min.css": "./dist/css-is-awesome.min.css",
+    "./css": "./dist/css-is-awesome.css",
+    "./css.css": "./dist/css-is-awesome.css",
     "./scss": "./scss/main.scss",
     "./scss/main": "./scss/main.scss",
     "./scss/mixins": "./scss/_mixins.scss",
@@ -56,7 +58,10 @@
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
-    "css-is-awesome.instructions.md"
+    "css-is-awesome.instructions.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md"
   ],
   "scripts": {
     "dev": "next dev -p 5173",

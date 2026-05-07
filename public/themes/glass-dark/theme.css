@@ -1,0 +1,221 @@
+/* ============================================================
+   THEME — Liquid Glass Dark
+   -----------------------------------------------------------
+   Dark companion to Liquid Glass (visionOS / iOS glassmorphism
+   light). Same glassmorphism design language: SF system stack,
+   soft large radii, dual-inset rim-light glow, --blur-* is the
+   star. Only the COLOR palette inverts.
+
+   Mood: visionOS Dark — translucent glassy surfaces over a
+   deep blue-black void. The --paper-glass token is the
+   showpiece (rgba over very dark). --blur-* values matter
+   here: 12-20px frost-saturate, where most other themes
+   default to 'none'. Vibrant accents (#6FA9FF / #FF6B8A /
+   #FFC56B) glow through the glass.
+
+   Opt-in via `<html data-theme="glass-dark">`. Pair with
+   glass/theme.css to ship a project with a default light
+   visionOS mode and an opt-in dark visionOS mode.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+[data-theme="glass-dark"] {
+  /* Surfaces — frosted translucent over deep blue-black */
+  --paper:        #0A0F1A;
+  --paper-raised: #141E32;
+  --paper-sunk:   #050810;
+  --paper-glass:  rgba(20, 30, 50, 0.60);
+
+  /* Ink — cool near-white, glassy */
+  --ink:        #F0F4FF;
+  --ink-soft:   #C8CFE0;
+  --ink-faint:  #8A92A8;
+  --graphite:   #DCE2F0;
+  --muted:      #5A627A;
+
+  /* Construction lines — translucent white hairlines */
+  --guide:      rgba(240, 244, 255, 0.16);
+  --guide-soft: rgba(240, 244, 255, 0.08);
+  --hair:       rgba(240, 244, 255, 0.12);
+  --hair-soft:  rgba(240, 244, 255, 0.06);
+
+  /* Primary accent — vibrant iOS dark indigo/blue */
+  --ai:         #6FA9FF;
+  --ai-ink:     #93C2FF;
+  --ai-wash:    rgba(111, 169, 255, 0.16);
+
+  /* Seal — vibrant iOS dark pink */
+  --shu:        #FF6B8A;
+  --shu-wash:   rgba(255, 107, 138, 0.16);
+
+  /* Draft / marginalia — vibrant iOS dark orange */
+  --ochre:      #FFC56B;
+  --ochre-wash: rgba(255, 197, 107, 0.16);
+
+  /* Code surface — translucent over deep paper */
+  --code-bg:     rgba(5, 8, 16, 0.82);
+  --code-ink:    #F0F4FF;
+  --code-muted:  #8A92A8;
+  --code-accent: #FFD60A;
+  --code-green:  #5FE37F;
+  --code-blue:   #93C2FF;
+
+  /* Typography — match Glass (SF system stack) */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Radius — match Glass (soft and large, iOS-style) */
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 24px;
+
+  /* Shadows — floaty with deep undertone (dark needs heavier drops) */
+  --shadow-sm:  0 2px 10px rgba(0, 0, 0, 0.30);
+  --shadow-md:  0 8px 32px rgba(0, 0, 0, 0.42);
+  --shadow-lg:  0 24px 60px rgba(0, 0, 0, 0.55);
+  --shadow-xl:  0 40px 80px rgba(0, 0, 0, 0.65);
+  --shadow-2xl: 0 56px 112px rgba(0, 0, 0, 0.75);
+
+  /* Blur — THE star token; tuned for dark-glass depth */
+  --blur-sm: blur(12px) saturate(160%);
+  --blur-md: blur(18px) saturate(180%);
+  --blur-lg: blur(20px) saturate(200%);
+
+  /* Glow — dual-inset rim highlight (visionOS dark catches less but still rims) */
+  --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --glow-md:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    inset 1px 0 0 rgba(255, 255, 255, 0.10),
+    inset -1px 0 0 rgba(255, 255, 255, 0.06);
+  --glow-lg:
+    inset 0 2px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.08),
+    inset 2px 0 0 rgba(255, 255, 255, 0.14),
+    inset -2px 0 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 40px rgba(111, 169, 255, 0.08);
+
+  /* Motion — match Glass */
+  --duration-fast:   180ms;
+  --duration-normal: 240ms;
+  --duration-slow:   380ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive — kept very subtle so glass translucency reads through */
+  --interactive-hover:  rgba(240, 244, 255, 0.05);
+  --interactive-active: rgba(240, 244, 255, 0.10);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(111, 169, 255, 0.16);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (iOS dark green) */
+  --success-default: #30D158;
+  --success-subtle:  rgba(48, 209, 88, 0.16);
+  --success-text:    #5FE37F;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(255, 197, 107, 0.16);
+  --warning-text:    #FFD79A;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(255, 107, 138, 0.16);
+  --error-text:    #FF93AB;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES
+     ---------------------------------------------------------- */
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}

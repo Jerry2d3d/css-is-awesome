@@ -1,0 +1,211 @@
+/* ============================================================
+   THEME — Graphite Light
+   -----------------------------------------------------------
+   Light companion to Graphite (dark machined-aluminum). Same
+   design language: SF system stack, Apple-snappy motion,
+   AppKit radii (6/10/14), restrained shadows. Only the COLOR
+   palette inverts — the chassis becomes brushed silver
+   instead of milled space-gray.
+
+   Mood: brushed-silver day-mode. Cool neutrals (never warm,
+   never paper), very thin hairlines, minimal lifted shadows
+   to suggest precision-machined surfaces. Same blue-gray
+   accent (Apple system blue, light variant).
+
+   Opt-in via `<html data-theme="graphite-light">`. Pair with
+   graphite/theme.css to ship a project with a default dark
+   aluminum mode and an opt-in light brushed-silver mode.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+[data-theme="graphite-light"] {
+  /* Surfaces — brushed silver chassis (light) */
+  --paper:        #F2F4F6;
+  --paper-raised: #FFFFFF;
+  --paper-sunk:   #E2E5E8;
+  --paper-glass:  rgba(255, 255, 255, 0.72);
+
+  /* Ink — cool near-black */
+  --ink:        #1A1F26;
+  --ink-soft:   #3A4048;
+  --ink-faint:  #6E747C;
+  --graphite:   #2A2F36;
+  --muted:      #8A9098;
+
+  /* Construction lines — translucent ink hairlines */
+  --guide:      rgba(26, 31, 38, 0.16);
+  --guide-soft: rgba(26, 31, 38, 0.08);
+  --hair:       rgba(26, 31, 38, 0.12);
+  --hair-soft:  rgba(26, 31, 38, 0.06);
+
+  /* Primary accent — cool blue-gray (Apple system blue, light) */
+  --ai:         #4A6585;
+  --ai-ink:     #2F4866;
+  --ai-wash:    rgba(74, 101, 133, 0.10);
+
+  /* Seal — restrained warm red */
+  --shu:        #C24D40;
+  --shu-wash:   rgba(194, 77, 64, 0.10);
+
+  /* Draft / marginalia — warm gold */
+  --ochre:      #B5873A;
+  --ochre-wash: rgba(181, 135, 58, 0.10);
+
+  /* Code surface — light Xcode */
+  --code-bg:     #F6F7F9;
+  --code-ink:    #1A1F26;
+  --code-muted:  #6E747C;
+  --code-accent: #B5873A;
+  --code-green:  #3F7A48;
+  --code-blue:   #4A6585;
+
+  /* Typography — match Graphite (SF system stack) */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'New York', 'Iowan Old Style', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
+
+  /* Radius — match Graphite (Apple UI standard) */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+
+  /* Shadows — restrained, lifted (machined precision) */
+  --shadow-sm: 0 1px 2px rgba(26, 31, 38, 0.05);
+  --shadow-md: 0 4px 14px rgba(26, 31, 38, 0.07);
+  --shadow-lg: 0 12px 32px rgba(26, 31, 38, 0.10);
+  --shadow-xl: 0 20px 50px rgba(26, 31, 38, 0.13);
+  --shadow-2xl: 0 28px 70px rgba(26, 31, 38, 0.17);
+
+  /* Blur — graphite doesn't use it */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — inset rim-highlight (sells brushed metal even in light) */
+  --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.50);
+  --glow-md: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 1px 3px rgba(26, 31, 38, 0.06);
+  --glow-lg: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 12px 32px rgba(26, 31, 38, 0.10);
+
+  /* Motion — Apple-snappy, match Graphite */
+  --duration-fast:   160ms;
+  --duration-normal: 220ms;
+  --duration-slow:   340ms;
+  --ease:            cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive — translucent ink wash on light silver */
+  --interactive-hover:  rgba(26, 31, 38, 0.04);
+  --interactive-active: rgba(26, 31, 38, 0.08);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(74, 101, 133, 0.10);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (Apple light-mode green) */
+  --success-default: #28A745;
+  --success-subtle:  rgba(40, 167, 69, 0.10);
+  --success-text:    #1F7A33;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(181, 135, 58, 0.10);
+  --warning-text:    #7A5A22;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(194, 77, 64, 0.10);
+  --error-text:    #8A2F25;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES
+     ---------------------------------------------------------- */
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}

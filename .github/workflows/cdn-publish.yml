@@ -117,7 +117,7 @@ jobs:
             "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.core.min.css"
             "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.utilities.min.css"
             "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/theme.css"
-            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/themes/press/theme.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/themes/press-light/theme.css"
           )
 
           SUMMARY="$GITHUB_STEP_SUMMARY"

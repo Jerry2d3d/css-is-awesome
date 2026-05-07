@@ -7,22 +7,50 @@
    file gated by an <html data-theme="..."> attribute set
    server-side from a cookie.
 
+   NAMING CONVENTION (v0.7+)
+   -----------------------------------------------------------
+   Every theme name carries a mode suffix (`-light` or `-dark`)
+   so consumers can read intent at a glance:
+
+     - sketchbook-light  (default — also matches :root:not([data-theme]))
+     - press-light
+     - graphite-dark
+     - glass-light
+     - cupertino-light
+     - terminal-dark      (the original VT100 phosphor CRT)
+     - terminal-light     (daylight-editor companion)
+
+   Every built-in theme now ships paired light/dark modes. The
+   unsuffixed v0.6 name `terminal` remains as a backward-compat
+   alias for `terminal-dark` through 0.7.x.
+
+   The unsuffixed names that shipped before v0.7 (`sketchbook`,
+   `press`, `graphite`, `glass`, `cupertino`) are kept as
+   backward-compat aliases at the bottom of this file. They are
+   deprecated and will be removed in v0.8 (see CHANGELOG and
+   MIGRATION.md).
+
    STRUCTURE
    -----------------------------------------------------------
    This file contains ALL six built-in themes as
    `[data-theme="<name>"] { ... }` blocks. The attribute is
    expected to be set on the <html> element; when it isn't,
    the `:root:not([data-theme])` fallback below selects
-   Sketchbook as the default so this file still works as a
-   drop-in stylesheet with no HTML changes.
+   sketchbook-light as the default so this file still works
+   as a drop-in stylesheet with no HTML changes.
 
    Blocks in source order (do not reorder):
-     1. sketchbook (default — also matches :root:not([data-theme]))
-     2. press
-     3. graphite
-     4. glass
-     5. cupertino
-     6. terminal
+     1. sketchbook-light (default — also matches :root:not([data-theme]))
+     2. press-light
+     3. graphite-dark
+     4. glass-light
+     5. cupertino-light
+     6. terminal-dark
+     7. companion themes appended by scripts/bundle-companion-themes.mjs:
+        sketchbook-dark, press-dark, graphite-light, glass-dark,
+        cupertino-dark, prism-light, prism-dark, terminal-light
+     8. backward-compat aliases for the unsuffixed v0.6 names live
+        on the canonical blocks via comma-grouped selectors
 
    TOKEN CONTRACT
    -----------------------------------------------------------
@@ -41,12 +69,13 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
 
 /* ============================================================
-   THEME — Sketchbook  (DEFAULT)
+   THEME — Sketchbook (light)  (DEFAULT)
    -----------------------------------------------------------
    Also selected by :root:not([data-theme]) so this stylesheet
    works standalone with no attribute set.
    ============================================================ */
-[data-theme="sketchbook"],
+[data-theme="sketchbook-light"],
+[data-theme="sketchbook"], /* deprecated alias — removed in v0.8 */
 :root:not([data-theme]) {
   /* Surfaces — warm paper */
   --paper:        #F7F3EA;
@@ -250,13 +279,14 @@
 }
 
 /* ============================================================
-   THEME — Press
+   THEME — Press (light)
    -----------------------------------------------------------
    Mood: T-Magazine / Stripe Press / Apple Newsroom editorial
    newsprint. Classical measure, thin hairlines, dramatic serif
    display, a single press-red accent.
    ============================================================ */
-[data-theme="press"] {
+[data-theme="press-light"],
+[data-theme="press"] /* deprecated alias — removed in v0.8 */ {
   /* Surfaces — warm newsprint */
   --paper:        #FAFAF7;
   --paper-raised: #FFFFFF;
@@ -477,13 +507,14 @@
 }
 
 /* ============================================================
-   THEME — Graphite
+   THEME — Graphite (dark)
    -----------------------------------------------------------
    Mood: Space Gray MacBook aluminum + Xcode dark. Warm dark
    grays — never purple-black, never gamery. The inset rim-
    highlights on --glow-* are what sell the milled-metal edge.
    ============================================================ */
-[data-theme="graphite"] {
+[data-theme="graphite-dark"],
+[data-theme="graphite"] /* deprecated alias — removed in v0.8 */ {
   /* Surfaces — milled aluminum chassis (dark) */
   --paper:        #1A1A1C;
   --paper-raised: #242426;
@@ -685,13 +716,14 @@
 }
 
 /* ============================================================
-   THEME — Liquid Glass
+   THEME — Liquid Glass (light)
    -----------------------------------------------------------
    Mood: visionOS / iOS Liquid Glass. Pastel-tint base, frosted
    translucent surfaces, dual-inset rim-light. --blur-* is the
    star — pair with --paper-glass for the signature look.
    ============================================================ */
-[data-theme="glass"] {
+[data-theme="glass-light"],
+[data-theme="glass"] /* deprecated alias — removed in v0.8 */ {
   /* Surfaces — frosted translucent over a lavender-tint base */
   --paper:        #F4EEFF;
   --paper-raised: #FFFFFF;
@@ -903,12 +935,13 @@
 }
 
 /* ============================================================
-   THEME — Cupertino
+   THEME — Cupertino (light)
    -----------------------------------------------------------
    Mood: AppKit macOS panels. Diffuse lifts, vibrancy blurs,
    soft radii. Cupertino doesn't glow — it lifts.
    ============================================================ */
-[data-theme="cupertino"] {
+[data-theme="cupertino-light"],
+[data-theme="cupertino"] /* deprecated alias — removed in v0.8 */ {
   /* Surfaces — AppKit panels */
   --paper:        #F5F5F7;
   --paper-raised: #FFFFFF;
@@ -1127,13 +1160,18 @@
 }
 
 /* ============================================================
-   THEME — Terminal (VT100 CRT Phosphor)
+   THEME — Terminal Dark (VT100 CRT Phosphor)
    -----------------------------------------------------------
    Mood: Deep warm black CRT chassis + phosphor-green ink.
    Every font slot points at --font-mono to keep the CRT pure
    while still honouring the full contract.
+
+   `[data-theme="terminal"]` is retained as a backward-compat
+   alias through 0.7.x; removed in 0.8 (US-2.14.3). New code
+   should use `[data-theme="terminal-dark"]`.
    ============================================================ */
-[data-theme="terminal"] {
+[data-theme="terminal-dark"],
+[data-theme="terminal"] /* deprecated alias — removed in v0.8 */ {
   /* Surfaces — deep warm black chassis + phosphor haze */
   --paper:        #0A0E0A;
   --paper-raised: #0F140F;
@@ -1350,8 +1388,1619 @@
    END OF THEMES
    -----------------------------------------------------------
    Reminder: when no `data-theme` attribute is set on <html>,
-   the Sketchbook block above still wins via
+   the sketchbook-light block above still wins via
    `:root:not([data-theme])`. Server-side code is expected to
    render <html data-theme="..."> from a cookie; this file
    remains a valid drop-in with no attribute required.
+
+   BACKWARD-COMPAT ALIASES (deprecated, removed in v0.8)
+   -----------------------------------------------------------
+   The unsuffixed names that shipped before v0.7 are kept as
+   alias selectors on each native block above:
+
+     [data-theme="sketchbook"]  → sketchbook-light
+     [data-theme="press"]       → press-light
+     [data-theme="graphite"]    → graphite-dark
+     [data-theme="glass"]       → glass-light
+     [data-theme="cupertino"]   → cupertino-light
+
+   This means `<html data-theme="sketchbook">` continues to
+   resolve to the same tokens it did in v0.6 throughout v0.7.x.
+   The aliases are removed in v0.8 (see US-2.14.3 in the
+   roadmap). Migration steps are in MIGRATION.md and the
+   v0.7.0 entry of CHANGELOG.md.
    ============================================================ */
+
+
+/* ============================================================
+   COMPANION + PRISM THEMES
+   -----------------------------------------------------------
+   Appended by scripts/bundle-companion-themes.mjs so a single
+   <link href="/theme.css"> loads every theme. Each block is
+   sourced verbatim from public/themes/<name>/theme.css.
+   ============================================================ */
+
+/* ============================================================
+   THEME — prism-light
+   ============================================================ */
+[data-theme="prism-light"] {
+  /* Surfaces */
+  --paper:        #ffffff;
+  --paper-raised: #ffffff;
+  --paper-sunk:   #f4f4f5;
+  --paper-glass:  rgba(255, 255, 255, 0.80);
+
+  /* Ink — Zinc neutral ramp */
+  --ink:        #09090b;
+  --ink-soft:   #27272a;
+  --ink-faint:  #52525b;
+  --graphite:   #18181b;
+  --muted:      #71717a;
+
+  /* Lines */
+  --guide:      #d4d4d8;
+  --guide-soft: #e4e4e7;
+  --hair:       #e4e4e7;
+  --hair-soft:  #f4f4f5;
+
+  /* Primary accent — refined blue */
+  --ai:         #2563eb;
+  --ai-ink:     #1d4ed8;
+  --ai-wash:    #eff6ff;
+
+  /* Seal — red (used for error / secondary) */
+  --shu:        #dc2626;
+  --shu-wash:   #fef2f2;
+
+  /* Tertiary — amber (used for warning) */
+  --ochre:      #ca8a04;
+  --ochre-wash: #fefce8;
+
+  /* Code — light syntax surface */
+  --code-bg:     #fafafa;
+  --code-ink:    #18181b;
+  --code-muted:  #71717a;
+  --code-accent: #c2410c;
+  --code-green:  #16a34a;
+  --code-blue:   #2563eb;
+
+  /* Typography */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-script:  'Inter', cursive;
+  --font-serif:   Georgia, 'Times New Roman', Times, serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', 'Roboto Mono', Consolas, Menlo, monospace;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  /* Shadow — extremely subtle */
+  --shadow-sm:  0 1px 1px rgba(9, 9, 11, .03);
+  --shadow-md:  0 1px 2px rgba(9, 9, 11, .05);
+  --shadow-lg:  0 4px 12px -4px rgba(9, 9, 11, .08);
+  --shadow-xl:  0 16px 32px -16px rgba(9, 9, 11, .15);
+  --shadow-2xl: 0 0 0 1px #e4e4e7, 0 8px 24px -8px rgba(9, 9, 11, .12);
+
+  /* Blur — Prism doesn't use frosted surfaces */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — Prism doesn't use glow effects */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — fast and crisp */
+  --duration-fast:   100ms;
+  --duration-normal: 150ms;
+  --duration-slow:   250ms;
+  --ease:            cubic-bezier(.32, .72, 0, 1);
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces (semantic) */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--guide);
+  --border-focus:      var(--ai);
+
+  /* Interactive overlays */
+  --interactive-hover:  rgba(9, 9, 11, 0.05);
+  --interactive-active: rgba(9, 9, 11, 0.10);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  #16a34a;
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success */
+  --success-default: #16a34a;
+  --success-subtle:  #f0fdf4;
+  --success-text:    #15803d;
+
+  /* Status — warning */
+  --warning-default: #ca8a04;
+  --warning-subtle:  #fefce8;
+  --warning-text:    #854d0e;
+
+  /* Status — error */
+  --error-default: #dc2626;
+  --error-subtle:  #fef2f2;
+  --error-text:    #b91c1c;
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   12px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* Component overrides — Prism is border-driven and tightly rounded */
+  --btn-radius:    var(--r-md);
+  --card-radius:   var(--r-md);
+  --card-shadow:   var(--shadow-sm);
+  --card-border:   1px solid var(--hair);
+  --input-radius:  var(--r-md);
+  --modal-radius:  var(--r-lg);
+}
+
+/* ============================================================
+   THEME — prism-dark
+   ============================================================ */
+[data-theme="prism-dark"] {
+  /* Surfaces — Zinc dark ramp */
+  --paper:        #09090b;
+  --paper-raised: #18181b;
+  --paper-sunk:   #27272a;
+  --paper-glass:  rgba(24, 24, 27, 0.80);
+
+  /* Ink — inverted neutrals */
+  --ink:        #fafafa;
+  --ink-soft:   #e4e4e7;
+  --ink-faint:  #a1a1aa;
+  --graphite:   #f4f4f5;
+  --muted:      #71717a;
+
+  /* Lines — dark borders */
+  --guide:      #3f3f46;
+  --guide-soft: #27272a;
+  --hair:       #27272a;
+  --hair-soft:  #18181b;
+
+  /* Primary accent — brighter blue for dark surfaces */
+  --ai:         #3b82f6;
+  --ai-ink:     #60a5fa;
+  --ai-wash:    #1e3a8a;
+
+  /* Seal — red */
+  --shu:        #ef4444;
+  --shu-wash:   #450a0a;
+
+  /* Tertiary — amber */
+  --ochre:      #eab308;
+  --ochre-wash: #422006;
+
+  /* Code — dark syntax surface */
+  --code-bg:     #0a0a0a;
+  --code-ink:    #e4e4e7;
+  --code-muted:  #71717a;
+  --code-accent: #fb923c;
+  --code-green:  #4ade80;
+  --code-blue:   #60a5fa;
+
+  /* Typography */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-script:  'Inter', cursive;
+  --font-serif:   Georgia, 'Times New Roman', Times, serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', 'Roboto Mono', Consolas, Menlo, monospace;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  /* Shadow — heavier for dark backgrounds */
+  --shadow-sm:  0 1px 1px rgba(0, 0, 0, .3);
+  --shadow-md:  0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-lg:  0 4px 12px -4px rgba(0, 0, 0, .6);
+  --shadow-xl:  0 16px 32px -16px rgba(0, 0, 0, .7);
+  --shadow-2xl: 0 0 0 1px #27272a, 0 8px 24px -8px rgba(0, 0, 0, .6);
+
+  /* Blur */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion */
+  --duration-fast:   100ms;
+  --duration-normal: 150ms;
+  --duration-slow:   250ms;
+  --ease:            cubic-bezier(.32, .72, 0, 1);
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces (semantic) */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--guide);
+  --border-focus:      var(--ai);
+
+  /* Interactive overlays — light wash on dark */
+  --interactive-hover:  rgba(255, 255, 255, 0.05);
+  --interactive-active: rgba(255, 255, 255, 0.10);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  #22c55e;
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success */
+  --success-default: #22c55e;
+  --success-subtle:  #14532d;
+  --success-text:    #4ade80;
+
+  /* Status — warning */
+  --warning-default: #eab308;
+  --warning-subtle:  #422006;
+  --warning-text:    #fde047;
+
+  /* Status — error */
+  --error-default: #ef4444;
+  --error-subtle:  #450a0a;
+  --error-text:    #fca5a5;
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   12px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* Component overrides */
+  --btn-radius:    var(--r-md);
+  --card-radius:   var(--r-md);
+  --card-shadow:   var(--shadow-sm);
+  --card-border:   1px solid var(--hair);
+  --input-radius:  var(--r-md);
+  --modal-radius:  var(--r-lg);
+}
+
+/* ============================================================
+   THEME — sketchbook-dark
+   ============================================================ */
+[data-theme="sketchbook-dark"] {
+  /* Surfaces — warm charcoal paper */
+  --paper:        #1A1815;
+  --paper-raised: #2A2520;
+  --paper-sunk:   #11100E;
+  --paper-glass:  rgba(42, 37, 32, 0.78);
+
+  /* Ink — warm cream pencil */
+  --ink:        #F4EFE2;
+  --ink-soft:   #D8D0BE;
+  --ink-faint:  #A89E89;
+  --graphite:   #E8E0CE;
+  --muted:      #7A715F;
+
+  /* Construction lines — warm dark hairlines */
+  --guide:      #4A4239;
+  --guide-soft: #382F27;
+  --hair:       #3F362C;
+  --hair-soft:  #2A241E;
+
+  /* Primary accent — lifted indigo for dark paper */
+  --ai:         #6E8FBF;
+  --ai-ink:     #8DA8D1;
+  --ai-wash:    #1F2B3F;
+
+  /* Seal — vermilion (stays warm, brightened slightly) */
+  --shu:        #E36148;
+  --shu-wash:   #3A1A14;
+
+  /* Draft / marginalia — warm gold */
+  --ochre:      #D4A04B;
+  --ochre-wash: #382B14;
+
+  /* Code surface — invert: warm cream slab */
+  --code-bg:     #F7F3EA;
+  --code-ink:    #2B2420;
+  --code-muted:  #6B5E50;
+  --code-accent: #A37B30;
+  --code-green:  #5A7A3A;
+  --code-blue:   #1F3A5F;
+
+  /* Typography — match Sketchbook */
+  --font-display: 'DM Serif Display', 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'Noto Serif JP', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace;
+
+  /* Radius — match Sketchbook */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 6px;
+
+  /* Shadows — heavier on dark, ink bleeding behind paper */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+  --shadow-md: 0 4px 18px rgba(0, 0, 0, .45);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, .55);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, .65);
+  --shadow-2xl: 0 28px 70px rgba(0, 0, 0, .75);
+
+  /* Blur — paper themes don't use it; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — faint warm rim (charcoal paper, not phosphor) */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — match Sketchbook (editorial pace) */
+  --duration-fast:   180ms;
+  --duration-normal: 240ms;
+  --duration-slow:   380ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--guide);
+  --border-focus:      var(--ai);
+
+  /* Interactive (hover / active wash layers) — warm cream on charcoal */
+  --interactive-hover:  rgba(244, 239, 226, 0.06);
+  --interactive-active: rgba(244, 239, 226, 0.12);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (lifted moss-green for dark paper) */
+  --success-default: #8DA86A;
+  --success-subtle:  #1F2B14;
+  --success-text:    #B8CC8E;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #E8BF6E;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #F08A72;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES
+     ---------------------------------------------------------- */
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}
+
+/* ============================================================
+   THEME — press-dark
+   ============================================================ */
+[data-theme="press-dark"] {
+  /* Surfaces — near-ink newsroom */
+  --paper:        #0E0E0E;
+  --paper-raised: #1A1A1A;
+  --paper-sunk:   #060606;
+  --paper-glass:  rgba(26, 26, 26, 0.82);
+
+  /* Ink — warm off-white headline */
+  --ink:        #FAFAF7;
+  --ink-soft:   #C8C6C0;
+  --ink-faint:  #8A8A86;
+  --graphite:   #ECEAE4;
+  --muted:      #5A5854;
+
+  /* Rules / hairlines — thin editorial rules on dark */
+  --guide:      #ECEAE4;
+  --guide-soft: #2A2A2A;
+  --hair:       #2A2A2A;
+  --hair-soft:  #1A1A1A;
+
+  /* Primary accent — cool ink, near-mono editorial link */
+  --ai:         #A8A8A8;
+  --ai-ink:     #ECEAE4;
+  --ai-wash:    #1F1F1F;
+
+  /* Seal — press red (kept hot) */
+  --shu:        #FF4538;
+  --shu-wash:   rgba(255, 69, 56, 0.14);
+
+  /* Pull-quote / marginalia — warm gold */
+  --ochre:      #E8B96E;
+  --ochre-wash: rgba(232, 185, 110, 0.12);
+
+  /* Code surface — keep ink-slab, lifted slightly above paper */
+  --code-bg:     #060606;
+  --code-ink:    #FAFAF7;
+  --code-muted:  #8A8A86;
+  --code-accent: #E8B96E;
+  --code-green:  #B8C57A;
+  --code-blue:   #94AFC9;
+
+  /* Typography — match Press */
+  --font-display: 'Playfair Display', 'Tiempos', 'Fraunces', Georgia, serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'Playfair Display', 'Tiempos', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+
+  /* Radius — match Press, very square */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 4px;
+
+  /* Shadows — minimal, deeper for dark */
+  --shadow-sm:  0 1px 2px rgba(0, 0, 0, .35);
+  --shadow-md:  0 6px 24px rgba(0, 0, 0, .45);
+  --shadow-lg:  0 18px 48px rgba(0, 0, 0, .55);
+  --shadow-xl:  0 28px 64px rgba(0, 0, 0, .65);
+  --shadow-2xl: 0 40px 96px rgba(0, 0, 0, .75);
+
+  /* Blur — editorial doesn't use it */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — editorial doesn't use it */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — editorial pace, match Press */
+  --duration-fast:   200ms;
+  --duration-normal: 280ms;
+  --duration-slow:   420ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ink);
+  --text-link-hover:   var(--shu);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--shu);
+
+  /* Interactive (hover / active wash) — light wash on dark */
+  --interactive-hover:  rgba(250, 250, 247, 0.05);
+  --interactive-active: rgba(250, 250, 247, 0.10);
+
+  /* Brand */
+  --brand-primary:        var(--ink);
+  --brand-primary-hover:  var(--shu);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ink);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info (near-mono editorial) */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (restrained editorial green, lifted) */
+  --success-default: #6FA85A;
+  --success-subtle:  rgba(111, 168, 90, 0.14);
+  --success-text:    #95C97F;
+
+  /* Status — warning (warm editorial ochre) */
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #F0CC8E;
+
+  /* Status — error — press red IS the error color */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #FF7A70;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES
+     ---------------------------------------------------------- */
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — Press is editorial, xl stays tight (6px) */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   6px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* ----------------------------------------------------------
+     OPTIONAL COMPONENT OVERRIDES — match Press exactly
+     ---------------------------------------------------------- */
+  --btn-radius:    var(--r-sm);            /* 2px — near-square */
+  --card-radius:   var(--r-sm);            /* 2px — boxed */
+  --card-shadow:   none;                   /* editorial is flat */
+  --card-border:   1px solid var(--hair);  /* thin rule instead */
+  --input-radius:  var(--r-sm);            /* 2px */
+  --modal-radius:  var(--r-md);            /* 3px */
+}
+
+/* ============================================================
+   THEME — graphite-light
+   ============================================================ */
+[data-theme="graphite-light"] {
+  /* Surfaces — brushed silver chassis (light) */
+  --paper:        #F2F4F6;
+  --paper-raised: #FFFFFF;
+  --paper-sunk:   #E2E5E8;
+  --paper-glass:  rgba(255, 255, 255, 0.72);
+
+  /* Ink — cool near-black */
+  --ink:        #1A1F26;
+  --ink-soft:   #3A4048;
+  --ink-faint:  #6E747C;
+  --graphite:   #2A2F36;
+  --muted:      #8A9098;
+
+  /* Construction lines — translucent ink hairlines */
+  --guide:      rgba(26, 31, 38, 0.16);
+  --guide-soft: rgba(26, 31, 38, 0.08);
+  --hair:       rgba(26, 31, 38, 0.12);
+  --hair-soft:  rgba(26, 31, 38, 0.06);
+
+  /* Primary accent — cool blue-gray (Apple system blue, light) */
+  --ai:         #4A6585;
+  --ai-ink:     #2F4866;
+  --ai-wash:    rgba(74, 101, 133, 0.10);
+
+  /* Seal — restrained warm red */
+  --shu:        #C24D40;
+  --shu-wash:   rgba(194, 77, 64, 0.10);
+
+  /* Draft / marginalia — warm gold */
+  --ochre:      #B5873A;
+  --ochre-wash: rgba(181, 135, 58, 0.10);
+
+  /* Code surface — light Xcode */
+  --code-bg:     #F6F7F9;
+  --code-ink:    #1A1F26;
+  --code-muted:  #6E747C;
+  --code-accent: #B5873A;
+  --code-green:  #3F7A48;
+  --code-blue:   #4A6585;
+
+  /* Typography — match Graphite (SF system stack) */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'New York', 'Iowan Old Style', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
+
+  /* Radius — match Graphite (Apple UI standard) */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+
+  /* Shadows — restrained, lifted (machined precision) */
+  --shadow-sm: 0 1px 2px rgba(26, 31, 38, 0.05);
+  --shadow-md: 0 4px 14px rgba(26, 31, 38, 0.07);
+  --shadow-lg: 0 12px 32px rgba(26, 31, 38, 0.10);
+  --shadow-xl: 0 20px 50px rgba(26, 31, 38, 0.13);
+  --shadow-2xl: 0 28px 70px rgba(26, 31, 38, 0.17);
+
+  /* Blur — graphite doesn't use it */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — inset rim-highlight (sells brushed metal even in light) */
+  --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.50);
+  --glow-md: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 1px 3px rgba(26, 31, 38, 0.06);
+  --glow-lg: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 12px 32px rgba(26, 31, 38, 0.10);
+
+  /* Motion — Apple-snappy, match Graphite */
+  --duration-fast:   160ms;
+  --duration-normal: 220ms;
+  --duration-slow:   340ms;
+  --ease:            cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive — translucent ink wash on light silver */
+  --interactive-hover:  rgba(26, 31, 38, 0.04);
+  --interactive-active: rgba(26, 31, 38, 0.08);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(74, 101, 133, 0.10);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (Apple light-mode green) */
+  --success-default: #28A745;
+  --success-subtle:  rgba(40, 167, 69, 0.10);
+  --success-text:    #1F7A33;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(181, 135, 58, 0.10);
+  --warning-text:    #7A5A22;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(194, 77, 64, 0.10);
+  --error-text:    #8A2F25;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES
+     ---------------------------------------------------------- */
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}
+
+/* ============================================================
+   THEME — glass-dark
+   ============================================================ */
+[data-theme="glass-dark"] {
+  /* Surfaces — frosted translucent over deep blue-black */
+  --paper:        #0A0F1A;
+  --paper-raised: #141E32;
+  --paper-sunk:   #050810;
+  --paper-glass:  rgba(20, 30, 50, 0.60);
+
+  /* Ink — cool near-white, glassy */
+  --ink:        #F0F4FF;
+  --ink-soft:   #C8CFE0;
+  --ink-faint:  #8A92A8;
+  --graphite:   #DCE2F0;
+  --muted:      #5A627A;
+
+  /* Construction lines — translucent white hairlines */
+  --guide:      rgba(240, 244, 255, 0.16);
+  --guide-soft: rgba(240, 244, 255, 0.08);
+  --hair:       rgba(240, 244, 255, 0.12);
+  --hair-soft:  rgba(240, 244, 255, 0.06);
+
+  /* Primary accent — vibrant iOS dark indigo/blue */
+  --ai:         #6FA9FF;
+  --ai-ink:     #93C2FF;
+  --ai-wash:    rgba(111, 169, 255, 0.16);
+
+  /* Seal — vibrant iOS dark pink */
+  --shu:        #FF6B8A;
+  --shu-wash:   rgba(255, 107, 138, 0.16);
+
+  /* Draft / marginalia — vibrant iOS dark orange */
+  --ochre:      #FFC56B;
+  --ochre-wash: rgba(255, 197, 107, 0.16);
+
+  /* Code surface — translucent over deep paper */
+  --code-bg:     rgba(5, 8, 16, 0.82);
+  --code-ink:    #F0F4FF;
+  --code-muted:  #8A92A8;
+  --code-accent: #FFD60A;
+  --code-green:  #5FE37F;
+  --code-blue:   #93C2FF;
+
+  /* Typography — match Glass (SF system stack) */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Radius — match Glass (soft and large, iOS-style) */
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 24px;
+
+  /* Shadows — floaty with deep undertone (dark needs heavier drops) */
+  --shadow-sm:  0 2px 10px rgba(0, 0, 0, 0.30);
+  --shadow-md:  0 8px 32px rgba(0, 0, 0, 0.42);
+  --shadow-lg:  0 24px 60px rgba(0, 0, 0, 0.55);
+  --shadow-xl:  0 40px 80px rgba(0, 0, 0, 0.65);
+  --shadow-2xl: 0 56px 112px rgba(0, 0, 0, 0.75);
+
+  /* Blur — THE star token; tuned for dark-glass depth */
+  --blur-sm: blur(12px) saturate(160%);
+  --blur-md: blur(18px) saturate(180%);
+  --blur-lg: blur(20px) saturate(200%);
+
+  /* Glow — dual-inset rim highlight (visionOS dark catches less but still rims) */
+  --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --glow-md:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    inset 1px 0 0 rgba(255, 255, 255, 0.10),
+    inset -1px 0 0 rgba(255, 255, 255, 0.06);
+  --glow-lg:
+    inset 0 2px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.08),
+    inset 2px 0 0 rgba(255, 255, 255, 0.14),
+    inset -2px 0 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 40px rgba(111, 169, 255, 0.08);
+
+  /* Motion — match Glass */
+  --duration-fast:   180ms;
+  --duration-normal: 240ms;
+  --duration-slow:   380ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive — kept very subtle so glass translucency reads through */
+  --interactive-hover:  rgba(240, 244, 255, 0.05);
+  --interactive-active: rgba(240, 244, 255, 0.10);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  rgba(111, 169, 255, 0.16);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (iOS dark green) */
+  --success-default: #30D158;
+  --success-subtle:  rgba(48, 209, 88, 0.16);
+  --success-text:    #5FE37F;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(255, 197, 107, 0.16);
+  --warning-text:    #FFD79A;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  rgba(255, 107, 138, 0.16);
+  --error-text:    #FF93AB;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES
+     ---------------------------------------------------------- */
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}
+
+/* ============================================================
+   THEME — cupertino-dark
+   ============================================================ */
+[data-theme="cupertino-dark"] {
+  /* Surfaces — AppKit dark panels */
+  --paper:        #1E1E1E;
+  --paper-raised: #2A2A2A;
+  --paper-sunk:   #141414;
+  --paper-glass:  rgba(42, 42, 42, 0.72);
+
+  /* Ink — warm white, never pure */
+  --ink:        #F5F5F7;
+  --ink-soft:   #C7C7CC;
+  --ink-faint:  #98989D;
+  --graphite:   #AEAEB2;
+  --muted:      #6E6E73;
+
+  /* Hairlines / guides — translucent white */
+  --guide:      rgba(255, 255, 255, 0.16);
+  --guide-soft: rgba(255, 255, 255, 0.08);
+  --hair:       rgba(255, 255, 255, 0.12);
+  --hair-soft:  rgba(255, 255, 255, 0.06);
+
+  /* Primary accent — Apple system blue (dark variant) */
+  --ai:         #0A84FF;
+  --ai-ink:     #409CFF;
+  --ai-wash:    rgba(10, 132, 255, 0.16);
+
+  /* Seal — Apple system red (dark variant) */
+  --shu:        #FF453A;
+  --shu-wash:   rgba(255, 69, 58, 0.16);
+
+  /* Accent — Apple system orange (dark variant) */
+  --ochre:      #FF9F0A;
+  --ochre-wash: rgba(255, 159, 10, 0.16);
+
+  /* Code surface — AppKit dark code panel */
+  --code-bg:     #0F0F0F;
+  --code-ink:    #F2F2F7;
+  --code-muted:  #8E8E93;
+  --code-accent: #FF9F0A;
+  --code-green:  #30D158;
+  --code-blue:   #64D2FF;
+
+  /* Typography — match Cupertino (SF system stack) */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   ui-serif, 'New York', 'Iowan Old Style', 'Palatino', Georgia, serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', 'Menlo', Consolas, monospace;
+
+  /* Radius — match Cupertino (AppKit corners) */
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 14px;
+
+  /* Shadows — small, diffuse, lifted (deeper for dark) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 0.5px rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.40), 0 1px 3px rgba(0, 0, 0, 0.30);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.50), 0 2px 6px rgba(0, 0, 0, 0.30);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.60), 0 4px 10px rgba(0, 0, 0, 0.32);
+  --shadow-2xl: 0 28px 70px rgba(0, 0, 0, 0.72), 0 6px 14px rgba(0, 0, 0, 0.36);
+
+  /* Blur — vibrancy (Cupertino's signature, match light) */
+  --blur-sm: blur(20px) saturate(180%);
+  --blur-md: blur(30px) saturate(180%);
+  --blur-lg: blur(40px) saturate(180%);
+
+  /* Glow — Cupertino doesn't glow, it lifts */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — Apple-snappy, match Cupertino */
+  --duration-fast:   160ms;
+  --duration-normal: 220ms;
+  --duration-slow:   320ms;
+  --ease:            cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive — translucent white on dark (macOS Dark convention) */
+  --interactive-hover:  rgba(255, 255, 255, 0.06);
+  --interactive-active: rgba(255, 255, 255, 0.10);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (macOS dark green) */
+  --success-default: #30D158;
+  --success-subtle:  rgba(48, 209, 88, 0.16);
+  --success-text:    #5FE37F;
+
+  /* Status — warning (macOS dark orange) */
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #FFB340;
+
+  /* Status — error (macOS dark red) */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #FF6961;
+
+  /* ----------------------------------------------------------
+     LIBRARY SCALES
+     ---------------------------------------------------------- */
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* ----------------------------------------------------------
+     OPTIONAL COMPONENT OVERRIDES — match Cupertino
+     ---------------------------------------------------------- */
+  --btn-radius:    var(--r-md);            /* 10px — AppKit control */
+  --card-radius:   var(--r-lg);            /* 14px — panel corner */
+  --card-shadow:   var(--shadow-sm);       /* diffuse, lifted */
+  --input-radius:  var(--r-sm);            /* 8px — text field */
+  --modal-radius:  var(--r-lg);            /* matches panel */
+  --tooltip-radius: var(--r-sm);           /* bezel tooltip */
+}
+
+
+/* ============================================================
+   COMPANION + PRISM THEMES
+   -----------------------------------------------------------
+   Appended by scripts/bundle-companion-themes.mjs so a single
+   <link href="/theme.css"> loads every theme. Each block is
+   sourced verbatim from public/themes/<name>/theme.css.
+   ============================================================ */
+
+
+
+/* ============================================================
+   COMPANION + PRISM THEMES
+   -----------------------------------------------------------
+   Appended by scripts/bundle-companion-themes.mjs so a single
+   <link href="/theme.css"> loads every theme. Each block is
+   sourced verbatim from public/themes/<name>/theme.css.
+   ============================================================ */
+
+/* ============================================================
+   THEME — terminal-light
+   ============================================================ */
+[data-theme="terminal-light"] {
+  /* Surfaces — clear light gray paper, white-lift for raised panels */
+  --paper:        #E8E8E8;
+  --paper-raised: #F5F5F5;
+  --paper-sunk:   #D8D8D8;
+  --paper-glass:  rgba(232, 232, 232, 0.85);
+
+  /* Ink — near-black mono ink */
+  --ink:        #1A1A1A;
+  --ink-soft:   #404040;
+  --ink-faint:  #707070;
+  --graphite:   #0A0A0A;
+  --muted:      #909090;
+
+  /* Hairlines / grid rules — medium gray */
+  --guide:      #B8B8B8;
+  --guide-soft: #C8C8C8;
+  --hair:       #C0C0C0;
+  --hair-soft:  #D8D8D8;
+
+  /* Primary accent — classic terminal blue (VS Code keyword blue) */
+  --ai:         #0451A5;
+  --ai-ink:     #023268;
+  --ai-wash:    rgba(4, 81, 165, 0.10);
+
+  /* Seal — error red */
+  --shu:        #B91C1C;
+  --shu-wash:   rgba(185, 28, 28, 0.10);
+
+  /* Accent — warning amber */
+  --ochre:      #B45309;
+  --ochre-wash: rgba(180, 83, 9, 0.10);
+
+  /* Code surface — slightly darker than paper for contrast */
+  --code-bg:     #DDDDDD;
+  --code-ink:    #1A1A1A;
+  --code-muted:  #707070;
+  --code-accent: #B45309;  /* numbers / literals — orange */
+  --code-green:  #008833;  /* strings — green */
+  --code-blue:   #0451A5;  /* keywords — blue */
+
+  /* Typography — mono everywhere, like Terminal Dark */
+  --font-mono:    'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;
+  --font-sans:    var(--font-mono);
+  --font-serif:   var(--font-mono);
+  --font-display: var(--font-mono);
+  --font-script:  var(--font-mono);
+
+  /* Radius — terminals are square in any mode */
+  --r-sm: 0;
+  --r-md: 0;
+  --r-lg: 0;
+
+  /* Shadows — subtle hairlines, no halo */
+  --shadow-sm:  0 0 0 1px rgba(26, 26, 26, 0.08);
+  --shadow-md:  0 0 0 1px rgba(26, 26, 26, 0.10), 0 1px 2px rgba(26, 26, 26, 0.06);
+  --shadow-lg:  0 0 0 1px rgba(26, 26, 26, 0.12), 0 2px 4px rgba(26, 26, 26, 0.08);
+  --shadow-xl:  0 0 0 1px rgba(26, 26, 26, 0.14), 0 4px 8px rgba(26, 26, 26, 0.10);
+  --shadow-2xl: 0 0 0 1px rgba(26, 26, 26, 0.16), 0 8px 16px rgba(26, 26, 26, 0.12);
+
+  /* Blur — terminal has no frosted glass */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — daylight, no emission */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — terminals are instant */
+  --duration-fast:   100ms;
+  --duration-normal: 140ms;
+  --duration-slow:   220ms;
+  --ease:            cubic-bezier(0.2, 0.0, 0.2, 1);
+
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     ---------------------------------------------------------- */
+
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive overlays — ink-on-gray, dark wash */
+  --interactive-hover:  rgba(26, 26, 26, 0.05);
+  --interactive-active: rgba(26, 26, 26, 0.10);
+
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  --feedback-info:     var(--ai);
+  --feedback-success:  #008833;
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  --info-default: var(--ai);
+  --info-subtle:  rgba(4, 81, 165, 0.10);
+  --info-text:    var(--ai-ink);
+
+  --success-default: #008833;
+  --success-subtle:  rgba(0, 136, 51, 0.10);
+  --success-text:    #006622;
+
+  --warning-default: var(--ochre);
+  --warning-subtle:  rgba(180, 83, 9, 0.10);
+  --warning-text:    #92400E;
+
+  --error-default: var(--shu);
+  --error-subtle:  rgba(185, 28, 28, 0.10);
+  --error-text:    #7F1D1D;
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — every slot is 0 */
+  --radius-sm:   0;
+  --radius-md:   0;
+  --radius-lg:   0;
+  --radius-xl:   0;
+  --radius-full: 0;
+
+  /* Typography — mono body, 15px matches Terminal Dark */
+  --font-primary:       var(--font-mono);
+  --font-size-base:     15px;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}

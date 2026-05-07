@@ -5,14 +5,14 @@
 // Variable names here match what the rest of the system expects.
 // ============================================================================
 @use 'sass:map';
-@use 'brand' as *;
-@use 'colors-light' as *;
-@use 'colors-dark' as *;
-@use 'typography' as *;
-@use 'shape' as *;
-@use 'shadows' as *;
-@use 'components' as *;
-@use 'icons' as *;
+@use './brand' as *;
+@use './colors-light' as *;
+@use './colors-dark' as *;
+@use './typography' as *;
+@use './shape' as *;
+@use './shadows' as *;
+@use './components' as *;
+@use './icons' as *;
 
 // Theme identity
 $theme-name: 'royal-blue' !default;

@@ -19,12 +19,15 @@ import { test, expect } from "@playwright/test";
  * to the repo so PRs visibly diff.
  */
 
+// Theme IDs use the v0.7 `-light`/`-dark` suffix convention. The old
+// unsuffixed names continue to resolve via alias selectors in
+// public/theme.css through 0.7.x; visual snapshots track the new names.
 const THEMES = [
-  "sketchbook",
-  "press",
-  "graphite",
-  "glass",
-  "cupertino",
+  "sketchbook-light",
+  "press-light",
+  "graphite-dark",
+  "glass-light",
+  "cupertino-light",
   "terminal",
 ] as const;
 

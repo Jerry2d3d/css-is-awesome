@@ -5,9 +5,9 @@
 //   @use "css-is-awesome/scss/components";              → everything
 //   @use "css-is-awesome/scss/components/buttons" as b; → just buttons
 // ============================================================================
-@forward 'buttons';
-@forward 'forms';
-@forward 'feedback';
-@forward 'overlay';
-@forward 'navigation';
-@forward 'data';
+@forward './buttons';
+@forward './forms';
+@forward './feedback';
+@forward './overlay';
+@forward './navigation';
+@forward './data';

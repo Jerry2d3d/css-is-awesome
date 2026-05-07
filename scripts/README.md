@@ -15,7 +15,7 @@ lossless.
 npm run validate-themes
 
 # Validate a specific file
-node scripts/theme-validator.js public/themes/graphite/theme.css
+node scripts/theme-validator.js public/themes/graphite-dark/theme.css
 ```
 
 ### Output

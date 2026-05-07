@@ -7,9 +7,9 @@
 @use 'sass:map';
 @use 'sass:list';
 @use 'sass:meta';
-@use 'system' as s;
-@use 'theme' as t;
-@use 'mixins' as m;
+@use './system' as s;
+@use './theme' as t;
+@use './mixins' as m;
 
 // ============================================================================
 // SPACING: margin & padding

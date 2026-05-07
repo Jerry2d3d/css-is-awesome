@@ -11,8 +11,48 @@ automated releases.
 
 ## [Unreleased]
 
+### BREAKING CHANGES — Theme naming convention (Feature 2.14)
+
+Every built-in theme name now carries a `-light` / `-dark` mode suffix.
+Five of the six original themes are renamed; `terminal` stays
+single-mode by design (CRT phosphor only — a "terminal-light" is no
+longer terminal).
+
+| v0.6 name      | v0.7 name           |
+|----------------|---------------------|
+| `sketchbook`   | `sketchbook-light`  |
+| `press`        | `press-light`       |
+| `graphite`     | `graphite-dark`     |
+| `glass`        | `glass-light`       |
+| `cupertino`    | `cupertino-light`   |
+
+**Backward-compat aliases** ship in `public/theme.css` for the entire
+0.7.x line: `<html data-theme="sketchbook">` keeps resolving to the
+sketchbook-light tokens, etc. The aliases are **removed in v0.8**
+(US-2.14.3). Migration steps are in [`MIGRATION.md`](./MIGRATION.md).
+
+The default attribute on `<html>` and the default cookie value both
+become `sketchbook-light`. The `:root:not([data-theme])` fallback in
+the consolidated bundle still selects sketchbook so a no-attribute
+drop-in still works.
+
+### Changed — Theme system
+
+- `public/theme.css` selectors renamed (with the v0.6 names retained as
+  comma-grouped alias selectors on each block).
+- `public/themes/{press,graphite,glass,cupertino}/` folders renamed to
+  `{press-light,graphite-dark,glass-light,cupertino-light}/`. Per-theme
+  banner comments updated.
+- `<ThemePicker>` and the `/themes` gallery emit suffixed IDs.
+- Pre-hydration script in `app/layout.tsx` accepts both old and new
+  cookie values (old maps to alias selectors).
+- Visual-regression baselines under `tests/__screenshots__/` renamed to
+  match the new theme IDs.
+
 ### Added — Documentation
 
+- [`MIGRATION.md`](./MIGRATION.md) — v0.7 migration steps for consumers
+  (theme renames, removal timeline, per-tier impact).
 - [`THREE-TIERS.md`](./THREE-TIERS.md) — top-level doc for the canonical
   three-tier authoring story (drop-in classes, SCSS mixins, bare tags),
   same-button-three-ways demo, router architecture, and a picking-a-tier

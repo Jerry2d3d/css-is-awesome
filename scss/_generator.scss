@@ -9,8 +9,8 @@
 @use 'sass:list';
 @use 'sass:meta';
 @use 'sass:string';
-@use 'theme' as t;
-@use 'system' as s;
+@use './theme' as t;
+@use './system' as s;
 
 // ----------------------------------------------------------------------------
 // HELPER: Generic map-to-vars generator

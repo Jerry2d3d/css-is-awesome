@@ -87,7 +87,7 @@ export default function MigrationTailwindPage() {
               <code>dark:</code> variant on every affected class
             </td>
             <td>
-              <code>data-theme=&quot;graphite&quot;</code> swaps one
+              <code>data-theme=&quot;graphite-dark&quot;</code> swaps one
               attribute for the whole app
             </td>
           </tr>
@@ -372,7 +372,7 @@ export default function MigrationTailwindPage() {
         </li>
         <li>
           <strong>Pick a theme file.</strong>{" "}
-          <code>&lt;html data-theme=&quot;press&quot;&gt;</code> reskins
+          <code>&lt;html data-theme=&quot;press-light&quot;&gt;</code> reskins
           the whole app without a rebuild. Preview themes before
           committing — see <a href="/docs/tokens">/docs/tokens</a>.
         </li>
@@ -419,7 +419,7 @@ export default function MigrationTailwindPage() {
           </strong>{" "}
           cia uses the <code>data-theme</code> attribute for any theme
           switch —{" "}
-          <code>data-theme=&quot;graphite&quot;</code> is cia&apos;s dark
+          <code>data-theme=&quot;graphite-dark&quot;</code> is cia&apos;s dark
           mode, but it&apos;s just another theme and the mechanism is
           the same as brand themes.
         </li>

@@ -46,6 +46,21 @@ One-paragraph description.
 P0 (blocker for 1.0) | P1 (wanted for 1.0) | P2 (post-1.0)
 ```
 
+## Product scope — what these epics cover
+
+css-is-awesome is now positioned as one of three products under a shared umbrella:
+
+1. **css-is-awesome** — the styling system (SCSS, themes, contract, mixins). This repo. Pure styling, no React.
+2. **Gremlin UI** *(name TBD)* — companion React component library, distributed as a separate package; depends on css-is-awesome for tokens and styles.
+3. **Gremlin Boilerplate** *(name TBD)* — Next.js starter that pre-wires the styling system and component library. Lives in its own repo (today: `boiler-project-ai`).
+
+Most of these epics belong to css-is-awesome (the styling system). Epic 03 is being rescoped to plan Gremlin UI (the React component library) as a separate product. Epic 02 has an add-ons feature that covers extra themes/icons distributed beyond core.
+
+```
+Gremlin Boilerplate  →  Gremlin UI  →  css-is-awesome  →  (optional) Add-ons
+   (Next.js starter)   (React lib)     (SCSS system)      (themes, icons, extras)
+```
+
 ## ID scheme
 
 `US-{epic#}.{feature#}.{story#}` — e.g. `US-1.2.3` = Epic 1, Feature 2, Story 3. IDs are stable; renumbering retires an ID and assigns a new one.
@@ -89,9 +104,11 @@ Every user story has one primary role pulled from the "As a {role}…" opener. K
 ## The seven epics
 
 1. [Library Foundations](01-library-foundations.md) — token coverage, sizing scale, `$theme-components` map, theme validator, dark-mode auto-detect
-2. [Themes & Icons](02-themes-and-icons.md) — per-theme icon packs, preview thumbnails, authoring guide, community submission, contrast audit
-3. [React Component Library](03-react-components.md) — the ~25 missing React wrappers (atoms → molecules → overlays)
+2. [Themes & Icons](02-themes-and-icons.md) — per-theme icon packs, preview thumbnails, authoring guide, community submission, contrast audit; now also includes an add-ons feature (extra themes/icons/animation packs distributed beyond core)
+3. [React Component Library](03-react-components.md) — companion React component library — Gremlin UI *(name TBD; separate product, planning home)*
 4. [Documentation Site](04-documentation-site.md) — real `/docs` content + site UX: mixin reference, migration guide, search, TOC, Shiki, mobile nav, copy-to-clipboard
 5. [Quality & Delivery](05-quality-delivery.md) — tests, a11y, visual regression, Lighthouse, bundle budget, CI, deploy, release automation, Storybook, starter templates
 6. [AI Integration](06-ai-integration.md) — MCP server, CLI, JSON tokens, AI prompt templates
 7. [Community & Project Meta](07-community-meta.md) — CONTRIBUTING, CoC, SECURITY, issue/PR templates, SemVer policy
+
+See also: [`roadmap/product-architecture.md`](../product-architecture.md) for the umbrella product split (css-is-awesome / Gremlin UI / Gremlin Boilerplate / Add-ons).

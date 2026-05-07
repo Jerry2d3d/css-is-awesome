@@ -1,261 +1,77 @@
-# Epic 3: React Component Library
+# Epic 3: Gremlin UI — Companion React Component Library
+
+> **Name TBD.** Working candidates: "Gremlin UI", "Components are Awesome", "Gremlin Components". Final name is an open question — see bottom of file.
 
 ## Summary
-React is how most consumers will actually use css-is-awesome. Today the library ships ~50 atomic SCSS mixins but only about six matching React components, most of which are docs-site one-offs rather than a proper public API. This epic delivers the missing ~25 React wrappers across atoms, molecules, overlays, data, and feedback tiers so that a React app can install the package and get real, accessible, theme-aware components out of the box — not just a stylesheet. Every component follows the same folder-per-component pattern, forwards refs, accepts `className`/`style` escape hatches, is keyboard-operable where applicable, and has a Storybook story.
+On 2026-05-03 the React component layer was split out of css-is-awesome into a separate product. css-is-awesome remains a pure styling system (SCSS mixins, tokens, themes, CSS bundle). Gremlin UI is a sibling npm package that **depends on css-is-awesome** for theming and ships React wrappers around the same component vocabulary. The 34 components currently sitting in `K:/repo/css-is-awesome/src/components/` (briefly bundled on `feat/v0.7-port-fixes`, now reverted before v0.7 ships) are the seed inventory. Gremlin UI v0.1 ships the 17 components the boilerplate (`boiler-project-ai`) is ready to consume; future versions absorb the rest. Consumers will write `import { Avatar } from '@gremlin/ui'` (or whatever the final scope is) and pair it with any css-is-awesome theme. Boilerplate is the first downstream consumer; their feedback drives v0.1 → v1.0.
 
 ## Goals
-- All 25 missing components across atoms, molecules, overlays, data, and feedback tiers have React wrappers exported from the package root.
-- 100% of components follow the folder-per-component layout: `ComponentName/ComponentName.tsx` + `ComponentName.module.scss` + `index.ts`.
-- 100% of components use `React.forwardRef`, accept `className` and `style`, and spread remaining HTML attributes onto the root element.
-- 100% of components have typed props with JSDoc on every public prop.
-- 100% of components pass an axe-core smoke test in default state.
-- Every component ships with at least one Storybook story (story authoring lives in Epic 5; this epic guarantees the stories exist).
+- Ship Gremlin UI v0.1 to npm with the 17 boilerplate-requested components exported from the package root.
+- Package `peerDependencies` lock to `css-is-awesome ^1.0.0` and `react >=18`.
+- Every shipped component renders correctly under every official css-is-awesome theme without code changes (proven by a cross-product theme matrix test).
+- Repo location, final product name, and documentation home are decided **before** v0.1 tag (open questions tracked below).
+- SemVer policy published in the new repo's README before first publish: 0.x = pre-1.0 churn, 1.0 = API freeze gated on css-is-awesome 1.0.
+- Migration path for the 34 existing components in `css-is-awesome/src/components/` is documented and executed (move / copy / archive — open question).
 
 ## Out of scope
-- Authoring or modifying the underlying SCSS mixins — see Epic 1 (Library Foundations).
-- Visual regression tests, bundle-size budgets, and a11y CI wiring — see Epic 5 (Quality & Delivery).
-- Storybook infrastructure, MDX docs pages, and deploy — see Epic 5 (Quality & Delivery).
-- Written guide / "how to compose" documentation — see Epic 4 (Documentation Site).
-- Search, TOC, and other docs-site UX — see Epic 4 (Documentation Site).
+- Shipping any React component from inside the css-is-awesome npm package. css-is-awesome's `package.json` exports must contain zero React surface.
+- Modifying css-is-awesome's `src/`, `dist/`, `exports`, or `peerDependencies` to accommodate React. Coordination with css-is-awesome happens via tokens and mixins only.
+- Authoring or modifying SCSS mixins, tokens, or themes — owned by Epic 1 and Epic 2 inside css-is-awesome.
+- Visual regression, a11y CI wiring, bundle budgets — Gremlin UI will adopt patterns from css-is-awesome's Epic 5 but stand up its own pipeline.
+- Boilerplate's own larger versions of Button, Checkbox, DataTable, Dropdown, Input, Radio, Switch, Textarea, Modal, Accordion, Alert, Skeleton, Toast — those stay in `boiler-project-ai` and are not duplicated in Gremlin UI v0.1.
 
 ## Features
 
-### Feature 3.1: Form atoms
-The eight single-input primitives consumers need on day one: `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch`, `Slider`, and `Label`. Each wraps the matching SCSS mixin (`input-base`, `textarea-base`, `select-base`, `check-base`, `radio-base`, `switch-base`, `slider-base`, `label-base`), forwards refs to the underlying native element, and is fully controllable or uncontrollable. `Switch` and `Slider` depend on new mixins being finalized in Epic 1.
+### Feature 3.1: Repo and package shape
+The first decision before any code moves: where Gremlin UI lives, how it builds, and how it depends on css-is-awesome. Build pipeline is likely tsup (the toolchain that briefly worked on `feat/v0.7-port-fixes`); package layout is the standard `dist/` + `src/` with a single root entry that re-exports every component.
 
 #### User Stories
 
-**US-3.1.1** — As an app developer, I want `<Input>` to behave like a native `<input>` with css-is-awesome styling applied, so that I can drop it into an existing form without rewiring my state.
+**US-3.1.1** — As a maintainer, I want a decision recorded for repo structure (own repo vs. monorepo with css-is-awesome vs. subfolder of `boiler-project-ai`), so that I can stop fielding "where does this live" questions and start moving code.
 
 **Acceptance criteria:**
-- [ ] Renders `<input>` with `input-base` class applied.
-- [ ] Accepts all native `<input>` props including `value`, `defaultValue`, `onChange`, `type`.
-- [ ] Supports `ref` via `forwardRef` pointing at the underlying `<input>`.
-- [ ] Accepts `className` and forwards to root element.
-- [ ] Supports `invalid` prop that toggles the error visual state.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Has a Storybook story (see Epic 5).
+- [ ] ADR or roadmap note captures the three options with tradeoffs (release cadence coupling, CI complexity, contributor ergonomics, npm scope ownership).
+- [ ] One option is selected and committed in writing.
+- [ ] The chosen home has an empty repo / folder initialized with `package.json`, `tsconfig.json`, and `README.md` stubs.
+- [ ] css-is-awesome's `package.json` is unchanged by the decision.
 
-**Priority:** P0
-**Effort:** 1
-**Role:** app developer
-
-**US-3.1.2** — As an app developer, I want `<Textarea>` with auto-resize as an opt-in, so that multi-line inputs grow with content without my app wiring a resize observer.
-
-**Acceptance criteria:**
-- [ ] Renders `<textarea>` with `textarea-base` class.
-- [ ] `autoResize` prop defaults to `false`; when `true`, height tracks content.
-- [ ] Accepts all native `<textarea>` props.
-- [ ] Supports `ref` via `forwardRef`.
-- [ ] Accepts `className` and forwards to root element.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Has a Storybook story.
-
-**Priority:** P0
-**Effort:** 1
-**Role:** app developer
-
-**US-3.1.3** — As an app developer, I want `<Select>`, `<Checkbox>`, and `<Radio>` with consistent controlled/uncontrolled APIs, so that I can swap among them without relearning prop names.
-
-**Acceptance criteria:**
-- [ ] All three support `value`/`defaultValue`/`onChange` with identical semantics to their native counterparts.
-- [ ] All three accept `className`, `style`, and forward `ref` to the underlying input.
-- [ ] All three support a `disabled` state that is keyboard-non-focusable.
-- [ ] `Radio` supports grouping via `name` or a `RadioGroup` wrapper (decide in design spike; either is acceptable).
-- [ ] Keyboard-operable: Tab to focus, Space to toggle (Checkbox/Radio), Enter/Arrow on Select.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Each has a Storybook story.
-
-**Priority:** P0
+**Priority:** P2
 **Effort:** 3
-**Role:** app developer
+**Role:** maintainer
 
-**US-3.1.4** — As an accessibility reviewer, I want `<Switch>` to announce its on/off state and be operable from the keyboard, so that screen reader users can toggle settings.
-
-**Acceptance criteria:**
-- [ ] Renders with `role="switch"` and `aria-checked` reflecting state.
-- [ ] Space and Enter toggle state; focus ring visible.
-- [ ] Controlled (`checked` + `onChange`) and uncontrolled (`defaultChecked`) modes both supported.
-- [ ] Accepts `className` and forwards `ref`.
-- [ ] Respects `prefers-reduced-motion` (no bounce animation when reduced).
-- [ ] Has a Storybook story.
-
-**Priority:** P0
-**Effort:** 1
-**Role:** accessibility reviewer
-
-**US-3.1.5** — As an app developer, I want `<Slider>` with min/max/step and keyboard support, so that numeric range inputs match the rest of the form system.
+**US-3.1.2** — As a maintainer, I want a tsup-based build pipeline producing ESM + CJS + types, so that downstream apps (boilerplate first) can import Gremlin UI without bundler-specific plumbing.
 
 **Acceptance criteria:**
-- [ ] Renders native `<input type="range">` with `slider-base` class applied.
-- [ ] Props: `min`, `max`, `step`, `value`, `defaultValue`, `onChange`.
-- [ ] Arrow keys change value by `step`; PageUp/PageDown by `step * 10`; Home/End jump to min/max.
-- [ ] Accepts `className`, `style`; forwards `ref`.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Has a Storybook story.
+- [ ] `tsup` (or whatever survives the v0.7 revert) configured to output `dist/index.js`, `dist/index.cjs`, and `dist/index.d.ts`.
+- [ ] `package.json` declares `main`, `module`, `types`, and `exports` fields correctly.
+- [ ] `peerDependencies` lists `css-is-awesome` and `react` with documented version ranges.
+- [ ] `npm pack` produces a tarball under 200 KB (excluding `node_modules`).
+- [ ] A smoke `import { Button } from '@gremlin/ui'` resolves cleanly in a fresh Vite + React app.
 
-**Priority:** P0
-**Effort:** 1
-**Role:** app developer
+**Priority:** P2
+**Effort:** 3
+**Role:** maintainer
 
-**US-3.1.6** — As a designer integrating Figma, I want `<Label>` to be a standalone component (not just a styled tag), so that required-field indicators and helper slots are consistent across the system.
+**US-3.1.3** — As a release manager, I want a published SemVer policy for Gremlin UI, so that downstream consumers (boilerplate) know what 0.x → 1.0 means and when to pin.
 
 **Acceptance criteria:**
-- [ ] Renders `<label>` with `label-base` class.
-- [ ] `htmlFor` prop required in TypeScript; JSDoc explains it.
-- [ ] `required` prop renders a visual indicator and `aria-required` hint.
-- [ ] Accepts `className` and forwards `ref` to `<label>`.
-- [ ] Has a Storybook story.
+- [ ] README contains a SemVer section: 0.x is unstable; minor bumps may break.
+- [ ] Section explicitly states 1.0 cannot ship until css-is-awesome is at 1.0.
+- [ ] Compatibility table maps Gremlin UI versions to css-is-awesome version ranges.
+- [ ] CHANGELOG.md initialized with v0.1 entry.
 
-**Priority:** P0
+**Priority:** P2
 **Effort:** 1
-**Role:** designer
+**Role:** release manager
 
 ---
 
-### Feature 3.2: Feedback atoms
-Small status and display primitives: `Alert`, `Badge`, `Tag`, `Progress`, `Divider`, `Spinner`, `Skeleton`, `Avatar`, `AvatarGroup`. `Skeleton` needs a new SCSS mixin designed and added in this epic (tracked here; mixin lands via Epic 1 coordination).
+### Feature 3.2: v0.1 component inventory (the 17 boilerplate wants)
+Gremlin UI v0.1 ships exactly the 17 components the boilerplate has flagged as "ready to lift": `Avatar`, `Pagination`, `Tabs`, `Tooltip`, `SearchBar`, `List`, `FormField`, `Label`, `Select`, `Slider`, `Divider`, `MenuItem`, `Popover`, `Progress`, `Tag`, `ThemePicker`, `StatChip`. Each must forward refs, accept `className`/`style`, spread remaining HTML attributes, and render correctly under any css-is-awesome theme. Acceptance criteria carried forward from the previous version of this epic apply here, reframed as Gremlin UI work.
 
 #### User Stories
 
-**US-3.2.1** — As an app developer, I want `<Alert>` with status variants (`info` | `success` | `warning` | `error`) and an optional dismiss button, so that I can surface inline messages without building one from scratch.
-
-**Acceptance criteria:**
-- [ ] Requires `message` prop (or children); no other required props.
-- [ ] Supports `status` prop with four variants.
-- [ ] Optional `onDismiss` renders a close button; without it, no close UI.
-- [ ] Renders with `role="alert"` when status is `error` or `warning`, `role="status"` otherwise.
-- [ ] Accepts `className`; forwards `ref` to root.
-- [ ] Has a Storybook story.
-
-**Priority:** P0
-**Effort:** 1
-**Role:** app developer
-
-**US-3.2.2** — As an app developer, I want `<Badge>` and `<Tag>` as distinct but consistent components, so that I can use Badge for counts/status dots and Tag for removable labels.
-
-**Acceptance criteria:**
-- [ ] `<Badge>` requires children, supports `status` prop.
-- [ ] `<Tag>` supports an optional `onRemove` that renders an "x" button when provided.
-- [ ] Both accept `className`, `style`; forward `ref` to root.
-- [ ] Tag's remove button is keyboard-operable (Enter/Space).
-- [ ] Both have Storybook stories.
-
-**Priority:** P0
-**Effort:** 1
-**Role:** app developer
-
-**US-3.2.3** — As an app developer, I want `<Progress>` as both determinate (has `value`) and indeterminate (no `value`), so that I can use it for file uploads and unknown-duration loaders.
-
-**Acceptance criteria:**
-- [ ] When `value` is provided, renders `<progress>` with `aria-valuenow`.
-- [ ] When `value` is omitted, renders an indeterminate animated bar.
-- [ ] `max` prop defaults to `100`.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Respects `prefers-reduced-motion`: indeterminate animation stops or slows.
-- [ ] Has a Storybook story.
-
-**Priority:** P0
-**Effort:** 1
-**Role:** app developer
-
-**US-3.2.4** — As an app developer, I want `<Spinner>` as a pure visual loader, so that I don't have to embed an SVG inline every time I need one.
-
-**Acceptance criteria:**
-- [ ] Renders with `spinner` mixin applied.
-- [ ] Supports a `size` prop (values aligned with sizing scale — see Epic 1).
-- [ ] Includes `aria-label` (default: "Loading") overridable via prop.
-- [ ] Respects `prefers-reduced-motion` (replaces spin with pulse or static state).
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
-
-**Priority:** P0
-**Effort:** 1
-**Role:** app developer
-
-**US-3.2.5** — As an app developer, I want `<Skeleton>` to represent loading placeholders with matching shapes, so that my UI doesn't jump when data arrives.
-
-**Acceptance criteria:**
-- [ ] New SCSS mixin `skeleton-base` exists (coordinate with Epic 1).
-- [ ] Component supports `variant` prop: `text` | `circle` | `rect`.
-- [ ] Supports `width` and `height` props.
-- [ ] Shimmer animation respects `prefers-reduced-motion`.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
-
-**Priority:** P0
-**Effort:** 3
-**Role:** app developer
-
-**US-3.2.6** — As a designer integrating Figma, I want `<Avatar>` and `<AvatarGroup>` that match the token-driven sizes, so that people rows in the app match Figma specs exactly.
-
-**Acceptance criteria:**
-- [ ] `<Avatar>` accepts `src`, `alt`, `initials` props; falls back to `avatar-placeholder` when no image.
-- [ ] Alt text required when `src` is provided (TypeScript enforces).
-- [ ] `<AvatarGroup>` lays out children with overlap and optional `max` (renders `+N` chip for overflow).
-- [ ] Both accept `className`; forward `ref`.
-- [ ] Both have Storybook stories.
-
-**Priority:** P0
-**Effort:** 3
-**Role:** designer
-
-**US-3.2.7** — As an app developer, I want `<Divider>` as a token-aware separator (horizontal or vertical), so that I don't hand-roll `border` CSS for every layout seam.
-
-**Acceptance criteria:**
-- [ ] Props: `orientation` (`horizontal` | `vertical`), `decorative` (defaults to `true`).
-- [ ] Renders `<hr>` when `decorative` is `false`, `<div role="separator">` otherwise.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
-
-**Priority:** P0
-**Effort:** 1
-**Role:** app developer
-
----
-
-### Feature 3.3: Form molecules
-Compound form parts that hold light state or compose atoms: `FormField` (Label + Input + HelperText + ErrorMessage) and `SearchBar` (Input + Button + Icon).
-
-#### User Stories
-
-**US-3.3.1** — As an app developer, I want `<FormField>` to wire up label-for, helper text, and error messaging automatically, so that every form in my app is accessible without me wiring `aria-describedby` by hand.
-
-**Acceptance criteria:**
-- [ ] Composes `Label`, a form control (via `children`), `HelperText`, and `ErrorMessage`.
-- [ ] Automatically generates unique IDs and links `label[for]`, `input[id]`, and `aria-describedby`.
-- [ ] `error` prop renders `ErrorMessage` and adds `aria-invalid="true"` to the control.
-- [ ] `helperText` prop renders helper row beneath the control.
-- [ ] Accepts `className`; forwards `ref` to root wrapper.
-- [ ] Works with any of the form atoms from Feature 3.1 as children.
-- [ ] Has a Storybook story.
-
-**Priority:** P1
-**Effort:** 3
-**Role:** app developer
-
-**US-3.3.2** — As an app developer, I want `<SearchBar>` with a leading search icon and optional submit button, so that I can drop a search UI into a header without building it from atoms.
-
-**Acceptance criteria:**
-- [ ] Composes an `Input` with `Icon` slot and optional trailing `Button`.
-- [ ] Emits `onSearch` on Enter and on button click (if button rendered).
-- [ ] Optional `onClear` prop renders an "x" button that clears the input.
-- [ ] Keyboard: Enter submits, Escape clears when `onClear` is provided.
-- [ ] Accepts `className`; forwards `ref` to the underlying input.
-- [ ] Has a Storybook story.
-
-**Priority:** P1
-**Effort:** 3
-**Role:** app developer
-
----
-
-### Feature 3.4: Navigation molecules
-The navigation set: `Tabs` (active-tab state), `Pagination`, `Breadcrumb`, and `MenuItem` (Icon + Text + Kbd).
-
-#### User Stories
-
-**US-3.4.1** — As an app developer, I want `<Tabs>` to manage active-tab state but also support a controlled mode, so that I can either let it manage itself or sync it to my router.
+**US-3.2.1** — As an app developer, I want `<Tabs>` to manage active-tab state but also support a controlled mode, so that I can either let it manage itself or sync it to my router.
 
 **Acceptance criteria:**
 - [ ] Supports both uncontrolled (`defaultValue`) and controlled (`value` + `onChange`) modes.
@@ -263,14 +79,13 @@ The navigation set: `Tabs` (active-tab state), `Pagination`, `Breadcrumb`, and `
 - [ ] Keyboard: Arrow left/right moves focus, Home/End jump to first/last, Enter/Space activates.
 - [ ] `orientation` prop supports horizontal and vertical.
 - [ ] Accepts `className`; forwards `ref`.
-- [ ] Respects `prefers-reduced-motion` for any indicator animation.
-- [ ] Has a Storybook story.
+- [ ] Respects `prefers-reduced-motion`.
 
-**Priority:** P1
+**Priority:** P2
 **Effort:** 7
 **Role:** app developer
 
-**US-3.4.2** — As an app developer, I want `<Pagination>` with page count, current page, and a sensible ellipsis strategy, so that I don't have to build page-number truncation logic myself.
+**US-3.2.2** — As an app developer, I want `<Pagination>` with page count, current page, and a sensible ellipsis strategy, so that I don't have to build page-number truncation logic myself.
 
 **Acceptance criteria:**
 - [ ] Props: `totalPages`, `currentPage`, `onPageChange`, optional `siblingCount`.
@@ -279,248 +94,245 @@ The navigation set: `Tabs` (active-tab state), `Pagination`, `Breadcrumb`, and `
 - [ ] Active page has `aria-current="page"`.
 - [ ] Keyboard: Tab to each page button, Enter activates.
 - [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
 
-**Priority:** P1
+**Priority:** P2
 **Effort:** 3
 **Role:** app developer
 
-**US-3.4.3** — As an accessibility reviewer, I want `<Breadcrumb>` to render as a navigation landmark with an ordered list, so that screen readers announce it as breadcrumbs.
+**US-3.2.3** — As an app developer, I want `<Tooltip>` and `<Popover>` as portal-based, accessible floating UIs, so that I can annotate icon buttons (Tooltip) and host clickable controls (Popover) with consistent focus and dismiss behavior.
 
 **Acceptance criteria:**
-- [ ] Renders `<nav aria-label="Breadcrumb">` wrapping an `<ol>`.
-- [ ] Last item has `aria-current="page"` and is not a link.
-- [ ] Separator is customizable (prop) and `aria-hidden`.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
+- [ ] Tooltip wraps a single trigger; supports `placement` with auto-flip; shows on hover and focus; `role="tooltip"` with `aria-describedby` on trigger; respects `prefers-reduced-motion`.
+- [ ] Popover supports controlled and uncontrolled modes; portals; dismisses on outside click and Escape; focus moves into popover on open and back to trigger on close; `role="dialog"` with `aria-labelledby` when titled.
+- [ ] Both forward `ref` and accept `className`.
 
-**Priority:** P1
-**Effort:** 1
-**Role:** accessibility reviewer
-
-**US-3.4.4** — As an app developer, I want `<MenuItem>` as a reusable row (Icon + Text + optional Kbd shortcut), so that menus, dropdowns, and command palettes all share one visual vocabulary.
-
-**Acceptance criteria:**
-- [ ] Slots: `icon`, `children` (text), `kbd` (shortcut hint).
-- [ ] Supports `disabled` state with correct `aria-disabled` and no focus.
-- [ ] Renders as `<button>` by default; `as` prop allows `<a>` for link items.
-- [ ] Keyboard-operable: Enter and Space activate.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
-
-**Priority:** P1
-**Effort:** 1
+**Priority:** P2
+**Effort:** 9
 **Role:** app developer
 
----
-
-### Feature 3.5: Overlays
-Portal-based components with focus management and a11y concerns: `Modal`/`Dialog`, `Tooltip`, `Popover`, `Dropdown`, and `Accordion`.
-
-#### User Stories
-
-**US-3.5.1** — As an app developer, I want `<Modal>` to portal to the document body, trap focus, and close on Escape, so that I don't have to think about a11y plumbing when I add a confirmation dialog.
+**US-3.2.4** — As a designer integrating Figma, I want `<Avatar>`, `<Tag>`, `<StatChip>`, `<Divider>`, and `<Progress>` as the small-display set, so that data rows and dashboards match Figma without per-component CSS work.
 
 **Acceptance criteria:**
-- [ ] Requires `open` and `onClose` props.
-- [ ] Renders into a portal at `document.body`.
-- [ ] Focus is trapped inside the modal while open; first focusable element receives focus on open.
-- [ ] Focus returns to the trigger element on close.
-- [ ] Escape key calls `onClose`.
-- [ ] Clicking the backdrop calls `onClose` unless `dismissOnBackdrop={false}`.
-- [ ] Body scroll is locked while open.
-- [ ] `role="dialog"` with `aria-modal="true"` and `aria-labelledby` wired to a header slot.
-- [ ] Sub-components `Modal.Header`, `Modal.Body`, `Modal.Footer` exported.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
+- [ ] `Avatar` accepts `src`, `alt`, `initials`; alt required when `src` provided.
+- [ ] `Tag` supports optional `onRemove` rendering an "x" button (keyboard-operable).
+- [ ] `StatChip` renders label + value with status variants; spec carried from boilerplate.
+- [ ] `Divider` props `orientation` and `decorative` (renders `<hr>` or `<div role="separator">`).
+- [ ] `Progress` supports determinate (`value` provided) and indeterminate (no `value`); `prefers-reduced-motion` respected.
+- [ ] All forward `ref` and accept `className`/`style`.
 
-**Priority:** P1
+**Priority:** P2
 **Effort:** 7
-**Role:** app developer
+**Role:** designer
 
-**US-3.5.2** — As an app developer, I want `<Tooltip>` to show on hover and focus with a small delay, so that I can annotate icon buttons without extra work.
-
-**Acceptance criteria:**
-- [ ] Wraps a single trigger child; positions relative to it.
-- [ ] Supports `placement`: top | right | bottom | left (auto-flips near viewport edges).
-- [ ] Shows on hover and focus; hides on blur and mouseleave; Escape also hides.
-- [ ] `delay` prop defaults to a sensible value.
-- [ ] Renders with `role="tooltip"` and wires `aria-describedby` on trigger.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Accepts `className`; forwards `ref` to the tooltip element.
-- [ ] Has a Storybook story.
-
-**Priority:** P1
-**Effort:** 3
-**Role:** app developer
-
-**US-3.5.3** — As an app developer, I want `<Popover>` as a richer, clickable floating panel, so that I can put controls (not just text) in a floating UI.
+**US-3.2.5** — As an app developer, I want `<FormField>`, `<Label>`, `<Select>`, `<Slider>`, `<SearchBar>`, `<MenuItem>`, and `<List>` as the form-and-nav set, so that boilerplate's smaller form scaffolding moves over without rewrites.
 
 **Acceptance criteria:**
-- [ ] Controlled (`open` + `onOpenChange`) and uncontrolled modes.
-- [ ] Portals; positioned relative to a trigger element.
-- [ ] Dismisses on outside click and Escape.
-- [ ] Focus moves into the popover on open, returns to trigger on close.
-- [ ] `role="dialog"` with `aria-labelledby` when a title is provided.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
-
-**Priority:** P1
-**Effort:** 7
-**Role:** app developer
-
-**US-3.5.4** — As an app developer, I want `<Dropdown>` for menu patterns (not a form select), so that I have a consistent component for "open a list of actions" UI.
-
-**Acceptance criteria:**
-- [ ] Exports `Dropdown`, `Dropdown.Trigger`, `Dropdown.Menu`, `Dropdown.Item`, `Dropdown.Divider`.
-- [ ] Keyboard: Arrow keys navigate items, Enter activates, Escape closes, Tab closes.
-- [ ] `role="menu"` / `role="menuitem"` wired correctly.
-- [ ] Closes on outside click and selection.
-- [ ] Focus returns to the trigger on close.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
-
-**Priority:** P1
-**Effort:** 7
-**Role:** app developer
-
-**US-3.5.5** — As an app developer, I want `<Accordion>` with single-expand and multi-expand modes, so that FAQ pages and settings panels can reuse one component.
-
-**Acceptance criteria:**
-- [ ] `type` prop: `single` (only one open at a time) or `multiple`.
-- [ ] Controlled and uncontrolled modes both supported.
-- [ ] Each item uses a `<button>` header with `aria-expanded` and `aria-controls`; panel has `role="region"`.
-- [ ] Keyboard: Arrow up/down moves between headers, Home/End jump, Enter/Space toggles.
-- [ ] Respects `prefers-reduced-motion` (animation replaced with instant toggle).
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Has a Storybook story.
-
-**Priority:** P1
-**Effort:** 3
-**Role:** app developer
-
----
-
-### Feature 3.6: Data
-`DataTable` (sort + filter + pagination) and `List` / `ListItem` for common data-display needs. `DataTable` is the single largest item in this epic and is priced accordingly.
-
-#### User Stories
-
-**US-3.6.1** — As an app developer, I want `<DataTable>` with column-driven config, sorting, and pagination, so that I can render a reasonable data grid without pulling in a heavy third-party table library.
-
-**Acceptance criteria:**
-- [ ] Accepts `columns` (config array) and `data` (row array).
-- [ ] Column config supports `accessor`, `header`, `cell` (render fn), `sortable`.
-- [ ] Click on sortable header toggles asc/desc/unsorted; indicator visible.
-- [ ] Optional `pagination` prop enables built-in pagination (composed from Feature 3.4.2).
-- [ ] Optional `filter` slot for rendering a search input above the table.
-- [ ] Responsive: horizontal scroll on narrow viewports via `table-responsive` wrapper.
-- [ ] Keyboard: Tab reaches headers and interactive cells; Enter/Space toggles sort.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Respects `prefers-reduced-motion`.
-- [ ] Has a Storybook story.
+- [ ] `FormField` composes Label + control + HelperText + ErrorMessage; auto-wires unique IDs and `aria-describedby`; `error` toggles `aria-invalid="true"`.
+- [ ] `Label` requires `htmlFor`; `required` prop renders visual indicator and `aria-required` hint.
+- [ ] `Select` follows native `<select>` API (`value`/`defaultValue`/`onChange`); keyboard-operable.
+- [ ] `Slider` is `<input type="range">` with min/max/step; arrow keys, PageUp/Down, Home/End all wired.
+- [ ] `SearchBar` composes Input + optional Button + Icon; emits `onSearch` on Enter / button click; optional `onClear` with Escape support.
+- [ ] `MenuItem` slots `icon` / children / `kbd`; renders `<button>` by default, `<a>` via `as`.
+- [ ] `List` renders `<ul>` (or `<ol>` via `as`); `ListItem` has `interactive` for focusable rows with `aria-current`.
+- [ ] All forward `ref` and accept `className`/`style`.
 
 **Priority:** P2
 **Effort:** 13
 **Role:** app developer
 
-**US-3.6.2** — As an app developer, I want `<List>` and `<ListItem>` with an interactive variant, so that sidebar nav and settings menus use the same component.
+**US-3.2.6** — As an app developer, I want `<ThemePicker>` to expose css-is-awesome theme switching as a drop-in component, so that downstream apps don't reimplement theme selection UI.
 
 **Acceptance criteria:**
-- [ ] `<List>` renders `<ul>` by default; `as="ol"` supported.
-- [ ] `<ListItem>` has an `interactive` prop that makes it focusable and adds hover/active styles.
-- [ ] When interactive, renders a `<button>` inside or uses `<a>` via `as` prop.
-- [ ] Keyboard-operable when interactive; respects `aria-current` for active state.
-- [ ] Accepts `className`; forwards `ref`.
-- [ ] Both have Storybook stories.
+- [ ] Reads available themes from a prop (`themes` array) — does not assume a global registry.
+- [ ] Controlled (`value` + `onChange`) and uncontrolled (`defaultValue`) modes.
+- [ ] Switching a theme is the consumer's responsibility (the component emits change events; it does not mutate `<html data-theme>` itself unless `manageDocument` prop is `true`).
+- [ ] Forwards `ref` and accepts `className`.
+- [ ] Documented as "works with any theme registered via css-is-awesome's theme contract".
 
-**Priority:** P1
-**Effort:** 1
-**Role:** app developer
-
----
-
-### Feature 3.7: Notifications
-`Toast` and `ToastProvider` — portal-based, queued, auto-dismissing messages. Requires a provider at the app root so any component can fire a toast.
-
-#### User Stories
-
-**US-3.7.1** — As an app developer, I want a `<ToastProvider>` at my app root and a `useToast()` hook, so that any component can trigger a notification without prop-drilling.
-
-**Acceptance criteria:**
-- [ ] `<ToastProvider>` renders a portal and holds the toast queue.
-- [ ] `useToast()` returns methods: `toast.info`, `toast.success`, `toast.warning`, `toast.error`, `toast.dismiss`.
-- [ ] Provider accepts `position` prop (e.g. `top-right`, `bottom-center`).
-- [ ] Queue supports a configurable max visible count; extras wait.
-- [ ] Has a Storybook story that wires the provider and fires toasts from a button.
-
-**Priority:** P1
-**Effort:** 7
-**Role:** app developer
-
-**US-3.7.2** — As an accessibility reviewer, I want toasts announced to screen readers and auto-dismissed with a pausable timer, so that users who hover a toast don't lose it mid-read.
-
-**Acceptance criteria:**
-- [ ] Each toast renders with `role="status"` (info/success) or `role="alert"` (warning/error).
-- [ ] Auto-dismiss timer defaults to a sensible duration, overridable per-toast.
-- [ ] Hovering or focusing a toast pauses its dismiss timer; leaving resumes it.
-- [ ] Close button is keyboard-operable (Enter/Space) and dismisses the toast.
-- [ ] Respects `prefers-reduced-motion` (slide animation replaced with fade or instant).
-
-**Priority:** P1
+**Priority:** P2
 **Effort:** 3
-**Role:** accessibility reviewer
+**Role:** app developer
 
 ---
 
-### Feature 3.8: Component API consistency
-Cross-cutting requirements every component in this epic must satisfy. This feature is the umbrella "definition of done" for the public API.
+### Feature 3.3: Future-additions watchlist
+The 12 components boilerplate has flagged but not yet lifted: `Container`, `Flex`, `Grid`, `Stack`, `Heading`, `Text`, `Link`, `CodeBlock`, `ThemeToggle`, `Stepper`, `PageHeader`, `HealthBadge`. These are not in v0.1 but are tracked here so v0.2/v0.3 planning has a starting list.
 
 #### User Stories
 
-**US-3.8.1** — As an app developer, I want every component to expose the same escape hatches (`className`, `style`, `ref`, HTML attribute spread), so that I can override or extend any component when my app needs something unusual.
+**US-3.3.1** — As a maintainer, I want a tracked watchlist of future Gremlin UI components, so that v0.1 scope stays honest and v0.2 has a queue.
+
+**Acceptance criteria:**
+- [ ] README or BACKLOG.md in the Gremlin UI repo lists all 12 candidates.
+- [ ] Each entry has a one-line note: source (boilerplate / new), rough complexity, and any dependency on css-is-awesome work.
+- [ ] List is reviewed when boilerplate signals a new lift candidate.
+
+**Priority:** P2
+**Effort:** 1
+**Role:** maintainer
+
+---
+
+### Feature 3.4: Migration of the existing 34 components
+The 34 components currently in `css-is-awesome/src/components/` are the seed. Decide whether they move (deleted from css-is-awesome on transfer), get copied (live in both places temporarily), or stay in css-is-awesome but get re-exported. The decision affects css-is-awesome's eventual `src/` cleanup and whether docs site components reuse Gremlin UI.
+
+#### User Stories
+
+**US-3.4.1** — As a maintainer, I want a documented migration plan for the 34 components, so that there is one source of truth for each component and no drift across repos.
+
+**Acceptance criteria:**
+- [ ] Migration plan written (move / copy-then-deprecate / dual-home) with rationale.
+- [ ] Each of the 34 components labeled with target: "v0.1 of Gremlin UI", "future Gremlin UI", "stays in css-is-awesome (docs-only)", or "delete".
+- [ ] css-is-awesome's docs site rendering does not break during the migration (docs-only components keep working).
+- [ ] css-is-awesome's `package.json` exports field is audited to confirm no React surface leaks post-migration.
+
+**Priority:** P2
+**Effort:** 5
+**Role:** maintainer
+
+**US-3.4.2** — As a contributor, I want a one-page guide explaining how a Gremlin UI component is structured, so that I can add a new component or port one from boilerplate without guessing.
+
+**Acceptance criteria:**
+- [ ] Guide covers folder layout: `ComponentName/ComponentName.tsx` + `.module.scss` + `index.ts`.
+- [ ] Guide enforces `forwardRef`, `className`/`style` pass-through, HTML attribute spread, JSDoc on every public prop.
+- [ ] Guide shows how to consume css-is-awesome mixins from inside a Gremlin UI component's SCSS module.
+- [ ] Linked from the Gremlin UI README.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** contributor
+
+---
+
+### Feature 3.5: Cross-product compatibility
+The hard contract: any Gremlin UI version in its supported range must work with any css-is-awesome version in its supported range, under any official theme, without consumer code changes. This feature defines and enforces that contract.
+
+#### User Stories
+
+**US-3.5.1** — As a CI system, I want a cross-product version matrix test, so that a Gremlin UI release cannot ship if it breaks against a supported css-is-awesome version.
+
+**Acceptance criteria:**
+- [ ] CI job mounts each Gremlin UI component into a fixture app paired with each supported css-is-awesome version.
+- [ ] Matrix runs on every PR and on a nightly schedule.
+- [ ] Failing matrix blocks publish.
+- [ ] Compatibility ranges in `peerDependencies` are sourced from this matrix, not guessed.
+
+**Priority:** P2
+**Effort:** 7
+**Role:** CI system
+
+**US-3.5.2** — As a theme author, I want every Gremlin UI component to render correctly under every official css-is-awesome theme without code changes, so that adding a new theme to css-is-awesome doesn't require Gremlin UI updates.
+
+**Acceptance criteria:**
+- [ ] Storybook (or equivalent) test harness loops every component through every official theme and screenshots / asserts no broken layout.
+- [ ] A new theme added in css-is-awesome triggers the harness on the next Gremlin UI CI run.
+- [ ] Documented invariant in Gremlin UI README: "If a theme breaks a component, that's a Gremlin UI bug, not a theme bug."
+
+**Priority:** P2
+**Effort:** 7
+**Role:** theme author
+
+---
+
+### Feature 3.6: Component API consistency
+The umbrella "definition of done" for every component shipped from Gremlin UI. Carried forward from the original Epic 3 with the surface relocated to the new package.
+
+#### User Stories
+
+**US-3.6.1** — As an app developer, I want every Gremlin UI component to expose the same escape hatches (`className`, `style`, `ref`, HTML attribute spread), so that I can override or extend any component when my app needs something unusual.
 
 **Acceptance criteria:**
 - [ ] Every component uses `React.forwardRef`.
 - [ ] Every component accepts `className` and merges it onto the root element.
 - [ ] Every component accepts `style` and merges it onto the root element.
 - [ ] Every component spreads remaining native HTML attributes onto the root.
-- [ ] A lint rule or CI check enforces the pattern (coordinate with Epic 5).
+- [ ] A lint rule or CI check enforces the pattern.
 
-**Priority:** P0
+**Priority:** P2
 **Effort:** 3
 **Role:** app developer
 
-**US-3.8.2** — As a Storybook author, I want every component to live in a predictable folder structure, so that I can find and import its stylesheet, type, and story without hunting.
+**US-3.6.2** — As a contributor, I want every component to live in a predictable folder structure, so that I can find and import its stylesheet, type, and index without hunting.
 
 **Acceptance criteria:**
 - [ ] Every component lives in `src/components/ComponentName/`.
 - [ ] Each folder contains `ComponentName.tsx`, `ComponentName.module.scss`, and `index.ts`.
 - [ ] `index.ts` re-exports the component and its prop type as named exports.
 - [ ] Package root `index.ts` re-exports every component.
-- [ ] A CI check fails if a component does not match this pattern (coordinate with Epic 5).
+- [ ] CI fails if a component doesn't match the pattern.
 
-**Priority:** P0
+**Priority:** P2
 **Effort:** 1
-**Role:** Storybook author
+**Role:** contributor
 
-**US-3.8.3** — As a designer integrating Figma, I want every component's public prop to have a JSDoc comment, so that IntelliSense in VS Code explains what each prop does.
+**US-3.6.3** — As an AI assistant, I want every public prop to have a JSDoc comment, so that IntelliSense and generated docs explain what each prop does.
 
 **Acceptance criteria:**
 - [ ] Every exported prop type has JSDoc on each public field.
-- [ ] JSDoc includes a one-line description and, where useful, an `@default` tag.
+- [ ] JSDoc includes a one-line description and `@default` where useful.
 - [ ] `tsc --noEmit` passes with `strict: true`.
 
-**Priority:** P0
+**Priority:** P2
 **Effort:** 3
-**Role:** designer
+**Role:** AI assistant
+
+---
+
+### Feature 3.7: Documentation home
+Where Gremlin UI documentation lives. Two viable options: a separate docs site (own URL, own deploy) or a `/components` route on the css-is-awesome docs site (one place to learn the whole stack). Tradeoffs documented in open questions.
+
+#### User Stories
+
+**US-3.7.1** — As a new user, I want a single discoverable place for Gremlin UI docs, so that I can read the API and copy examples without bouncing between repos.
+
+**Acceptance criteria:**
+- [ ] Decision recorded: own docs site vs. `/components` route on css-is-awesome's docs.
+- [ ] Chosen home has at minimum: install + setup, theme integration, per-component API page, and a "what's the difference between css-is-awesome and Gremlin UI" explainer.
+- [ ] README in the Gremlin UI repo links to the docs home.
+- [ ] css-is-awesome's main README cross-links to Gremlin UI ("Looking for React components? See Gremlin UI").
+
+**Priority:** P2
+**Effort:** 5
+**Role:** new user
+
+---
 
 ## Dependencies
-- Blocks: Epic 4 (Documentation Site), Epic 5 (Quality & Delivery), Epic 5 (Quality & Delivery)
-- Blocked by: Epic 1 (Library Foundations) — needs token coverage and the new `switch-base`, `slider-base`, `spinner`, and `skeleton-base` mixins finalized before wrappers land
+- **Blocked by:** css-is-awesome 1.0 stable (token contract, theme contract, mixin API frozen). Gremlin UI cannot ship 1.0 against a moving css-is-awesome target.
+- **Blocked by:** open questions resolved (name, repo home, docs home, migration plan).
+- **Blocks:** boilerplate's component cleanup (boilerplate cannot delete its 17 lift candidates until Gremlin UI v0.1 is on npm).
 
 ## Priority
-P0 (blocker for 1.0) — the React layer is the primary consumption surface; atoms are day-one blockers, molecules and overlays are 1.0 must-haves, DataTable is the single P2 that can slip to post-1.0 without blocking the release.
+P2 (post-css-is-awesome-1.0). The entire epic is post-1.0 work. css-is-awesome ships 1.0 as a styling-only system with zero React surface; Gremlin UI follows.
+
+---
+
+## Open questions
+
+### Q1 — Final product name
+- **Options:** "Gremlin UI", "Components are Awesome", "Gremlin Components", or other.
+- **Tradeoffs:** "Components are Awesome" parallels "css-is-awesome" branding; "Gremlin UI" is shorter and ownable as a separate identity; "Gremlin Components" is descriptive but verbose.
+- **Decision needed before:** repo init (US-3.1.1).
+- **Owner:** founder.
+
+### Q2 — Repo structure
+- **Options:**
+  1. **Own repo** (e.g. `gremlin-ui` on GitHub). Pros: independent release cadence, cleanest separation. Cons: two repos to maintain, cross-cutting changes need two PRs.
+  2. **Monorepo with css-is-awesome** (pnpm workspaces or similar). Pros: atomic changes that touch both products, shared tooling. Cons: release coupling pressure, larger CI surface, contributors must learn the monorepo.
+  3. **Subfolder of `boiler-project-ai`**. Pros: zero new repo, fastest start. Cons: ties Gremlin UI's identity to boilerplate, harder to spin out later, awkward for non-boilerplate consumers.
+- **Decision needed before:** US-3.1.1.
+- **Owner:** founder.
+
+### Q3 — Documentation home
+- **Options:**
+  1. **Own docs site** (e.g. `gremlin-ui.dev`). Pros: clean separation, independent IA. Cons: another site to deploy and maintain.
+  2. **`/components` route on the css-is-awesome docs site.** Pros: one place to learn the whole stack, shared search and theming. Cons: muddies the css-is-awesome docs identity, makes Gremlin UI feel like a sub-feature rather than a sibling product.
+- **Decision needed before:** US-3.7.1.
+- **Owner:** founder.
+
+### Q4 — When does work officially start?
+Event-triggered, not date-triggered. Both conditions must be true:
+1. css-is-awesome 1.0 has shipped (token, theme, and mixin contracts frozen).
+2. Boilerplate (`boiler-project-ai`) is using ≥10 components from `css-is-awesome/src/components/` in production, validating that the seed inventory is real-world battle-tested.
+
+Until both are true, Gremlin UI stays a planning artifact.

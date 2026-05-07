@@ -31,7 +31,7 @@ export default function ThreeTiersPage() {
         </Example.Preview>
         <Example.Code><span className="tok-com">{"<!-- in your <head> -->"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"css-is-awesome.min.css"</span><span className="tok-sel">{">"}</span>
-{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"theme-sketchbook.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"theme-sketchbook-light.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}
 {"\n"}<span className="tok-com">{"<!-- in your <body> -->"}</span>
 {"\n"}<span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"/start"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>

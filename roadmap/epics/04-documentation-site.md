@@ -1165,11 +1165,311 @@ A runtime-toggleable mode that lets the deployed site switch between "under cons
 
 ---
 
+### Feature 4.26: `/compare` page refresh
+The `/compare` route already ships a feature table comparing css-is-awesome to Bootstrap and Tailwind, but it stops at marketing copy and a verdict grid. This feature refreshes the page to carry the differentiator story end-to-end: the three-tier authoring model (Tier 1 utilities, Tier 2 mixins, Tier 3 component overrides), the one-file theme-swap model, the mixin-router pattern (`$theme-components` map), the contract validator pattern, the animation system, and the `cia-` namespace policy. Most importantly it lands a hard-numbers bundle-size table — cia core ~2 KB gzipped vs Bootstrap ~25 KB vs Tailwind compiled — so the differentiator argument runs on data, not adjectives. The existing `src/app/compare/page.tsx` is the surface to extend; this is a refresh, not a rebuild.
+
+#### User Stories
+
+**US-4.26.1** — As a Bootstrap migrant evaluating alternatives, I want a hard-numbers bundle-size table on `/compare`, so that I can justify the swap with measured byte counts instead of marketing claims.
+
+**Acceptance criteria:**
+- [ ] `/compare` renders a dedicated bundle-size section with measured numbers for cia core gzipped, cia full gzipped, Bootstrap CSS gzipped, Bootstrap JS gzipped, and Tailwind compiled (typical app) gzipped.
+- [ ] Each number cites its measurement method (e.g. "minified + gzipped, measured against `dist/cia.min.css` at vX.Y.Z").
+- [ ] Numbers are sourced from a single config or generated artifact — not free-typed strings drifting from reality.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+- [ ] Scannable — the table is the focal element of the section.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** Bootstrap migrant evaluating alternatives
+
+**US-4.26.2** — As a new user reading `/compare`, I want the page to explain the three-tier authoring model, the mixin-router, the contract validator, the animation system, and the `cia-` namespace policy, so that I understand the differentiators before I see the verdict grid.
+
+**Acceptance criteria:**
+- [ ] Page renders a "What makes cia different" section covering: three-tier authoring (utilities / mixins / component overrides), one-file theme-swap, mixin-router (`$theme-components`), contract validator, animation system, and `cia-` namespace.
+- [ ] Each differentiator has a one-line claim plus a tiny code or markup example showing the pattern.
+- [ ] Live previews re-skin when the theme picker swaps themes.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** new user
+
+**US-4.26.3** — As an AI assistant generating "should I use cia" answers, I want the `/compare` differentiators to have stable anchor IDs, so that I can deep-link a user to a specific argument.
+
+**Acceptance criteria:**
+- [ ] Every differentiator section heading on `/compare` has a stable `#anchor` ID matching a slug of the heading.
+- [ ] The bundle-size table has a stable `#bundle-size` (or equivalent) anchor.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** AI assistant
+
+---
+
+### Feature 4.27: `/showcase` page (real pages, theme-swappable)
+A new top-level route at `/showcase` that hosts full, real-looking pages built entirely from the system: a marketing landing page, a blog post with hero + body + author card, a dashboard with sidebar + cards + table, and a 404. Every page is theme-swappable in one click via the existing `data-theme` attribute model — the same picker used elsewhere on the site re-skins all four showcase pages without a reload. This is the "show, don't tell" piece: nothing on the site today demonstrates the swap on real chrome at full page scale. It also dogfoods the system end-to-end and surfaces gaps faster than any unit test.
+
+#### User Stories
+
+**US-4.27.1** — As a new user evaluating cia, I want a `/showcase` index that lets me jump into a marketing landing, a blog post, a dashboard, and a 404 — all built with cia, all theme-swappable — so that I can see what the system actually produces at full page scale.
+
+**Acceptance criteria:**
+- [ ] `/showcase` route exists with an index that links to four sub-routes: `/showcase/landing`, `/showcase/blog`, `/showcase/dashboard`, `/showcase/404`.
+- [ ] Each sub-route renders a complete, real-looking page — not a fragment, not a card grid, but full chrome (header/hero/body/footer or equivalent).
+- [ ] Markup uses cia mixins, utilities, and component primitives — no per-page bespoke CSS that bypasses the system.
+- [ ] Every code sample (if shown inline) runs as shown if copy-pasted.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P0
+**Effort:** 7
+**Role:** new user
+
+**US-4.27.2** — As a visitor on `/showcase/*`, I want every page to re-skin in one click via the same theme picker used elsewhere, so that I can feel the theme-swap claim instead of just reading it.
+
+**Acceptance criteria:**
+- [ ] Every `/showcase/*` page renders the standard theme picker (`SiteHeader` or equivalent).
+- [ ] Picking a theme re-skins the entire page through `data-theme` — including hero, body, cards, tables, buttons, badges, table chrome.
+- [ ] No layout shift (CLS) or hydration warning on theme swap.
+- [ ] Live previews re-skin across every shipped theme (passes eyeball check on each in-repo theme).
+
+**Priority:** P0
+**Effort:** 3
+**Role:** visitor
+
+**US-4.27.3** — As a system author, I want the showcase pages to dogfood the public mixin and utility surface, so that gaps and rough edges show up in the showcase before they show up in user code.
+
+**Acceptance criteria:**
+- [ ] Every showcase page is built only from public mixins, utilities, and shipped React/HTML components — no private internal-only helpers.
+- [ ] A short README or page-level comment in each showcase route lists the primitives composed.
+- [ ] Adding a new shipped component or mixin family is followed by a showcase update issue (linked from this feature in the backlog).
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** system author
+
+**US-4.27.4** — As a screen-reader user, I want each showcase page to have proper landmarks, heading hierarchy, and labeled regions, so that the showcase models accessible defaults rather than visual-only chrome.
+
+**Acceptance criteria:**
+- [ ] Every showcase page has `<header>`, `<main>`, and `<footer>` landmarks; no more than one `<h1>`.
+- [ ] Dashboard showcase labels its sidebar `<nav>` and content `<main>` regions.
+- [ ] Lighthouse a11y score ≥95 on every showcase route.
+- [ ] Verified with VoiceOver or NVDA on at least the landing and dashboard routes.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** screen-reader user
+
+---
+
+### Feature 4.28: Bootstrap migration wedge (drop-in alongside)
+A new docs page (under `/docs/migration/bootstrap-wedge` or extending Feature 4.6) that shows how to drop css-is-awesome into an existing Bootstrap project without ripping Bootstrap out first. Three pieces: (1) a namespace-collision walkthrough proving that the `cia-*` prefix means classes can coexist with Bootstrap's `btn`, `card`, `row`, `col`, etc.; (2) a 20-line migration sample showing a real Bootstrap component being progressively replaced by Tier 2 cia mixins; (3) a side-by-side button comparison showing equivalent Bootstrap markup vs cia Tier 2 code, line by line, so the reader can see the swap concretely. Distinct from Feature 4.6 — that feature compares patterns; this feature shows incremental adoption inside a live Bootstrap codebase.
+
+#### User Stories
+
+**US-4.28.1** — As a Bootstrap migrant who can't do a full rewrite, I want a "drop cia in alongside Bootstrap" guide proving the namespaces don't collide, so that I can adopt incrementally.
+
+**Acceptance criteria:**
+- [ ] Page loads and is linked from the `/docs` nav or sidebar (under migration).
+- [ ] Section explicitly states the `cia-` prefix policy and walks through importing both stylesheets in the same page without conflicts.
+- [ ] A working example shows a Bootstrap component and a cia component on the same page, both rendering correctly.
+- [ ] Every code sample runs as shown if copy-pasted.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** Bootstrap migrant
+
+**US-4.28.2** — As a Bootstrap migrant, I want a roughly 20-line migration sample showing a Bootstrap component being progressively replaced by cia Tier 2 mixins, so that I can see what an incremental migration commit actually looks like.
+
+**Acceptance criteria:**
+- [ ] Page contains a "before / step / after" code progression of about 20 lines total.
+- [ ] Each step is a small, reviewable diff — not a wholesale rewrite.
+- [ ] Final state uses Tier 2 cia mixins (e.g. `@include btn-base`, `@include card-base`).
+- [ ] Every code sample runs as shown if copy-pasted.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** Bootstrap migrant
+
+**US-4.28.3** — As a Bootstrap migrant, I want a side-by-side button comparison (Bootstrap markup vs Tier 2 cia code), so that I can map a single concrete pattern in one glance.
+
+**Acceptance criteria:**
+- [ ] Page has a labeled side-by-side block showing Bootstrap button markup and equivalent cia Tier 2 code.
+- [ ] Adjacent prose calls out the differences (token-driven sizing, semantic mixins, no JS dependency).
+- [ ] Every code sample runs as shown if copy-pasted.
+- [ ] Live preview re-skins when the theme picker swaps themes.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** Bootstrap migrant
+
+---
+
+### Feature 4.29: Tailwind→Awesome migration CLI (post-1.0)
+A small command-line tool that parses Tailwind class strings (e.g. `flex items-center justify-between p-4 gap-2`) and suggests an equivalent semantic cia mixin (e.g. `@include hstack-between` with a spacing token). The CLI is the wedge for migrating from the dominant incumbent: it lowers the activation cost for Tailwind users curious about cia from "rewrite my templates by hand" to "pipe my classNames through one command and review the diff." Recommended location: a separate `packages/migrate-from-tailwind/` workspace (or `scripts/migrate-from-tailwind/` if monorepo isn't in place yet) so it can ship as its own npm package later without dragging the whole repo with it. Companion docs page lives under `/docs/migration/tailwind` or a new `/migrate` route. Post-1.0; this is wedge work, not launch-blocking.
+
+#### User Stories
+
+**US-4.29.1** — As a Tailwind user evaluating cia, I want a CLI that takes a Tailwind class string and prints an equivalent cia semantic mixin, so that I can see what my templates would look like without rewriting them by hand.
+
+**Acceptance criteria:**
+- [ ] A CLI binary (e.g. `npx @css-is-awesome/migrate-from-tailwind`) is published or runnable from the repo.
+- [ ] Input: a Tailwind class string (via argv, stdin, or a file path); Output: a suggested cia mixin call plus any residual utility classes that didn't map cleanly.
+- [ ] At least the layout primitives (`flex`, `items-*`, `justify-*`, `gap-*`, `p-*`, `m-*`, `text-*`, `bg-*`, `rounded-*`) are mapped.
+- [ ] Unmapped classes are passed through with a "no equivalent found" comment so the user can review and decide.
+- [ ] CLI exits 0 on success, non-zero on parse error, with a clear error message.
+
+**Priority:** P2
+**Effort:** 9
+**Role:** Tailwind user evaluating cia
+
+**US-4.29.2** — As a system author, I want the CLI to live in its own workspace package so it can be released independently, so that the migration tool can iterate without bumping the main library version.
+
+**Acceptance criteria:**
+- [ ] CLI source lives under `packages/migrate-from-tailwind/` (preferred) or `scripts/migrate-from-tailwind/` if the monorepo split isn't in place yet — the AC documents the chosen location.
+- [ ] The package has its own `package.json` with a `bin` entry and its own version.
+- [ ] The package builds and runs without any dependency on the main site or React app.
+- [ ] A short README in the package explains scope, supported classes, and known gaps.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** system author
+
+**US-4.29.3** — As a Tailwind migrant, I want a companion docs page explaining the CLI, the mapping table, and the known gaps, so that I trust the output before I let it touch my templates.
+
+**Acceptance criteria:**
+- [ ] A `/docs/migration/tailwind` (or `/migrate`) page exists, linked from the `/docs` migration section.
+- [ ] Page documents installation, CLI usage, the Tailwind→cia mapping table, and explicit known gaps (arbitrary values, plugins, dark: variants).
+- [ ] Every code sample runs as shown if copy-pasted.
+- [ ] Live previews (where applicable) re-skin when the theme picker swaps themes.
+- [ ] Content is authoritative — reflects current code, not aspiration.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** Tailwind migrant
+
+---
+
+### Feature 4.30: `/components` — copy-paste HTML reference page
+A new top-level docs-site route (working name `/components`; final slug TBD) that sits between `/docs` (formal token tables and mixin API reference) and `/showcase` (full aspirational pages). It is reference-by-demonstration: every shipped component appears as **pure HTML + cia classes/mixins**, copy-paste ready, with a live preview, a "Copy HTML" button, and per-example metadata (which mixin generates this variant, which Tier 1 utility-class equivalents work, supported props/states). The page is a docs-site Next.js route only — the system itself remains pure styling, no React, no JavaScript components shipped from css-is-awesome. Modeled structurally on the Prism sandbox at `K:/Repo/ui-ux-builder/sandboxes/prism-theme/index.html` (sticky top-bar / left sidebar nav / scroll-spied content), it covers the same component sections — Foundations (tokens grid), Buttons, Badges, Inputs, Checkboxes/Radios/Switches, Alerts, Cards, Tables, Tabs, Avatars, Progress + Skeleton, Popover/Dialog — re-expressed in cia contract slots (`--paper`, `--ink`, `--ai`, etc.) instead of Prism's local tokens. Theme-swappable through the standard `data-theme` attribute, so a reader can toggle Prism Light, Prism Dark, Sketchbook, Press, etc. while reading. A future cross-link to Gremlin UI's React equivalent for each component lands in a follow-up release once Gremlin UI ships its first version — not in v1, no "coming soon" placeholders.
+
+#### User Stories
+
+**US-4.30.1** — As a docs-site dev / system author, I want a `/components` route to exist with the standard site chrome and a left-side section nav, so that there is a single home for copy-paste HTML reference content separate from `/docs` (API) and `/showcase` (full pages).
+
+**Acceptance criteria:**
+- [ ] Route renders at the chosen slug (resolves the `/components` vs `/patterns` vs `/reference` open question) and is linked from the top nav.
+- [ ] Page has a sticky section-nav sidebar (scroll-spied) listing every component section, modeled on the Prism sandbox layout.
+- [ ] The standard theme picker is wired in; switching themes re-skins every example through `data-theme` with no layout shift or hydration warning.
+- [ ] Page is deployed on the canonical site host and reachable from the production URL.
+- [ ] Content is authoritative — reflects current shipped mixins/utilities, not aspiration.
+
+**Priority:** P0
+**Effort:** 5
+**Role:** docs-site dev
+
+**US-4.30.2** — As a Tier 1 consumer / new user with no SCSS knowledge, I want to land on `/components`, find the component I need, and copy a snippet of HTML that renders correctly with cia loaded, so that I can ship a button or card without learning the mixin layer.
+
+**Acceptance criteria:**
+- [ ] Every example shows a complete, runnable HTML fragment using only `cia-*` utility classes (no `@include`, no SCSS).
+- [ ] Pasting the snippet into a page that loads cia core renders the example identically to the live preview shown on the docs page.
+- [ ] Each section has a one-line "what this is for" lede before the examples.
+- [ ] No example assumes a build step; the Tier 1 form runs against the CDN drop-in.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** Tier 1 consumer
+
+**US-4.30.3** — As a Tier 2 consumer with a Sass build, I want each example to show BOTH the Tier 1 utility-class form AND the equivalent Tier 2 mixin form side by side, so that I can pick the authoring path that fits my project without hunting through `/docs` separately.
+
+**Acceptance criteria:**
+- [ ] Every example renders two labeled tabs (or side-by-side panes): "Utilities (Tier 1)" and "Mixins (Tier 2)".
+- [ ] The two forms produce visually identical output, verified by an eyeball check on the live preview when each tab is selected.
+- [ ] Each tab has its own "Copy" button targeting only that tab's code.
+- [ ] When a component has no Tier 1 utility-class equivalent, the page states that explicitly instead of faking one.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** Tier 2 consumer
+
+**US-4.30.4** — As a docs-site dev, I want every component shipped under `scss/components/` (buttons, forms, feedback, overlay, navigation, data) to have at least one example on the page, so that the page is a complete reference instead of a curated subset.
+
+**Acceptance criteria:**
+- [ ] Page covers, at minimum: Foundations (tokens grid), Buttons (variants / sizes / icons), Badges, Inputs (text / search / disabled / error), Checkboxes / Radios / Switches, Alerts (info / success / warning / danger), Cards (basic / with header-footer / with media), Tables (basic / striped / sortable header chrome), Tabs (segmented / underline nav), Avatars (sizes / fallback / group), Progress + Skeleton, Popover / Dialog.
+- [ ] A coverage check (script or checklist) lists every directory under `scss/components/` and confirms each has at least one example on the page.
+- [ ] Adding a new component family in `scss/components/` is followed by a `/components` update issue (linked from this feature in the backlog).
+- [ ] Content is authoritative — reflects current shipped components, not aspiration.
+
+**Priority:** P0
+**Effort:** 7
+**Role:** docs-site dev
+
+**US-4.30.5** — As a consumer scanning the page, I want every example to carry consistent metadata — mixin name, Tier 1 utility-class equivalents, and the variant/state list — so that I can map each demo back to the shipping API in one glance.
+
+**Acceptance criteria:**
+- [ ] Every example block renders a metadata strip with: `mixin:` name, `utilities:` comma-separated `cia-*` classes (or "—" if none), and `variants:` short list (e.g. "primary, secondary, ghost, danger").
+- [ ] Metadata is sourced from a single config or generated artifact — not free-typed strings drifting from reality.
+- [ ] Metadata strip layout is identical across all sections so the eye can lock onto it.
+- [ ] Hovering or clicking a mixin name links to its entry on the formal `/docs` mixin reference (Feature 4.4).
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+**US-4.30.6** — As any consumer, I want each example to have a one-click "Copy HTML" button that grabs only the markup (not the surrounding chrome, not the metadata, not the preview wrapper), so that what lands in my clipboard is exactly what I paste into my project.
+
+**Acceptance criteria:**
+- [ ] Every code block has a "Copy HTML" affordance reachable by mouse and keyboard.
+- [ ] The copied payload is the example markup verbatim — no example-card wrapper divs, no preview-only attributes, no docs-site framing.
+- [ ] Copy succeeds across modern Chromium / Firefox / Safari and falls back gracefully when the Clipboard API is unavailable.
+- [ ] A short toast or visual confirmation acknowledges the copy without breaking layout.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** consumer
+
+**US-4.30.7** — As a consumer who also uses (or evaluates) Gremlin UI, I want each component example on `/components` to link to the matching Gremlin UI React component, so that I can move from "here is the markup" to "here is the React import" without a second search. *(Deferred: ships in a follow-up release after Gremlin UI publishes its first version. No "coming soon" placeholders in v1.)*
+
+**Acceptance criteria:**
+- [ ] Once Gremlin UI publishes its first release, every example carries a "Gremlin UI →" link pointing at the matching React component (e.g. `@gremlin/ui/Button`).
+- [ ] Links are added by PR after Gremlin UI v0.1+ ships; until then, no badge, link, or placeholder appears on the page.
+- [ ] Cross-link metadata is sourced from the same config that drives mixin/utility metadata (US-4.30.5) so it stays in sync.
+- [ ] Content is authoritative — reflects current Gremlin UI exports, not aspiration.
+
+**Priority:** P2
+**Effort:** 1
+**Role:** consumer
+
+**US-4.30.8** — As an accessibility reviewer, I want every example on `/components` to be keyboard-navigable, focus-ring visible, and screen-reader-friendly out of the box, so that the page models accessible defaults rather than visual-only chrome.
+
+**Acceptance criteria:**
+- [ ] Every interactive example (buttons, inputs, choices, tabs, popover, dialog) is reachable and operable by keyboard alone.
+- [ ] Focus rings are visible on every interactive element across every shipped theme.
+- [ ] Examples use semantic HTML (`<button>`, `<label>`, `<input>`, `<table>`, `<nav>`, etc.) and ARIA only where semantics fall short.
+- [ ] An automated `axe` (or equivalent) lint runs on the route in CI and reports zero serious/critical violations.
+- [ ] Lighthouse a11y score ≥95 on the route.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** accessibility reviewer
+
+#### Open questions
+- **Route name** — `/components` vs `/patterns` vs `/reference`. Recommend `/components` as the most discoverable; "patterns" reads as compound layouts (already covered by `/showcase`) and "reference" overlaps with `/docs`.
+- **Ship `examples/` folder in the npm package?** A parallel directory of standalone HTML files for AI agents and offline use. Recommend **no for v0.7**; revisit once the docs page is stable and there is real demand from MCP / AI-assistant integrations (Epic 6).
+- **Gremlin UI cross-link timing** — confirmed deferred. Badges and links go live with Gremlin UI's first release; v1 of `/components` ships with no Gremlin UI references at all (no placeholders, no "coming soon").
+
+---
+
 ## Dependencies
 - Blocked by: Epic 1 (Library Foundations — token contract and mixin API must be stable before they can be documented); Epic 2 (Themes & Icons — theme and icon authoring mechanics must be locked before their guides can be written); Epic 3 (React Component Library — component API must be locked before migration and recipes document component usage).
 - Blocks: real 1.0 launch — without real docs and a polished site shell, no one learns or adopts the system. Also blocks perceived polish for launch announcements (OG cards, favicons, PWA manifest, themed 404, mobile drawer).
 
 ## Priority
-P0 (blocker for 1.0): Features 4.1 Getting Started, 4.2 Install, 4.3 Tokens, 4.4 Mixins, 4.5 Utilities, 4.11 Recipes, 4.18 Custom 404, 4.19 Favicon + PWA, 4.20 Copy-to-clipboard, 4.22 Mobile nav, 4.23 Skip-to-content + keyboard polish, 4.25 Launch-mode gate.
-P1 (wanted for 1.0): Features 4.6 Migration, 4.7 Theme Authoring, 4.8 Icon Authoring, 4.9 Animation, 4.10 Accessibility, 4.13 Search, 4.14 TOC auto-highlight, 4.15 Prev/next, 4.16 Edit on GitHub, 4.17 OpenGraph, 4.21 Shiki syntax highlighting.
-P2 (post-1.0): Feature 4.12 FAQ expansion, Feature 4.24 Smooth scroll + anchor offset, and any error-boundary / loading-state polish deferred out of the P0/P1 set.
+P0 (blocker for 1.0): Features 4.1 Getting Started, 4.2 Install, 4.3 Tokens, 4.4 Mixins, 4.5 Utilities, 4.11 Recipes, 4.18 Custom 404, 4.19 Favicon + PWA, 4.20 Copy-to-clipboard, 4.22 Mobile nav, 4.23 Skip-to-content + keyboard polish, 4.25 Launch-mode gate, 4.26 `/compare` refresh, 4.27 `/showcase` page, 4.30 `/components` copy-paste reference.
+P1 (wanted for 1.0): Features 4.6 Migration, 4.7 Theme Authoring, 4.8 Icon Authoring, 4.9 Animation, 4.10 Accessibility, 4.13 Search, 4.14 TOC auto-highlight, 4.15 Prev/next, 4.16 Edit on GitHub, 4.17 OpenGraph, 4.21 Shiki syntax highlighting, 4.28 Bootstrap migration wedge.
+P2 (post-1.0): Feature 4.12 FAQ expansion, Feature 4.24 Smooth scroll + anchor offset, Feature 4.29 Tailwind→Awesome migration CLI, and any error-boundary / loading-state polish deferred out of the P0/P1 set.
