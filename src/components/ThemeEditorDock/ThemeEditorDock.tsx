@@ -180,7 +180,6 @@ export default function ThemeEditorDock() {
   // Sub-page or category change: reset to page 0.
   useEffect(() => {
     setPageIdx(0);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, subPageIdx]);
 
   // Page change (covers all of the above too): reset open group to the
