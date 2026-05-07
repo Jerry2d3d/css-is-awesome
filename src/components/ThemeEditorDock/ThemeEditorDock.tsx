@@ -1,7 +1,13 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./ThemeEditorDock.module.scss";
-import { CATALOG, GROUPS, type TokenSpec } from "./catalog";
+import {
+  CATALOG,
+  CATEGORIES,
+  groupsForCategory,
+  type Category,
+  type TokenSpec,
+} from "./catalog";
 import { ColorRow, LengthRow, NumberRow, StringRow } from "./rows";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
@@ -146,7 +152,18 @@ export default function ThemeEditorDock() {
   const [tabMode, setTabMode] = useState<Mode>(currentMode);
   useEffect(() => setTabMode(currentMode), [currentMode]);
 
-  const [openGroup, setOpenGroup] = useState<string | null>(GROUPS[0] ?? null);
+  const [category, setCategory] = useState<Category>("color");
+  const visibleGroups = useMemo(() => groupsForCategory(category), [category]);
+  const [openGroup, setOpenGroup] = useState<string | null>(visibleGroups[0] ?? null);
+  // When the category changes, reset the open group to the first one
+  // in that category and scroll the body back to the top.
+  useEffect(() => {
+    setOpenGroup(visibleGroups[0] ?? null);
+    if (typeof document !== "undefined") {
+      const body = document.querySelector(`.${styles.body}`);
+      if (body) body.scrollTop = 0;
+    }
+  }, [category, visibleGroups]);
   const [overrides, setOverrides] = useState<OverridesByMode>({ light: {}, dark: {} });
   const [defaultsByMode, setDefaultsByMode] = useState<OverridesByMode>({ light: {}, dark: {} });
   const [nameInput, setNameInput] = useState<string>("");
@@ -308,8 +325,23 @@ export default function ThemeEditorDock() {
           ))}
         </div>
 
+        <div className={styles.catTabs} role="tablist" aria-label="Token category">
+          {CATEGORIES.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              role="tab"
+              aria-selected={category === c.id}
+              className={[styles.catTab, category === c.id && styles.catTabActive].filter(Boolean).join(" ")}
+              onClick={() => setCategory(c.id)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+
         <div className={styles.body}>
-          {GROUPS.map((groupName) => {
+          {visibleGroups.map((groupName) => {
             const isOpen = openGroup === groupName;
             const specs = byGroup.get(groupName) ?? [];
             return (

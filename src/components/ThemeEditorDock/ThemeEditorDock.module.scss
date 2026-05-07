@@ -149,9 +149,43 @@ $panel-width: 380px;
   }
 }
 
-.body {
+/* ---------- Category tab strip (Color / Layout / Type / Motion) ---------- */
+.catTabs {
+  display: flex;
+  gap: 0;
+  padding: 0.5rem 1rem 0;
+  border-bottom: 1px solid var(--hair);
+}
+.catTab {
   flex: 1;
+  height: 1.85rem;
+  padding: 0 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft, var(--text-muted));
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: var(--ink, currentColor);
+  }
+}
+.catTabActive {
+  color: var(--ink, currentColor);
+  border-bottom-color: var(--ai, var(--ink, currentColor));
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -209,11 +243,12 @@ $panel-width: 380px;
 
 .row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.5rem;
   padding: 0.35rem 0;
   border-bottom: 1px dashed var(--hair-soft, transparent);
+  min-width: 0;
 }
 .row:last-child {
   border-bottom: 0;
@@ -238,6 +273,7 @@ $panel-width: 380px;
   font-size: 0.65rem;
   color: var(--ink-faint, var(--text-muted));
   letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
 }
 
 .colorCtrl {
@@ -281,13 +317,14 @@ $panel-width: 380px;
   border-radius: var(--radius-sm, 4px);
   background: var(--paper-default);
   padding: 0.1rem 0.4rem;
+  flex-shrink: 0;
 
   input[type="range"] {
-    width: 5rem;
+    width: 4rem;
     accent-color: var(--ai, currentColor);
   }
   input[type="number"] {
-    width: 3rem;
+    width: 2.6rem;
     height: 1.4rem;
     border: 0;
     border-left: 1px solid var(--hair);

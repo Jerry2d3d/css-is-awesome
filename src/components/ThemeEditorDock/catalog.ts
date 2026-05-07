@@ -241,3 +241,51 @@ export const CATALOG: TokenSpec[] = [
 export const GROUPS: string[] = Array.from(
   new Set(CATALOG.map((t) => t.group)),
 );
+
+// ---------- Categories — top-level tab nav inside the dock body ----------
+// Splits the 22 groups into broader sections so the user is not
+// scrolling through everything at once.
+
+export type Category = "color" | "layout" | "type" | "motion";
+
+export const CATEGORIES: { id: Category; label: string }[] = [
+  { id: "color",  label: "Color" },
+  { id: "layout", label: "Layout" },
+  { id: "type",   label: "Type" },
+  { id: "motion", label: "Motion" },
+];
+
+const GROUP_CATEGORY: Record<string, Category> = {
+  [G.paper]:       "color",
+  [G.ink]:         "color",
+  [G.surface]:     "color",
+  [G.border]:      "color",
+  [G.action]:      "color",
+  [G.brand]:       "color",
+  [G.status]:      "color",
+  [G.feedback]:    "color",
+  [G.ai]:          "color",
+  [G.code]:        "color",
+  [G.interactive]: "color",
+  [G.guide]:       "color",
+  [G.misc]:        "color",
+  [G.radius]:      "layout",
+  [G.rLegacy]:     "layout",
+  [G.space]:       "layout",
+  [G.blur]:        "layout",
+  [G.font]:        "type",
+  [G.fontMisc]:    "type",
+  [G.duration]:    "motion",
+  [G.ease]:        "motion",
+  [G.shadow]:      "motion",
+  [G.glow]:        "motion",
+  [G.z]:           "motion",
+};
+
+export function categoryFor(group: string): Category {
+  return GROUP_CATEGORY[group] ?? "color";
+}
+
+export function groupsForCategory(cat: Category): string[] {
+  return GROUPS.filter((g) => categoryFor(g) === cat);
+}
