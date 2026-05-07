@@ -15,9 +15,9 @@ $panel-width: 380px;
   height: 2.75rem;
   padding: 0 1.1rem;
   border-radius: 999px;
-  border: 1px solid var(--ink, currentColor);
-  background: var(--ink, currentColor);
-  color: var(--paper-default, #fff);
+  border: 1px solid var(--action-primary-default, var(--ink));
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 0.85rem;
   font-weight: 600;
@@ -27,6 +27,8 @@ $panel-width: 380px;
   transition: transform 150ms ease, opacity 150ms ease;
 
   &:hover {
+    background: var(--action-primary-hover, var(--ink));
+    border-color: var(--action-primary-hover, var(--ink));
     transform: translateY(-1px);
   }
   &[aria-expanded="true"] {
@@ -37,7 +39,7 @@ $panel-width: 380px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--ai, var(--paper-default));
+  background: var(--ai-ink, var(--text-inverse, #fff));
 }
 .modBadge {
   margin-left: 0.4rem;
@@ -68,7 +70,7 @@ $panel-width: 380px;
   z-index: 9998;
   display: flex;
   flex-direction: column;
-  background: var(--paper-raised, var(--paper-default));
+  background: var(--paper-raised, var(--paper, #fff));
   color: var(--ink, currentColor);
   border-left: 1px solid var(--hair, rgba(0, 0, 0, 0.12));
   transform: translateX(100%);
@@ -140,12 +142,12 @@ $panel-width: 380px;
   }
 }
 .tabActive {
-  background: var(--ink, currentColor);
-  color: var(--paper-default, #fff);
-  border-color: var(--ink, currentColor);
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
+  border-color: var(--action-primary-default, var(--ink));
 
   &:hover {
-    background: var(--ink, currentColor);
+    background: var(--action-primary-hover, var(--ink));
   }
 }
 
@@ -228,7 +230,7 @@ $panel-width: 380px;
   height: 1.85rem;
   border-radius: var(--radius-sm, 4px);
   border: 1px solid var(--hair);
-  background: var(--paper-default);
+  background: var(--paper, #fff);
   color: var(--ink, currentColor);
   font: inherit;
   font-size: 0.95rem;
@@ -283,7 +285,7 @@ $panel-width: 380px;
   border: 1px solid var(--hair);
   border-radius: var(--radius-md, 6px);
   overflow: hidden;
-  background: var(--paper-default);
+  background: var(--paper, #fff);
 }
 .groupHead {
   display: flex;
@@ -370,7 +372,7 @@ $panel-width: 380px;
   padding: 0.15rem 0.3rem 0.15rem 0.15rem;
   border: 1px solid var(--hair);
   border-radius: 999px;
-  background: var(--paper-default);
+  background: var(--paper, #fff);
 
   input[type="color"] {
     width: 1.6rem;
@@ -414,7 +416,7 @@ $panel-width: 380px;
   gap: 0.4rem;
   border: 1px solid var(--hair);
   border-radius: var(--radius-sm, 4px);
-  background: var(--paper-default);
+  background: var(--paper, #fff);
   padding: 0.1rem 0.4rem;
   flex-shrink: 0;
 
@@ -459,7 +461,7 @@ $panel-width: 380px;
   height: 1.85rem;
   border: 1px solid var(--hair);
   border-radius: var(--radius-sm, 4px);
-  background: var(--paper-default);
+  background: var(--paper, #fff);
   color: var(--ink, currentColor);
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.72rem;
@@ -495,7 +497,7 @@ $panel-width: 380px;
   height: 1.85rem;
   border: 1px solid var(--hair);
   border-radius: var(--radius-sm, 4px);
-  background: var(--paper-default);
+  background: var(--paper, #fff);
   color: var(--ink, currentColor);
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.78rem;
@@ -531,13 +533,13 @@ $panel-width: 380px;
   }
 }
 .btnPrimary {
-  background: var(--ink, currentColor);
-  color: var(--paper-default, #fff);
-  border-color: var(--ink, currentColor);
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
+  border-color: var(--action-primary-default, var(--ink));
 
   &:hover:not(:disabled) {
-    filter: brightness(1.1);
-    background: var(--ink, currentColor);
+    background: var(--action-primary-hover, var(--ink));
+    border-color: var(--action-primary-hover, var(--ink));
   }
 }
 
