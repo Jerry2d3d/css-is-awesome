@@ -14,6 +14,10 @@ import { setTheme, useThemeAttribute } from "@/lib/themeState";
 type Mode = "light" | "dark";
 const STYLE_TAG_ID = "cia-theme-overrides";
 const STORAGE_KEY = "cia-theme-overrides";
+// Paginate when a sub-page has more groups than this. Keeps the scroll
+// short and gives users a reliable "next page" affordance once token
+// counts grow.
+const GROUPS_PER_PAGE = 4;
 
 // Per-family overrides. Persisted to localStorage so each family
 // remembers its edits independently.
@@ -154,25 +158,38 @@ export default function ThemeEditorDock() {
 
   const [category, setCategory] = useState<Category>("color");
   const [subPageIdx, setSubPageIdx] = useState(0);
+  const [pageIdx, setPageIdx] = useState(0);
   const subPages = SUB_PAGES[category];
-  const visibleGroups = subPages[subPageIdx]?.groups ?? [];
+  const allGroups = subPages[subPageIdx]?.groups ?? [];
+  const totalPages = Math.max(1, Math.ceil(allGroups.length / GROUPS_PER_PAGE));
+  const safePageIdx = Math.min(pageIdx, totalPages - 1);
+  const visibleGroups = allGroups.slice(
+    safePageIdx * GROUPS_PER_PAGE,
+    (safePageIdx + 1) * GROUPS_PER_PAGE,
+  );
   const [openGroup, setOpenGroup] = useState<string | null>(visibleGroups[0] ?? null);
 
   const bodyRef = useRef<HTMLDivElement | null>(null);
   const groupRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
 
-  // Category change: reset to first sub-page, first group, scroll top.
+  // Category change: reset to first sub-page.
   useEffect(() => {
     setSubPageIdx(0);
   }, [category]);
 
-  // Sub-page change (or category change via subPageIdx reset): reset open
-  // group to the first in this page, scroll body to top.
+  // Sub-page or category change: reset to page 0.
+  useEffect(() => {
+    setPageIdx(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, subPageIdx]);
+
+  // Page change (covers all of the above too): reset open group to the
+  // first on this page and scroll body to top.
   useEffect(() => {
     setOpenGroup(visibleGroups[0] ?? null);
     if (bodyRef.current) bodyRef.current.scrollTop = 0;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subPageIdx]);
+  }, [category, subPageIdx, safePageIdx]);
 
   // When user clicks a group head to OPEN it, scroll its head to the top
   // of the body so the newly-revealed rows are immediately visible.
@@ -415,6 +432,32 @@ export default function ThemeEditorDock() {
               </div>
             );
           })}
+
+          {totalPages > 1 && (
+            <nav className={styles.paginator} aria-label="Section pages">
+              <button
+                type="button"
+                className={styles.pageBtn}
+                onClick={() => setPageIdx(Math.max(0, safePageIdx - 1))}
+                disabled={safePageIdx === 0}
+                aria-label="Previous page"
+              >
+                ←
+              </button>
+              <span className={styles.pageStatus}>
+                Page {safePageIdx + 1} of {totalPages}
+              </span>
+              <button
+                type="button"
+                className={styles.pageBtn}
+                onClick={() => setPageIdx(Math.min(totalPages - 1, safePageIdx + 1))}
+                disabled={safePageIdx >= totalPages - 1}
+                aria-label="Next page"
+              >
+                →
+              </button>
+            </nav>
+          )}
         </div>
 
         <footer className={styles.foot}>

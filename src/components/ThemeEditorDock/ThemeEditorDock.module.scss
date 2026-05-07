@@ -213,6 +213,48 @@ $panel-width: 380px;
   font-weight: 600;
 }
 
+/* ---------- Paginator (bottom of body, when sub-page > 1 page) ---- */
+.paginator {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-top: 1px solid var(--hair);
+}
+.pageBtn {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--hair);
+  background: var(--paper-default);
+  color: var(--ink, currentColor);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.04));
+    border-color: var(--ai, var(--ink, currentColor));
+  }
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+.pageStatus {
+  font-size: 0.78rem;
+  color: var(--ink-soft, var(--text-muted));
+  font-variant-numeric: tabular-nums;
+  min-width: 6rem;
+  text-align: center;
+}
+
 .body {
   flex: 1 1 auto;
   min-height: 0;
