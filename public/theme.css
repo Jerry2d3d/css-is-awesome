@@ -3014,16 +3014,18 @@
    sourced verbatim from public/themes/<name>/theme.css.
    ============================================================ */
 
+
+/* ============================================================
+   COMPANION + PRISM THEMES
+   -----------------------------------------------------------
+   Appended by scripts/bundle-companion-themes.mjs so a single
+   <link href="/theme.css"> loads every theme. Each block is
+   sourced verbatim from public/themes/<name>/theme.css.
+   ============================================================ */
+
 /* ============================================================
    THEME — boilerplate-light
    ============================================================ */
-[data-theme="boilerplate-light"]  ← default
-     [data-theme="boilerplate-dark"]   ← opt-in dark companion
-
-   Both blocks satisfy the full token contract in
-   scripts/theme-contract.json (123 tokens).
-   ============================================================ */
-
 [data-theme="boilerplate-light"] {
   /* Surfaces — off-white paper, light gray sunk */
   --paper:        #ffffff;
@@ -3210,52 +3212,46 @@
 /* ============================================================
    THEME — boilerplate-dark
    ============================================================ */
-[data-theme="boilerplate-dark"]   ← opt-in dark companion
+[data-theme="boilerplate-dark"] {
+  /* Surfaces — slate dark ramp */
+  --paper:        #0f172a;
+  --paper-raised: #1e293b;
+  --paper-sunk:   #020617;
+  --paper-glass:  rgba(15, 23, 42, 0.85);
 
-   Both blocks satisfy the full token contract in
-   scripts/theme-contract.json (123 tokens).
-   ============================================================ */
-
-[data-theme="boilerplate-light"] {
-  /* Surfaces — off-white paper, light gray sunk */
-  --paper:        #ffffff;
-  --paper-raised: #ffffff;
-  --paper-sunk:   #f8fafc;
-  --paper-glass:  rgba(255, 255, 255, 0.85);
-
-  /* Ink — slate neutral ramp */
-  --ink:        #0f172a;
-  --ink-soft:   #1e293b;
-  --ink-faint:  #475569;
-  --graphite:   #0f172a;
+  /* Ink — inverted slate */
+  --ink:        #f8fafc;
+  --ink-soft:   #e2e8f0;
+  --ink-faint:  #94a3b8;
+  --graphite:   #f1f5f9;
   --muted:      #64748b;
 
-  /* Lines — light slate borders */
-  --guide:      #cbd5e1;
-  --guide-soft: #e2e8f0;
-  --hair:       #e2e8f0;
-  --hair-soft:  #f1f5f9;
+  /* Lines — dark slate borders */
+  --guide:      #334155;
+  --guide-soft: #1e293b;
+  --hair:       #1e293b;
+  --hair-soft:  #0f172a;
 
-  /* Primary accent — clean, recognizable blue */
-  --ai:         #2563eb;
-  --ai-ink:     #1d4ed8;
-  --ai-wash:    #eff6ff;
+  /* Primary accent — brighter blue for dark surfaces */
+  --ai:         #3b82f6;
+  --ai-ink:     #60a5fa;
+  --ai-wash:    #1e3a8a;
 
-  /* Seal — red (used for error / secondary action) */
-  --shu:        #dc2626;
-  --shu-wash:   #fef2f2;
+  /* Seal — red */
+  --shu:        #ef4444;
+  --shu-wash:   #450a0a;
 
-  /* Tertiary — amber (used for warning) */
-  --ochre:      #d97706;
-  --ochre-wash: #fffbeb;
+  /* Tertiary — amber */
+  --ochre:      #f59e0b;
+  --ochre-wash: #422006;
 
-  /* Code — neutral light syntax surface */
-  --code-bg:     #f8fafc;
-  --code-ink:    #0f172a;
+  /* Code — neutral dark syntax surface */
+  --code-bg:     #020617;
+  --code-ink:    #e2e8f0;
   --code-muted:  #64748b;
-  --code-accent: #c2410c;
-  --code-green:  #15803d;
-  --code-blue:   #2563eb;
+  --code-accent: #fb923c;
+  --code-green:  #4ade80;
+  --code-blue:   #60a5fa;
 
   /* Typography — system stacks only (no @import) */
   --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -3264,29 +3260,29 @@
   --font-sans:    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono:    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /* Radius — standard, unsurprising */
+  /* Radius */
   --r-sm: 4px;
   --r-md: 6px;
   --r-lg: 8px;
 
-  /* Shadow — subtle, neutral slate */
-  --shadow-sm:  0 1px 2px rgba(15, 23, 42, .04);
-  --shadow-md:  0 1px 3px rgba(15, 23, 42, .06), 0 1px 2px rgba(15, 23, 42, .04);
-  --shadow-lg:  0 4px 12px -2px rgba(15, 23, 42, .08), 0 2px 4px -2px rgba(15, 23, 42, .05);
-  --shadow-xl:  0 12px 24px -8px rgba(15, 23, 42, .10), 0 4px 8px -4px rgba(15, 23, 42, .06);
-  --shadow-2xl: 0 24px 48px -12px rgba(15, 23, 42, .15);
+  /* Shadow — heavier on dark, neutral black */
+  --shadow-sm:  0 1px 2px rgba(0, 0, 0, .30);
+  --shadow-md:  0 2px 4px rgba(0, 0, 0, .40);
+  --shadow-lg:  0 6px 16px -4px rgba(0, 0, 0, .55);
+  --shadow-xl:  0 16px 32px -8px rgba(0, 0, 0, .65);
+  --shadow-2xl: 0 24px 48px -12px rgba(0, 0, 0, .75);
 
-  /* Blur — Boilerplate doesn't use frosted surfaces */
+  /* Blur */
   --blur-sm: none;
   --blur-md: none;
   --blur-lg: none;
 
-  /* Glow — Boilerplate doesn't use glow effects */
+  /* Glow */
   --glow-sm: 0 0 0 transparent;
   --glow-md: 0 0 0 transparent;
   --glow-lg: 0 0 0 transparent;
 
-  /* Motion — moderate, not flashy */
+  /* Motion */
   --duration-fast:   120ms;
   --duration-normal: 180ms;
   --duration-slow:   280ms;
@@ -3295,14 +3291,14 @@
   /* Backgrounds */
   --background-default: var(--paper);
   --background-subtle:  var(--paper-sunk);
-  --background-navbar:  var(--paper);
+  --background-navbar:  var(--paper-raised);
 
   /* Surfaces (semantic) */
   --surface-default:   var(--paper);
   --surface-raised:    var(--paper-raised);
   --surface-sunk:      var(--paper-sunk);
   --surface-muted:     var(--paper-sunk);
-  --surface-subtle:    var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
   --surface-emphasis:  var(--ink);
   --surface-glass:     var(--paper-glass);
 
@@ -3321,9 +3317,9 @@
   --border-emphasis:   var(--guide);
   --border-focus:      var(--ai);
 
-  /* Interactive overlays */
-  --interactive-hover:  rgba(15, 23, 42, 0.04);
-  --interactive-active: rgba(15, 23, 42, 0.08);
+  /* Interactive overlays — light wash on dark */
+  --interactive-hover:  rgba(248, 250, 252, 0.05);
+  --interactive-active: rgba(248, 250, 252, 0.10);
 
   /* Brand */
   --brand-primary:        var(--ai);
@@ -3345,7 +3341,7 @@
 
   /* Feedback */
   --feedback-info:     var(--ai);
-  --feedback-success:  #16a34a;
+  --feedback-success:  #22c55e;
   --feedback-warning:  var(--ochre);
   --feedback-error:    var(--shu);
 
@@ -3355,19 +3351,19 @@
   --info-text:    var(--ai-ink);
 
   /* Status — success */
-  --success-default: #16a34a;
-  --success-subtle:  #f0fdf4;
-  --success-text:    #15803d;
+  --success-default: #22c55e;
+  --success-subtle:  #14532d;
+  --success-text:    #4ade80;
 
   /* Status — warning */
   --warning-default: var(--ochre);
   --warning-subtle:  var(--ochre-wash);
-  --warning-text:    #b45309;
+  --warning-text:    #fbbf24;
 
   /* Status — error */
   --error-default: var(--shu);
   --error-subtle:  var(--shu-wash);
-  --error-text:    #b91c1c;
+  --error-text:    #fca5a5;
 
   /* Space scale */
   --space-2xs: 0.25rem;

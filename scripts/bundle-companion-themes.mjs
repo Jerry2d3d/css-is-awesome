@@ -57,12 +57,19 @@ for (const entry of COMPANIONS) {
   const filePath = path.join(repoRoot, "public", "themes", folder, "theme.css");
   const raw = await readFile(filePath, "utf8");
 
-  // Find the [data-theme="<name>"] selector — that's where the block starts.
-  const idx = raw.indexOf(selector);
-  if (idx === -1) {
+  // Find the [data-theme="<name>"] SELECTOR — i.e. followed by an opening
+  // brace (with optional whitespace). A bare indexOf would match the same
+  // text inside the file's banner comment first, then walk forward to the
+  // next `{`, which is a sibling block's opening — copying the wrong CSS.
+  // Anchor the search on `selector\s*{` to skip comments and prose.
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(escaped + "\\s*\\{");
+  const m = re.exec(raw);
+  if (!m) {
     console.warn(`  ! ${name}: selector not found in ${filePath}, skipping`);
     continue;
   }
+  const idx = m.index;
 
   // Walk back to start of selector line (which may include `:root,\n`).
   // We only want the [data-theme] line forward — drop any leading :root.
