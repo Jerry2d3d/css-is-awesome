@@ -12,24 +12,26 @@ import { setTheme, useThemeAttribute } from "@/lib/themeState";
 // src/components/ThemePicker/.
 
 const FAMILIES: { id: string; label: string }[] = [
-  { id: "sketchbook", label: "Sketchbook" },
-  { id: "press",      label: "Press" },
-  { id: "graphite",   label: "Graphite" },
-  { id: "glass",      label: "Glass" },
-  { id: "cupertino",  label: "Cupertino" },
-  { id: "terminal",   label: "Terminal" },
-  { id: "prism",      label: "Prism" },
+  { id: "boilerplate", label: "Boilerplate" },
+  { id: "sketchbook",  label: "Sketchbook" },
+  { id: "press",       label: "Press" },
+  { id: "graphite",    label: "Graphite" },
+  { id: "glass",       label: "Glass" },
+  { id: "cupertino",   label: "Cupertino" },
+  { id: "terminal",    label: "Terminal" },
+  { id: "prism",       label: "Prism" },
 ];
 
 // Defaults for the deprecated v0.6 unsuffixed names so we can infer
 // "what mode is this on" from the legacy alias.
 const ALIAS_MODE: Record<string, "light" | "dark"> = {
-  sketchbook: "light",
-  press:      "light",
-  graphite:   "dark",
-  glass:      "light",
-  cupertino:  "light",
-  terminal:   "dark",
+  boilerplate: "light",
+  sketchbook:  "light",
+  press:       "light",
+  graphite:    "dark",
+  glass:       "light",
+  cupertino:   "light",
+  terminal:    "dark",
 };
 
 function getFamily(theme: string): string {

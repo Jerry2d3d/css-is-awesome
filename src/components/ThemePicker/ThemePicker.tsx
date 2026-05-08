@@ -11,12 +11,13 @@ type Theme = { id: string; label: string };
 // IDs below. Every theme now has paired light/dark — pick the family
 // here, the LightDarkToggle in the header flips the mode.
 const THEMES: Theme[] = [
-  { id: "sketchbook-light", label: "Sketchbook" },
-  { id: "press-light",      label: "Press" },
-  { id: "graphite-dark",    label: "Graphite" },
-  { id: "glass-light",      label: "Glass" },
-  { id: "cupertino-light",  label: "Cupertino" },
-  { id: "terminal-dark",    label: "Terminal" },
+  { id: "boilerplate-light", label: "Boilerplate" },
+  { id: "sketchbook-light",  label: "Sketchbook" },
+  { id: "press-light",       label: "Press" },
+  { id: "graphite-dark",     label: "Graphite" },
+  { id: "glass-light",       label: "Glass" },
+  { id: "cupertino-light",   label: "Cupertino" },
+  { id: "terminal-dark",     label: "Terminal" },
 ];
 
 // Match by family so the pressed state survives a light/dark flip
@@ -27,7 +28,7 @@ function family(theme: string): string {
 }
 
 const ALIAS_MODE: Record<string, "light" | "dark"> = {
-  sketchbook: "light", press: "light", graphite: "dark",
+  boilerplate: "light", sketchbook: "light", press: "light", graphite: "dark",
   glass: "light", cupertino: "light", terminal: "dark",
 };
 

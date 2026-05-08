@@ -12,6 +12,13 @@ import { asset } from "@/lib/asset";
 // IDs below.
 const THEMES: ThemeTileProps[] = [
   {
+    id: "boilerplate-light",
+    name: "Boilerplate",
+    description: "Neutral starter — slate grays, system UI sans, one clean blue accent. Designed to be overridden.",
+    href: asset("/themes/boilerplate/theme.css"),
+    swatches: { paper: "#FFFFFF", ink: "#0F172A", accent: "#2563EB", seal: "#DC2626" },
+  },
+  {
     id: "sketchbook-light",
     name: "Sketchbook",
     description: "Warm washi paper, sumi ink, indigo accent. The default voice.",
@@ -61,7 +68,7 @@ export default function ThemeGalleryPage() {
       <SiteHeader current="themes" />
       <main className={styles.shell}>
         <section className={styles.hero}>
-          <p className={styles.eyebrow}>six voices, one contract</p>
+          <p className={styles.eyebrow}>seven voices, one contract</p>
           <h1>Theme gallery</h1>
           <p className="lead">
             Every theme is a single <code>theme.css</code> declaring the same set of
