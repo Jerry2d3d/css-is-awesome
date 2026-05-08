@@ -119,9 +119,34 @@ To override `check` for one theme, drop the replacement SVG at
 `public/themes/<theme>/icons/core/check.svg` and declare
 `--cia-icon-check: url('/themes/<theme>/icons/core/check.svg')` inside
 that theme's `:root`/`[data-theme]` block. Resolution order is
-**per-theme override → core pack → 404**. See [`CONTRACT.md` → Icons
-contract](./CONTRACT.md#icons-contract) for the full spec, the canonical
-49-glyph list, and naming conventions. Validate with
+**per-theme override → core pack → 404**.
+
+### Adding your own glyph (drop-in)
+
+You don't have to register a new glyph in the contract just to use it.
+The `core` pack and any custom pack you create both work as plain
+folders — drop an SVG in and call the mixin:
+
+```bash
+cp my-flag.svg public/icons/core/flag.svg
+```
+
+```scss
+@include m.svg(flag);   // tinted via currentColor — works immediately
+```
+
+No JSON edit, no `validate-icons` run required. The contract validator
+only enforces the canonical 49-glyph `core` set; everything beyond that
+is opt-in. Add a glyph to `scripts/icon-contract.json` only when every
+pack must declare it.
+
+For new packs (e.g. `editor`, `files`), set `$theme-icon-pack: editor`
+in your SCSS and drop SVGs at `public/icons/editor/*.svg` — same
+no-registration drop-in pattern.
+
+See [`CONTRACT.md` → Icons contract](./CONTRACT.md#icons-contract) for
+the full spec, the canonical 49-glyph list, naming conventions, and
+when to bump the contract. Validate the contract pack with
 `npm run validate-icons`.
 
 ## Where to read deeper
