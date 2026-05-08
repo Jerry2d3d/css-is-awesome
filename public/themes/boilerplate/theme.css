@@ -1,0 +1,392 @@
+/* ============================================================
+   THEME — Boilerplate (light + dark)
+   -----------------------------------------------------------
+   The recommended starter theme for new consumers of
+   css-is-awesome. Neutral, low-flourish, easy to override —
+   intentionally a "blank canvas" rather than an opinion.
+
+   Design intent:
+     - Neutral grays (slate-leaning) + ONE restrained blue accent.
+     - System UI sans-serif by default. ui-monospace for code.
+       No web fonts, no @import — fastest possible first paint.
+     - Subtle shadows. Standard radii (4 / 6 / 8 px).
+     - No glassmorphism, no glow, no decorative texture.
+     - Goal: a consumer drops this in, accepts defaults, and
+       gets something that looks "modern, clean, professional,
+       and unsurprising" — like the average shadcn/Tailwind
+       starter. It is meant to be REPLACED — every value is
+       chosen to be easy to override without surprises.
+
+   Pairs:
+     [data-theme="boilerplate-light"]  ← default
+     [data-theme="boilerplate-dark"]   ← opt-in dark companion
+
+   Both blocks satisfy the full token contract in
+   scripts/theme-contract.json (123 tokens).
+   ============================================================ */
+
+[data-theme="boilerplate-light"] {
+  /* Surfaces — off-white paper, light gray sunk */
+  --paper:        #ffffff;
+  --paper-raised: #ffffff;
+  --paper-sunk:   #f8fafc;
+  --paper-glass:  rgba(255, 255, 255, 0.85);
+
+  /* Ink — slate neutral ramp */
+  --ink:        #0f172a;
+  --ink-soft:   #1e293b;
+  --ink-faint:  #475569;
+  --graphite:   #0f172a;
+  --muted:      #64748b;
+
+  /* Lines — light slate borders */
+  --guide:      #cbd5e1;
+  --guide-soft: #e2e8f0;
+  --hair:       #e2e8f0;
+  --hair-soft:  #f1f5f9;
+
+  /* Primary accent — clean, recognizable blue */
+  --ai:         #2563eb;
+  --ai-ink:     #1d4ed8;
+  --ai-wash:    #eff6ff;
+
+  /* Seal — red (used for error / secondary action) */
+  --shu:        #dc2626;
+  --shu-wash:   #fef2f2;
+
+  /* Tertiary — amber (used for warning) */
+  --ochre:      #d97706;
+  --ochre-wash: #fffbeb;
+
+  /* Code — neutral light syntax surface */
+  --code-bg:     #f8fafc;
+  --code-ink:    #0f172a;
+  --code-muted:  #64748b;
+  --code-accent: #c2410c;
+  --code-green:  #15803d;
+  --code-blue:   #2563eb;
+
+  /* Typography — system stacks only (no @import) */
+  --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-script:  ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif:   ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-sans:    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Radius — standard, unsurprising */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  /* Shadow — subtle, neutral slate */
+  --shadow-sm:  0 1px 2px rgba(15, 23, 42, .04);
+  --shadow-md:  0 1px 3px rgba(15, 23, 42, .06), 0 1px 2px rgba(15, 23, 42, .04);
+  --shadow-lg:  0 4px 12px -2px rgba(15, 23, 42, .08), 0 2px 4px -2px rgba(15, 23, 42, .05);
+  --shadow-xl:  0 12px 24px -8px rgba(15, 23, 42, .10), 0 4px 8px -4px rgba(15, 23, 42, .06);
+  --shadow-2xl: 0 24px 48px -12px rgba(15, 23, 42, .15);
+
+  /* Blur — Boilerplate doesn't use frosted surfaces */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — Boilerplate doesn't use glow effects */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — moderate, not flashy */
+  --duration-fast:   120ms;
+  --duration-normal: 180ms;
+  --duration-slow:   280ms;
+  --ease:            cubic-bezier(.4, 0, .2, 1);
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper);
+
+  /* Surfaces (semantic) */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-sunk);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--guide);
+  --border-focus:      var(--ai);
+
+  /* Interactive overlays */
+  --interactive-hover:  rgba(15, 23, 42, 0.04);
+  --interactive-active: rgba(15, 23, 42, 0.08);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  #16a34a;
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success */
+  --success-default: #16a34a;
+  --success-subtle:  #f0fdf4;
+  --success-text:    #15803d;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #b45309;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #b91c1c;
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   12px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}
+
+[data-theme="boilerplate-dark"] {
+  /* Surfaces — slate dark ramp */
+  --paper:        #0f172a;
+  --paper-raised: #1e293b;
+  --paper-sunk:   #020617;
+  --paper-glass:  rgba(15, 23, 42, 0.85);
+
+  /* Ink — inverted slate */
+  --ink:        #f8fafc;
+  --ink-soft:   #e2e8f0;
+  --ink-faint:  #94a3b8;
+  --graphite:   #f1f5f9;
+  --muted:      #64748b;
+
+  /* Lines — dark slate borders */
+  --guide:      #334155;
+  --guide-soft: #1e293b;
+  --hair:       #1e293b;
+  --hair-soft:  #0f172a;
+
+  /* Primary accent — brighter blue for dark surfaces */
+  --ai:         #3b82f6;
+  --ai-ink:     #60a5fa;
+  --ai-wash:    #1e3a8a;
+
+  /* Seal — red */
+  --shu:        #ef4444;
+  --shu-wash:   #450a0a;
+
+  /* Tertiary — amber */
+  --ochre:      #f59e0b;
+  --ochre-wash: #422006;
+
+  /* Code — neutral dark syntax surface */
+  --code-bg:     #020617;
+  --code-ink:    #e2e8f0;
+  --code-muted:  #64748b;
+  --code-accent: #fb923c;
+  --code-green:  #4ade80;
+  --code-blue:   #60a5fa;
+
+  /* Typography — system stacks only (no @import) */
+  --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-script:  ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif:   ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-sans:    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  /* Shadow — heavier on dark, neutral black */
+  --shadow-sm:  0 1px 2px rgba(0, 0, 0, .30);
+  --shadow-md:  0 2px 4px rgba(0, 0, 0, .40);
+  --shadow-lg:  0 6px 16px -4px rgba(0, 0, 0, .55);
+  --shadow-xl:  0 16px 32px -8px rgba(0, 0, 0, .65);
+  --shadow-2xl: 0 24px 48px -12px rgba(0, 0, 0, .75);
+
+  /* Blur */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion */
+  --duration-fast:   120ms;
+  --duration-normal: 180ms;
+  --duration-slow:   280ms;
+  --ease:            cubic-bezier(.4, 0, .2, 1);
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces (semantic) */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--guide);
+  --border-focus:      var(--ai);
+
+  /* Interactive overlays — light wash on dark */
+  --interactive-hover:  rgba(248, 250, 252, 0.05);
+  --interactive-active: rgba(248, 250, 252, 0.10);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  #22c55e;
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success */
+  --success-default: #22c55e;
+  --success-subtle:  #14532d;
+  --success-text:    #4ade80;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #fbbf24;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #fca5a5;
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   12px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+}

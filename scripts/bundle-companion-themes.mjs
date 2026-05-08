@@ -24,6 +24,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
 const bundlePath = path.join(repoRoot, "public", "theme.css");
 
+// Each entry is either a string (folder === name) or a tuple
+// [name, folder] when one folder contains multiple [data-theme]
+// blocks (e.g. boilerplate ships both light + dark in one file).
 const COMPANIONS = [
   "prism-light",
   "prism-dark",
@@ -33,6 +36,8 @@ const COMPANIONS = [
   "glass-dark",
   "cupertino-dark",
   "terminal-light",
+  ["boilerplate-light", "boilerplate"],
+  ["boilerplate-dark",  "boilerplate"],
 ];
 
 const bundle = await readFile(bundlePath, "utf8");
@@ -41,14 +46,15 @@ let appended = "";
 let skipped = [];
 let added = [];
 
-for (const name of COMPANIONS) {
+for (const entry of COMPANIONS) {
+  const [name, folder] = Array.isArray(entry) ? entry : [entry, entry];
   const selector = `[data-theme="${name}"]`;
   if (bundle.includes(selector + " {") || bundle.includes(selector + "\n{")) {
     skipped.push(name);
     continue;
   }
 
-  const filePath = path.join(repoRoot, "public", "themes", name, "theme.css");
+  const filePath = path.join(repoRoot, "public", "themes", folder, "theme.css");
   const raw = await readFile(filePath, "utf8");
 
   // Find the [data-theme="<name>"] selector — that's where the block starts.

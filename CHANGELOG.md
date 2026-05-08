@@ -11,6 +11,25 @@ automated releases.
 
 ## [Unreleased]
 
+### Added — Boilerplate theme (recommended starter)
+
+- New theme **Boilerplate** (`boilerplate-light` + `boilerplate-dark`) at
+  `public/themes/boilerplate/theme.css`. Both modes ship in a single file
+  and each declares the full 123-token contract.
+- Design intent: a neutral, low-flourish, easy-to-override starter.
+  Slate-leaning grays + one clean blue accent (`#2563eb` / `#3b82f6`),
+  system UI sans-serif by default (no web fonts, no `@import` — fastest
+  possible first paint), `ui-monospace` code stack, subtle shadows,
+  standard 4 / 6 / 8 px radii. Goal: drop it in, accept defaults, get
+  something that looks "modern, clean, professional, and unsurprising."
+- Bundled into the consolidated `public/theme.css` via
+  `scripts/bundle-companion-themes.mjs` (script extended to support
+  multiple `[data-theme]` blocks per source folder).
+- Selectable in the docs UI: added to `<ThemeSelect>` (header dropdown),
+  `<ThemePicker>` (docs row), and the `/themes/gallery` page as the
+  first tile.
+- Gates the v0.7 npm publish (per ROADMAP.md).
+
 ### BREAKING CHANGES — Theme naming convention (Feature 2.14)
 
 Every built-in theme name now carries a `-light` / `-dark` mode suffix.
