@@ -66,6 +66,40 @@ drop-in still works.
 - README "Two ways to use it" → "Three ways to use it" with a Tier 3
   bare-tags section and a link to `THREE-TIERS.md`.
 
+### Added — Icons (Lucide `core` pack + per-theme override)
+
+- **Default `core` icon pack** vendored from Lucide, shipping at
+  `public/icons/core/<name>.svg` — 49 glyphs (8 already shipped + 41
+  new) covering navigation, actions, status, communication, user /
+  security, and media. Source list and per-glyph mapping documented in
+  `roadmap/icons-proposal.md` and `scripts/icon-contract.json`.
+- **Per-theme override mechanism** in `scss/_icons.scss`. The `m.svg`,
+  `m.svg-bg`, and `m.svg-text` mixins now emit
+  `var(--cia-icon-<name>, url('/icons/core/<name>.svg'))` as the icon
+  URL, so a theme overrides one glyph by declaring
+  `--cia-icon-<name>: url('/themes/<theme>/icons/core/<name>.svg')` on
+  `:root`. Resolution order: per-theme override → core pack → 404.
+  Mixin call signatures are unchanged (`m.svg(check)` still works).
+- New SCSS variable `$icon-pack` (default `'core'`, re-exported as
+  `$theme-icon-pack`) decouples the pack folder from `$icon-path`.
+- New machine-readable contract at `scripts/icon-contract.json` and a
+  validator at `scripts/icon-validator.js` (`npm run validate-icons`)
+  that mirror the theme-validator. The validator fails if a pack omits
+  any contract glyph.
+- New script `scripts/vendor-lucide-core.mjs` (idempotent) regenerates
+  `public/icons/core/` from `lucide-static`.
+- New `LICENSE-third-party` at the repo root attributing Lucide
+  (ISC + Feather-derived MIT subset).
+- `CONTRACT.md` gains an "Icons contract" section covering the
+  resolution order, the canonical 49-glyph list, naming conventions,
+  and SVG file-format expectations.
+- `AGENTS.md` gains a short "Icons" subsection pointing at
+  `CONTRACT.md` for the full spec.
+
+The legacy flat-layout files at `public/icons/<name>.svg` (the original
+8 glyphs) remain on disk as a backward-compat copy; the mixin output now
+resolves against `/icons/core/<name>.svg`.
+
 ## [0.6.0] - 2026-04-25
 
 First public release — the npm + CDN cut. The library, its docs, the

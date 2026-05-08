@@ -78,6 +78,7 @@
     "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:utilities && npm run build:css:min",
     "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
     "validate-themes": "node scripts/theme-validator.js --all",
+    "validate-icons": "node scripts/icon-validator.js",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
     "playwright:install": "playwright install chromium --with-deps",

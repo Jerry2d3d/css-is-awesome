@@ -97,6 +97,33 @@ document.documentElement.setAttribute('data-theme','prism-light');
 
 `suppressHydrationWarning` on `<html>` is required — the inline script mutates the DOM before React hydrates, so React would otherwise warn about a server/client mismatch on `data-theme`. Adjust the storage key and theme names (`'cia-theme'`, `'prism-light'`, `'prism-dark'`) to match your app.
 
+## Icons (1 pack, override per theme)
+
+The default `core` icon pack ships at `public/icons/core/<name>.svg` —
+49 glyphs vendored from Lucide (ISC + MIT, see `LICENSE-third-party`).
+Use the existing mixins; the call signatures are unchanged:
+
+```scss
+@include m.svg(check);                     // tinted via currentColor
+@include m.svg-text(arrow-right, $position: after);
+```
+
+Compiled output emits a per-glyph custom property fallback so a theme
+can override one icon without rebuilding SCSS:
+
+```css
+mask: var(--cia-icon-check, url('/icons/core/check.svg')) center / contain no-repeat;
+```
+
+To override `check` for one theme, drop the replacement SVG at
+`public/themes/<theme>/icons/core/check.svg` and declare
+`--cia-icon-check: url('/themes/<theme>/icons/core/check.svg')` inside
+that theme's `:root`/`[data-theme]` block. Resolution order is
+**per-theme override → core pack → 404**. See [`CONTRACT.md` → Icons
+contract](./CONTRACT.md#icons-contract) for the full spec, the canonical
+49-glyph list, and naming conventions. Validate with
+`npm run validate-icons`.
+
 ## Where to read deeper
 
 Inside this package (all whitelisted in `files`):
