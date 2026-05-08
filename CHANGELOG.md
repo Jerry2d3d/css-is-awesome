@@ -34,6 +34,28 @@ automated releases.
   entry, but shipped so a downstream copy-step can pick it up if a
   consumer wants the boilerplate template.
 
+### Added — Docs content refresh + live token visualizers
+
+- `/docs` intro now ships a real Quick Start: CDN one-`<link>` snippet, the
+  three bundle tiers (`core` 2.4 KB / `utilities` 11.5 KB / `full` 15.2 KB
+  gzipped), a side-by-side utility-class vs. SCSS-mixin example, and an
+  expanded "What next" with links out to `/docs/tokens`, `/docs/animation`,
+  `/themes`, `/docs/authoring/themes`, and `/compare`.
+- `/docs/tokens` swatches now read live values via
+  `getComputedStyle(document.documentElement)` and re-resolve whenever the
+  active theme changes — color chips, hex/rgb values and the type-scale
+  preview all reskin without a reload. Added an `Action (semantic primary)`
+  group covering the four `--action-primary-*` slots, an extended radii
+  preview that renders `--r-sm/md/lg` next to the `--radius-*` aliases, and
+  a Type scale section with sample lines at the resolved sizes.
+- `<Example.Code>` snippets across every docs page now have a
+  copy-to-clipboard button. Reads `pre.textContent` (so syntax-highlight
+  spans are stripped automatically), shows `Copied` for ~1.5 s, and falls
+  back to a hidden-textarea + `execCommand('copy')` when the Async
+  Clipboard API is unavailable. Hover-to-reveal on pointer devices,
+  always-visible on touch and on focus, with `aria-label` swapping
+  between "Copy code to clipboard" and "Copied to clipboard".
+
 ### Added — Boilerplate theme (recommended starter)
 
 - New theme **Boilerplate** (`boilerplate-light` + `boilerplate-dark`) at

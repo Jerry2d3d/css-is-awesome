@@ -15,6 +15,10 @@
   border-bottom: 1px solid m.color(border-subtle);
 }
 
+.codeWrap {
+  position: relative;
+}
+
 .code {
   margin: 0;
   padding: 1.1rem 1.25rem;
@@ -25,4 +29,60 @@
   line-height: 1.7;
   overflow-x: auto;
   white-space: pre;
+}
+
+.copyBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.3rem 0.7rem;
+  font-family: m.font-family(mono);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: var(--code-ink);
+  background: var(--paper-glass, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--hair-soft, rgba(255, 255, 255, 0.18));
+  border-radius: m.radius(sm);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--duration-fast, 180ms) var(--ease, ease),
+    background var(--duration-fast, 180ms) var(--ease, ease),
+    color var(--duration-fast, 180ms) var(--ease, ease),
+    border-color var(--duration-fast, 180ms) var(--ease, ease);
+
+  /* Always visible on touch devices and when focused (keyboard a11y).
+     Hover-only reveal on pointer devices keeps the code surface clean. */
+  &:focus-visible,
+  &:focus,
+  &[data-copied='true'] {
+    opacity: 1;
+    outline: 2px solid var(--ai, currentColor);
+    outline-offset: 2px;
+  }
+
+  .codeWrap:hover &,
+  .codeWrap:focus-within & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background: var(--paper-raised);
+    color: var(--ink);
+    border-color: var(--hair);
+  }
+
+  &[data-copied='true'] {
+    background: var(--success-subtle, var(--paper-raised));
+    color: var(--success-text, var(--ink));
+    border-color: var(--success-default, var(--hair));
+    outline: none;
+  }
+}
+
+@media (hover: none) {
+  .copyBtn {
+    opacity: 1;
+  }
 }
