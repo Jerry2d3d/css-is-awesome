@@ -60,6 +60,14 @@ drop-in still works.
 - New docs route `/docs/three-tiers` dogfoods the same story with live
   Button previews next to each tier's code. Sidebar nav: "Three tiers"
   sits between Introduction and Install under Getting started.
+- `/docs/animation` rewritten as a live preview page: every keyframe in
+  `_animations.scss` rendered as a card in a responsive grid, with
+  hover/click/keyboard-driven replay for one-shot animations and
+  always-on previews for loopers. Cards show the `cia-anim-*` utility
+  class so readers can copy the trigger directly. Page reads from the
+  same motion tokens (`--duration-*`, `--ease`) so swapping themes via
+  the header dropdown or floating ThemePicker retimes every preview in
+  place. Reduced-motion safety net documented inline.
 
 ### Changed — Documentation
 

@@ -1,0 +1,389 @@
+/* ============================================================
+   /docs/animation — page-scoped styles for the live grid
+   ============================================================
+   The compiled .cia-anim-* / .cia-hover-* utility classes live
+   in the library's own cia.css, which is not bundled into the
+   docs site. We mirror the keyframes + utility behaviour here
+   under a .docs-anim-* prefix so every preview animates. Every
+   rule reads from --duration-* / --ease so the demos still
+   reskin when the ThemePicker swaps themes.
+   ============================================================ */
+
+/* ---------------------------------------------------------- */
+/* Hero                                                       */
+/* ---------------------------------------------------------- */
+
+.eyebrow {
+  font-family: var(--font-script);
+  font-size: 1.4rem;
+  color: var(--shu);
+  line-height: 1;
+  margin: 0 0 0.4rem;
+  letter-spacing: 0.01em;
+}
+
+.themeNote {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* ---------------------------------------------------------- */
+/* Live grid of animation cards                               */
+/* ---------------------------------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cardName {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.cardSpeed {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  text-transform: lowercase;
+}
+
+.cardDesc {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  min-height: 2.55rem; /* keep card heights aligned */
+}
+
+.stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96px;
+  background: var(--surface-sunk);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+
+.stageTrigger {
+  /* full-bleed button so the whole stage area is the play target */
+  position: absolute;
+  inset: 0;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  /* keyboard focus ring sits inside the stage */
+  border-radius: inherit;
+}
+.stageTrigger:focus-visible {
+  outline: 2px solid var(--brand-primary, var(--ai));
+  outline-offset: -3px;
+}
+
+.dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-md);
+  background: var(--surface-emphasis);
+  color: var(--text-inverse);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--border-default);
+  pointer-events: none;
+  user-select: none;
+}
+
+.shimmerBar {
+  height: 14px;
+  width: 80%;
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    90deg,
+    var(--surface-sunk) 0%,
+    var(--surface-raised) 50%,
+    var(--surface-sunk) 100%
+  );
+  background-size: 200% 100%;
+  border: 1px solid var(--border-subtle);
+  pointer-events: none;
+}
+
+.cardCode {
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  line-height: 1.4;
+  border-radius: var(--r-sm);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.hint {
+  margin: -0.25rem 0 1.25rem;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+/* ---------------------------------------------------------- */
+/* Keyframes — mirror of scss/_animations.scss                */
+/* ---------------------------------------------------------- */
+
+@keyframes docs-cia-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes docs-cia-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes docs-cia-slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes docs-cia-slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes docs-cia-slide-left {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes docs-cia-slide-right {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes docs-cia-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes docs-cia-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@keyframes docs-cia-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+@keyframes docs-cia-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes docs-cia-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes docs-cia-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-3deg); }
+  75%      { transform: rotate(3deg); }
+}
+
+/* ----------------------------------------------------------
+   Card preview behaviour:
+   - one-shot animations replay on hover/focus of the stage
+     and on .isPlaying (set by JS for the click-to-play path).
+   - looping animations (spin/pulse/shimmer) run continuously
+     so readers always see the loop.
+   ---------------------------------------------------------- */
+
+/* ----- one-shot — play on hover / focus / click-driven ----- */
+.stage:hover .replay,
+.stage:focus-within .replay,
+.stage.isPlaying .replay {
+  animation-duration: var(--duration-normal);
+  animation-timing-function: var(--ease);
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+}
+.stage:hover .replayFadeIn,
+.stage:focus-within .replayFadeIn,
+.stage.isPlaying .replayFadeIn      { animation-name: docs-cia-fade-in; }
+
+.stage:hover .replayFadeOut,
+.stage:focus-within .replayFadeOut,
+.stage.isPlaying .replayFadeOut     { animation-name: docs-cia-fade-out; }
+
+.stage:hover .replaySlideUp,
+.stage:focus-within .replaySlideUp,
+.stage.isPlaying .replaySlideUp     { animation-name: docs-cia-slide-up; }
+
+.stage:hover .replaySlideDown,
+.stage:focus-within .replaySlideDown,
+.stage.isPlaying .replaySlideDown   { animation-name: docs-cia-slide-down; }
+
+.stage:hover .replaySlideLeft,
+.stage:focus-within .replaySlideLeft,
+.stage.isPlaying .replaySlideLeft   { animation-name: docs-cia-slide-left; }
+
+.stage:hover .replaySlideRight,
+.stage:focus-within .replaySlideRight,
+.stage.isPlaying .replaySlideRight  { animation-name: docs-cia-slide-right; }
+
+.stage:hover .replayScaleIn,
+.stage:focus-within .replayScaleIn,
+.stage.isPlaying .replayScaleIn     { animation-name: docs-cia-scale-in; }
+
+.stage:hover .replayPop,
+.stage:focus-within .replayPop,
+.stage.isPlaying .replayPop {
+  animation-name: docs-cia-pop;
+  animation-duration: var(--duration-slow);
+}
+
+.stage:hover .replayWiggle,
+.stage:focus-within .replayWiggle,
+.stage.isPlaying .replayWiggle {
+  animation-name: docs-cia-wiggle;
+  animation-duration: var(--duration-slow);
+}
+
+/* ----- looping — always-on ----- */
+.loopPulse {
+  animation: docs-cia-pulse var(--duration-slow) var(--ease) infinite;
+}
+.loopSpin {
+  animation: docs-cia-spin var(--duration-slow) linear infinite;
+}
+.loopShimmer {
+  animation: docs-cia-shimmer var(--duration-slow) linear infinite;
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced motion safety net                                  */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .stage:hover .replay,
+  .stage:focus-within .replay,
+  .stage.isPlaying .replay,
+  .loopPulse,
+  .loopSpin,
+  .loopShimmer {
+    /* stylelint-disable declaration-no-important */
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    /* stylelint-enable declaration-no-important */
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Inline demo elements re-used by reference sections below   */
+/* ---------------------------------------------------------- */
+
+.tokenBtn {
+  appearance: none;
+  border: 1px solid var(--border-default);
+  padding: 0.55rem 1rem;
+  border-radius: var(--r-md);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background: var(--surface-raised);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+.tokenBtn:hover {
+  background: var(--brand-primary, var(--ai));
+  color: var(--text-inverse);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-default);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.hoverLift {
+  transition:
+    transform var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease);
+}
+.hoverLift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.hoverPress {
+  transition: transform var(--duration-fast) var(--ease);
+}
+.hoverPress:hover { transform: translateY(1px) scale(0.99); }
+
+.hoverFade {
+  transition: opacity var(--duration-fast) var(--ease);
+}
+.hoverFade:hover { opacity: 0.7; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tokenBtn,
+  .hoverLift,
+  .hoverPress,
+  .hoverFade {
+    /* stylelint-disable declaration-no-important */
+    transition: none !important;
+    /* stylelint-enable declaration-no-important */
+  }
+  .hoverLift:hover,
+  .hoverPress:hover {
+    /* stylelint-disable declaration-no-important */
+    transform: none !important;
+    /* stylelint-enable declaration-no-important */
+  }
+}
