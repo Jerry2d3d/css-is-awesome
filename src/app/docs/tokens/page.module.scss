@@ -33,6 +33,20 @@
   word-break: break-all;
 }
 
+.swatchValue {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--ink-faint);
+  word-break: break-all;
+}
+
+.swatchHint {
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0 0 0.75rem;
+}
+
 .groupHeading {
   grid-column: 1 / -1;
   font-family: var(--font-script);
@@ -72,6 +86,49 @@
   font-size: 1.75rem;
   line-height: 1.2;
   color: var(--ink);
+}
+
+.typeStack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: 100%;
+}
+
+.typeRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px dashed var(--hair-soft);
+}
+
+.typeRow:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.typeMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.typeMeta .tokenName {
+  color: var(--ink-soft);
+}
+
+.typeValue {
+  color: var(--ink-faint);
+}
+
+.typeSample {
+  display: block;
+  line-height: 1.2;
+  color: var(--ink);
+  /* font-size is set inline so theme swaps re-render the line. */
 }
 
 .spacingStack {

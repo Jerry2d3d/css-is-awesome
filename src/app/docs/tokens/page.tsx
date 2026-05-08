@@ -1,7 +1,6 @@
 import styles from "./page.module.scss";
 import Example from "@/components/Example";
-
-type Swatch = { token: string; notes?: string };
+import { LiveSwatchGroup, TypeScaleRow, type Swatch } from "./TokenLive";
 
 const neutrals: Swatch[] = [
   { token: "--paper" },
@@ -29,6 +28,13 @@ const brand: Swatch[] = [
   { token: "--shu-wash" },
   { token: "--ochre" },
   { token: "--ochre-wash" },
+];
+
+const actions: Swatch[] = [
+  { token: "--action-primary-default" },
+  { token: "--action-primary-hover" },
+  { token: "--action-primary-active" },
+  { token: "--action-primary-wash" },
 ];
 
 const status: Swatch[] = [
@@ -71,6 +77,9 @@ const radiiTokens = [
   { token: "--radius-lg", label: "lg" },
   { token: "--radius-xl", label: "xl" },
   { token: "--radius-full", label: "full" },
+  { token: "--r-sm", label: "r-sm" },
+  { token: "--r-md", label: "r-md" },
+  { token: "--r-lg", label: "r-lg" },
 ];
 
 const shadowTokens = [
@@ -80,27 +89,6 @@ const shadowTokens = [
   { token: "--shadow-xl", label: "xl" },
   { token: "--shadow-2xl", label: "2xl" },
 ];
-
-function Swatches({ items }: { items: Swatch[] }) {
-  return (
-    <>
-      {items.map((s) => (
-        <div key={s.token} className={styles.swatch}>
-          {/* Chip is purely decorative — the visible token name below names
-              it. Marking the chip aria-hidden keeps the accessible name
-              clean and avoids axe's aria-prohibited-attr (aria-label on a
-              role-less <div>). */}
-          <div
-            className={styles.swatchChip}
-            style={{ background: `var(${s.token})` }}
-            aria-hidden="true"
-          />
-          <span className={styles.swatchLabel}>{s.token}</span>
-        </div>
-      ))}
-    </>
-  );
-}
 
 export default function TokensPage() {
   return (
@@ -147,17 +135,24 @@ export default function TokensPage() {
         the whole grid reskins.
       </p>
 
+      <p className={styles.swatchHint}>
+        Each swatch shows the token name plus the resolved CSS value. Open the
+        ThemePicker (the floating disc, lower-right) and pick a different
+        theme — the chips and values rewrite live, no reload required.
+      </p>
       <Example>
         <Example.Preview>
           <div className={styles.swatchGrid}>
             <h5 className={styles.groupHeading}>Neutrals</h5>
-            <Swatches items={neutrals} />
+            <LiveSwatchGroup items={neutrals} />
             <h5 className={styles.groupHeading}>Brand</h5>
-            <Swatches items={brand} />
+            <LiveSwatchGroup items={brand} />
+            <h5 className={styles.groupHeading}>Action (semantic primary)</h5>
+            <LiveSwatchGroup items={actions} />
             <h5 className={styles.groupHeading}>Status</h5>
-            <Swatches items={status} />
+            <LiveSwatchGroup items={status} />
             <h5 className={styles.groupHeading}>Surfaces</h5>
-            <Swatches items={surfaces} />
+            <LiveSwatchGroup items={surfaces} />
           </div>
         </Example.Preview>
         <Example.Code><span className="tok-com">{"/* Consume any color token the same way */"}</span>
@@ -240,7 +235,23 @@ export default function TokensPage() {
         Themes declare <code>--font-size-base</code>, <code>--line-height-normal</code>,
         and <code>--font-weight-medium</code> as the canonical hooks. Scale steps
         are computed from the base so the whole system stays proportional.
+        Each line below renders at the size resolved from the active theme.
       </p>
+      <Example>
+        <Example.Preview>
+          <div className={styles.typeStack}>
+            <TypeScaleRow token="--font-size-base" label="--font-size-base (body)" />
+            <TypeScaleRow token="--font-size-base" multiplier={1.25} label="h4 — 1.25× base" />
+            <TypeScaleRow token="--font-size-base" multiplier={1.5} label="h3 — 1.5× base" />
+            <TypeScaleRow token="--font-size-base" multiplier={2} label="h2 — 2× base" />
+            <TypeScaleRow token="--font-size-base" multiplier={2.5} label="h1 — 2.5× base" />
+          </div>
+        </Example.Preview>
+        <Example.Code><span className="tok-sel">h1</span> {"{ "}<span className="tok-prop">font-size</span>: <span className="tok-val">calc(var(--font-size-base) * 2.5)</span>; {"}"}
+{"\n"}<span className="tok-sel">h2</span> {"{ "}<span className="tok-prop">font-size</span>: <span className="tok-val">calc(var(--font-size-base) * 2)</span>; {"}"}
+{"\n"}<span className="tok-sel">h3</span> {"{ "}<span className="tok-prop">font-size</span>: <span className="tok-val">calc(var(--font-size-base) * 1.5)</span>; {"}"}
+{"\n"}<span className="tok-sel">p</span>  {"{ "}<span className="tok-prop">font-size</span>: <span className="tok-val">var(--font-size-base)</span>; {"}"}</Example.Code>
+      </Example>
 
       <h2 id="spacing">Spacing</h2>
       <p>
@@ -270,9 +281,10 @@ export default function TokensPage() {
 
       <h2 id="radii">Radii</h2>
       <p>
-        Two families ship together: the short <code>--r-*</code> tokens themes
-        use natively, and the longer <code>--radius-*</code> aliases the library
-        mixins consume. They point at the same values.
+        Two families ship together: the short <code>--r-sm/md/lg</code> tokens
+        themes use natively, and the longer <code>--radius-sm/md/lg/xl/full</code>{" "}
+        aliases the library mixins consume. Both render below at their current
+        theme value — flat in a brutalist mood, generously rounded in a soft one.
       </p>
       <Example>
         <Example.Preview>
