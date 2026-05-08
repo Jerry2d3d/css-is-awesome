@@ -1,14 +1,19 @@
 # Icons
 
-The css-is-awesome icon system is mixin-first and folder-based.
+The css-is-awesome icon system is mixin-first and pack-based. The
+default `core` pack ships at `public/icons/core/` (49 Lucide-vendored
+glyphs — see `LICENSE-third-party` for attribution).
 
 ## The 30-second version
 
-1. Drop an SVG file into this folder (`public/icons/foo.svg`).
+1. Drop an SVG file into a pack folder (`public/icons/core/foo.svg`).
 2. Reference it anywhere: `@include m.svg(foo);`
 3. Style it with CSS. `currentColor` means it reskins automatically with `color:`.
 
 That's the whole system. No registry file, no build step, no import list.
+
+The full contract (resolution order, naming rules, override mechanism)
+lives in [`CONTRACT.md` → Icons contract](../../CONTRACT.md#icons-contract).
 
 ## Mixins
 
@@ -45,7 +50,7 @@ Compiled CSS:
   width: 100%;
   height: 100%;
   background: currentColor;
-  mask: url('/icons/x.svg') center / contain no-repeat;
+  mask: var(--cia-icon-x, url('/icons/core/x.svg')) center / contain no-repeat;
 }
 ```
 
@@ -84,9 +89,12 @@ All config lives in `scss/theme/_icons.scss` and is re-exported from
 
 ### Icon folder path
 
-`$theme-icon-path` defaults to `/icons` (i.e. this folder, served from
-your app root). Each theme can override it to ship its own icon pack —
-see "Per-theme icon packs" below.
+`$theme-icon-path` defaults to `/icons` and `$theme-icon-pack` defaults
+to `core`, so `m.svg(foo)` resolves to `/icons/core/foo.svg` by default.
+Each theme can override individual glyphs via `--cia-icon-<name>` custom
+properties (preferred) or swap the entire pack folder by changing
+`$theme-icon-path` / `$theme-icon-pack` — see "Per-theme icon packs"
+below and `CONTRACT.md → Icons contract`.
 
 ### Default icon size
 
@@ -171,22 +179,44 @@ $icon-svg-alias: (
 
 ## Per-theme icon packs
 
-Each theme folder can carry its own `icons/` directory. Because
-`$theme-icon-path` is the single source of truth, overriding it per
-theme swaps the entire icon set:
+There are two ways a theme overrides icons. Pick whichever matches the
+scope of the change.
+
+### Per-glyph (preferred — runtime CSS, no SCSS rebuild)
+
+Drop replacement SVGs at `public/themes/<theme>/icons/<pack>/<name>.svg`
+and declare a custom property in that theme's `:root` (or
+`[data-theme="<theme>"]`) block:
+
+```css
+[data-theme="sketchbook-light"] {
+  --cia-icon-search: url('/themes/sketchbook-light/icons/core/search.svg');
+  --cia-icon-x:      url('/themes/sketchbook-light/icons/core/x.svg');
+}
+```
+
+Glyphs you don't override fall back to the bundled `core` pack
+automatically. The mixin emits `var(--cia-icon-<name>, url(<core>))` —
+the second argument is the fallback.
+
+### Pack-wide (compile-time SCSS swap)
+
+If a theme replaces every glyph, override `$theme-icon-path` once and
+ship the full set in the new folder:
 
 ```scss
 // themes/corporate/_icons.scss
 $icon-path: '/themes/corporate/icons';
+$icon-pack: 'core';            // keep the contract pack name
 $icon-svg-alias: (
   delete: 'bin',
   close:  'dismiss',
 );
 ```
 
-Drop that theme's SVGs into `public/themes/corporate/icons/` and every
-`@include m.svg(...)` in your app now resolves against the corporate
-pack. No other code changes.
+Drop the SVGs at `public/themes/corporate/icons/core/` and every
+`@include m.svg(...)` in that theme's bundle resolves against the
+corporate pack.
 
 ## Font Awesome integration
 

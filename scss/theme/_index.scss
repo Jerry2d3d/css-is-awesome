@@ -89,6 +89,7 @@ $margin: (
 
 // Icon re-exports (no !default — must override the @use 'icons' as * import)
 $theme-icon-path: $icon-path;
+$theme-icon-pack: $icon-pack;
 $theme-icon-size: $icon-size;
 $theme-icon-svg-alias: $icon-svg-alias;
 $theme-fa-path: $fa-path;

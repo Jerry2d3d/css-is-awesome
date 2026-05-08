@@ -61,7 +61,7 @@ export default function DocsAuthoringIconsPage() {
 {"\n"}<span className="tok-sel">@use</span> <span className="tok-val">&apos;cia/scss/mixins&apos;</span> <span className="tok-sel">as</span> <span className="tok-prop">m</span>;
 {"\n"}
 {"\n"}<span className="tok-sel">.btn-close</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.svg(close)</span>;   <span className="tok-com">{"// resolves to /icons/x.svg via alias"}</span>
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.svg(close)</span>;   <span className="tok-com">{"// resolves to /icons/core/x.svg via alias"}</span>
 {"\n"}  <span className="tok-prop">color</span>: <span className="tok-val">var(--color-danger)</span>;
 {"\n"}{"}"}
 {"\n"}

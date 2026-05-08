@@ -407,3 +407,130 @@ The contract is versioned via `scripts/theme-contract.json` (`version: "1"`).
 - **Major bump** (`"1" → "2"`): renames or removes REQUIRED tokens. Existing themes must migrate.
 
 Any PR that adds a new `m.color(X)` / `m.space(X)` / `m.radius(X)` reference in the library must add `--X` to both this document and `scripts/theme-contract.json`, and add a declaration to every theme in `public/theme.css` and `public/themes/*/theme.css`. The `npm run validate-themes` check in CI will block the merge otherwise.
+
+---
+
+## Icons contract
+
+The icon system is a parallel contract to the token contract. The
+machine-readable companion is [`scripts/icon-contract.json`](./scripts/icon-contract.json);
+the validator is `scripts/icon-validator.js` (run `npm run validate-icons`,
+or per pack with `node scripts/icon-validator.js core`). A pack that
+omits any contract glyph fails the build.
+
+### Packs and on-disk layout
+
+Icons are organized into named **packs**. The default pack `core` ships
+49 UI-essential glyphs vendored from Lucide (see
+[`LICENSE-third-party`](./LICENSE-third-party)). Additional packs (e.g.
+`files`, `editor`) follow the same layout when added.
+
+```
+public/icons/<pack>/<glyph>.svg          ← bundled defaults
+public/themes/<theme>/icons/<pack>/<glyph>.svg   ← per-theme override
+```
+
+The SCSS configuration lives in `scss/theme/_icons.scss`:
+
+| Variable                   | Default     | Purpose                                      |
+| -------------------------- | ----------- | -------------------------------------------- |
+| `$icon-path`               | `/icons`    | Public root that hosts every pack directory  |
+| `$icon-pack`               | `core`      | Pack folder appended to `$icon-path`         |
+| `$icon-size`               | `24px`      | Default host element size                    |
+| `$icon-svg-alias`          | small map   | Compile-time semantic name → filename map    |
+
+Re-exported from `scss/theme/_index.scss` as `$theme-icon-path`,
+`$theme-icon-pack`, etc.
+
+### Resolution order (per glyph)
+
+`m.svg(name)` (and the `svg-bg` / `svg-text` variants) emits a CSS
+custom-property lookup with the bundled URL as fallback:
+
+```scss
+@include m.svg(check);
+// → mask: var(--cia-icon-check, url('/icons/core/check.svg')) center / contain no-repeat;
+```
+
+The resolution order at the browser is therefore:
+
+1. **Per-theme override.** A theme that ships a replacement glyph
+   declares `--cia-icon-<glyph>: url('/themes/<theme>/icons/<pack>/<glyph>.svg')`
+   on `:root` (or inside its `[data-theme="<name>"]` block in the
+   consolidated bundle). Browser uses that URL.
+2. **Core pack fallback.** If no override is declared, the browser
+   resolves the URL baked into the second `var()` argument
+   (`/icons/<pack>/<glyph>.svg`).
+3. **404.** If the file doesn't exist on disk the browser silently
+   renders nothing — the host element keeps its size, no error in the
+   layout.
+
+Aliases (`$theme-icon-svg-alias`) resolve at compile time *before* the
+override lookup, so the override key matches the canonical filename, not
+the call-site alias. With the default alias `close → x`:
+
+```scss
+@include m.svg(close);   // call site uses the semantic name
+// → mask: var(--cia-icon-x, url('/icons/core/x.svg')) ...;
+// → theme override key is --cia-icon-x
+```
+
+### Naming conventions
+
+- **Kebab-case glyph names** — `arrow-right`, `chevron-down`, `more-horizontal`.
+- **Category prefix groups related glyphs alphabetically** in directory
+  listings — `arrow-*`, `chevron-*`, `file-*`.
+- **One glyph per file.** Multi-color art uses `m.svg-bg` and lives
+  outside the contract.
+- **Override custom property:** `--cia-icon-<filename>` (the resolved
+  filename after aliases, not the call-site name).
+
+### File-format expectations
+
+Every glyph in a contract pack MUST:
+
+- Be a valid SVG document — start with `<?xml version="1.0" ...?>` or
+  `<svg ...>`.
+- Use `viewBox="0 0 24 24"` (or scale equivalently). The mixin sizes
+  the host element; the SVG just needs a square viewBox.
+- Paint via `stroke="currentColor"` / `fill="currentColor"` (or no
+  paint attribute). The mixin renders the SVG as a CSS mask, so any
+  hardcoded color is discarded — but currentColor keeps the file
+  reusable in `m.svg-bg` too.
+- Omit `width` / `height` attributes on `<svg>`.
+- Omit Lucide / Heroicons / Feather author-class hooks
+  (`class="lucide ..."`, etc.) — they're noise the mixin doesn't use.
+
+The `vendor-lucide-core.mjs` script normalizes Lucide output to match
+this format. Hand-authored glyphs should follow it directly.
+
+### Canonical `core` pack glyph names
+
+Every pack listed in `scripts/icon-contract.json → packs.core.glyphs`
+must exist at `public/icons/core/<name>.svg`. The current contract is:
+
+| Group           | Glyphs                                                                                              |
+| --------------- | --------------------------------------------------------------------------------------------------- |
+| Already shipped | `arrow-right`, `check`, `chevron-down`, `close`, `download`, `edit`, `menu`, `search`               |
+| Navigation      | `arrow-left`, `arrow-up`, `arrow-down`, `chevron-up`, `chevron-left`, `chevron-right`, `external-link`, `home` |
+| Actions         | `upload`, `copy`, `share`, `trash`, `save`, `refresh`, `settings`, `filter`, `sort`, `plus`, `minus`, `more-horizontal` |
+| Status          | `info`, `warning`, `error`, `success`, `help`, `loading`                                            |
+| Communication   | `mail`, `bell`, `calendar`, `clock`, `message`                                                       |
+| User / security | `user`, `users`, `lock`, `unlock`, `eye`, `eye-off`                                                  |
+| Media           | `play`, `pause`, `star`, `heart`                                                                     |
+
+Total: **49 glyphs.** Pack 2 (`files`) and Pack 3 (`editor`) are
+proposed but not yet under contract — see [`roadmap/icons-proposal.md`](./roadmap/icons-proposal.md).
+
+### Adding to the contract
+
+A PR that adds a new contract glyph must:
+
+1. Add the glyph name to `scripts/icon-contract.json → packs.<pack>.glyphs`.
+2. Drop the SVG at `public/icons/<pack>/<glyph>.svg`.
+3. Update this section's table.
+4. Pass `npm run validate-icons`.
+
+Per-theme override glyphs are NEVER required by the contract — themes
+opt in glyph-by-glyph by declaring `--cia-icon-<name>` and shipping the
+replacement file alongside.

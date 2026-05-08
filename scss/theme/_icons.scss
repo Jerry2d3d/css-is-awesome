@@ -3,7 +3,13 @@
 // ============================================================================
 
 // SVG Icons
+//
+// The default `core` icon pack ships at /icons/core/. Glyphs are vendored
+// from Lucide (ISC + MIT, see LICENSE-third-party). Per-theme overrides
+// resolve at runtime through CSS custom properties — see `m.svg` for the
+// resolver pattern and CONTRACT.md → "Icons contract" for the full story.
 $icon-path: '/icons' !default;
+$icon-pack: 'core' !default;
 $icon-size: 24px !default;
 
 $icon-svg-alias: (
