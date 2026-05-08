@@ -55,6 +55,36 @@ automated releases.
   Clipboard API is unavailable. Hover-to-reveal on pointer devices,
   always-visible on touch and on focus, with `aria-label` swapping
   between "Copy code to clipboard" and "Copied to clipboard".
+### Added — A11y contrast linter (Phase 7 differentiator)
+
+- New `scripts/theme-a11y.js` (zero deps) implements the WCAG 2.2
+  §1.4.3 / §1.4.11 contrast-ratio formulas and is wired into
+  `scripts/theme-validator.js`. Every `npm run validate-themes` run now
+  audits 17 key token pairs per theme (text on `--paper`, status text
+  on subtle status surfaces, inverse text on action primary / `--ai`,
+  borders + focus rings + `--shu` against `--paper`). PASS/WARN/FAIL
+  with required-vs-actual ratios.
+- **A11y FAILs do NOT fail the build by default.** Existing themes have
+  103 known failures (mostly the universal `--border-default` non-text
+  3:1 rule plus real text-color drops in Glass-light and Cupertino-light)
+  that need triage. The default exit code stays 0 for a11y issues so this
+  merge does not break CI. Pass `--strict` to escalate FAILs to exit 1
+  once themes are cleaned up.
+- Translucent foregrounds are alpha-composited onto their background
+  before the ratio is computed; translucent backgrounds composite onto
+  `--paper` first, so the audited number matches what users see.
+- New `--no-a11y` CLI flag on `theme-validator.js` to skip the audit
+  entirely; the contract check still runs.
+- Color formats handled with no dependencies: hex (3/4/6/8 digit), `rgb()`,
+  `rgba()`, `hsl()`, `hsla()` (comma + space + slash-alpha syntaxes), 148
+  named colors, `transparent`. Modern spaces (`oklch`, `oklab`, `lab`,
+  `lch`, `hwb`, `color()`, `color-mix()`) report as **SKIP** with a reason.
+- `var(--token)` references are resolved transitively against the theme's
+  own declarations (with `var(--x, fallback)` fallback support).
+- Documented in [`CONTRACT.md`](./CONTRACT.md#a11y-contrast-wcag-22-aa)
+  including the audited pairs and the WARN buffer for tertiary / faint
+  ink. Source: WCAG 2.2 §1.4.3 / §1.4.11 — relative-luminance formula
+  with the standard `(L1+0.05)/(L2+0.05)` ratio.
 
 ### Added — Boilerplate theme (recommended starter)
 

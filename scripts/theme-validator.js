@@ -40,6 +40,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const a11y = require('./theme-a11y');
 
 // -----------------------------------------------------------
 // Paths
@@ -58,6 +59,7 @@ const color = (code, s) => (USE_COLOR ? `\x1b[${code}m${s}\x1b[0m` : s);
 const green = (s) => color('32', s);
 const red = (s) => color('31', s);
 const dim = (s) => color('2', s);
+const yellow = (s) => color('33', s);
 const bold = (s) => color('1', s);
 
 // -----------------------------------------------------------
@@ -151,6 +153,32 @@ function collectTokensFromBlock(blockBody) {
   return out;
 }
 
+// Same shape as collectTokensFromBlock but returns Map<name, rawValue>.
+// Values include everything between ':' and the next top-level ';',
+// paren-aware so functional notation survives.
+function collectTokenValuesFromBlock(blockBody) {
+  const re = /(--[A-Za-z_][A-Za-z0-9_-]*)s*:/g;
+  const out = new Map();
+  let m;
+  while ((m = re.exec(blockBody)) !== null) {
+    const name = m[1];
+    let i = m.index + m[0].length;
+    let depth = 0;
+    let value = '';
+    while (i < blockBody.length) {
+      const ch = blockBody[i];
+      if (ch === '(') depth++;
+      else if (ch === ')') depth--;
+      else if (ch === ';' && depth === 0) break;
+      else if (ch === '}' && depth === 0) break;
+      value += ch;
+      i++;
+    }
+    out.set(name, value.trim());
+  }
+  return out;
+}
+
 // -----------------------------------------------------------
 // Parser — extract `--token-name` declarations from any :root
 // block(s) in the file. Values don't matter, only names.
@@ -159,38 +187,36 @@ function collectTokensFromBlock(blockBody) {
 // module via require() and rely on the old function name/shape.
 // -----------------------------------------------------------
 function extractDeclaredTokens(cssText) {
+  return extractRootBlock(cssText).tokens;
+}
+
+// Same walk as extractDeclaredTokens but collects both names and values.
+function extractRootBlock(cssText) {
   const stripped = stripBlockComments(cssText);
   const tokens = new Set();
+  const values = new Map();
 
   let i = 0;
   while (i < stripped.length) {
     const rootIdx = stripped.indexOf(':root', i);
     if (rootIdx === -1) break;
 
-    // Move to the opening brace after `:root`
     let j = rootIdx + ':root'.length;
-    while (j < stripped.length && stripped[j] !== '{' && stripped[j] !== ';') {
-      j++;
-    }
+    while (j < stripped.length && stripped[j] !== '{' && stripped[j] !== ';') j++;
     if (j >= stripped.length || stripped[j] !== '{') {
-      // Not a block — skip past this occurrence.
       i = rootIdx + ':root'.length;
       continue;
     }
 
     const block = readBracedBlock(stripped, j);
-    if (!block) {
-      i = j + 1;
-      continue;
-    }
+    if (!block) { i = j + 1; continue; }
 
-    for (const tok of collectTokensFromBlock(block.body)) {
-      tokens.add(tok);
-    }
+    for (const tok of collectTokensFromBlock(block.body)) tokens.add(tok);
+    for (const [t, v] of collectTokenValuesFromBlock(block.body)) values.set(t, v);
     i = block.end + 1;
   }
 
-  return tokens;
+  return { tokens: tokens, values: values };
 }
 
 // -----------------------------------------------------------
@@ -208,7 +234,8 @@ function extractDataThemeBlocks(cssText) {
   const stripped = stripBlockComments(cssText);
   const blocks = [];
   const order = []; // preserves first-seen order of theme names
-  const byName = new Map();
+  const byName = new Map(); // name -> Set<token>
+  const valuesByName = new Map(); // name -> Map<token, rawValue>
 
   let i = 0;
   while (i < stripped.length) {
@@ -247,13 +274,17 @@ function extractDataThemeBlocks(cssText) {
 
     if (names.length > 0) {
       const blockTokens = collectTokensFromBlock(block.body);
+      const blockValues = collectTokenValuesFromBlock(block.body);
       for (const name of names) {
         if (!byName.has(name)) {
           byName.set(name, new Set());
+          valuesByName.set(name, new Map());
           order.push(name);
         }
         const set = byName.get(name);
         for (const t of blockTokens) set.add(t);
+        const vmap = valuesByName.get(name);
+        for (const [t, v] of blockValues) vmap.set(t, v);
       }
     }
 
@@ -261,7 +292,11 @@ function extractDataThemeBlocks(cssText) {
   }
 
   for (const name of order) {
-    blocks.push({ name, tokens: byName.get(name) });
+    blocks.push({
+      name,
+      tokens: byName.get(name),
+      values: valuesByName.get(name),
+    });
   }
   return blocks;
 }
@@ -292,14 +327,17 @@ function validateTokenSet(declared, contract) {
 // Returns a unified result shape with either a flat pass/fail
 // (per-file) or a list of per-theme pass/fails (consolidated).
 // -----------------------------------------------------------
-function validateFile(filePath, contract) {
+function validateFile(filePath, contract, options) {
+  const opts = options || {};
+  const wantA11y = opts.a11y !== false;
   const result = {
     file: filePath,
     mode: 'per-file',
     ok: false,
     declaredCount: 0,
     missing: [],
-    themes: null, // populated only in consolidated mode
+    themes: null,
+    a11y: null,
     error: null,
   };
 
@@ -316,32 +354,36 @@ function validateFile(filePath, contract) {
     const blocks = extractDataThemeBlocks(text);
 
     if (blocks.length === 0) {
-      // Detected the attribute but couldn't pull a named block —
-      // this is a malformed consolidated file.
-      result.error =
-        'consolidated file has no [data-theme="<name>"] blocks we could parse';
+      result.error = 'consolidated file has no [data-theme="<name>"] blocks we could parse';
       return result;
     }
 
-    result.themes = blocks.map(({ name, tokens }) => {
-      const v = validateTokenSet(tokens, contract);
-      return {
-        name,
+    result.themes = blocks.map(function (b) {
+      const v = validateTokenSet(b.tokens, contract);
+      const theme = {
+        name: b.name,
         ok: v.ok,
         declaredCount: v.declaredCount,
         missing: v.missing,
+        a11y: null,
       };
+      if (wantA11y) theme.a11y = a11y.auditThemeTokens({ name: b.name, values: b.values });
+      return theme;
     });
-    result.ok = result.themes.every((t) => t.ok);
+    result.ok = result.themes.every(function (t) { return t.ok; });
     return result;
   }
 
-  // Legacy per-file mode — union of all :root { ... } blocks.
-  const declared = extractDeclaredTokens(text);
-  const v = validateTokenSet(declared, contract);
+  // Legacy per-file mode - union of all :root { ... } blocks.
+  const root = extractRootBlock(text);
+  const v = validateTokenSet(root.tokens, contract);
   result.declaredCount = v.declaredCount;
   result.missing = v.missing;
   result.ok = v.ok;
+  if (wantA11y) {
+    const inferredName = path.basename(path.dirname(filePath)) || path.basename(filePath, '.css');
+    result.a11y = a11y.auditThemeTokens({ name: inferredName, values: root.values });
+  }
   return result;
 }
 
@@ -404,6 +446,47 @@ function reportResult(result) {
 }
 
 // -----------------------------------------------------------
+// A11y reporter - pretty-print one theme's contrast audit.
+// Returns { fail, warn, pass, skip } counts so the CLI can decide exit code.
+// -----------------------------------------------------------
+function reportA11yForTheme(themeName, audit, indent) {
+  const pad = indent || '    ';
+  let fail = 0, warn = 0, pass = 0, skip = 0;
+  for (const r of audit) {
+    if (r.status === 'fail') fail++;
+    else if (r.status === 'warn') warn++;
+    else if (r.status === 'pass') pass++;
+    else skip++;
+  }
+  let head;
+  if (fail > 0) {
+    head = red('x') + ' a11y [' + themeName + '] ' + red(fail + ' fail') + ' ' +
+      (warn ? yellow(warn + ' warn') + ' ' : '') + dim(pass + ' pass') + (skip ? dim(' ' + skip + ' skip') : '');
+  } else if (warn > 0) {
+    head = yellow('!') + ' a11y [' + themeName + '] ' + yellow(warn + ' warn') + ' ' + dim(pass + ' pass') + (skip ? dim(' ' + skip + ' skip') : '');
+  } else {
+    head = green('✓') + ' a11y [' + themeName + '] ' + dim(pass + '/' + audit.length + ' contract pairs >= AA') + (skip ? dim(' ' + skip + ' skip') : '');
+  }
+  console.log(pad + head);
+
+  for (const r of audit) {
+    if (r.status === 'pass') continue;
+    const pair = r.pair;
+    const ratio = typeof r.ratio === 'number' ? r.ratio.toFixed(2) : '?';
+    const required = r.required ? r.required.toFixed(1) : '?';
+    if (r.status === 'fail') {
+      console.log(pad + '  ' + red('x') + ' ' + bold(pair.fg) + ' on ' + bold(pair.bg) + ' - ' + red(ratio + ':1') + ' (need >= ' + required + ':1, ' + pair.kind + ')');
+      console.log(pad + '     ' + dim('fg=' + r.fgRaw + '  bg=' + r.bgRaw + '  - ' + pair.note));
+    } else if (r.status === 'warn') {
+      console.log(pad + '  ' + yellow('!') + ' ' + bold(pair.fg) + ' on ' + bold(pair.bg) + ' - ' + yellow(ratio + ':1') + ' (passes ' + required + ':1 ' + pair.kind + ', body-text threshold 4.5:1)');
+    } else if (r.status === 'skip') {
+      console.log(pad + '  ' + dim('-') + ' ' + dim(pair.fg + ' / ' + pair.bg + ' - skipped (' + r.skipReason + ')'));
+    }
+  }
+  return { fail: fail, warn: warn, pass: pass, skip: skip };
+}
+
+// -----------------------------------------------------------
 // CLI
 // -----------------------------------------------------------
 function printUsage() {
@@ -413,24 +496,37 @@ function printUsage() {
     '  node scripts/theme-validator.js --all',
     '',
     'Each input file is auto-detected as:',
-    '  per-file     — one or more `:root { ... }` blocks (legacy)',
-    '  consolidated — contains `[data-theme="<name>"] { ... }` blocks;',
+    '  per-file     - one or more `:root { ... }` blocks (legacy)',
+    '  consolidated - contains `[data-theme="<name>"] { ... }` blocks;',
     '                 every block must satisfy the contract.',
     '',
+    'Flags:',
+    '  --all       validate every theme.css under public/ (CI mode)',
+    '  --no-a11y   skip the WCAG 2.2 AA contrast audit',
+    '  --strict    treat a11y FAILs as exit-non-zero (default: report only)',
+    '',
     'Exit codes:',
-    '  0  all validated files / blocks declare every required token',
-    '  1  one or more files/blocks missing tokens',
+    '  0  every file/block declares every required contract token. A11y',
+    '     contrast issues are reported but do NOT fail the run unless',
+    '     --strict is set.',
+    '  1  one or more files/blocks missing tokens (always fatal), OR an',
+    '     a11y FAIL when --strict is set.',
     '  2  usage error (file not found, bad args)',
-  ].join('\n');
+  ].join(String.fromCharCode(10));
   console.log(u);
 }
 
 function main(argv) {
-  const args = argv.slice(2).filter((a) => a !== '--watch'); // watch reserved; not v1
-  if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
+  const argsRaw = argv.slice(2).filter(function (a) { return a !== '--watch'; });
+  if (argsRaw.length === 0 || argsRaw.includes('-h') || argsRaw.includes('--help')) {
     printUsage();
-    process.exit(args.length === 0 ? 2 : 0);
+    process.exit(argsRaw.length === 0 ? 2 : 0);
   }
+  const wantA11y = !argsRaw.includes('--no-a11y');
+  const wantStrict = argsRaw.includes('--strict');
+  const args = argsRaw.filter(function (a) {
+    return a !== '--no-a11y' && a !== '--strict';
+  });
 
   const contract = loadContract();
 
@@ -443,10 +539,10 @@ function main(argv) {
     }
   } else {
     for (const a of args) {
-      if (a.startsWith('--')) continue; // ignore unknown flags quietly
+      if (a.startsWith('--')) continue;
       const resolved = path.resolve(a);
       if (!fs.existsSync(resolved)) {
-        console.error(red('error:') + ` file not found: ${a}`);
+        console.error(red('error:') + ' file not found: ' + a);
         process.exit(2);
       }
       files.push(resolved);
@@ -457,37 +553,61 @@ function main(argv) {
     }
   }
 
-  console.log(
-    dim(
-      `theme-validator — contract v${contract.version} (${contract.required.length} required tokens)`
-    )
-  );
+  console.log(dim('theme-validator - contract v' + contract.version + ' (' + contract.required.length + ' required tokens)'));
+  if (wantA11y) {
+    console.log(dim('a11y          - WCAG 2.2 AA contrast audit (' + a11y.AUDIT_PAIRS.length + ' pairs per theme)'));
+  } else {
+    console.log(dim('a11y          - skipped (--no-a11y)'));
+  }
   console.log('');
 
   let hadFailure = false;
+  let totalA11yFail = 0;
+  let totalA11yWarn = 0;
   let themeBlocksCounted = 0;
   for (const f of files) {
-    const r = validateFile(f, contract);
+    const r = validateFile(f, contract, { a11y: wantA11y });
     reportResult(r);
     if (!r.ok || r.error) hadFailure = true;
     if (r.mode === 'consolidated' && r.themes) {
       themeBlocksCounted += r.themes.length;
+      if (wantA11y) {
+        for (const t of r.themes) {
+          if (!t.a11y) continue;
+          const counts = reportA11yForTheme(t.name, t.a11y);
+          totalA11yFail += counts.fail;
+          totalA11yWarn += counts.warn;
+        }
+      }
     } else if (!r.error) {
       themeBlocksCounted += 1;
+      if (wantA11y && r.a11y) {
+        const inferredName = path.basename(path.dirname(r.file)) || path.basename(r.file, '.css');
+        const counts = reportA11yForTheme(inferredName, r.a11y, '  ');
+        totalA11yFail += counts.fail;
+        totalA11yWarn += counts.warn;
+      }
     }
   }
 
   console.log('');
   if (hadFailure) {
-    console.log(red(bold('FAIL')) + dim(` — one or more theme files/blocks are incomplete`));
+    console.log(red(bold('FAIL')) + dim(' - one or more theme files/blocks are incomplete'));
     process.exit(1);
   }
-  console.log(
-    green(bold('OK')) +
-      dim(
-        ` — ${files.length} file(s) / ${themeBlocksCounted} theme block(s) validated`
-      )
-  );
+  if (wantA11y && totalA11yFail > 0) {
+    if (wantStrict) {
+      console.log(red(bold('FAIL')) + dim(' - ' + totalA11yFail + ' contrast pair(s) below WCAG 2.2 AA across all themes (--strict)'));
+      process.exit(1);
+    }
+    console.log(yellow(bold('OK with A11Y FAILS')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s); ' + totalA11yFail + ' pair(s) below AA, ' + totalA11yWarn + ' inside the AA buffer. Re-run with --strict to fail the build on these.'));
+    process.exit(0);
+  }
+  if (wantA11y && totalA11yWarn > 0) {
+    console.log(yellow(bold('OK with WARN')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s); ' + totalA11yWarn + ' pair(s) inside the AA buffer'));
+    process.exit(0);
+  }
+  console.log(green(bold('OK')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s) validated' + (wantA11y ? ' (contract + a11y)' : ' (contract only)')));
   process.exit(0);
 }
 
@@ -498,10 +618,12 @@ function main(argv) {
 // -----------------------------------------------------------
 module.exports = {
   extractDeclaredTokens,
+  extractRootBlock,
   extractDataThemeBlocks,
   isConsolidated,
   validateFile,
   loadContract,
+  a11y: a11y,
 };
 
 if (require.main === module) {
