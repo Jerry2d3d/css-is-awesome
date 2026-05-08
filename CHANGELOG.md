@@ -11,6 +11,29 @@ automated releases.
 
 ## [Unreleased]
 
+### Changed — npm publish gate (v0.7.0 prep)
+
+- `package.json` `files` array now explicitly includes `public/icons` and
+  `LICENSE-third-party` so the new Lucide `core` icon pack (49 SVGs) and
+  the third-party attribution license ship in the tarball. Verified via
+  `npm pack --dry-run` and a real `npm pack` extract: 125 files, 162 kB
+  packed / 1.0 MB unpacked, no `dist/components/`, no `src/`, no tests,
+  no `.next/` or `out/`. Top-level layout: `dist/`, `scss/`, `public/`,
+  `figma-tokens/`, both `LICENSE` files, and the four reference markdown
+  docs (`README`, `CHANGELOG`, `AGENTS`, `CLAUDE`, `GEMINI`,
+  `css-is-awesome.instructions`).
+- Confirmed `scss/main.scss` no longer `@use`s `_app-styles` (already
+  fixed in `d986ea7`). Spot-checked all four `dist/*.css` builds for
+  docs-only selectors (`.site-header`, `.docs-*`, `.draft-stamp`,
+  `APP STYLES`, `next-`, `launch-gate`) — none present. Build sizes:
+  core 18.2 kB / 16.4 kB min, utilities 112.4 kB / 81.9 kB min, full
+  161.5 kB / 115.6 kB min (uncompressed; gzip ≈ 2.4 / 11.5 / 15.2 kB
+  per the previously recorded baselines).
+- `_app-styles.scss` itself remains in `scss/` as a project-owned
+  template for consuming boilerplates — not imported by any library
+  entry, but shipped so a downstream copy-step can pick it up if a
+  consumer wants the boilerplate template.
+
 ### Added — Boilerplate theme (recommended starter)
 
 - New theme **Boilerplate** (`boilerplate-light` + `boilerplate-dark`) at
