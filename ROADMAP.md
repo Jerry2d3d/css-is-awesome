@@ -133,12 +133,12 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - `Example` (+ `.Preview` / `.Code` compound slots) — code + preview wrapper
 - `DocsSidebar`, `Logo`, `DraftStamp` — structural
 
-### Content (still TODO)
-- [ ] Replace placeholder docs copy with real install/usage for the published `cia-` system
-- [ ] Sections: Tokens (color/spacing/type grids), Utilities (searchable table), Mixins API, Migration from Bootstrap
-- [ ] Live color swatches, spacing visualizers, type scale preview
-- [ ] Copy-to-clipboard code snippets
-- [ ] Deploy to the external host + link from README + `package.json` `homepage`
+### Content
+- [x] Replace placeholder docs copy with real install/usage for the published `cia-` system — `/docs` intro now ships real Quick Start, three-tier story, utility-vs-mixin side-by-side, expanded "What next" links.
+- [ ] Sections: Tokens (color/spacing/type grids — DONE), Utilities (searchable table — TODO), Mixins API (TODO), Migration from Bootstrap (started; needs polish).
+- [x] Live color swatches, spacing visualizers, type scale preview — `/docs/tokens` reads `getComputedStyle` after mount and re-resolves on theme swap via `useThemeAttribute`.
+- [x] Copy-to-clipboard code snippets — every `<Example.Code>` has a Copy button (CopyButton client island, secure-context fallback to execCommand).
+- [ ] Deploy to the external host + link from README + `package.json` `homepage` (Pages workflow exists; live URL not yet linked from README).
 
 ### New pages
 - [x] **`/themes` gallery** — all 6 themes with live-swap preview + download per tile. Uses `ThemeTile` component.
@@ -163,7 +163,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 
 ### Work
 - [x] Lock the **token API contract** — documented in `docs/theme.css` header as the authoritative slot list every theme declares. Slots grouped: surfaces · ink · lines · primary · seal · accent · code · type · radius · shadow · blur · glow · motion.
-- [ ] Decide **sizing scale** (numbered 1–9 vs t-shirt sm/md/lg) — still open; current contract ships t-shirt (`--r-sm/md/lg`). Numbered aliases can be added later without breaking.
+- [x] Decide **sizing scale** — LOCKED on numbered scale as the source of truth, with t-shirt aliases layered on top (settled out of session 2026-05-04). Both `m.space(4)` and `m.space(md)` resolve identically.
 - [ ] Pull Sketchbook's docs-specific flourishes (construction lines, seal, draft stamp, brush rules) out of any future "base system" port — they belong in docs chrome only.
 - [x] Ship 5 additional themes to prove the swap:
   - [x] Press (editorial newsprint)
@@ -171,8 +171,8 @@ Shared chrome + reusable building blocks now live in `src/components/`:
   - [x] Glass (visionOS glassmorphism) — exercises `--blur-*` + `--paper-glass`
   - [x] Cupertino (macOS native)
   - [x] Terminal (CRT phosphor) — mono-only stress test
-- [x] Build the `/themes` gallery page — live preview + one-click download per tile.
-- [ ] Write `CONTRIBUTING-THEMES.md` for community submissions later.
+- [x] Build the `/themes` gallery page — live preview + one-click download per tile. (Moved to `/themes/gallery` when `/themes` became the editor.)
+- [x] Write `CONTRIBUTING-THEMES.md` for community submissions later.
 
 ### Animation system
 - [x] Keyframe library in `scss/_animations.scss` (fade/slide/scale/pop/pulse/shimmer/spin/wiggle)
@@ -181,22 +181,22 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [x] `.cia-anim-*` and `.cia-hover-*` utility classes emitted from the same source
 - [x] Theme-driven — reads `--duration-fast/normal/slow` and `--ease` so each theme controls feel
 - [x] `prefers-reduced-motion` respected globally
-- [ ] Docs page with live animation preview grid
+- [x] Docs page with live animation preview grid (`/docs/animation` — 12 keyframes as cards, hover/click replay, theme-swap retimes everything in place)
 
 ### Theme icon packs
 - [x] `.cia-icon` component in base `styles.css` — `currentColor` + font-size sizing
 - [x] Seed sprite at `docs/icons.svg` (8 icons: edit, download, check, close, search, menu, arrow-right, chevron-down)
 - [x] Per-theme `icons.svg` slot documented — drop a replacement sprite in the theme folder to swap the pack
-- [ ] **Vendor Lucide as default `core` pack** — ~49 glyphs at `public/icons/core/`, MIT, with `LICENSE-third-party` notice. See [`roadmap/icons-proposal.md`](./roadmap/icons-proposal.md) for the full glyph list.
-- [ ] **Icon pack switching mechanism** — per-theme override folder (`public/themes/<name>/icons/<pack>/`) resolves before falling back to `core`; documented in CONTRACT.
+- [x] **Vendor Lucide as default `core` pack** — 49 glyphs at `public/icons/core/`, ISC + Feather-derived MIT, with `LICENSE-third-party` notice. Vendored via `scripts/vendor-lucide-core.mjs` from `lucide-static`. See [`roadmap/icons-proposal.md`](./roadmap/icons-proposal.md) for the full glyph list.
+- [x] **Icon pack switching mechanism** — per-theme override via `--cia-icon-<name>` CSS custom property (resolution: per-theme override → core pack → 404). Mixin signatures (`m.svg(name)`) unchanged. Documented in `CONTRACT.md` "Icons contract" + `AGENTS.md` "Icons" section. Drop-in workflow: just `cp my.svg public/icons/core/` and call `m.svg(my)` — no JSON edit required for non-contract glyphs. New `npm run validate-icons` enforces the contract pack.
 - [ ] Ship icon packs for Press, Graphite, Glass, Cupertino, Terminal
 - [ ] Icon index page listing every symbol by name
 
 ### Themes editor
-- [ ] **`/themes/editor` page** — browser-only theme builder; live preview, contract-slot controls (color pickers, sliders for radius/shadow/blur, type pickers), Blob download of `theme.css`, localStorage autosave, validates against `scripts/theme-contract.json` before download.
+- [x] **Theme editor page** at `/themes` — browser-only theme builder; live preview, contract-slot controls (color pickers, length sliders, number/string inputs), Blob download of `theme.css` with both `[data-theme="<name>-light"]` and `[data-theme="<name>-dark"]` blocks (validator-conformant), per-family override persistence in `localStorage`. Category tabs (Color / Layout / Type / Motion), sub-page pills under Color (Foundation / Components / Status), pagination at >4 groups per page, modified-state badge, name field with sanitizer. The `/themes/gallery` page hosts the 6-tile theme gallery.
 
 ### Boilerplate theme
-- [ ] **Hand-design `public/themes/boilerplate/theme.css`** — a neutral starter theme that ships as the recommended baseline for new consumers (clean defaults, no flourish, easy to override).
+- [x] **`public/themes/boilerplate/theme.css`** — neutral starter (light + dark in one file, full 123-token contract). Slate-leaning grays + clean blue accent (`#2563eb` light / `#3b82f6` dark), system UI sans-serif, ui-monospace, subtle shadows, standard 4/6/8/12 px radii. Bundled into `public/theme.css`, selectable in `<ThemeSelect>` / `<ThemePicker>` / `/themes/gallery`. Gating dependency for the v0.7 publish.
 
 **Release:** `v0.5.x` — theme system live, 6 themes shipped, animations + icon-pack mechanism in place, themes editor + boilerplate theme available.
 
@@ -207,11 +207,12 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 **Goal:** Cut the first real npm release as a styling-system-only package. css-is-awesome ships SCSS + CSS — no React, no TS modules. Components move out (see Phase 8).
 
 ### Pre-publish (in order)
-- [ ] **Revert React packaging from `feat/v0.7-port-fixes`** — strip the React bundle that was added today. Files to remove: `dist/components/`, `src/index.ts`, `tsup.config.ts`, `tsconfig.lib.json`, `scripts/add-use-client.mjs`, `scripts/copy-component-scss.mjs`. Drop the `tsup`/components scripts from `package.json` and the `exports` entries that point at `./components`. Keep `theme-init` as a documented snippet inside `AGENTS.md`, NOT a published TS module. Boilerplate copies its 17 wanted components from `src/components/` shadcn-style — a 30-min one-time job for the consumer.
-- [ ] **Fix `_app-styles.scss` leak** — `scss/main.scss:11` currently pulls in docs-app styles; remove from the library entry so consumers don't inherit Next.js chrome.
-- [ ] **`npm pack` smoke test** — generate the tarball, install into a throwaway folder, import the SCSS + utilities CSS, confirm zero stray rules, no `dist/components`, no TS entry, correct module resolution.
-- [ ] **Hand-design boilerplate theme** at `public/themes/boilerplate/theme.css` (tracked in Phase 4.5 — this is the gating dependency for the registry consumer test).
-- [ ] **`npm publish` 0.7.0** (`npm publish --access public`) — first public registry cut as a styling-only package.
+- [x] **Revert React packaging from `feat/v0.7-port-fixes`** — done in commit `53cbeda`. The React bundle, tsup config, and component publishing exports are stripped. Boilerplate copies its components from `src/components/` shadcn-style.
+- [x] **Fix `_app-styles.scss` leak** — already fixed in `d986ea7` weeks ago. Verified by Agent X (no docs-only selectors in any of the four `dist/*.css` builds).
+- [x] **`npm pack` smoke test** — Agent X verified the tarball: 162 kB packed / 1.0 MB unpacked / 125 files. No `dist/components/`, no `src/`, no tests, no `.next/` or `out/`. Top-level layout: `dist/`, `scss/`, `public/` (now includes `icons/`), `figma-tokens/`, both `LICENSE` files, key `.md` docs.
+- [x] **Hand-design boilerplate theme** at `public/themes/boilerplate/theme.css` (tracked in Phase 4.5 — done).
+- [x] **Add `public/icons` and `LICENSE-third-party` to `package.json` `files`** so the new Lucide pack ships in the tarball.
+- [ ] **`npm publish` 0.7.0** (`npm publish --access public`) — first public registry cut as a styling-only package. Bump version to `0.7.0` first. **Awaiting explicit user go.**
 - [ ] **Boilerplate consumer install from registry** — real downstream project installs `css-is-awesome@0.7.0`, drops in the boilerplate theme, confirms full system + utilities work end-to-end. Consumer copies its own components from `src/components/` shadcn-style.
 
 ### Follow-on
@@ -246,7 +247,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 **Goal:** Move from "another design system" to "the obvious choice for SCSS-first teams who want zero-JS theming." Items from the Gemini critique that widen the moat once the foundations are stable.
 
 - [ ] **Zero-JS interactive components** — tabs, accordion, modal, popover, tooltip built on `:has()`, the popover API, and `@container`. Biggest moat vs shadcn — they need a runtime, we don't.
-- [ ] **A11y linter inside `theme-validator.js`** — WCAG contrast checks on every contract slot pair; CI fails any theme that breaks AA on text/surface combos.
+- [x] **A11y linter inside `theme-validator.js`** — WCAG 2.2 AA contrast checks on 17 token pairs per theme. WARN-by-default to avoid blocking CI on existing failures; `--strict` opts into FAIL. Reports 104 known failures across 14 themes that need triage (see "104 a11y failures" section in resume notes).
 - [ ] **SCSS↔TS token bridge** — generate `tokens.d.ts` from the contract so consumers get type-safe token access in JS/TS.
 - [ ] **Intrinsic layout mixins** — stack/cluster/switcher (Every Layout patterns) as first-class mixins so consumers stop hand-rolling flex utilities.
 - [ ] **Tailwind→Awesome migration CLI** — parses Tailwind class strings in a project and suggests `cia-*` utility or mixin equivalents; lowest-friction path for migrants.
@@ -300,24 +301,40 @@ These live OUTSIDE this repo (separate package, separate semver, separate README
 
 ## What's next (decision order)
 
-1. ~~**Lock theme token API contract**~~ — done. 6 themes implement it.
-2. ~~**Wire `/themes` gallery page**~~ — done.
-3. ~~**Build `/compare` page**~~ — done.
-4. **Revert React packaging from `feat/v0.7-port-fixes`** — strip `dist/components/`, `src/index.ts`, `tsup.config.ts`, `tsconfig.lib.json`, `scripts/add-use-client.mjs`, `scripts/copy-component-scss.mjs`, related `package.json` scripts/exports. css-is-awesome ships styling only; components belong to Phase 8 / Gremlin UI.
-5. **Fix `_app-styles.scss` leak** at `scss/main.scss:11` so the library entry stops pulling in docs-app styles.
-6. **`npm pack` smoke test** — install the tarball into a throwaway folder, verify clean output (no `dist/components`, no TS entry).
-7. **Hand-design `public/themes/boilerplate/theme.css`** — neutral baseline theme for new consumers.
-8. **`npm publish` 0.7.0** — first public registry cut as a styling-only package.
-9. **Boilerplate consumer install from registry** — real downstream project pulls `css-is-awesome@0.7.0` and confirms end-to-end. Consumer copies components shadcn-style from `src/components/`.
-10. **Update `/compare` page** — three-tier story (core / utilities / full) + bundle-size table next to Tailwind + Bootstrap.
-11. **Vendor Lucide as default `core` icon pack** at `public/icons/core/` (~49 glyphs, MIT, `LICENSE-third-party`).
-12. **Themes editor at `/themes/editor`** — browser-only live preview, contract-slot controls, Blob download, localStorage autosave, validates before download.
-13. **Replace placeholder `/docs` copy** with real `cia-*` usage, token grids, mixin API reference, migration from Bootstrap.
-14. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes.
-15. **Animation preview page** — grid of every keyframe × every theme.
-16. **Decide sizing scale** (t-shirt vs numbered) — shipping t-shirt now; numbered aliases can layer on non-breaking.
-17. **Phase 7 differentiators** (post-v1.0) — zero-JS components, a11y linter, TS token bridge, intrinsic layout mixins, Tailwind→Awesome CLI, `/showcase`, component depth audit.
-18. **Phase 8 companion products** — Gremlin UI (React lib, name TBD) and Gremlin Boilerplate (Next.js starter), each event-triggered after css-is-awesome 1.0.
+Items 1-12 + 16 + a11y linter shipped in earlier sessions. Status as of 2026-05-08:
+
+1. ~~Lock theme token API contract~~ — done.
+2. ~~Wire `/themes` gallery page~~ — done. (Now `/themes/gallery`; `/themes` is the editor.)
+3. ~~Build `/compare` page~~ — done. (Refreshed 2026-05-07 with editor / icons / animations / bundle-tier rows.)
+4. ~~Revert React packaging~~ — done.
+5. ~~Fix `_app-styles.scss` leak~~ — already fixed; ROADMAP entry was stale.
+6. ~~`npm pack` smoke test~~ — done. Tarball is 162 kB / 125 files, clean.
+7. ~~Hand-design boilerplate theme~~ — done (slate neutrals, system fonts, light + dark).
+10. ~~Update `/compare` page~~ with three-tier + bundle table — done.
+11. ~~Vendor Lucide as default `core` icon pack~~ — done. 49/49 glyphs at `public/icons/core/`, per-theme override mechanism, `LICENSE-third-party`, `npm run validate-icons`.
+12. ~~Themes editor at `/themes/editor`~~ — done at `/themes` (with `/themes/gallery` for the tile gallery). Live preview, contract-slot controls, Blob download, localStorage autosave per family.
+13. ~~Replace placeholder `/docs` copy~~ — partial. Intro + tokens + animation done; utilities table + mixins API reference still TODO.
+15. ~~Animation preview page~~ — done at `/docs/animation`.
+16. ~~Decide sizing scale~~ — locked numbered as source of truth, t-shirt aliases layered on top.
+
+### Open / next up
+
+8. **`npm publish` 0.7.0** — bump version, `npm publish --access public`. Awaiting explicit user go.
+9. **Boilerplate consumer install from registry** — depends on #8.
+14. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes (or just a couple to prove the per-theme override mechanism).
+17. **Phase 7 differentiators**:
+    - ~~A11y linter~~ — done with WARN-by-default. **104 known failures across 14 themes need triage.** Universal failure: `--border-default` fails 3:1 non-text rule on every theme (likely a policy choice — keep low-contrast borders, or bump them). Real text failures concentrated in Glass-light + Cupertino-light (~8 each).
+    - Zero-JS interactive components, TS token bridge, intrinsic layout mixins, Tailwind→Awesome CLI, `/showcase` page, component depth audit — all unstarted.
+18. **Phase 8 companion products** — Gremlin UI + Gremlin Boilerplate. Trigger: cia 1.0 ships and ~17 boilerplate-wanted components are stable.
+
+### Smaller items still on the board
+
+- **Utilities searchable table** at `/docs/utilities` (placeholder content currently).
+- **Mixins API reference** at `/docs/mixins`.
+- **README homepage URL** + Pages-deploy verification.
+- **Icon index page** listing every glyph in every pack.
+- **Pull Sketchbook docs-flourishes** (seal, draft stamp, brush rules) out of any future "base system" port.
+- **Triage the 104 a11y failures** so `--strict` can become the CI default.
 
 ---
 
