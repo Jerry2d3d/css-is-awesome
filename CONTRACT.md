@@ -399,6 +399,50 @@ Total: 34 optional component tokens. None are validated — a theme that omits a
 
 ---
 
+## A11y contrast (WCAG 2.2 AA)
+
+Every PR runs `npm run validate-themes`, which now also audits the most
+common contrast pairs in each theme block against the
+[WCAG 2.2 §1.4.3 / §1.4.11](https://www.w3.org/TR/WCAG22/#contrast-minimum)
+ratios. The audit is implemented in `scripts/theme-a11y.js` (zero deps —
+sRGB linearisation + relative-luminance ratio). Translucent foregrounds
+are alpha-composited onto the background before the ratio is computed, and
+translucent backgrounds (status `--*-subtle` washes) are first composited
+onto `--paper` so the math reflects what users actually see.
+
+| Pair                                                  | Required | Kind     |
+| ----------------------------------------------------- | -------- | -------- |
+| `--text-primary` on `--paper`                         | 4.5 : 1  | text     |
+| `--text-secondary` on `--paper`                       | 4.5 : 1  | text     |
+| `--text-tertiary` on `--paper`                        | 3.0 : 1  | large    |
+| `--text-muted` on `--paper`                           | 4.5 : 1  | text     |
+| `--ink` / `--ink-soft` on `--paper`                   | 4.5 : 1  | text     |
+| `--ink-faint` on `--paper`                            | 3.0 : 1  | large    |
+| `--text-link` on `--paper`                            | 4.5 : 1  | text     |
+| `--text-inverse` on `--action-primary-default`        | 4.5 : 1  | text     |
+| `--text-inverse` on `--ai`                            | 4.5 : 1  | text     |
+| `--success-text` on `--success-subtle`                | 4.5 : 1  | text     |
+| `--warning-text` on `--warning-subtle`                | 4.5 : 1  | text     |
+| `--error-text` on `--error-subtle`                    | 4.5 : 1  | text     |
+| `--info-text` on `--info-subtle`                      | 4.5 : 1  | text     |
+| `--border-default` on `--paper`                       | 3.0 : 1  | non-text |
+| `--border-focus` on `--paper`                         | 3.0 : 1  | non-text |
+| `--shu` on `--paper`                                  | 3.0 : 1  | non-text |
+
+Each pair is reported as **PASS**, **WARN** (close to threshold; `--text-tertiary`
+and `--ink-faint` warn when they pass the 3:1 large-text bar but fall below the
+4.5:1 body threshold), or **FAIL** (red, exits non-zero). CI fails on any FAIL.
+
+Pass `--no-a11y` to `node scripts/theme-validator.js` (or set it in
+`package.json`) to skip the audit — the contract check still runs. Color
+formats supported: `#rgb`, `#rrggbb`, `#rrggbbaa`, `rgb()`, `rgba()`,
+`hsl()`, `hsla()`, the 148 named colors and `transparent`. Modern color
+spaces (`oklch()`, `oklab()`, `color-mix()`, `lab()`, `lch()`, `hwb()`)
+are reported as **SKIP** with a reason rather than silently passing.
+
+
+---
+
 ## Versioning
 
 The contract is versioned via `scripts/theme-contract.json` (`version: "1"`).
