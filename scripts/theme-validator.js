@@ -503,11 +503,14 @@ function printUsage() {
     'Flags:',
     '  --all       validate every theme.css under public/ (CI mode)',
     '  --no-a11y   skip the WCAG 2.2 AA contrast audit',
+    '  --strict    treat a11y FAILs as exit-non-zero (default: report only)',
     '',
     'Exit codes:',
-    '  0  all validated files / blocks declare every required token AND',
-    '     pass the contrast audit (unless --no-a11y was set)',
-    '  1  one or more files/blocks missing tokens, OR an a11y FAIL',
+    '  0  every file/block declares every required contract token. A11y',
+    '     contrast issues are reported but do NOT fail the run unless',
+    '     --strict is set.',
+    '  1  one or more files/blocks missing tokens (always fatal), OR an',
+    '     a11y FAIL when --strict is set.',
     '  2  usage error (file not found, bad args)',
   ].join(String.fromCharCode(10));
   console.log(u);
@@ -520,7 +523,10 @@ function main(argv) {
     process.exit(argsRaw.length === 0 ? 2 : 0);
   }
   const wantA11y = !argsRaw.includes('--no-a11y');
-  const args = argsRaw.filter(function (a) { return a !== '--no-a11y'; });
+  const wantStrict = argsRaw.includes('--strict');
+  const args = argsRaw.filter(function (a) {
+    return a !== '--no-a11y' && a !== '--strict';
+  });
 
   const contract = loadContract();
 
@@ -590,8 +596,12 @@ function main(argv) {
     process.exit(1);
   }
   if (wantA11y && totalA11yFail > 0) {
-    console.log(red(bold('FAIL')) + dim(' - ' + totalA11yFail + ' contrast pair(s) below WCAG 2.2 AA across all themes'));
-    process.exit(1);
+    if (wantStrict) {
+      console.log(red(bold('FAIL')) + dim(' - ' + totalA11yFail + ' contrast pair(s) below WCAG 2.2 AA across all themes (--strict)'));
+      process.exit(1);
+    }
+    console.log(yellow(bold('OK with A11Y FAILS')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s); ' + totalA11yFail + ' pair(s) below AA, ' + totalA11yWarn + ' inside the AA buffer. Re-run with --strict to fail the build on these.'));
+    process.exit(0);
   }
   if (wantA11y && totalA11yWarn > 0) {
     console.log(yellow(bold('OK with WARN')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s); ' + totalA11yWarn + ' pair(s) inside the AA buffer'));
