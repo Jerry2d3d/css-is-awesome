@@ -451,21 +451,28 @@ function reportResult(result) {
 // -----------------------------------------------------------
 function reportA11yForTheme(themeName, audit, indent) {
   const pad = indent || '    ';
-  let fail = 0, warn = 0, pass = 0, skip = 0;
+  let fail = 0, warn = 0, info = 0, pass = 0, skip = 0;
   for (const r of audit) {
     if (r.status === 'fail') fail++;
     else if (r.status === 'warn') warn++;
+    else if (r.status === 'info') info++;
     else if (r.status === 'pass') pass++;
     else skip++;
   }
   let head;
   if (fail > 0) {
     head = red('x') + ' a11y [' + themeName + '] ' + red(fail + ' fail') + ' ' +
-      (warn ? yellow(warn + ' warn') + ' ' : '') + dim(pass + ' pass') + (skip ? dim(' ' + skip + ' skip') : '');
+      (warn ? yellow(warn + ' warn') + ' ' : '') +
+      (info ? dim(info + ' info') + ' ' : '') +
+      dim(pass + ' pass') + (skip ? dim(' ' + skip + ' skip') : '');
   } else if (warn > 0) {
-    head = yellow('!') + ' a11y [' + themeName + '] ' + yellow(warn + ' warn') + ' ' + dim(pass + ' pass') + (skip ? dim(' ' + skip + ' skip') : '');
+    head = yellow('!') + ' a11y [' + themeName + '] ' + yellow(warn + ' warn') + ' ' +
+      (info ? dim(info + ' info') + ' ' : '') +
+      dim(pass + ' pass') + (skip ? dim(' ' + skip + ' skip') : '');
   } else {
-    head = green('✓') + ' a11y [' + themeName + '] ' + dim(pass + '/' + audit.length + ' contract pairs >= AA') + (skip ? dim(' ' + skip + ' skip') : '');
+    head = green('✓') + ' a11y [' + themeName + '] ' + dim(pass + '/' + audit.length + ' contract pairs >= AA') +
+      (info ? dim(' ' + info + ' info') : '') +
+      (skip ? dim(' ' + skip + ' skip') : '');
   }
   console.log(pad + head);
 
@@ -479,11 +486,13 @@ function reportA11yForTheme(themeName, audit, indent) {
       console.log(pad + '     ' + dim('fg=' + r.fgRaw + '  bg=' + r.bgRaw + '  - ' + pair.note));
     } else if (r.status === 'warn') {
       console.log(pad + '  ' + yellow('!') + ' ' + bold(pair.fg) + ' on ' + bold(pair.bg) + ' - ' + yellow(ratio + ':1') + ' (passes ' + required + ':1 ' + pair.kind + ', body-text threshold 4.5:1)');
+    } else if (r.status === 'info') {
+      console.log(pad + '  ' + dim('i') + ' ' + dim(pair.fg + ' on ' + pair.bg + ' - ' + ratio + ':1 (decorative; WCAG 2.2 SC 1.4.11 applies to graphical objects essential for understanding content)'));
     } else if (r.status === 'skip') {
       console.log(pad + '  ' + dim('-') + ' ' + dim(pair.fg + ' / ' + pair.bg + ' - skipped (' + r.skipReason + ')'));
     }
   }
-  return { fail: fail, warn: warn, pass: pass, skip: skip };
+  return { fail: fail, warn: warn, info: info, pass: pass, skip: skip };
 }
 
 // -----------------------------------------------------------
@@ -501,16 +510,16 @@ function printUsage() {
     '                 every block must satisfy the contract.',
     '',
     'Flags:',
-    '  --all       validate every theme.css under public/ (CI mode)',
-    '  --no-a11y   skip the WCAG 2.2 AA contrast audit',
-    '  --strict    treat a11y FAILs as exit-non-zero (default: report only)',
+    '  --all              validate every theme.css under public/ (CI mode)',
+    '  --no-a11y          skip the WCAG 2.2 AA contrast audit',
+    '  --allow-a11y-fail  do NOT exit non-zero on a11y FAILs (report only)',
+    '  --strict           accepted for backwards compatibility (no-op; FAIL is now the default)',
     '',
     'Exit codes:',
-    '  0  every file/block declares every required contract token. A11y',
-    '     contrast issues are reported but do NOT fail the run unless',
-    '     --strict is set.',
+    '  0  every file/block declares every required contract token AND all',
+    '     audited contrast pairs meet WCAG 2.2 AA (or --allow-a11y-fail).',
     '  1  one or more files/blocks missing tokens (always fatal), OR an',
-    '     a11y FAIL when --strict is set.',
+    '     a11y FAIL (default behaviour as of v0.7).',
     '  2  usage error (file not found, bad args)',
   ].join(String.fromCharCode(10));
   console.log(u);
@@ -523,9 +532,10 @@ function main(argv) {
     process.exit(argsRaw.length === 0 ? 2 : 0);
   }
   const wantA11y = !argsRaw.includes('--no-a11y');
-  const wantStrict = argsRaw.includes('--strict');
+  const wantLenient = argsRaw.includes('--allow-a11y-fail');
+  // --strict is accepted as a no-op for backwards compatibility — a11y FAIL is now the default
   const args = argsRaw.filter(function (a) {
-    return a !== '--no-a11y' && a !== '--strict';
+    return a !== '--no-a11y' && a !== '--strict' && a !== '--allow-a11y-fail';
   });
 
   const contract = loadContract();
@@ -564,6 +574,7 @@ function main(argv) {
   let hadFailure = false;
   let totalA11yFail = 0;
   let totalA11yWarn = 0;
+  let totalA11yInfo = 0;
   let themeBlocksCounted = 0;
   for (const f of files) {
     const r = validateFile(f, contract, { a11y: wantA11y });
@@ -577,6 +588,7 @@ function main(argv) {
           const counts = reportA11yForTheme(t.name, t.a11y);
           totalA11yFail += counts.fail;
           totalA11yWarn += counts.warn;
+          totalA11yInfo += counts.info || 0;
         }
       }
     } else if (!r.error) {
@@ -586,9 +598,12 @@ function main(argv) {
         const counts = reportA11yForTheme(inferredName, r.a11y, '  ');
         totalA11yFail += counts.fail;
         totalA11yWarn += counts.warn;
+        totalA11yInfo += counts.info || 0;
       }
     }
   }
+
+  const infoTail = totalA11yInfo > 0 ? ', ' + totalA11yInfo + ' decorative info' : '';
 
   console.log('');
   if (hadFailure) {
@@ -596,18 +611,18 @@ function main(argv) {
     process.exit(1);
   }
   if (wantA11y && totalA11yFail > 0) {
-    if (wantStrict) {
-      console.log(red(bold('FAIL')) + dim(' - ' + totalA11yFail + ' contrast pair(s) below WCAG 2.2 AA across all themes (--strict)'));
-      process.exit(1);
+    if (wantLenient) {
+      console.log(yellow(bold('OK with A11Y FAILS')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s); ' + totalA11yFail + ' pair(s) below AA, ' + totalA11yWarn + ' inside the AA buffer' + infoTail + ' (--allow-a11y-fail)'));
+      process.exit(0);
     }
-    console.log(yellow(bold('OK with A11Y FAILS')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s); ' + totalA11yFail + ' pair(s) below AA, ' + totalA11yWarn + ' inside the AA buffer. Re-run with --strict to fail the build on these.'));
-    process.exit(0);
+    console.log(red(bold('FAIL')) + dim(' - ' + totalA11yFail + ' contrast pair(s) below WCAG 2.2 AA across all themes. Pass --allow-a11y-fail to downgrade.'));
+    process.exit(1);
   }
   if (wantA11y && totalA11yWarn > 0) {
-    console.log(yellow(bold('OK with WARN')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s); ' + totalA11yWarn + ' pair(s) inside the AA buffer'));
+    console.log(yellow(bold('OK with WARN')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s); ' + totalA11yWarn + ' pair(s) inside the AA buffer' + infoTail));
     process.exit(0);
   }
-  console.log(green(bold('OK')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s) validated' + (wantA11y ? ' (contract + a11y)' : ' (contract only)')));
+  console.log(green(bold('OK')) + dim(' - ' + files.length + ' file(s) / ' + themeBlocksCounted + ' theme block(s) validated' + (wantA11y ? ' (contract + a11y)' : ' (contract only)') + infoTail));
   process.exit(0);
 }
 

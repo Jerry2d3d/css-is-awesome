@@ -47,7 +47,7 @@
   /* Ink — warm near-black, Apple style */
   --ink:        #1D1D1F;
   --ink-soft:   #3A3A3C;
-  --ink-faint:  #8E8E93;
+  --ink-faint:  #65656A;
   --graphite:   #2C2C2E;
   --muted:      #6E6E73;
 
@@ -58,9 +58,9 @@
   --hair-soft:  rgba(29, 29, 31, 0.04);
 
   /* Primary accent — iOS indigo */
-  --ai:         #5E5CE6;
+  --ai:         #5957E2;
   --ai-ink:     #3634A3;
-  --ai-wash:    rgba(94, 92, 230, 0.12);
+  --ai-wash:    rgba(89, 87, 226, 0.12);
 
   /* Seal — iOS system pink (draft / emphasis) */
   --shu:        #FF375F;
@@ -191,18 +191,18 @@
 
   /* Status — info (three-part: default / subtle / text) */
   --info-default: var(--ai);
-  --info-subtle:  rgba(94, 92, 230, 0.12);
+  --info-subtle:  rgba(89, 87, 226, 0.12);
   --info-text:    var(--ai-ink);
 
   /* Status — success (iOS system green) */
   --success-default: #34C759;
   --success-subtle:  rgba(52, 199, 89, 0.12);
-  --success-text:    #1E8838;
+  --success-text:    #0F6A22;
 
   /* Status — warning (iOS system orange) */
   --warning-default: var(--ochre);
   --warning-subtle:  rgba(255, 149, 0, 0.12);
-  --warning-text:    #B36600;
+  --warning-text:    #985000;
 
   /* Status — error (iOS system pink) */
   --error-default: var(--shu);

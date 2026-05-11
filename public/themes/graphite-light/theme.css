@@ -29,9 +29,9 @@
   /* Ink — cool near-black */
   --ink:        #1A1F26;
   --ink-soft:   #3A4048;
-  --ink-faint:  #6E747C;
+  --ink-faint:  #5E646D;
   --graphite:   #2A2F36;
-  --muted:      #8A9098;
+  --muted:      #878D95;
 
   /* Construction lines — translucent ink hairlines */
   --guide:      rgba(26, 31, 38, 0.16);
@@ -164,7 +164,7 @@
   /* Status — success (Apple light-mode green) */
   --success-default: #28A745;
   --success-subtle:  rgba(40, 167, 69, 0.10);
-  --success-text:    #1F7A33;
+  --success-text:    #1B7530;
 
   /* Status — warning */
   --warning-default: var(--ochre);

@@ -45,9 +45,9 @@
   /* Ink — warm near-black */
   --ink:        #0A0A0A;
   --ink-soft:   #555555;
-  --ink-faint:  #8A8A86;
+  --ink-faint:  #727069;
   --graphite:   #1A1A1A;
-  --muted:      #A8A6A0;
+  --muted:      #8E8C86;
 
   /* Rules / hairlines — thin editorial rules */
   --guide:      #1A1A1A;

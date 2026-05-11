@@ -148,7 +148,7 @@
   /* Status — info */
   --info-default: var(--ai);
   --info-subtle:  var(--ai-wash);
-  --info-text:    var(--ai-ink);
+  --info-text:    #85BFFF;
 
   /* Status — success */
   --success-default: #22c55e;

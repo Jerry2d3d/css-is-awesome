@@ -296,9 +296,9 @@
   /* Ink — warm near-black */
   --ink:        #0A0A0A;
   --ink-soft:   #555555;
-  --ink-faint:  #8A8A86;
+  --ink-faint:  #727069;
   --graphite:   #1A1A1A;
-  --muted:      #A8A6A0;
+  --muted:      #8E8C86;
 
   /* Rules / hairlines — thin editorial rules */
   --guide:      #1A1A1A;
@@ -526,7 +526,7 @@
   --ink-soft:   #C7C7CC;
   --ink-faint:  #98989D;
   --graphite:   #AEAEB2;
-  --muted:      #636366;
+  --muted:      #6A6A6E;
 
   /* Construction lines — translucent white hairlines */
   --guide:      rgba(255, 255, 255, 0.16);
@@ -733,7 +733,7 @@
   /* Ink — warm near-black, Apple style */
   --ink:        #1D1D1F;
   --ink-soft:   #3A3A3C;
-  --ink-faint:  #8E8E93;
+  --ink-faint:  #65656A;
   --graphite:   #2C2C2E;
   --muted:      #6E6E73;
 
@@ -744,9 +744,9 @@
   --hair-soft:  rgba(29, 29, 31, 0.04);
 
   /* Primary accent — iOS indigo */
-  --ai:         #5E5CE6;
+  --ai:         #5957E2;
   --ai-ink:     #3634A3;
-  --ai-wash:    rgba(94, 92, 230, 0.12);
+  --ai-wash:    rgba(89, 87, 226, 0.12);
 
   /* Seal — iOS system pink (draft / emphasis) */
   --shu:        #FF375F;
@@ -877,18 +877,18 @@
 
   /* Status — info (three-part: default / subtle / text) */
   --info-default: var(--ai);
-  --info-subtle:  rgba(94, 92, 230, 0.12);
+  --info-subtle:  rgba(89, 87, 226, 0.12);
   --info-text:    var(--ai-ink);
 
   /* Status — success (iOS system green) */
   --success-default: #34C759;
   --success-subtle:  rgba(52, 199, 89, 0.12);
-  --success-text:    #1E8838;
+  --success-text:    #0F6A22;
 
   /* Status — warning (iOS system orange) */
   --warning-default: var(--ochre);
   --warning-subtle:  rgba(255, 149, 0, 0.12);
-  --warning-text:    #B36600;
+  --warning-text:    #985000;
 
   /* Status — error (iOS system pink) */
   --error-default: var(--shu);
@@ -951,7 +951,7 @@
   /* Ink — warm black, never pure */
   --ink:        #1D1D1F;
   --ink-soft:   #3A3A3C;
-  --ink-faint:  #8E8E93;
+  --ink-faint:  #66666B;
   --graphite:   #2C2C2E;
   --muted:      #6E6E73;
 
@@ -962,7 +962,7 @@
   --hair-soft:  #E5E5EA;
 
   /* Primary accent — system blue */
-  --ai:         #0071E3;
+  --ai:         #005EBB;
   --ai-ink:     #0058B0;
   --ai-wash:    #E5F0FB;
 
@@ -1089,12 +1089,12 @@
   /* Status — success (macOS system green) */
   --success-default: var(--code-green);
   --success-subtle:  rgba(48, 209, 88, 0.12);
-  --success-text:    #1E8838;
+  --success-text:    #0F6E22;
 
   /* Status — warning (macOS system orange) */
   --warning-default: var(--ochre);
   --warning-subtle:  var(--ochre-wash);
-  --warning-text:    #B36600;
+  --warning-text:    #985000;
 
   /* Status — error (macOS system red) */
   --error-default: var(--shu);
@@ -1181,7 +1181,7 @@
   /* Ink — phosphor green on the tube */
   --ink:        #4FE078;
   --ink-soft:   #2A8B42;
-  --ink-faint:  #1E5E2F;
+  --ink-faint:  #3DAF4F;
   --graphite:   #1A3D22;
   --muted:      #2A8B42;
 
@@ -1753,7 +1753,7 @@
   /* Status — info */
   --info-default: var(--ai);
   --info-subtle:  var(--ai-wash);
-  --info-text:    var(--ai-ink);
+  --info-text:    #85BFFF;
 
   /* Status — success */
   --success-default: #22c55e;
@@ -2017,7 +2017,7 @@
   --ink-soft:   #C8C6C0;
   --ink-faint:  #8A8A86;
   --graphite:   #ECEAE4;
-  --muted:      #5A5854;
+  --muted:      #6B6963;
 
   /* Rules / hairlines — thin editorial rules on dark */
   --guide:      #ECEAE4;
@@ -2219,9 +2219,9 @@
   /* Ink — cool near-black */
   --ink:        #1A1F26;
   --ink-soft:   #3A4048;
-  --ink-faint:  #6E747C;
+  --ink-faint:  #5E646D;
   --graphite:   #2A2F36;
-  --muted:      #8A9098;
+  --muted:      #878D95;
 
   /* Construction lines — translucent ink hairlines */
   --guide:      rgba(26, 31, 38, 0.16);
@@ -2354,7 +2354,7 @@
   /* Status — success (Apple light-mode green) */
   --success-default: #28A745;
   --success-subtle:  rgba(40, 167, 69, 0.10);
-  --success-text:    #1F7A33;
+  --success-text:    #1B7530;
 
   /* Status — warning */
   --warning-default: var(--ochre);
@@ -2839,9 +2839,9 @@
   /* Ink — near-black mono ink */
   --ink:        #1A1A1A;
   --ink-soft:   #404040;
-  --ink-faint:  #707070;
+  --ink-faint:  #666666;
   --graphite:   #0A0A0A;
-  --muted:      #909090;
+  --muted:      #7C7C7C;
 
   /* Hairlines / grid rules — medium gray */
   --guide:      #B8B8B8;
@@ -3348,7 +3348,7 @@
   /* Status — info */
   --info-default: var(--ai);
   --info-subtle:  var(--ai-wash);
-  --info-text:    var(--ai-ink);
+  --info-text:    #85BFFF;
 
   /* Status — success */
   --success-default: #22c55e;

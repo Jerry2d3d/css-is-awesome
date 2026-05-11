@@ -40,7 +40,7 @@
   /* Ink — warm black, never pure */
   --ink:        #1D1D1F;
   --ink-soft:   #3A3A3C;
-  --ink-faint:  #8E8E93;
+  --ink-faint:  #66666B;
   --graphite:   #2C2C2E;
   --muted:      #6E6E73;
 
@@ -51,7 +51,7 @@
   --hair-soft:  #E5E5EA;
 
   /* Primary accent — system blue */
-  --ai:         #0071E3;
+  --ai:         #005EBB;
   --ai-ink:     #0058B0;
   --ai-wash:    #E5F0FB;
 
@@ -178,12 +178,12 @@
   /* Status — success (macOS system green) */
   --success-default: var(--code-green);
   --success-subtle:  rgba(48, 209, 88, 0.12);
-  --success-text:    #1E8838;
+  --success-text:    #0F6E22;
 
   /* Status — warning (macOS system orange) */
   --warning-default: var(--ochre);
   --warning-subtle:  var(--ochre-wash);
-  --warning-text:    #B36600;
+  --warning-text:    #985000;
 
   /* Status — error (macOS system red) */
   --error-default: var(--shu);

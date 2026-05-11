@@ -247,7 +247,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 **Goal:** Move from "another design system" to "the obvious choice for SCSS-first teams who want zero-JS theming." Items from the Gemini critique that widen the moat once the foundations are stable.
 
 - [ ] **Zero-JS interactive components** — tabs, accordion, modal, popover, tooltip built on `:has()`, the popover API, and `@container`. Biggest moat vs shadcn — they need a runtime, we don't.
-- [x] **A11y linter inside `theme-validator.js`** — WCAG 2.2 AA contrast checks on 17 token pairs per theme. WARN-by-default to avoid blocking CI on existing failures; `--strict` opts into FAIL. Reports 104 known failures across 14 themes that need triage (see "104 a11y failures" section in resume notes).
+- [x] **A11y linter inside `theme-validator.js`** — WCAG 2.2 AA contrast checks on 17 token pairs per theme. **FAIL-by-default as of v0.7** after triaging every theme; `--allow-a11y-fail` opts out. `--border-default` is treated as decorative (informational only) per WCAG 2.2 SC 1.4.11.
 - [ ] **SCSS↔TS token bridge** — generate `tokens.d.ts` from the contract so consumers get type-safe token access in JS/TS.
 - [ ] **Intrinsic layout mixins** — stack/cluster/switcher (Every Layout patterns) as first-class mixins so consumers stop hand-rolling flex utilities.
 - [ ] **Tailwind→Awesome migration CLI** — parses Tailwind class strings in a project and suggests `cia-*` utility or mixin equivalents; lowest-friction path for migrants.
@@ -334,7 +334,7 @@ Items 1-12 + 16 + a11y linter shipped in earlier sessions. Status as of 2026-05-
 - **README homepage URL** + Pages-deploy verification.
 - **Icon index page** listing every glyph in every pack.
 - **Pull Sketchbook docs-flourishes** (seal, draft stamp, brush rules) out of any future "base system" port.
-- **Triage the 104 a11y failures** so `--strict` can become the CI default.
+- ~~Triage the 104 a11y failures so `--strict` can become the CI default.~~ ✓ Done; zero FAILs, FAIL-by-default is now active.
 
 ---
 

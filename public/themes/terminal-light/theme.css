@@ -26,9 +26,9 @@
   /* Ink — near-black mono ink */
   --ink:        #1A1A1A;
   --ink-soft:   #404040;
-  --ink-faint:  #707070;
+  --ink-faint:  #666666;
   --graphite:   #0A0A0A;
-  --muted:      #909090;
+  --muted:      #7C7C7C;
 
   /* Hairlines / grid rules — medium gray */
   --guide:      #B8B8B8;

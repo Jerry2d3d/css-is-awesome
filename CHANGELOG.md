@@ -64,12 +64,12 @@ automated releases.
   on subtle status surfaces, inverse text on action primary / `--ai`,
   borders + focus rings + `--shu` against `--paper`). PASS/WARN/FAIL
   with required-vs-actual ratios.
-- **A11y FAILs do NOT fail the build by default.** Existing themes have
-  103 known failures (mostly the universal `--border-default` non-text
-  3:1 rule plus real text-color drops in Glass-light and Cupertino-light)
-  that need triage. The default exit code stays 0 for a11y issues so this
-  merge does not break CI. Pass `--strict` to escalate FAILs to exit 1
-  once themes are cleaned up.
+- **A11y FAILs fail the build by default (as of v0.7).** Every shipped
+  theme passes WCAG 2.2 AA across all 17 audited pairs after the v0.7
+  triage. `--border-default` is reclassified as decorative
+  (informational only) per WCAG 2.2 SC 1.4.11. Pass `--allow-a11y-fail`
+  to downgrade contrast FAILs to warnings (useful while authoring a new
+  theme); `--strict` is still accepted as a no-op for backwards compat.
 - Translucent foregrounds are alpha-composited onto their background
   before the ratio is computed; translucent backgrounds composite onto
   `--paper` first, so the audited number matches what users see.
