@@ -10,6 +10,12 @@ import {
 } from "./catalog";
 import { ColorRow, LengthRow, NumberRow, StringRow } from "./rows";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
+import {
+  extractDataThemeBlocks,
+  extractRootBlock,
+  isConsolidated,
+  type ParsedBlock,
+} from "@/lib/theme-parse";
 
 type Mode = "light" | "dark";
 const STYLE_TAG_ID = "cia-theme-overrides";
@@ -276,6 +282,100 @@ export default function ThemeEditorDock() {
     triggerDownload(`${safeName}.css`, css);
   }
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [importMsg, setImportMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+
+  // Strip the -light / -dark suffix so the imported name reads like a base.
+  function baseNameOf(themeName: string): string {
+    return themeName.replace(/-(light|dark)$/i, "");
+  }
+
+  // Pick the best light+dark pair from a consolidated file:
+  //   1. A pair sharing a base name that matches the active family.
+  //   2. Otherwise the first complete pair.
+  //   3. Otherwise the first block (single-mode import to active tab).
+  function pickPair(blocks: ParsedBlock[]): {
+    base: string;
+    light?: ParsedBlock;
+    dark?: ParsedBlock;
+  } {
+    const byBase = new Map<string, { light?: ParsedBlock; dark?: ParsedBlock }>();
+    for (const b of blocks) {
+      const name = b.name ?? "";
+      const m = /^(.*)-(light|dark)$/i.exec(name);
+      const base = m ? m[1] : name;
+      const mode = (m ? m[2].toLowerCase() : null) as "light" | "dark" | null;
+      const entry = byBase.get(base) ?? {};
+      if (mode === "light") entry.light = b;
+      else if (mode === "dark") entry.dark = b;
+      else entry.light = entry.light ?? b; // unsuffixed: treat as light placeholder
+      byBase.set(base, entry);
+    }
+
+    const familyMatch = byBase.get(family);
+    if (familyMatch && (familyMatch.light || familyMatch.dark)) {
+      return { base: family, ...familyMatch };
+    }
+    for (const [base, entry] of byBase) {
+      if (entry.light && entry.dark) return { base, ...entry };
+    }
+    const first = blocks[0];
+    return {
+      base: baseNameOf(first.name ?? ""),
+      light: tabMode === "light" ? first : undefined,
+      dark: tabMode === "dark" ? first : undefined,
+    };
+  }
+
+  function applyImport(baseName: string, light?: Map<string, string>, dark?: Map<string, string>) {
+    const lightOut: Record<string, string> = {};
+    const darkOut: Record<string, string> = {};
+    if (light) for (const [k, v] of light) lightOut[k] = v;
+    if (dark) for (const [k, v] of dark) darkOut[k] = v;
+    setOverrides({ light: lightOut, dark: darkOut });
+    if (baseName) setNameInput(baseName);
+  }
+
+  async function importTheme(file: File) {
+    setImportMsg(null);
+    try {
+      const text = await file.text();
+      if (!text.trim()) {
+        setImportMsg({ kind: "err", text: "File is empty." });
+        return;
+      }
+      if (isConsolidated(text)) {
+        const blocks = extractDataThemeBlocks(text);
+        if (blocks.length === 0) {
+          setImportMsg({ kind: "err", text: 'No [data-theme="…"] blocks parsed.' });
+          return;
+        }
+        const { base, light, dark } = pickPair(blocks);
+        applyImport(base, light?.values, dark?.values);
+        const which = light && dark ? "light + dark" : light ? "light only" : "dark only";
+        setImportMsg({ kind: "ok", text: `Imported "${base}" (${which}, ${blocks.length} block${blocks.length === 1 ? "" : "s"} in file).` });
+        return;
+      }
+      const block = extractRootBlock(text);
+      if (block.values.size === 0) {
+        setImportMsg({ kind: "err", text: "No --token declarations found in :root." });
+        return;
+      }
+      const base = sanitizeName(nameInput, `${family}-custom`);
+      applyImport(
+        base,
+        tabMode === "light" ? block.values : undefined,
+        tabMode === "dark" ? block.values : undefined,
+      );
+      setImportMsg({
+        kind: "ok",
+        text: `Imported :root block into ${tabMode} mode (${block.values.size} tokens).`,
+      });
+    } catch (err) {
+      setImportMsg({ kind: "err", text: err instanceof Error ? err.message : "Import failed." });
+    }
+  }
+
   const hasOverrides =
     Object.keys(overrides.light).length > 0 || Object.keys(overrides.dark).length > 0;
 
@@ -480,14 +580,47 @@ export default function ThemeEditorDock() {
             >
               Reset
             </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".css,text/css"
+              hidden
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) importTheme(f);
+                e.target.value = ""; // allow re-importing the same file
+              }}
+              aria-hidden="true"
+            />
+            <button
+              type="button"
+              className={styles.btn}
+              onClick={() => fileInputRef.current?.click()}
+              title="Upload an existing theme.css to keep editing"
+            >
+              ↑ Import
+            </button>
             <button
               type="button"
               className={[styles.btn, styles.btnPrimary].join(" ")}
               onClick={download}
             >
-              ↓ Download theme
+              ↓ Download
             </button>
           </div>
+          {importMsg && (
+            <p
+              role="status"
+              aria-live="polite"
+              style={{
+                margin: "0.5rem 0 0",
+                fontSize: "0.85rem",
+                color: importMsg.kind === "err" ? "var(--error-text, #b00020)" : "var(--text-secondary)",
+              }}
+            >
+              {importMsg.text}
+            </p>
+          )}
         </footer>
       </aside>
     </>
