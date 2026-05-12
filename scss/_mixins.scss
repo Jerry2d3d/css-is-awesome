@@ -356,15 +356,12 @@ $_type-scale: (
 // you can — don't redeclare font-size/weight/ls/lh inline.
 // ============================================================================
 
-// Overline — small caps-tracked label that tags a section above its
-// heading. Named to match the CSS keyword (`text-decoration: overline`)
-// and the Material Design / MUI type-scale entry so callers reach for
-// the term they already know. Editorial typography calls the same
-// pattern an "eyebrow" or "kicker" — same lockup, different dialect.
-//
-// One-liner replacement for the four-property lockup:
-//   font-size + color + text-transform: uppercase + letter-spacing
-@mixin overline($color: text-secondary) {
+// Eyebrow / kicker — small caps-tracked label that tags a section above
+// its heading. One-liner replacement for the
+//   font-size + color + text-transform + letter-spacing
+// four-property lockup that shows up wherever a chip-style label sits over
+// a title.
+@mixin eyebrow($color: text-secondary) {
   @include type(overline);
   color: color($color);
 }
