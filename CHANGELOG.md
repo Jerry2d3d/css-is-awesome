@@ -11,6 +11,20 @@ automated releases.
 
 ## [Unreleased]
 
+### Added — Live theme editor (docs site)
+
+- New `<ThemeEditorDock>` on `/themes` lets visitors tweak the active
+  theme's tokens in-place: category tab strip, paginated sub-pages for
+  groups with >4 controls, round color swatches, contrast hints, and a
+  lint pass against the 123-token contract. Per-family persistence
+  keeps a separate edit set for each theme family.
+- "Download" emits a validator-conformant `theme.css` so an edit can
+  drop straight back into `public/themes/<name>/`.
+- **In progress (uncommitted at time of writing):** an "Import" affordance
+  that accepts an existing `theme.css` upload and re-hydrates the editor
+  with its declared tokens so a partially-edited theme can be picked
+  back up later. Will land before the v0.7 tag cuts.
+
 ### Changed — npm publish gate (v0.7.0 prep)
 
 - `package.json` `files` array now explicitly includes `public/icons` and

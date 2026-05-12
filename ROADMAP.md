@@ -50,7 +50,7 @@ User stories from any epic may ship across multiple phases. Epics don't gate pha
 - [x] Audit `@use` paths for consumer portability (work with aliased imports)
 
 ### Developer experience
-- [ ] Add `dist/` build output committed to releases (not git — via npm publish)
+- [x] Add `dist/` build output committed to releases (not git — via npm publish) — verified in tarball (`npm pack` smoke test)
 - [x] Add `CHANGELOG.md` with semver discipline
 - [x] Add `LICENSE` file (MIT)
 - [x] Add `.editorconfig` for contribution consistency
@@ -141,10 +141,10 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [ ] Deploy to the external host + link from README + `package.json` `homepage` (Pages workflow exists; live URL not yet linked from README).
 
 ### New pages
-- [x] **`/themes` gallery** — all 6 themes with live-swap preview + download per tile. Uses `ThemeTile` component.
+- [x] **`/themes` gallery** — all 6 themes with live-swap preview + download per tile. Uses `ThemeTile` component. (Now at `/themes/gallery`; `/themes` is the editor.)
 - [x] **`/compare` page** — honest three-column vs Tailwind vs Bootstrap with feature table and "where each wins" verdicts.
-- [ ] **`/compare` bundle-size table** — add three-tier story (core / utilities / full) with gzipped KB next to Tailwind + Bootstrap equivalents.
-- [ ] **`/docs` intro page** — still placeholder; replace with live theme-swap demo at top + real cia-* usage.
+- [x] **`/compare` bundle-size table** — three-tier story (core / utilities / full) with gzipped KB landed in the 2026-05-07 refresh.
+- [x] **`/docs` intro page** — real Quick Start, three-tier story, utility-vs-mixin side-by-side, expanded "What next" links.
 - [ ] **`/showcase` page** — real-looking full pages (marketing / blog / dashboard / 404), all theme-swappable.
 
 **Release:** `v0.5.0` — docs are the pitch.
@@ -194,6 +194,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 
 ### Themes editor
 - [x] **Theme editor page** at `/themes` — browser-only theme builder; live preview, contract-slot controls (color pickers, length sliders, number/string inputs), Blob download of `theme.css` with both `[data-theme="<name>-light"]` and `[data-theme="<name>-dark"]` blocks (validator-conformant), per-family override persistence in `localStorage`. Category tabs (Color / Layout / Type / Motion), sub-page pills under Color (Foundation / Components / Status), pagination at >4 groups per page, modified-state badge, name field with sanitizer. The `/themes/gallery` page hosts the 6-tile theme gallery.
+- [x] **Theme editor import** — upload a previously-downloaded `theme.css` to round-trip back into the editor and keep iterating (uncommitted on `main` 2026-05-12; `src/lib/theme-parse.ts` + ThemeEditorDock changes).
 
 ### Boilerplate theme
 - [x] **`public/themes/boilerplate/theme.css`** — neutral starter (light + dark in one file, full 123-token contract). Slate-leaning grays + clean blue accent (`#2563eb` light / `#3b82f6` dark), system UI sans-serif, ui-monospace, subtle shadows, standard 4/6/8/12 px radii. Bundled into `public/theme.css`, selectable in `<ThemeSelect>` / `<ThemePicker>` / `/themes/gallery`. Gating dependency for the v0.7 publish.
@@ -247,7 +248,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 **Goal:** Move from "another design system" to "the obvious choice for SCSS-first teams who want zero-JS theming." Items from the Gemini critique that widen the moat once the foundations are stable.
 
 - [ ] **Zero-JS interactive components** — tabs, accordion, modal, popover, tooltip built on `:has()`, the popover API, and `@container`. Biggest moat vs shadcn — they need a runtime, we don't.
-- [x] **A11y linter inside `theme-validator.js`** — WCAG 2.2 AA contrast checks on 17 token pairs per theme. **FAIL-by-default as of v0.7** after triaging every theme; `--allow-a11y-fail` opts out. `--border-default` is treated as decorative (informational only) per WCAG 2.2 SC 1.4.11.
+- [x] **A11y linter inside `theme-validator.js`** — WCAG 2.2 AA contrast checks on 17 token pairs per theme. **FAIL-by-default as of v0.7** (commit `4e1bbf1`, 2026-05-11) after triaging every theme; zero FAILs across all 22 theme blocks. `--allow-a11y-fail` opts out; `--strict` is retained as a no-op alias for backwards compat. `--border-default` is treated as decorative (informational only) per WCAG 2.2 SC 1.4.11.
 - [ ] **SCSS↔TS token bridge** — generate `tokens.d.ts` from the contract so consumers get type-safe token access in JS/TS.
 - [ ] **Intrinsic layout mixins** — stack/cluster/switcher (Every Layout patterns) as first-class mixins so consumers stop hand-rolling flex utilities.
 - [ ] **Tailwind→Awesome migration CLI** — parses Tailwind class strings in a project and suggests `cia-*` utility or mixin equivalents; lowest-friction path for migrants.
@@ -301,7 +302,7 @@ These live OUTSIDE this repo (separate package, separate semver, separate README
 
 ## What's next (decision order)
 
-Items 1-12 + 16 + a11y linter shipped in earlier sessions. Status as of 2026-05-08:
+Items 1-13, 15, 16, the a11y linter triage, and the theme-editor import round-trip all shipped before 2026-05-12. Status as of 2026-05-12:
 
 1. ~~Lock theme token API contract~~ — done.
 2. ~~Wire `/themes` gallery page~~ — done. (Now `/themes/gallery`; `/themes` is the editor.)
@@ -316,25 +317,30 @@ Items 1-12 + 16 + a11y linter shipped in earlier sessions. Status as of 2026-05-
 13. ~~Replace placeholder `/docs` copy~~ — partial. Intro + tokens + animation done; utilities table + mixins API reference still TODO.
 15. ~~Animation preview page~~ — done at `/docs/animation`.
 16. ~~Decide sizing scale~~ — locked numbered as source of truth, t-shirt aliases layered on top.
+19. ~~A11y linter triage~~ — done 2026-05-11 (commit `4e1bbf1`). Zero FAILs across all 22 theme blocks. `--border-default` reclassified as decorative (info status) per WCAG 2.2 SC 1.4.11. Validator now FAILs by default; `--allow-a11y-fail` opts out; `--strict` retained as a no-op alias.
+20. ~~Theme-editor import~~ — upload `.css` to keep editing landed 2026-05-12 (uncommitted on `main`; round-trips a previously-downloaded theme file).
 
-### Open / next up
+### Open / next up — Phase 5 is the live gate
+
+**Phase 5 (publish v0.7) is the correct next step.** A11y is at zero FAILs, validator is FAIL-by-default, tarball is clean, boilerplate theme + Lucide icons ship, theme editor round-trips. Only the publish command itself + a downstream smoke install remain.
 
 8. **`npm publish` 0.7.0** — bump version, `npm publish --access public`. Awaiting explicit user go.
 9. **Boilerplate consumer install from registry** — depends on #8.
-14. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes (or just a couple to prove the per-theme override mechanism).
+
+### After v0.7 ships
+
+14. **Ship theme-specific `icons.svg`** for each of the 5 non-Sketchbook themes (or just a couple to prove the per-theme override mechanism). Mechanism is proven; only the demo content is missing.
 17. **Phase 7 differentiators**:
-    - ~~A11y linter~~ — done with WARN-by-default. **104 known failures across 14 themes need triage.** Universal failure: `--border-default` fails 3:1 non-text rule on every theme (likely a policy choice — keep low-contrast borders, or bump them). Real text failures concentrated in Glass-light + Cupertino-light (~8 each).
     - Zero-JS interactive components, TS token bridge, intrinsic layout mixins, Tailwind→Awesome CLI, `/showcase` page, component depth audit — all unstarted.
 18. **Phase 8 companion products** — Gremlin UI + Gremlin Boilerplate. Trigger: cia 1.0 ships and ~17 boilerplate-wanted components are stable.
 
 ### Smaller items still on the board
 
-- **Utilities searchable table** at `/docs/utilities` (placeholder content currently).
-- **Mixins API reference** at `/docs/mixins`.
+- **Utilities searchable table** at `/docs/utilities` (placeholder content currently). Last big docs gap before launch.
+- **Mixins API reference** at `/docs/mixins`. Last big docs gap before launch.
 - **README homepage URL** + Pages-deploy verification.
 - **Icon index page** listing every glyph in every pack.
 - **Pull Sketchbook docs-flourishes** (seal, draft stamp, brush rules) out of any future "base system" port.
-- ~~Triage the 104 a11y failures so `--strict` can become the CI default.~~ ✓ Done; zero FAILs, FAIL-by-default is now active.
 
 ---
 

@@ -58,7 +58,7 @@ sass app.scss app.css --pkg-importer=node
 
 ## Theme system (1 file)
 
-A theme is a single CSS file declaring custom properties at `:root`. Replace `theme.css` to reskin the entire site. Themes shipped: sketchbook (css-is-awesome's brand), press, graphite, glass, cupertino, terminal, prism-light + prism-dark.
+A theme is a single CSS file declaring custom properties at `:root`. Replace `theme.css` to reskin the entire site. Themes shipped (each light + dark unless noted): sketchbook (css-is-awesome's brand), press, graphite, glass, cupertino, terminal, prism, plus the unbranded `boilerplate` starter — 8 families, 16 blocks total. All 16 shipped blocks pass the WCAG 2.2 AA contrast audit by default.
 
 ```html
 <link rel="stylesheet" href="node_modules/css-is-awesome/dist/css-is-awesome.min.css">
@@ -66,7 +66,7 @@ A theme is a single CSS file declaring custom properties at `:root`. Replace `th
 <html data-theme="prism-light"> <!-- swap to any theme name -->
 ```
 
-Validator: `node scripts/theme-validator.js path/to/theme.css`. Every theme must declare every contract token; the validator fails CI if not.
+Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every contract token (123 slots in v1; missing tokens always fail). The audit also runs a WCAG 2.2 AA contrast check; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
 
 ### Theme init (Next.js / SSR consumers)
 
@@ -163,7 +163,7 @@ Inside this package (all whitelisted in `files`):
 ## Common gotchas for AI agents
 
 - **Don't write BEM.** No `cia-card__title--large`. The library is anti-BEM by design.
-- **Don't hardcode breakpoints.** Use `m.media(md)`. Numbers come from the contract.
+- **Don't hardcode breakpoints.** Use `m.bp(md)` (or `m.bp-down`, `m.bp-between`). Numbers come from the contract.
 - **Variants are arguments, not classes.** `btn(primary)`, not `cia-btn cia-btn-primary` (Tier 1 utilities are an exception, but only at consumer level).
 - **The `cia-*` prefix is library-owned.** Consumer code should use its own naming for new classes.
 - **`scss/_app-styles.scss` is NOT part of the library entry.** It's a template for project-owned styles in a consuming boilerplate. Don't `@use` it from library code.

@@ -13,17 +13,18 @@ One CSS file. Six voices. Swap the file, the whole site reskins. Built to be sma
 ### 1. Drop-in CSS (zero build)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/public/theme.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/dist/css-is-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.7/public/theme.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.7/dist/css-is-awesome.min.css">
 ```
 
-jsDelivr auto-mirrors npm. Theme stylesheet first (it sets the tokens), library second. Then use utility classes (`cia-flex`, `cia-p-md`) or single-class components (`cia-btn-primary`, `cia-card`, `cia-alert`). For Subresource Integrity hashes see [`/docs/install#cdn-sri`](./src/app/docs/install/page.tsx).
+jsDelivr auto-mirrors npm. Theme stylesheet first (it sets the tokens), library second. Then use utility classes (`cia-flex`, `cia-p-md`) or single-class components (`cia-btn-primary`, `cia-card`, `cia-alert`). Pick a tier-specific bundle if you want to drop weight: `/dist/css-is-awesome.core.min.css` (~2.4 KB gz, tokens + resets only) or `/dist/css-is-awesome.utilities.min.css` (~11.5 KB gz, no components). For Subresource Integrity hashes see [`/docs/install#cdn-sri`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/src/app/docs/install/page.tsx).
 
 ### 2. SCSS with mixin API
 
 ```bash
-# coming soon — local clone / path import for now
 npm install css-is-awesome
+# Tier 2 also wants the Sass compiler:
+npm install -D sass
 ```
 
 ```scss
@@ -34,7 +35,7 @@ npm install css-is-awesome
 }
 ```
 
-Author your own class names; the mixin handles the variant. 50+ atomic mixins — `btn(variant)`, `card-base`, `input-base`, `check-base`, `switch-base`, `tab-item`, `badge-base`, `alert-base`, `modal-base`, `tooltip-base`, `dropdown-*`, `nav-*`, `pagination`, `breadcrumb`, `avatar`, and more. Every parameter overridable.
+Author your own class names; the mixin handles the variant. 50+ atomic mixins — `btn(variant)`, `card-base`, `input-base`, `check-base`, `switch-base`, `tab-item`, `badge-base`, `alert-base`, `modal-base`, `tooltip-base`, `dropdown-*`, `nav-*`, `pagination`, `breadcrumb`, `avatar`, and more. Every parameter overridable. Full mixin reference and tier guidance live in [`AGENTS.md`](./AGENTS.md).
 
 ### 3. Bare tags (opt-in Pico-mode)
 
@@ -52,16 +53,20 @@ One line styles the whole site. Zero classes. Any class-based selector you add w
 
 ## Themes
 
-Six shipped. Swap by replacing `public/theme.css`:
+Swap by replacing `public/theme.css` (or flipping `<html data-theme="...">`):
 
-| Theme            | Mood                                                          |
-|------------------|---------------------------------------------------------------|
-| sketchbook-light | Warm washi paper, sumi ink, indigo accent (default)           |
-| press-light      | Editorial newsprint, Playfair serif, press-red accent         |
-| graphite-dark    | Space-gray aluminum dark mode, system blue                    |
-| glass-light      | visionOS glassmorphism, iOS indigo, dual-rim highlights       |
-| cupertino-light  | macOS Sonoma window, SF Pro, system blue                      |
-| terminal         | VT100 phosphor green, zero radii, CRT glow (single-mode)      |
+| Theme              | Mood                                                          |
+|--------------------|---------------------------------------------------------------|
+| boilerplate-light  | Neutral slate + clean blue, system fonts, drop-in starter     |
+| boilerplate-dark   | Dark companion of the boilerplate starter                     |
+| sketchbook-light   | Warm washi paper, sumi ink, indigo accent (brand default)     |
+| press-light        | Editorial newsprint, Playfair serif, press-red accent         |
+| graphite-dark      | Space-gray aluminum dark mode, system blue                    |
+| glass-light        | visionOS glassmorphism, iOS indigo, dual-rim highlights       |
+| cupertino-light    | macOS Sonoma window, SF Pro, system blue                      |
+| terminal           | VT100 phosphor green, zero radii, CRT glow (single-mode)      |
+
+Companion `-light` / `-dark` modes also ship for press, glass, cupertino, and prism — see `public/themes/` and `/themes` on the docs site for the full gallery.
 
 Theme names carry a `-light` / `-dark` mode suffix since v0.7. Terminal is the
 intentional exception — a "terminal-light" is no longer terminal, the CRT
@@ -97,6 +102,8 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 | `npm run build:css:all` | Compile all bundles (full + core + utilities + minified) |
 | `npm run lint` | ESLint on the Next.js app |
 | `npm run lint:scss` | Stylelint on the SCSS library |
+| `npm run validate-themes` | Validate every theme against the 123-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7) |
+| `npm run validate-icons` | Validate the `core` icon pack against the 49-glyph contract |
 
 ## Size
 
@@ -104,7 +111,9 @@ Verified at Phase 2: **2 KB gzipped** for core (tokens + resets), **10 KB gzippe
 
 ## Status
 
-Pre-1.0. Active development. Themes, animations, and the atomic mixin library are in place; docs content and npm publish are the remaining milestones. See [ROADMAP.md](./ROADMAP.md) for what's next and [CHANGELOG.md](./CHANGELOG.md) for what's shipped.
+Pre-1.0. Active development. v0.7 is the first npm publish — themes, animations, atomic mixins, the WCAG 2.2 AA contrast linter, and the boilerplate starter theme are all in place. See [ROADMAP.md](./ROADMAP.md) for what's next and [CHANGELOG.md](./CHANGELOG.md) for what's shipped.
+
+For the deep authoring reference (tier decisions, mixin contracts, agent rules), read [`AGENTS.md`](./AGENTS.md).
 
 ## Launch mode / feature flags
 

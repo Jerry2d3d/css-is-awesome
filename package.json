@@ -63,7 +63,13 @@
     "css-is-awesome.instructions.md",
     "AGENTS.md",
     "CLAUDE.md",
-    "GEMINI.md"
+    "GEMINI.md",
+    "THREE-TIERS.md",
+    "THEMING.md",
+    "MIGRATION.md",
+    "CONTRACT.md",
+    "ROADMAP.md",
+    "VERSIONING.md"
   ],
   "scripts": {
     "dev": "next dev -p 5173",

@@ -285,14 +285,14 @@ return (
 
 ### One file = one theme
 
-Each theme is a `[data-theme="<name>"] { ... }` block declaring all 123 contract tokens. `public/theme.css` ships all six themes consolidated; per-theme files at `public/themes/<name>/theme.css` are also published for download.
+Each theme is a `[data-theme="<name>"] { ... }` block declaring all 123 contract tokens. `public/theme.css` ships every theme consolidated; per-theme files at `public/themes/<name>/theme.css` are also published for download. All shipped blocks pass the WCAG 2.2 AA contrast audit out of the box.
 
-Theme names carry a mode suffix (`-light` / `-dark`) since v0.7: `sketchbook-light` (default), `press-light`, `graphite-dark`, `glass-light`, `cupertino-light`, plus `terminal` (single-mode CRT, no suffix). The unsuffixed v0.6 names are kept as backward-compat aliases through 0.7.x and will be removed in v0.8 — see `MIGRATION.md`.
+Theme names carry a mode suffix (`-light` / `-dark`) since v0.7. Shipped families (each with a light and dark variant): `sketchbook` (default — `sketchbook-light`), `press`, `graphite`, `glass`, `cupertino`, `terminal`, `prism`, and the unbranded `boilerplate` starter. That's 8 families / 16 blocks. The unsuffixed v0.6 names (`sketchbook`, `press`, `graphite`, `glass`, `cupertino`, `terminal`) are kept as backward-compat aliases through 0.7.x and will be removed in v0.8 — see `MIGRATION.md`.
 
 ### Add a theme
 
-1. Read `scripts/theme-contract.json` — declare every token.
-2. Run `npm run validate-themes` to confirm the contract.
+1. Read `scripts/theme-contract.json` — declare every token (123 required slots in v1).
+2. Run `npm run validate-themes` to confirm the contract. The validator also runs a WCAG 2.2 AA contrast audit; a11y FAILs are fatal by default. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning while you iterate (the older `--strict` flag is accepted as a no-op alias).
 3. Add the theme name to `ThemePicker`'s `THEMES` array and the layout's `VALID_THEMES` set.
 4. Optionally add a `[data-theme="<name>"]` block to the consolidated `public/theme.css`.
 

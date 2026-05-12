@@ -78,11 +78,11 @@ Copy this into your PR description and tick as you go.
 - [ ] Theme registered in src/components/ThemePicker/ThemePicker.tsx
 - [ ] Optional: per-theme icon pack at public/themes/{slug}/icons/
 - [ ] node scripts/theme-validator.js public/themes/{slug}/theme.css  exits 0
-- [ ] npm run validate-themes  exits 0 (all themes)
+- [ ] npm run validate-themes  exits 0 (all themes — contract + WCAG 2.2 AA)
 - [ ] npm run build  exits 0 (Next.js docs site)
 - [ ] npm run build:css  exits 0 (library)
 - [ ] Screenshots of /showcase and / attached to PR
-- [ ] WCAG AA verified for body text over --background-default
+- [ ] No a11y FAILs in the validator output (AA is a hard gate; --allow-a11y-fail is for emergency-only soft landings, not new themes)
 ```
 
 ## Palette choices
@@ -181,10 +181,29 @@ an issue before opening the PR.
 
 ## Running the validator
 
-The validator compares declared `--foo:` declarations in each theme's
-`:root` block against the required list in
-[`scripts/theme-contract.json`](./scripts/theme-contract.json). It is
-zero-dependency Node and fast.
+The validator does two things in one pass:
+
+1. **Contract check** — compares declared `--foo:` declarations in each
+   theme's `:root` block against the required list in
+   [`scripts/theme-contract.json`](./scripts/theme-contract.json).
+2. **WCAG 2.2 AA contrast audit** — resolves the token graph for 17
+   foreground/background pairs (body text, links, button labels, focus
+   ring, status surfaces, etc.) and checks each pair against its required
+   contrast ratio. The pair list lives in `scripts/theme-a11y.js`
+   (`AUDIT_PAIRS`).
+
+Both are zero-dependency Node and fast.
+
+**As of v0.7 the a11y audit is a hard gate.** An AA FAIL on any audited
+pair exits the validator with code `1` — same as a missing token. Pass
+`--allow-a11y-fail` to downgrade FAILs to a non-fatal report (intended for
+debugging a WIP theme, not for landing one). `--strict` is accepted as a
+backwards-compat no-op.
+
+Pairs explicitly marked `decorative` in `AUDIT_PAIRS` (currently just
+`--border-default` on `--paper`) are reported as `info` with their actual
+ratio and never count as a FAIL — WCAG 2.2 SC 1.4.11 applies only to
+graphical objects essential for understanding content.
 
 Validate every shipped theme (what CI runs):
 
@@ -204,31 +223,51 @@ Validate several:
 node scripts/theme-validator.js public/theme.css public/themes/press-light/theme.css
 ```
 
+Skip the contrast audit (contract only):
+
+```bash
+node scripts/theme-validator.js --no-a11y public/themes/my-theme/theme.css
+```
+
 Sample **success** output:
 
 ```
-theme-validator — contract v1 (123 required tokens)
+theme-validator - contract v1 (123 required tokens)
+a11y          - WCAG 2.2 AA contrast audit (17 pairs per theme)
 
 ✓ public/theme.css passes (123 tokens declared)
+  ✓ a11y [sketchbook-light] 16/17 contract pairs >= AA 1 info
 ✓ public/themes/press-light/theme.css passes (123 tokens declared)
+  ✓ a11y [press-light] 16/17 contract pairs >= AA 1 info
 
-OK — 2 theme file(s) validated
+OK — 2 file(s) / 2 theme block(s) validated (contract + a11y), 2 decorative info
 ```
 
 Sample **failure** output (missing two tokens):
 
 ```
-theme-validator — contract v1 (123 required tokens)
+theme-validator - contract v1 (123 required tokens)
 
 x public/themes/my-theme/theme.css — 2 missing:
      --glow-md
      --surface-glass
 
-FAIL — one or more theme files are incomplete
+FAIL — one or more theme files/blocks are incomplete
 ```
 
-Exit codes: `0` all good, `1` missing tokens, `2` usage error (file not
-found, etc.).
+Sample **a11y failure** output (contract OK, contrast regression):
+
+```
+✓ public/themes/my-theme/theme.css passes (123 tokens declared)
+  x a11y [my-theme] 1 fail 16 pass
+    x --text-primary on --paper - 3.92:1 (need >= 4.5:1, text)
+       fg=#666  bg=#fff - primary body text on the page background
+
+FAIL — 1 contrast pair(s) below WCAG 2.2 AA across all themes. Pass --allow-a11y-fail to downgrade.
+```
+
+Exit codes: `0` all good (contract + a11y, or `--allow-a11y-fail`),
+`1` missing tokens or an a11y FAIL, `2` usage error (file not found, etc.).
 
 ## Submitting a PR
 
@@ -246,9 +285,11 @@ found, etc.).
    - `npm run build` (Next.js docs site).
    - `npm run build:css` (library).
 5. **A maintainer reviews for:**
-   - Contract completeness (validator catches this).
-   - WCAG AA contrast on body text and primary actions (verify
-     manually or via a tool like WebAIM's contrast checker).
+   - Contract completeness (validator catches this — hard gate).
+   - WCAG 2.2 AA contrast across the 17 audited token pairs (validator
+     catches this too — also a hard gate as of v0.7). Spot-check any
+     pair not in `AUDIT_PAIRS` that your theme stresses (e.g. unusual
+     hover/active overlays) with WebAIM's contrast checker.
    - **Mood distinctness** — a new theme should feel genuinely
      different from the six shipped ones. Another warm-paper variant
      gets rejected; a pastel bauhaus, a brutalist mono, or a
