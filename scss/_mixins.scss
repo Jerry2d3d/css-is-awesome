@@ -309,7 +309,7 @@ $_type-scale: (
   body:       (size: 3, weight: normal,   lh: 4, ls: null),
   body-sm:    (size: 2, weight: normal,   lh: 4, ls: null),
   caption:    (size: 1, weight: normal,   lh: 4, ls: null),
-  overline:   (size: 1, weight: semibold, lh: 4, ls: wide),
+  overline:   (size: 1, weight: semibold, lh: 4, ls: wider, tt: uppercase),
 );
 
 @mixin type($preset) {
@@ -322,6 +322,7 @@ $_type-scale: (
   $w: map.get($cfg, weight);
   $lh-key: map.get($cfg, lh);
   $ls-key: map.get($cfg, ls);
+  $tt: map.get($cfg, tt);
 
   font-size: font-size($s);
   font-weight: font-weight($w);
@@ -335,6 +336,34 @@ $_type-scale: (
     $ls-val: map.get(s.$letter-spacings, $ls-key);
     @if $ls-val and $ls-val != 0 { letter-spacing: $ls-val; }
   }
+
+  @if $tt { text-transform: $tt; }
+}
+
+// ============================================================================
+// UI TEXT PRESETS — type() + a default color, packaged for the common cases
+// ----------------------------------------------------------------------------
+// When to reach for these: the lockup is a recognisable UI pattern (eyebrow
+// kicker, figure caption, footer note) rather than raw typography. They sit
+// on top of type() and add a default color token; pass $color to override.
+//
+// When NOT to reach for these: you just need a size/weight without a
+// semantic role — use type(<preset>) directly, no color, you keep currentColor.
+//
+// Adding a new one: name it for what the pattern IS (eyebrow, caption-text),
+// not what it does (small-caps-tracked-muted). Default $color to the slot
+// the pattern uses 80% of the time. Wrap an existing type() preset whenever
+// you can — don't redeclare font-size/weight/ls/lh inline.
+// ============================================================================
+
+// Eyebrow / kicker — small caps-tracked label that tags a section above
+// its heading. One-liner replacement for the
+//   font-size + color + text-transform + letter-spacing
+// four-property lockup that shows up wherever a chip-style label sits over
+// a title.
+@mixin eyebrow($color: text-secondary) {
+  @include type(overline);
+  color: color($color);
 }
 
 // ============================================================================
