@@ -8,7 +8,7 @@ import {
   type Category,
   type TokenSpec,
 } from "./catalog";
-import { ColorRow, LengthRow, NumberRow, StringRow } from "./rows";
+import { ColorRow, FontRow, LengthRow, NumberRow, StringRow } from "./rows";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 import {
   extractDataThemeBlocks,
@@ -409,6 +409,7 @@ export default function ThemeEditorDock() {
       case "duration": return <LengthRow key={spec.token} {...props} />;
       case "number":   return <NumberRow key={spec.token} {...props} />;
       case "string":   return <StringRow key={spec.token} {...props} />;
+      case "font":     return <FontRow key={spec.token} {...props} />;
     }
   }
 

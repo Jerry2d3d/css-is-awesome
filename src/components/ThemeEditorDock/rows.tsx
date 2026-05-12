@@ -1,7 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ThemeEditorDock.module.scss";
 import type { TokenSpec } from "./catalog";
+import {
+  FONT_OPTIONS,
+  SYSTEM_STACK,
+  buildFontStack,
+  detectFontOption,
+  loadGoogleFont,
+  type FontCategory,
+} from "@/lib/google-fonts";
 
 type CommonProps = {
   spec: TokenSpec;
@@ -168,6 +176,55 @@ export function StringRow({ spec, value, defaultValue, onCommit }: CommonProps) 
         aria-label={spec.label}
         spellCheck={false}
       />
+    </div>
+  );
+}
+
+// ---------- Font row ----------
+// Curated Google Fonts dropdown. On select: injects the <link> for the
+// chosen family, then commits the full font stack into the token.
+// The native <select> is OS-rendered, so we can't preview each option
+// in its own face — the live page preview updates the moment you pick.
+export function FontRow({ spec, value, defaultValue, onCommit }: CommonProps) {
+  const category: FontCategory = spec.category ?? "sans";
+  const options = FONT_OPTIONS[category];
+  const current = value || defaultValue;
+  const selected = detectFontOption(current, category);
+
+  // Preload the currently-selected family on mount so the in-page
+  // preview is correct after a theme swap (some themes ship a Google
+  // family in their own @import; others rely on the editor's <link>).
+  useEffect(() => {
+    if (!selected.system) loadGoogleFont(selected.family, selected.weights);
+  }, [selected.family, selected.weights, selected.system]);
+
+  function handleChange(family: string) {
+    const opt = options.find((o) => o.family === family);
+    if (!opt) return;
+    if (!opt.system) loadGoogleFont(opt.family, opt.weights);
+    onCommit(buildFontStack(opt, category));
+  }
+
+  const previewStyle = selected.system
+    ? { fontFamily: SYSTEM_STACK[category] }
+    : { fontFamily: `'${selected.family}', ${SYSTEM_STACK[category]}` };
+
+  return (
+    <div className={`${styles.row} ${styles.rowStacked}`}>
+      <RowLabel spec={spec} />
+      <select
+        className={styles.stringInput}
+        value={selected.family}
+        onChange={(e) => handleChange(e.target.value)}
+        style={previewStyle}
+        aria-label={spec.label}
+      >
+        {options.map((o) => (
+          <option key={o.family} value={o.family}>
+            {o.family}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

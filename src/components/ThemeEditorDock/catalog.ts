@@ -8,7 +8,9 @@
 //   Edits write to BOTH mode blocks so preview stays consistent
 //   when the user flips modes.
 
-export type RowType = "color" | "length" | "duration" | "number" | "string";
+import type { FontCategory } from "@/lib/google-fonts";
+
+export type RowType = "color" | "length" | "duration" | "number" | "string" | "font";
 
 export type TokenSpec = {
   token: string;
@@ -20,6 +22,7 @@ export type TokenSpec = {
   min?: number;
   max?: number;
   step?: number;
+  category?: FontCategory; // for type:"font" rows
 };
 
 const G = {
@@ -64,6 +67,9 @@ function number(token: string, label: string, group: string, min = 0, max = 9999
 }
 function str(token: string, label: string, group: string, mode: "both" | "shared" = "shared"): TokenSpec {
   return { token, label, group, mode, type: "string" };
+}
+function font(token: string, label: string, category: FontCategory): TokenSpec {
+  return { token, label, group: G.font, mode: "shared", type: "font", category };
 }
 
 export const CATALOG: TokenSpec[] = [
@@ -215,13 +221,13 @@ export const CATALOG: TokenSpec[] = [
   str("--glow-md", "Glow md", G.glow, "shared"),
   str("--glow-lg", "Glow lg", G.glow, "shared"),
 
-  // ===== Fonts (shared, free-form string) =====
-  str("--font-primary", "Font primary", G.font, "shared"),
-  str("--font-display", "Font display", G.font, "shared"),
-  str("--font-sans",    "Font sans",    G.font, "shared"),
-  str("--font-serif",   "Font serif",   G.font, "shared"),
-  str("--font-mono",    "Font mono",    G.font, "shared"),
-  str("--font-script",  "Font script",  G.font, "shared"),
+  // ===== Fonts (shared, picker dropdown with Google Fonts dynamic load) =====
+  font("--font-primary", "Font primary", "sans"),
+  font("--font-display", "Font display", "display"),
+  font("--font-sans",    "Font sans",    "sans"),
+  font("--font-serif",   "Font serif",   "serif"),
+  font("--font-mono",    "Font mono",    "mono"),
+  font("--font-script",  "Font script",  "script"),
 
   // ===== Type scalar (shared) =====
   length("--font-size-base", "Font size base (px)", G.fontMisc, 24, 10, 1),
