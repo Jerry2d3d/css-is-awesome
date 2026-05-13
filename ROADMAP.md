@@ -229,6 +229,66 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 
 ---
 
+## Phase 5.5 — Site polish & dogfood pass (v0.7.x)
+
+**Goal:** The docs site is the system's storefront — make it visibly
+practice what the library preaches. Two-step plan: clean up site
+issues first, then convert page-level styles from raw token consumers
+to mixin-API consumers.
+
+Full audit punch list lives in
+[`roadmap/site-audit-2026-05-13.md`](./roadmap/site-audit-2026-05-13.md).
+
+### Step 1 — Style pass (style-first, before any dogfood rewrites)
+- [ ] **Dead links** — 7 `href="#"` blog tiles + 4 in `/showcase` +
+  footer links in `/examples`. Either real targets, disabled state,
+  or remove. Demo `href="#"` inside `Example` blocks → `<button>`.
+- [ ] **Add `<main>` landmark** to docs layout and any other route
+  missing it (landing, about, blog, compare, showcase, examples,
+  themes).
+- [ ] **Focus styles for nav anchors** in `/themes` sidebar — global
+  rule only targets `button`.
+- [ ] **Hardcoded hex fallbacks** in `var()` defaults — Logo,
+  ThemeEditorDock (TSX + SCSS + rows.tsx), ThemePicker. Decide
+  policy: neutral fallback tokens vs strip fallbacks entirely.
+- [ ] **Version display** — three different versions visible across
+  landing / about / showcase (`v0.1` × 2, `v0.5` × 1). Pick a single
+  source.
+- [ ] **Per-route metadata** — every route exports its own
+  `metadata` so browser tab + social cards are not all "CSS is
+  Awesome".
+
+### Step 2 — Dogfood conversion (the structural gap)
+- [ ] **Audit baseline** — count `var(--*)` and `font-family:` /
+  `font-size:` raw declarations across `src/app/**/page.module.scss`.
+  This is the target metric for the conversion.
+- [ ] **Convert page modules** to consume the mixin API:
+  `@use 'mixins' as m;` + `@include m.type(...)`, `m.space(...)`,
+  `m.color(...)`, `m.font-size(...)`, etc. One page at a time;
+  visual-regress after each.
+- [ ] **Replace raw layout with `cia-*` utilities** where the
+  Tailwind-style class is clearer than a one-off rule.
+- [ ] **Keep the artisanal chrome** — Sketchbook's paper/grain/seal
+  flourishes stay handcrafted (they're an intentional counter-example),
+  but the *typography + spacing scale* underneath them should come
+  from the system.
+
+### Step 3 — Coverage + cross-theme + Lighthouse
+- [ ] **Component gallery page** — every component in
+  `src/components/` rendered at least once (currently `Divider`,
+  `List`, `MenuItem`, `Pagination`, `Popover`, `Radio`, `Select`,
+  `Slider`, `Switch`, `Textarea`, `Tooltip` aren't shown on the
+  site).
+- [ ] **Cross-theme spot-check** — every page in all 8 themes ×
+  light/dark. Catches hex fallbacks the static audit missed.
+- [ ] **Lighthouse + axe pass** — automated a11y + perf baseline,
+  fix what surfaces.
+
+**Release:** `v0.7.x` patch range. No library-API change; this is
+docs-site quality only.
+
+---
+
 ## Phase 6 — Ecosystem (v1.1+)
 
 **Goal:** Solidify as a real project.
