@@ -42,7 +42,7 @@ $_container-widths: (
   padding-inline: $pad-val;
 
   @media screen and (min-width: map.get(s.$breakpoints, md)) {
-    $pad-up: if($px, $pad-val, map.get(t.$space, 5));
+    $pad-up: if(sass($px): $pad-val; else: map.get(t.$space, 5));
     padding-inline: $pad-up;
   }
 }

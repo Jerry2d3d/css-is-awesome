@@ -20,7 +20,7 @@
 
   th, td {
     text-align: left;
-    padding: m.space(if($compact, 1, 2)) m.space(if($compact, 2, 4));
+    padding: m.space(if(sass($compact): 1; else: 2)) m.space(if(sass($compact): 2; else: 4));
     border-bottom: 1px solid m.color(border-default);
   }
 
