@@ -145,7 +145,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [x] **`/compare` page** — honest three-column vs Tailwind vs Bootstrap with feature table and "where each wins" verdicts.
 - [x] **`/compare` bundle-size table** — three-tier story (core / utilities / full) with gzipped KB landed in the 2026-05-07 refresh.
 - [x] **`/docs` intro page** — real Quick Start, three-tier story, utility-vs-mixin side-by-side, expanded "What next" links.
-- [ ] **`/showcase` page** — real-looking full pages (marketing / blog / dashboard / 404), all theme-swappable.
+- [x] **`/showcase` page** — shipped with 4 placeholder example blocks (marketing / blog / dashboard / 404). Content rework tracked in Phase 5.5 Step 1.5.
 
 **Release:** `v0.5.0` — docs are the pitch.
 
@@ -258,6 +258,56 @@ Full audit punch list lives in
   `metadata` so browser tab + social cards are not all "CSS is
   Awesome".
 
+### Step 1.5 — Storefront content rework
+
+`/showcase`, `/blog`, and `/about` currently render placeholder /
+out-of-date copy that contradicts the rest of the site. Fix the
+content before doing any CSS work on these files so the dogfood
+pass doesn't restyle copy that's about to be replaced.
+
+**`/blog`** — All 7 posts are fiction with `href="#"`. Dates run
+Feb–Apr 2026 and excerpts read like real posts that don't exist.
+Decide:
+- [ ] **Path A — Ship a subset for real.** Pick 2-3 of the 7 drafted
+  topics ("Why the overflow stays", "Five voices, one system",
+  "Planning a CLI and an MCP server" are the strongest hooks) and
+  author real posts at real routes (`/blog/[slug]`).
+- [ ] **Path B — Single placeholder.** Replace the listing with a
+  single hero + a "first post coming Q3" panel until there are
+  posts to ship. Removes 7 dead links in one stroke.
+
+**`/about`** — Content is mostly authentic but factually stale:
+- [ ] Timeline says **"v0.1.0 on npm in 2025"** — never happened;
+  the npm publish is still gated (Phase 5). Update to reflect the
+  actual release history once 0.7.0 publishes.
+- [ ] "**Five voices, one system**" + "Sketchbook arrives later in
+  the year" — there are now 8 themes (Sketchbook, Press, Graphite,
+  Glass, Cupertino, Terminal, Boilerplate, Prism), and Sketchbook
+  shipped. Update theme count + remove the "later in the year"
+  framing.
+- [ ] `<Seal>Approved · v0.1</Seal>` at the bottom — version drift
+  (already tracked in Step 1, dedupe).
+- [ ] Light content pass on the principles + "what it isn't"
+  sections — verify nothing else contradicts the current product
+  state.
+
+**`/showcase`** — 4 example blocks, all with placeholder CTAs and
+stale version copy:
+- [ ] **Marketing hero block** — "v1.0 shipping soon" copy contradicts
+  the actual 0.7 trajectory; `<Seal>New · v0.5</Seal>` is wrong.
+  Fix copy + Seal to track real version.
+- [ ] **Real CTAs** — `Get started` → `/docs/install`, `Read the
+  docs` → `/docs`, `Take me home` already correct, `Report broken
+  link` → GitHub issues URL.
+- [ ] **Expand the page** — currently 4 blocks (marketing / blog /
+  dashboard / 404). Decide whether to add pricing, app-shell,
+  signup, docs-page-in-context, or empty-state to make the "see
+  it work in production" pitch land harder.
+- [ ] **Per-block theme swap** — currently the whole site reskins;
+  showcase would benefit from a "lock this block to theme X" toggle
+  so visitors can A/B two themes side-by-side without leaving the
+  page. Stretch goal.
+
 ### Step 2 — Dogfood conversion (the structural gap)
 - [ ] **Audit baseline** — count `var(--*)` and `font-family:` /
   `font-size:` raw declarations across `src/app/**/page.module.scss`.
@@ -312,7 +362,6 @@ docs-site quality only.
 - [ ] **SCSS↔TS token bridge** — generate `tokens.d.ts` from the contract so consumers get type-safe token access in JS/TS.
 - [ ] **Intrinsic layout mixins** — stack/cluster/switcher (Every Layout patterns) as first-class mixins so consumers stop hand-rolling flex utilities.
 - [ ] **Tailwind→Awesome migration CLI** — parses Tailwind class strings in a project and suggests `cia-*` utility or mixin equivalents; lowest-friction path for migrants.
-- [ ] **`/showcase` page** — full real pages (marketing, blog, dashboard, 404) with one-click theme swap. The "see it work in production" pitch.
 - [ ] **Component depth audit** — catalog gaps vs Bootstrap (modal, toast, popover, tooltip, accordion, breadcrumb, pagination, badge, avatar, dropdown, offcanvas) and prioritize zero-JS implementations.
 
 ---
