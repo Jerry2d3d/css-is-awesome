@@ -377,6 +377,16 @@ Then consume in components — two interchangeable patterns:
 
 **Where to call `font-load`** — each `.module.scss` is its own Sass compilation, so the slug registry is per-file. Practically: call `m.font-load(<slug>, ...)` at the top of every module that uses the slug. The `:root` declaration ends up identical across files, so browsers dedupe — only the value matters.
 
+**Scope selector / CSS Modules** — `font-load` defaults to emitting on `:global(:root)`, which CSS Modules (Next.js, webpack `css-loader` with `modules: true`) strip to `:root` in the final CSS. If you're consuming in a plain SCSS context (no CSS Modules), pass `$root: ':root'` to skip the non-standard `:global()` wrapper:
+
+```scss
+// CSS Modules (default) — works as-is
+@include m.font-load(meme, $fallback: (...));
+
+// Plain SCSS context (Vite without modules, plain webpack, etc.)
+@include m.font-load(meme, $fallback: (...), $root: ':root');
+```
+
 `font-load` is idempotent (same slug + same URL = no-op; different URL = `@error`).
 
 ---

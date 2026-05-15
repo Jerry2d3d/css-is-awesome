@@ -253,7 +253,8 @@ $_loaded-fonts: () !default;
   $url: null,
   $name: null,
   $alias: null,
-  $fallback: sans-serif
+  $fallback: sans-serif,
+  $root: ':global(:root)'
 ) {
   // Face name = explicit $name, else the slug itself (for hosted fonts).
   $face: $name or $slug;
@@ -289,14 +290,19 @@ $_loaded-fonts: () !default;
     }
   }
 
-  // Always emit --font-<slug> at :root so it works anywhere.
-  @at-root :root {
+  // Always emit --font-<slug> on the $root selector so it works anywhere.
+  // Default is ':global(:root)' which:
+  //   - in CSS Modules (.module.scss) compiles to `:root` (the :global
+  //     wrapper opts out of the module-purity check)
+  //   - in plain SCSS contexts you pass `$root: ':root'` to skip the
+  //     non-standard `:global()` wrapper
+  @at-root #{$root} {
     --font-#{$slug}: #{$stack};
   }
 
   // Optional: also override one of the 6 theme contract slots.
   @if $alias {
-    @at-root :root {
+    @at-root #{$root} {
       --font-#{$alias}: #{$stack};
     }
   }
