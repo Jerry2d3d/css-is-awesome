@@ -123,7 +123,7 @@ export default function MigrationTailwindPage() {
             </td>
             <td>
               <code>class=&quot;cia-flex-center&quot;</code> or{" "}
-              <code>@include m.flex-center</code>
+              <code>@include m.flex($justify: center)</code>
             </td>
           </tr>
           <tr>
@@ -204,7 +204,7 @@ export default function MigrationTailwindPage() {
               <code>@apply flex items-center gap-2</code>
             </td>
             <td>
-              <code>@include m.inline(2)</code> — or any other mixin.{" "}
+              <code>@include m.flex($gap: 2)</code> — or any other mixin.{" "}
               <code>@include</code> takes a mixin name, not a class list.
             </td>
           </tr>
@@ -391,8 +391,8 @@ export default function MigrationTailwindPage() {
           </strong>{" "}
           <code>flex items-center justify-center</code> becomes{" "}
           <code>cia-flex-center</code> (markup) or{" "}
-          <code>@include m.flex-center</code> (SCSS). A regex codemod
-          handles the bulk.
+          <code>@include m.flex($justify: center)</code> (SCSS). A regex
+          codemod handles the bulk.
         </li>
         <li>
           <strong>Delete Tailwind plugin imports</strong> for features

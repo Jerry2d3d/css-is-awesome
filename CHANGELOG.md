@@ -11,6 +11,27 @@ automated releases.
 
 ## [Unreleased]
 
+### Changed — Flex layout API consolidated to `m.flex` (BREAKING)
+
+- New `m.flex($direction, $gap, $align, $justify, $wrap, $inline)`
+  replaces the six legacy flex helpers. Shorthand value names
+  (`start`/`end`/`center`/`between`/`around`/`evenly`) match the
+  `cia-*` utility-class vocabulary; full CSS values still pass
+  through.
+- **Removed** (no aliases): `m.flex-center`, `m.flex-between`,
+  `m.stack`, `m.inline` (from `_mixins.scss`), `m.row`, `m.col`
+  (from `_layout.scss`). All internal callsites migrated in this
+  pass. Consumers must replace, e.g.:
+  ```scss
+  @include m.flex-center        →  @include m.flex($justify: center)
+  @include m.flex-between       →  @include m.flex($justify: between)
+  @include m.stack(md)          →  @include m.flex($direction: column, $gap: md)
+  @include m.inline(2)          →  @include m.flex($gap: 2)
+  ```
+- The `cia-flex-center` / `cia-flex-between` utility *classes* in
+  `dist/css-is-awesome.utilities.css` are unchanged; only the SCSS
+  mixin surface was consolidated.
+
 ### Added — Live theme editor (docs site)
 
 - New `<ThemeEditorDock>` on `/themes` lets visitors tweak the active

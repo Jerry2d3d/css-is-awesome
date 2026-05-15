@@ -148,7 +148,7 @@
 }
 
 @mixin avatar-placeholder($size: 2.5rem, $r: full, $bg: surface-muted, $color: text-muted) {
-  @include m.flex-center;
+  @include m.flex($justify: center);
   width: $size;
   height: $size;
   border-radius: m.radius($r);

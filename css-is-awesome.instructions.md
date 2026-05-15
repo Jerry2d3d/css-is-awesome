@@ -72,6 +72,34 @@ border-radius: 4px;
 
 Tokens come from the theme contract (`scripts/theme-contract.json` — 123 required slots). Themes swap via `<html data-theme="press-light">` and every token resolves to the active theme's value.
 
+### Flex via `m.flex`
+
+`m.flex` is the one flex primitive. Pass only what differs from the
+defaults — `$direction: row`, `$align: center`, `$justify: start`,
+`$wrap: nowrap`, `$gap: null`, `$inline: false`.
+
+```scss
+// Header bar / accordion trigger
+@include m.flex($justify: between, $gap: 3);
+
+// Vertical stack with gap
+@include m.flex($direction: column, $gap: 4);
+
+// Perfectly centered children
+@include m.flex($justify: center);
+
+// Inline chip lockup
+@include m.flex($inline: true, $gap: 2);
+```
+
+`$justify` accepts the shorthand `start`/`end`/`center`/`between`/
+`around`/`evenly` (mapped to `flex-start`/`flex-end`/`space-between`/
+etc. on emit). `$align` accepts `start`/`end`/`center`/`baseline`/
+`stretch`. Full CSS values pass through unchanged, so
+`$justify: space-between` still works if you prefer the long form.
+The shorthand matches the `cia-justify-between` / `cia-items-center`
+utility-class vocabulary.
+
 ### No `!important`
 
 Banned. Stylelint enforces (`declaration-no-important: true`). Sole exception: inside `@media (prefers-reduced-motion: reduce)` overrides for accessibility, where `!important` is the canonical pattern (and explicitly disabled with a comment).

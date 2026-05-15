@@ -118,7 +118,7 @@
 // Icon-only button (SVG)
 .btn-icon {
   @include m.button-reset;
-  @include m.flex-center;
+  @include m.flex($justify: center);
   @include i.svg(close, 20px);
   width: 40px;
   height: 40px;
@@ -131,7 +131,7 @@
 // Icon-only button (FA)
 .btn-icon-fa {
   @include m.button-reset;
-  @include m.flex-center;
+  @include m.flex($justify: center);
   @include i.fa-icon(settings, 20px);
   width: 40px;
   height: 40px;
@@ -146,7 +146,7 @@
 // stays a base; status-specific styling is its own standalone class.
 .alert {
   @include m.card-base($p: sm);
-  @include m.inline(sm);
+  @include m.flex($gap: sm);
 }
 
 .alert-info {
@@ -213,7 +213,7 @@
 // Navbar with icons — single-class child elements, not BEM `__element`.
 // Author-side code names its own classes (`navbar-logo`, `navbar-menu-btn`).
 .navbar {
-  @include m.flex-between;
+  @include m.flex($justify: between);
   @include m.inset-y(sm);
   @include m.inset-x(md);
   @include m.border(1px, solid, border-default, bottom);
@@ -234,7 +234,7 @@
 
 // Social links with FA brands
 .social-links {
-  @include m.inline(md);
+  @include m.flex($gap: md);
   
   a {
     @include m.button-reset;
@@ -259,7 +259,7 @@
 // Spacing
 .section {
   @include m.inset(lg);
-  @include m.stack(md);
+  @include m.flex($direction: column, $gap: md);
 }
 
 // Borders
@@ -309,9 +309,9 @@ FA STYLES:
   brands  → Logos (github, twitter)
 
 CORE MIXINS:
-  m.color(name)       m.space(n)        m.radius(size)
-  m.font(type, ...)   m.border(...)     m.elevation(level)
-  m.transition(...)   m.flex-center     m.inline(gap)
-  m.stack(gap)        m.inset(size)     m.squish(y, x)
-  m.btn-base(...)     m.card-base(...)  m.input-base(...)
+  m.color(name)       m.space(n)            m.radius(size)
+  m.font(type, ...)   m.border(...)         m.elevation(level)
+  m.transition(...)   m.flex($justify, $gap, $direction, ...)
+  m.inset(size)       m.squish(y, x)
+  m.btn-base(...)     m.card-base(...)      m.input-base(...)
 */

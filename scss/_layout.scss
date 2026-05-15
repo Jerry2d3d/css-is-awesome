@@ -175,32 +175,6 @@ $_container-widths: (
 }
 
 // ============================================================================
-// ROW & COL (Flex-based)
-// ============================================================================
-// Simple flex row/column with smart defaults.
-// Usage:
-//   @include row;              → horizontal, centered, md gap
-//   @include row($gap: 5);     → horizontal, large gap (space key 5)
-//   @include col;              → vertical stack, md gap
-
-@mixin row($gap: 4, $align: center, $justify: flex-start, $wrap: wrap) {
-  display: flex;
-  flex-direction: row;
-  align-items: $align;
-  justify-content: $justify;
-  flex-wrap: $wrap;
-  gap: map.get(t.$space, $gap) or $gap;
-}
-
-@mixin col($gap: 4, $align: stretch, $justify: flex-start) {
-  display: flex;
-  flex-direction: column;
-  align-items: $align;
-  justify-content: $justify;
-  gap: map.get(t.$space, $gap) or $gap;
-}
-
-// ============================================================================
 // DIVIDER
 // ============================================================================
 

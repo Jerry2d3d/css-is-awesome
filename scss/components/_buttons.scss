@@ -135,7 +135,7 @@
 // ----------------------------------------------------------------------------
 @mixin btn-icon($size: 2.5rem, $r: md) {
   @include m.button-reset;
-  @include m.flex-center;
+  @include m.flex($justify: center);
   width: $size;
   height: $size;
   border-radius: m.radius($r);

@@ -108,8 +108,17 @@ export default function DocsMixinsPage() {
         <code>xl</code>).
       </p>
 
-      <h3 id="flex-center"><code>flex-center</code></h3>
-      <p>Centers children horizontally and vertically with flexbox.</p>
+      <h3 id="flex"><code>flex</code></h3>
+      <p>
+        The one flex primitive. Pass only what differs from the defaults
+        (<code>row</code> / <code>center</code> cross-axis / <code>start</code>{" "}
+        main-axis / <code>nowrap</code> / no gap). <code>$justify</code> and{" "}
+        <code>$align</code> accept the shorthand{" "}
+        <code>start</code> / <code>end</code> / <code>center</code> /{" "}
+        <code>between</code> / <code>around</code> / <code>evenly</code>{" "}
+        (mapping to <code>flex-start</code>, <code>space-between</code>, etc.).
+        Full CSS values still pass through.
+      </p>
       <Example>
         <Example.Preview style={{ display: "flex", justifyContent: "center" }}>
           <div
@@ -127,48 +136,26 @@ export default function DocsMixinsPage() {
           </div>
         </Example.Preview>
         <Example.Code><span className="tok-com">{"// signature"}</span>
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">flex-center</span>;
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">flex</span>(<span className="tok-val">$direction: row, $gap: null, $align: center, $justify: start, $wrap: nowrap, $inline: false</span>);
 {"\n"}
-{"\n"}<span className="tok-com">{"// usage"}</span>
+{"\n"}<span className="tok-com">{"// perfectly centered children"}</span>
 {"\n"}<span className="tok-sel">.hero</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex-center</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="flex-between"><code>flex-between</code></h3>
-      <p>Flex row with <code>space-between</code> — ideal for toolbars and card headers.</p>
-      <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">flex-between</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex($justify: center)</span>;
+{"\n"}{"}"}
 {"\n"}
+{"\n"}<span className="tok-com">{"// header bar / accordion trigger"}</span>
 {"\n"}<span className="tok-sel">.toolbar</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex-between</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="stack"><code>stack</code></h3>
-      <p>Vertical flex stack with a token-aware gap. Default gap is <code>4</code>.</p>
-      <Example>
-        <Example.Preview>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div style={{ padding: 8, background: "var(--surface-muted,#eee)" }}>one</div>
-            <div style={{ padding: 8, background: "var(--surface-muted,#eee)" }}>two</div>
-            <div style={{ padding: 8, background: "var(--surface-muted,#eee)" }}>three</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">stack</span>(<span className="tok-val">$gap: 4, $align: stretch</span>);
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex($justify: between, $gap: 3)</span>;
+{"\n"}{"}"}
 {"\n"}
+{"\n"}<span className="tok-com">{"// vertical stack with gap"}</span>
 {"\n"}<span className="tok-sel">.feed</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.stack(3)</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="inline"><code>inline</code></h3>
-      <p>Horizontal flex row with gap, alignment and wrapping controls.</p>
-      <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">inline</span>(<span className="tok-val">$gap: 2, $align: center, $wrap: nowrap</span>);
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex($direction: column, $gap: 4)</span>;
+{"\n"}{"}"}
 {"\n"}
-{"\n"}<span className="tok-sel">.toolbar</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.inline(2, center, wrap)</span>;
+{"\n"}<span className="tok-com">{"// inline-flex chip lockup"}</span>
+{"\n"}<span className="tok-sel">.chip</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex($inline: true, $gap: 2)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
 
@@ -242,16 +229,6 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">section</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.section($py: 9)</span>;
 {"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="row-col"><code>row</code> and <code>col</code></h3>
-      <p>Simple flex row / column with token-aware gap and alignment defaults.</p>
-      <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">row</span>(<span className="tok-val">$gap: 4, $align: center, $justify: flex-start, $wrap: wrap</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">col</span>(<span className="tok-val">$gap: 4, $align: stretch, $justify: flex-start</span>);
-{"\n"}
-{"\n"}<span className="tok-sel">.form-row</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.row(3)</span>; {"}"}
-{"\n"}<span className="tok-sel">.form-col</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.col(2)</span>; {"}"}</Example.Code>
       </Example>
 
       <h3 id="inset"><code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code></h3>
@@ -731,7 +708,7 @@ export default function DocsMixinsPage() {
         examples.
       </p>
       <ul>
-        <li><strong>Layout:</strong> <code>flex-center</code>, <code>flex-between</code>, <code>stack</code>, <code>inline</code>, <code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code>, <code>container</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>section</code>, <code>row</code>, <code>col</code>, <code>divider</code>, <code>divider-vertical</code></li>
+        <li><strong>Layout:</strong> <code>flex</code>, <code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code>, <code>container</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
         <li><strong>Breakpoints:</strong> <code>bp</code>, <code>bp-down</code>, <code>bp-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
         <li><strong>Container queries:</strong> <code>container</code>, <code>cq</code>, <code>cq-down</code>, <code>cq-between</code></li>
         <li><strong>Typography:</strong> <code>font</code>, <code>type</code>, <code>truncate</code></li>

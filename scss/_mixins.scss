@@ -567,31 +567,54 @@ $_easings: (
 // ============================================================================
 // LAYOUT
 // ============================================================================
+// One flex primitive. Pass only what differs from the defaults.
+//
+//   @include m.flex;                                    // flex row, centered cross-axis
+//   @include m.flex($direction: column, $gap: 3);       // vertical stack with gap
+//   @include m.flex($justify: between, $gap: 3);        // header bar / accordion trigger
+//   @include m.flex($justify: center);                  // perfectly centered children
+//   @include m.flex($inline: true, $gap: 2);            // inline-flex chip lockup
+//
+// $justify shorthand maps to CSS: start/end/center/between/around/evenly →
+// flex-start/flex-end/center/space-between/space-around/space-evenly. Same
+// idea for $align (start/end → flex-start/flex-end). Full CSS values pass
+// through unchanged, so $justify: space-between still works.
 
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+$_flex-justify: (
+  start:   flex-start,
+  end:     flex-end,
+  center:  center,
+  between: space-between,
+  around:  space-around,
+  evenly:  space-evenly,
+);
 
-@mixin flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+$_flex-align: (
+  start:    flex-start,
+  end:      flex-end,
+  center:   center,
+  baseline: baseline,
+  stretch:  stretch,
+);
 
-@mixin stack($gap: 4, $align: stretch) {
-  display: flex;
-  flex-direction: column;
-  gap: space($gap);
-  align-items: $align;
-}
+@mixin flex(
+  $direction: row,
+  $gap: null,
+  $align: center,
+  $justify: start,
+  $wrap: nowrap,
+  $inline: false
+) {
+  $j: map.get($_flex-justify, $justify) or $justify;
+  $a: map.get($_flex-align,   $align)   or $align;
 
-@mixin inline($gap: 2, $align: center, $wrap: nowrap) {
-  display: flex;
-  align-items: $align;
-  gap: space($gap);
+  display: if(sass($inline): inline-flex; else: flex);
+  flex-direction: $direction;
   flex-wrap: $wrap;
+  align-items: $a;
+  justify-content: $j;
+
+  @if $gap { gap: space($gap); }
 }
 
 @mixin inset($size: 4) {
