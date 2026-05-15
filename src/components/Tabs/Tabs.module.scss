@@ -2,9 +2,7 @@
 @use 'components/navigation' as nav;
 
 .tabs {
-  display: flex;
-  flex-direction: column;
-  gap: m.space(3);
+  @include m.flex($direction: column, $gap: 3, $align: stretch);
 }
 
 .tabs.vertical {

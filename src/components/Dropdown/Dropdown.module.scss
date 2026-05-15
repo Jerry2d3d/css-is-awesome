@@ -17,9 +17,7 @@
 .item {
   @include ov.dropdown-item;
   all: unset;
-  display: flex;
-  align-items: center;
-  gap: m.space(2);
+  @include m.flex($gap: 2);
   width: 100%;
   box-sizing: border-box;
   padding: m.space(2) m.space(3);

@@ -2,9 +2,7 @@
 @use 'components/forms' as f;
 
 .wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: m.space(2);
+  @include m.flex($inline: true, $gap: 2);
   cursor: pointer;
   user-select: none;
 }

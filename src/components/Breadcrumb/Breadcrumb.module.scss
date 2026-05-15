@@ -10,16 +10,12 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: m.space(2);
+  @include m.flex($gap: 2, $wrap: wrap);
   font-size: m.font-size(sm);
 }
 
 .item {
-  display: inline-flex;
-  align-items: center;
+  @include m.flex($inline: true);
 }
 
 .link {

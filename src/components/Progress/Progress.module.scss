@@ -2,9 +2,7 @@
 @use 'components/feedback' as fb;
 
 .wrap {
-  display: flex;
-  flex-direction: column;
-  gap: m.space(1);
+  @include m.flex($direction: column, $gap: 1, $align: stretch);
   width: 100%;
 }
 

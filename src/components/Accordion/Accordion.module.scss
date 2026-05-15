@@ -1,8 +1,7 @@
 @use 'mixins' as m;
 
 .accordion {
-  display: flex;
-  flex-direction: column;
+  @include m.flex($direction: column, $align: stretch);
   border: 1px solid m.color(border-default);
   border-radius: m.radius(md);
   overflow: hidden;
@@ -14,10 +13,7 @@
 
 .trigger {
   all: unset;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: m.space(3);
+  @include m.flex($justify: between, $gap: 3);
   width: 100%;
   box-sizing: border-box;
   padding: m.space(3) m.space(4);

@@ -20,9 +20,7 @@
 }
 
 .withLabel {
-  display: flex;
-  align-items: center;
-  gap: m.space(3);
+  @include m.flex($gap: 3);
   background: transparent;
   height: auto;
 }
