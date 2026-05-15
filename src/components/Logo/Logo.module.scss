@@ -69,7 +69,10 @@
   display: block;
 }
 
-.overflow { margin-left: -0.02em; }
+.overflow {
+  margin-left: -0.02em;
+  letter-spacing: 0.02em; /* Tightens "AWESOME" optically so it matches CSS/IS */
+}
 
 .caption {
   position: absolute;
