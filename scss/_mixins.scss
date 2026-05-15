@@ -157,14 +157,21 @@ $_font-types: (
   black-it:    (weight: black, style: italic),
 );
 
-// Font mixin - accepts size as token name OR value.
+// Font mixin - the complete text-style block in one call.
 // $family handling:
-//   - Bare slug (e.g. `meme`, `pacifico`) → resolves to var(--font-<slug>),
-//     which font-load auto-emits at :root. The slug must be registered via
-//     `@include font-load(<slug>, ...)` first; @error fires at compile if not.
-//   - Sass list / pre-formed string with commas or var() → passes through
-//     unchanged (one-off stack with no registration).
-@mixin font($type: reg, $size: null, $lh: null, $ls: null, $family: null) {
+//   - Bare slug (e.g. `meme`, `pacifico`) → emits font-family: var(--font-<slug>).
+//     Consumer declares the variable in their global stylesheet (globals.css).
+//   - Sass list / pre-formed string with commas or var() → passes through.
+// $color handling: pass a contract color name (e.g. `text-primary`, `ink`) and
+// the mixin emits `color: m.color($color)` at the end of the block.
+@mixin font(
+  $type: reg,
+  $size: null,
+  $lh: null,
+  $ls: null,
+  $family: null,
+  $color: null
+) {
   $cfg: map.get($_font-types, $type) or map.get($_font-types, reg);
   font-weight: font-weight(map.get($cfg, weight));
   font-style: map.get($cfg, style);
@@ -209,6 +216,10 @@ $_font-types: (
     } @else {
       letter-spacing: $ls;
     }
+  }
+
+  @if $color {
+    color: color($color);
   }
 }
 

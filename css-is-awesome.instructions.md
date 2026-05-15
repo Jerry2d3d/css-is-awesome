@@ -337,9 +337,11 @@ See `/docs/authoring/themes` for the full guide.
 
 ```scss
 /* 2) Use it from any component (mixin form OR raw CSS — both work) */
-.logo  { @include m.font($lh: 0.95, $ls: -0.01em, $family: meme); }
+.logo  { @include m.font($family: meme, $color: text-primary, $lh: 0.95, $ls: -0.01em); }
 .stamp { font-family: var(--font-meme); }
 ```
+
+`m.font` takes every text-style property in one call: `$type` (weight + style preset), `$size`, `$lh`, `$ls`, `$family`, `$color`. Pass only what you need — null defaults skip the emit.
 
 `m.font($family: <slug>)` emits `font-family: var(--font-<slug>);` — no registration, no Sass-side magic. The slug is just a CSS variable name. As long as `--font-<slug>` is declared *somewhere* in scope (globals, theme, page, block), the browser resolves it.
 

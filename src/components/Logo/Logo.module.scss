@@ -54,10 +54,7 @@
   padding: 0.3em 0.35em 0.35em; /* em-relative to logo-size; intentional */
   position: relative;
 
-  /* Font block: meme (Helvetica) + line-height + letter-spacing in one
-     call. The slug `meme` was registered above via m.font-load. */
-  @include m.font($lh: 0.95, $ls: -0.01em, $family: meme);
-  color: m.color(text-primary);
+  @include m.font($family: meme, $color: text-primary, $lh: 0.95, $ls: -0.01em);
   overflow: visible;
   @include m.border(2px, solid, text-primary);
   background: transparent;
@@ -82,9 +79,7 @@
      either would shift the caption visibly off the logo corner. */
   right: 36px;
 
-  /* Font block: script family + size 6 (1.5rem / 2xl) + lh 1, collapsed. */
-  @include m.font(reg, 6, $lh: 1, $family: m.font-family(script));
-  color: m.color(action-secondary-default);
+  @include m.font(reg, 6, $lh: 1, $family: m.font-family(script), $color: action-secondary-default);
   transform: rotate(-4deg);
   pointer-events: none;
 }
