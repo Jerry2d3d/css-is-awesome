@@ -175,10 +175,9 @@ $_font-types: (
                    and not string.index('#{$family}', ',')
                    and not string.index('#{$family}', 'var(');
     @if $is-bare-name {
-      $registered: map.get($_loaded-fonts, $family);
-      @if not $registered {
-        @error "font(): family '#{$family}' is not registered. Call `@include font-load(#{$family}, ...)` first. Loaded slugs: #{map.keys($_loaded-fonts)}.";
-      }
+      // Slugs are CSS variable names — emit var(--font-<slug>) and trust
+      // the consumer to declare the variable somewhere global
+      // (typically `:root { --font-<slug>: ...; }` in globals.css).
       font-family: var(--font-#{$family});
     } @else {
       font-family: $family;
@@ -214,97 +213,58 @@ $_font-types: (
 }
 
 // ============================================================================
-// FONTS — register once, use anywhere via --font-<slug>
+// FONTS — two-line model
 // ----------------------------------------------------------------------------
-// Every `font-load()` call always emits `--font-<slug>: <stack>;` at :root,
-// so every loaded font is a CSS variable consumers can use 1 or 100 times:
+// Two lines of work for any custom font, period:
 //
-//   font-family: var(--font-<slug>);            // raw CSS
-//   @include m.font(reg, 7, $family: <slug>);   // through the mixin
+//   1) Declare the CSS variable on :root in your global stylesheet:
+//        :root { --font-meme: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
 //
-// Three shapes, one mixin:
+//   2) Use it in any component:
+//        @include m.font($lh: 0.95, $family: meme);   // mixin form
+//        font-family: var(--font-meme);                // raw form
 //
-//   // 1) Hosted font (Google Fonts / CDN). The slug doubles as the font face
-//   //    name unless $name overrides it.
-//   @include font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-//   // → @import url(...);
-//   // → :root { --font-Pacifico: "Pacifico", sans-serif; }
+// Override anywhere CSS variables work — root, theme, page, block, element.
 //
-//   // 2) System / pre-installed font alias (no URL needed — Option-4 path).
-//   @include font-load(meme,
-//     $fallback: ('Helvetica Neue', Helvetica, Arial, sans-serif));
-//   // → :root { --font-meme: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+// HOSTED FONTS (Google Fonts / CDN):
+// `font-load` registers a URL and emits `@import url(...)`. Call it from a
+// global Sass file (NOT a .module.scss — CSS Modules pure mode forbids the
+// :root selector the auto-emit would need). The CSS variable still gets
+// declared via the consumer's global stylesheet, same as system fonts.
 //
-//   // 3) Override one of the 6 theme contract slots while registering:
-//   @include font-load('Pacifico', '<url>', $alias: display);
-//   // → @import + --font-Pacifico + --font-display now both = Pacifico
+//   // src/styles/fonts.scss (a global .scss imported from layout.tsx):
+//   @include m.font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico');
 //
-// To override a font in a scope (one page, one block, one element), set the
-// variable in that scope — standard CSS:
+//   // src/app/globals.css:
+//   :root { --font-pacifico: 'Pacifico', cursive; }
 //
-//   .landing-page { --font-meme: 'Pacifico', cursive; }
+//   // Any component:
+//   .heading { @include m.font($family: pacifico); }
 //
 // Sister `font-load-local()` covers self-hosted woff2/ttf/etc. via @font-face.
 // ============================================================================
 $_loaded-fonts: () !default;
 
-@mixin font-load(
-  $slug,
-  $url: null,
-  $name: null,
-  $alias: null,
-  $fallback: sans-serif,
-  $root: ':global(:root)'
-) {
-  // Face name = explicit $name, else the slug itself (for hosted fonts).
-  $face: $name or $slug;
-
-  // Build the stack the CSS variable will hold.
-  // Hosted: "<face>", <fallback>   (load the face, fall back to generic).
-  // System: <fallback>             (no face to load; fallback is the stack).
-  $stack: '#{$fallback}';
-  @if $url {
-    $stack: '"#{$face}", #{$fallback}';
-  }
-
-  // Registry — used by m.font($family: <slug>) to validate and resolve.
-  $existing: map.get($_loaded-fonts, $slug);
+@mixin font-load($name, $url, $alias: null, $fallback: sans-serif) {
+  $existing: map.get($_loaded-fonts, $name);
   @if $existing {
     @if map.get($existing, url) != $url {
-      @error "font-load(): slug '#{$slug}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One slug, one URL.";
+      @error "font-load(): '#{$name}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One name, one URL.";
     }
-    // Same slug + URL → registry no-op (still re-emits the CSS var below,
-    // which is harmless — same value, idempotent in compiled CSS).
+    // Same name + URL = no-op. @import already emitted on the first call.
   } @else {
-    $_loaded-fonts: map.set($_loaded-fonts, $slug, (
-      url: $url,
-      face: $face,
-      fallback: $fallback,
-      stack: $stack,
-    )) !global;
-    @if $url {
-      @at-root {
-        /* stylelint-disable-next-line no-invalid-position-at-import-rule, import-notation -- @at-root lifts this @import to the top of the compiled stylesheet (valid position); url() notation is required because Sass rejects the bare-string form inside @at-root. */
-        @import url(#{$url});
-      }
+    $_loaded-fonts: map.set($_loaded-fonts, $name, (url: $url, fallback: $fallback)) !global;
+    @at-root {
+      /* stylelint-disable-next-line no-invalid-position-at-import-rule, import-notation -- @at-root lifts this @import to the top of the compiled stylesheet (valid position); url() notation is required because Sass rejects the bare-string form inside @at-root. */
+      @import url(#{$url});
     }
   }
 
-  // Always emit --font-<slug> on the $root selector so it works anywhere.
-  // Default is ':global(:root)' which:
-  //   - in CSS Modules (.module.scss) compiles to `:root` (the :global
-  //     wrapper opts out of the module-purity check)
-  //   - in plain SCSS contexts you pass `$root: ':root'` to skip the
-  //     non-standard `:global()` wrapper
-  @at-root #{$root} {
-    --font-#{$slug}: #{$stack};
-  }
-
-  // Optional: also override one of the 6 theme contract slots.
+  // Optional: emit a theme-slot alias at the call site. Best called from a
+  // selector context that owns the override (e.g. inside :root in a global
+  // Sass file, or inside [data-theme="x"] for a per-theme override).
   @if $alias {
-    @at-root #{$root} {
-      --font-#{$alias}: #{$stack};
-    }
+    --font-#{$alias}: '#{$name}', #{$fallback};
   }
 }
 

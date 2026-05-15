@@ -326,46 +326,24 @@ Theme names carry a mode suffix (`-light` / `-dark`) since v0.7. Shipped familie
 
 See `/docs/authoring/themes` for the full guide.
 
-### Adding fonts — one mixin, three shapes
+### Adding fonts — two lines
 
-`m.font-load` registers a font slug and **always emits `--font-<slug>` at :root**, so every loaded font is a CSS variable consumers can use 1 or 100 times. Three shapes:
-
-```scss
-// page.module.scss (or any module that uses the font)
-@use 'css-is-awesome/scss/mixins' as m;
-
-// 1) Hosted font (Google Fonts / CDN) — slug doubles as the face name
-@include m.font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-// → @import url(...);
-// → :root { --font-Pacifico: "Pacifico", sans-serif; }
-
-// 2) System / pre-installed font alias — no URL needed
-@include m.font-load(meme,
-  $fallback: ('Helvetica Neue', Helvetica, Arial, sans-serif));
-// → :root { --font-meme: "Helvetica Neue", Helvetica, Arial, sans-serif; }
-
-// 3) Hosted + override one of the 6 theme contract slots
-@include m.font-load('Caveat', 'https://fonts.googleapis.com/css2?family=Caveat',
-                     $alias: script);
-// → @import + --font-Caveat + --font-script (= "Caveat", sans-serif)
-
-// 4) Self-hosted (woff2 / ttf / etc.)
-@include m.font-load-local('Untitled Sans', '/fonts/UntitledSans.woff2');
+```css
+/* 1) Declare the slug in your global stylesheet (globals.css, theme.css, etc.) */
+:root {
+  --font-meme: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
 ```
 
-Then consume in components — two interchangeable patterns:
-
 ```scss
-// Through the mixin (one line, slug as $family):
-.headline { @include m.font(reg, 7, $family: 'Pacifico'); }
-.logo     { @include m.font($lh: 0.95, $ls: -0.01em, $family: meme); }
-
-// Through raw CSS (use --font-<slug> directly):
-.note     { font-family: var(--font-meme); }
-.heroH1   { font-family: var(--font-Pacifico); }
+/* 2) Use it from any component (mixin form OR raw CSS — both work) */
+.logo  { @include m.font($lh: 0.95, $ls: -0.01em, $family: meme); }
+.stamp { font-family: var(--font-meme); }
 ```
 
-**Override anywhere** — set the CSS variable in any scope:
+`m.font($family: <slug>)` emits `font-family: var(--font-<slug>);` — no registration, no Sass-side magic. The slug is just a CSS variable name. As long as `--font-<slug>` is declared *somewhere* in scope (globals, theme, page, block), the browser resolves it.
+
+**Override anywhere CSS variables work:**
 
 ```scss
 :root             { --font-meme: 'Inter', sans-serif; }   // site-wide
@@ -375,19 +353,24 @@ Then consume in components — two interchangeable patterns:
 <h1 style="--font-meme: 'Comic Sans MS'">                 // one element
 ```
 
-**Where to call `font-load`** — each `.module.scss` is its own Sass compilation, so the slug registry is per-file. Practically: call `m.font-load(<slug>, ...)` at the top of every module that uses the slug. The `:root` declaration ends up identical across files, so browsers dedupe — only the value matters.
-
-**Scope selector / CSS Modules** — `font-load` defaults to emitting on `:global(:root)`, which CSS Modules (Next.js, webpack `css-loader` with `modules: true`) strip to `:root` in the final CSS. If you're consuming in a plain SCSS context (no CSS Modules), pass `$root: ':root'` to skip the non-standard `:global()` wrapper:
+**Hosted fonts (Google Fonts / CDN)** — use `m.font-load(name, url)` from a *global* Sass file (not a `.module.scss`, because CSS Modules' pure mode rejects the `@import` placement). It registers the URL once and emits the `@import url(...)`.
 
 ```scss
-// CSS Modules (default) — works as-is
-@include m.font-load(meme, $fallback: (...));
-
-// Plain SCSS context (Vite without modules, plain webpack, etc.)
-@include m.font-load(meme, $fallback: (...), $root: ':root');
+// src/styles/fonts.scss (a global .scss imported from layout.tsx)
+@include m.font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 ```
 
-`font-load` is idempotent (same slug + same URL = no-op; different URL = `@error`).
+```css
+/* src/app/globals.css — declare the variable that components consume */
+:root { --font-pacifico: 'Pacifico', cursive; }
+```
+
+```scss
+/* component */
+.headline { @include m.font($family: pacifico); }
+```
+
+**Self-hosted fonts** — `m.font-load-local('Untitled Sans', '/fonts/UntitledSans.woff2')` for the `@font-face` declaration; declare the CSS variable separately the same way.
 
 ---
 

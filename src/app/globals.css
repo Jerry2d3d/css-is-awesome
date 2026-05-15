@@ -7,6 +7,15 @@
    component. Tokens come from theme.css (swappable).
    ============================================================ */
 
+/* Site-wide custom font slugs. Add a `--font-<slug>: <stack>;` line here for
+   any custom face beyond the 6 theme-contract slots, then consume from any
+   component via `font-family: var(--font-<slug>);` or
+   `@include m.font($family: <slug>)`. Override in any tighter scope (theme,
+   page, block, element) by re-declaring the variable there. */
+:root {
+  --font-meme: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 

@@ -12,15 +12,9 @@
    ============================================================ */
 @use 'mixins' as m;
 
-/* Logo's own font dependency — Helvetica Neue is the CSS IS AWESOME meme's
-   identity and shouldn't theme-swap. font-load registers the slug `meme` and
-   emits `--font-meme: "Helvetica Neue", Helvetica, Arial, sans-serif;` at :root
-   in this module's compiled CSS. Any component (Seal, DraftStamp, future Brand)
-   that also wants this face calls `m.font-load(meme, ...)` at its own top — the
-   :root declaration ends up identical so browsers dedupe. Override the font
-   anywhere by setting `--font-meme` in a tighter scope. */
-@include m.font-load(meme,
-  $fallback: ('Helvetica Neue', Helvetica, Arial, sans-serif));
+/* The `meme` slug consumed below resolves to var(--font-meme), declared at
+   :root in src/app/globals.css. Helvetica Neue is the CSS IS AWESOME meme's
+   identity; override it anywhere with `--font-meme: ...;` in any scope. */
 
 .stage {
   position: relative;

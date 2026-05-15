@@ -324,30 +324,31 @@ export default function DocsMixinsPage() {
       </Example>
 
       <h3 id="font-load"><code>font-load</code> &amp; <code>font-load-local</code></h3>
-      <p>Register a font once; <code>font-load</code> always emits <code>--font-&lt;slug&gt;</code> at <code>:root</code> so the font is a CSS variable you can use 1 or 100 times. <code>$url</code> is optional — pass it for hosted fonts, omit it for system-font aliases. Optional <code>$alias</code> also overrides one of the 6 theme contract slots (<code>display</code>, <code>script</code>, <code>serif</code>, <code>sans</code>, <code>mono</code>, <code>primary</code>). <code>font-load-local</code> is the sister mixin for self-hosted woff2/ttf via <code>@font-face</code>.</p>
+      <p>Two lines to add any custom font: declare the slug on <code>:root</code> in a global stylesheet, then consume from any component. <code>font-load</code> handles the <code>@import url(...)</code> plumbing for hosted fonts; <code>font-load-local</code> wraps <code>@font-face</code> for self-hosted. Both are called from a <em>global</em> Sass file (not <code>.module.scss</code>).</p>
       <Example>
-        <Example.Code><span className="tok-com">{"// 1) Hosted font (Google Fonts / CDN)"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">'Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap'</span>);
-{"\n"}<span className="tok-com">{"// → @import + :root { --font-Pacifico: 'Pacifico', sans-serif; }"}</span>
+        <Example.Code><span className="tok-com">{"// --- 1) Declare on :root in your global stylesheet ---"}</span>
+{"\n"}<span className="tok-com">{"// globals.css"}</span>
+{"\n"}<span className="tok-sel">:root</span> {"{"}
+{"\n"}  <span className="tok-prop">--font-meme</span>: <span className="tok-val">'Helvetica Neue', Helvetica, Arial, sans-serif</span>;
+{"\n"}{"}"}
 {"\n"}
-{"\n"}<span className="tok-com">{"// 2) System font alias (no URL — Helvetica is already on every machine)"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">{"meme, $fallback: ('Helvetica Neue', Helvetica, Arial, sans-serif)"}</span>);
-{"\n"}<span className="tok-com">{"// → :root { --font-meme: 'Helvetica Neue', Helvetica, Arial, sans-serif; }"}</span>
+{"\n"}<span className="tok-com">{"// --- 2) Use from any component ---"}</span>
+{"\n"}<span className="tok-sel">.logo</span>  {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.font($lh: 0.95, $family: meme)</span>; {"}"}
+{"\n"}<span className="tok-sel">.stamp</span> {"{"} <span className="tok-prop">font-family</span>: <span className="tok-val">var(--font-meme)</span>; {"}"}
 {"\n"}
-{"\n"}<span className="tok-com">{"// 3) Hosted + override a theme contract slot"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">{"'Caveat', 'https://...', $alias: script"}</span>);
+{"\n"}<span className="tok-com">{"// --- Override anywhere — set the variable in a tighter scope ---"}</span>
+{"\n"}<span className="tok-sel">.landing-page</span> {"{"} <span className="tok-prop">--font-meme</span>: <span className="tok-val">'Caveat', cursive</span>; {"}"}
 {"\n"}
-{"\n"}<span className="tok-com">{"// 4) Self-hosted file"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);
+{"\n"}<span className="tok-com">{"// --- Hosted font (Google / CDN) — call from a global .scss file ---"}</span>
+{"\n"}<span className="tok-com">{"// src/styles/fonts.scss (imported from layout.tsx)"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">'Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico'</span>);
+{"\n"}<span className="tok-com">{"// → emits @import url(...)"}</span>
+{"\n"}<span className="tok-com">{"// then declare the variable in globals.css and consume like step 2"}</span>
 {"\n"}
-{"\n"}<span className="tok-com">{"// --- Consume — two interchangeable patterns ---"}</span>
-{"\n"}<span className="tok-sel">.headline</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.font(reg, 7, $family: 'Pacifico')</span>; {"}"}
-{"\n"}<span className="tok-sel">.logo</span>     {"{"} <span className="tok-prop">font-family</span>: <span className="tok-val">var(--font-meme)</span>; {"}"}
-{"\n"}
-{"\n"}<span className="tok-com">{"// --- Override anywhere CSS variables work ---"}</span>
-{"\n"}<span className="tok-sel">.landing-page</span> {"{"} <span className="tok-prop">--font-meme</span>: <span className="tok-val">'Caveat', cursive</span>; {"}"} <span className="tok-com">{"// just this page"}</span></Example.Code>
+{"\n"}<span className="tok-com">{"// --- Self-hosted font (woff2 / ttf) ---"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);</Example.Code>
       </Example>
-      <p>Tip: each <code>.module.scss</code> is its own Sass compilation, so the slug registry doesn&apos;t cross files. Call <code>font-load</code> at the top of every module that uses the slug — the <code>:root</code> declaration ends up identical so browsers dedupe.</p>
+      <p>Tip: <code>m.font($family: meme)</code> emits <code>font-family: var(--font-meme)</code>. The slug is just a CSS variable name — no Sass-side registry, no validation. As long as <code>--font-meme</code> is declared somewhere in scope, the browser resolves it.</p>
 
       <h3 id="type"><code>type</code></h3>
       <p>Applies a named type-scale preset: size + weight + line-height + letter-spacing in one include.</p>
