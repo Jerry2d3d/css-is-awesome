@@ -1,22 +1,21 @@
-/* DraftStamp component styles */
-/* Draft stamp — top-right */
+@use 'mixins' as m;
+
+/* DraftStamp — Sketchbook marginalia flourish, top-right.
+   --ochre / --ochre-wash are Sketchbook-specific tokens (not in the
+   shared contract); the stamp leans on them by design. Text uses
+   warning-text so it clears WCAG AA 4.5:1 against --ochre-wash while
+   the ochre border still carries the marginalia colour. */
 .stamp {
   position: fixed;
-  top: 2rem;
-  right: 2rem;
-  padding: 8px 16px;
+  top: m.space(6);
+  right: m.space(6);
+  padding: m.space(1) m.space(4);
   border: 2px solid var(--ochre);
-  /* Text uses --warning-text (deeper ochre) to clear WCAG AA 4.5:1 against
-     --ochre-wash; the ochre border still carries the marginalia colour. */
-  color: var(--warning-text);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  background: var(--ochre-wash);
+  color: m.color(warning-text);
+  @include m.font(bold, xs, none, $ls: 0.22em, $family: m.font-family(mono));
   text-transform: uppercase;
   transform: rotate(-4deg);
   z-index: 60;
-  background: var(--ochre-wash);
-  line-height: 1;
   pointer-events: none;
 }
