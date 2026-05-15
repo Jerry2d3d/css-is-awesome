@@ -50,15 +50,13 @@
   padding: 0.3em 0.35em 0.35em; /* em-relative to logo-size; intentional */
   position: relative;
 
-  /* Font block: family + weight + line-height + letter-spacing collapsed
-     into m.font(). Note: m.font($family: m.font-family(sans)) — pass the
-     function result, not a bare name, so the mixin treats it as a CSS
-     value passthrough rather than a font-load registry lookup. */
-  @include m.font(
-    $family: m.font-family(sans),
-    $lh: 0.95,
-    $ls: -0.01em
-  );
+  /* Font: Helvetica Neue is the canonical CSS IS AWESOME meme face —
+     hardcoded on purpose so it stays Helvetica across every theme.
+     Do NOT route through m.font-family(sans); each theme's sans token
+     resolves to a different face (Sketchbook → Inter, Cupertino → SF
+     Pro Text, etc.) and the meme would lose its identity. */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  @include m.font($lh: 0.95, $ls: -0.01em);
   color: m.color(text-primary);
   overflow: visible;
   @include m.border(2px, solid, text-primary);
