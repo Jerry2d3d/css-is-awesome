@@ -326,22 +326,58 @@ Theme names carry a mode suffix (`-light` / `-dark`) since v0.7. Shipped familie
 
 See `/docs/authoring/themes` for the full guide.
 
-### Add a one-off page font
+### Adding fonts — one mixin, three shapes
+
+`m.font-load` registers a font slug and **always emits `--font-<slug>` at :root**, so every loaded font is a CSS variable consumers can use 1 or 100 times. Three shapes:
 
 ```scss
-// page.module.scss
+// page.module.scss (or any module that uses the font)
 @use 'css-is-awesome/scss/mixins' as m;
 
-// Common case — Google Fonts. Optionally alias to a theme token.
-@include m.font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap', $alias: display);
+// 1) Hosted font (Google Fonts / CDN) — slug doubles as the face name
+@include m.font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+// → @import url(...);
+// → :root { --font-Pacifico: "Pacifico", sans-serif; }
 
-// Self-hosted
+// 2) System / pre-installed font alias — no URL needed
+@include m.font-load(meme,
+  $fallback: ('Helvetica Neue', Helvetica, Arial, sans-serif));
+// → :root { --font-meme: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+// 3) Hosted + override one of the 6 theme contract slots
+@include m.font-load('Caveat', 'https://fonts.googleapis.com/css2?family=Caveat',
+                     $alias: script);
+// → @import + --font-Caveat + --font-script (= "Caveat", sans-serif)
+
+// 4) Self-hosted (woff2 / ttf / etc.)
 @include m.font-load-local('Untitled Sans', '/fonts/UntitledSans.woff2');
-
-.headline { @include m.font(reg, 7, $family: 'Pacifico'); }
 ```
 
-`font-load` is idempotent (calling twice is safe), `@error`s on URL conflicts, and optionally aliases the font to a theme token (`$alias: display` writes `--font-display: 'Pacifico'` in the local scope so consumers keep using token vocabulary).
+Then consume in components — two interchangeable patterns:
+
+```scss
+// Through the mixin (one line, slug as $family):
+.headline { @include m.font(reg, 7, $family: 'Pacifico'); }
+.logo     { @include m.font($lh: 0.95, $ls: -0.01em, $family: meme); }
+
+// Through raw CSS (use --font-<slug> directly):
+.note     { font-family: var(--font-meme); }
+.heroH1   { font-family: var(--font-Pacifico); }
+```
+
+**Override anywhere** — set the CSS variable in any scope:
+
+```scss
+:root             { --font-meme: 'Inter', sans-serif; }   // site-wide
+[data-theme="x"]  { --font-meme: 'Press Start 2P', monospace; }  // per-theme
+.landing-page     { --font-meme: 'Caveat', cursive; }     // one page
+.hero             { --font-meme: 'Pacifico', cursive; }   // one block
+<h1 style="--font-meme: 'Comic Sans MS'">                 // one element
+```
+
+**Where to call `font-load`** — each `.module.scss` is its own Sass compilation, so the slug registry is per-file. Practically: call `m.font-load(<slug>, ...)` at the top of every module that uses the slug. The `:root` declaration ends up identical across files, so browsers dedupe — only the value matters.
+
+`font-load` is idempotent (same slug + same URL = no-op; different URL = `@error`).
 
 ---
 

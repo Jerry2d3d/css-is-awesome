@@ -324,19 +324,30 @@ export default function DocsMixinsPage() {
       </Example>
 
       <h3 id="font-load"><code>font-load</code> &amp; <code>font-load-local</code></h3>
-      <p>Drop a one-off font into a single page or section without forking the theme. <code>font-load</code> registers a Google Fonts URL once (idempotent across the compile), emits the <code>@import</code>, and optionally aliases the loaded family to one of the theme&apos;s font tokens (<code>display</code>, <code>script</code>, <code>serif</code>, <code>sans</code>, <code>mono</code>, <code>primary</code>) so the rest of the page can keep using <code>var(--font-display)</code> with no further changes. <code>font-load-local</code> is the sister mixin for self-hosted woff2/ttf via <code>@font-face</code>.</p>
+      <p>Register a font once; <code>font-load</code> always emits <code>--font-&lt;slug&gt;</code> at <code>:root</code> so the font is a CSS variable you can use 1 or 100 times. <code>$url</code> is optional — pass it for hosted fonts, omit it for system-font aliases. Optional <code>$alias</code> also overrides one of the 6 theme contract slots (<code>display</code>, <code>script</code>, <code>serif</code>, <code>sans</code>, <code>mono</code>, <code>primary</code>). <code>font-load-local</code> is the sister mixin for self-hosted woff2/ttf via <code>@font-face</code>.</p>
       <Example>
-        <Example.Code><span className="tok-com">{"// Load + apply (Google Fonts)"}</span>
+        <Example.Code><span className="tok-com">{"// 1) Hosted font (Google Fonts / CDN)"}</span>
 {"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">'Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap'</span>);
+{"\n"}<span className="tok-com">{"// → @import + :root { --font-Pacifico: 'Pacifico', sans-serif; }"}</span>
+{"\n"}
+{"\n"}<span className="tok-com">{"// 2) System font alias (no URL — Helvetica is already on every machine)"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">{"meme, $fallback: ('Helvetica Neue', Helvetica, Arial, sans-serif)"}</span>);
+{"\n"}<span className="tok-com">{"// → :root { --font-meme: 'Helvetica Neue', Helvetica, Arial, sans-serif; }"}</span>
+{"\n"}
+{"\n"}<span className="tok-com">{"// 3) Hosted + override a theme contract slot"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">{"'Caveat', 'https://...', $alias: script"}</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// 4) Self-hosted file"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// --- Consume — two interchangeable patterns ---"}</span>
 {"\n"}<span className="tok-sel">.headline</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.font(reg, 7, $family: 'Pacifico')</span>; {"}"}
+{"\n"}<span className="tok-sel">.logo</span>     {"{"} <span className="tok-prop">font-family</span>: <span className="tok-val">var(--font-meme)</span>; {"}"}
 {"\n"}
-{"\n"}<span className="tok-com">{"// Load + alias to a theme token (page-scoped --font-display override)"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">{"'Pacifico', '<url>', $alias: display"}</span>);
-{"\n"}
-{"\n"}<span className="tok-com">{"// Self-hosted file"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);</Example.Code>
+{"\n"}<span className="tok-com">{"// --- Override anywhere CSS variables work ---"}</span>
+{"\n"}<span className="tok-sel">.landing-page</span> {"{"} <span className="tok-prop">--font-meme</span>: <span className="tok-val">'Caveat', cursive</span>; {"}"} <span className="tok-com">{"// just this page"}</span></Example.Code>
       </Example>
-      <p>Tip: drop the <code>font-load</code> call inside a per-route CSS Module (e.g. <code>src/app/special-landing/page.module.scss</code>) and Next will scope the font download to that route only — pages that don&apos;t import the module never see the font in their network tab.</p>
+      <p>Tip: each <code>.module.scss</code> is its own Sass compilation, so the slug registry doesn&apos;t cross files. Call <code>font-load</code> at the top of every module that uses the slug — the <code>:root</code> declaration ends up identical so browsers dedupe.</p>
 
       <h3 id="type"><code>type</code></h3>
       <p>Applies a named type-scale preset: size + weight + line-height + letter-spacing in one include.</p>

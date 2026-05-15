@@ -158,10 +158,12 @@ $_font-types: (
 );
 
 // Font mixin - accepts size as token name OR value.
-// $family handling: if it's a registered name (loaded via font-load), wraps
-// with quotes + the registered fallback. If it's a custom string with a comma
-// or var() reference, passes through as-is. If it's a single-word name that
-// is NOT registered, fails loudly with @error so typos surface at compile.
+// $family handling:
+//   - Bare slug (e.g. `meme`, `pacifico`) → resolves to var(--font-<slug>),
+//     which font-load auto-emits at :root. The slug must be registered via
+//     `@include font-load(<slug>, ...)` first; @error fires at compile if not.
+//   - Sass list / pre-formed string with commas or var() → passes through
+//     unchanged (one-off stack with no registration).
 @mixin font($type: reg, $size: null, $lh: null, $ls: null, $family: null) {
   $cfg: map.get($_font-types, $type) or map.get($_font-types, reg);
   font-weight: font-weight(map.get($cfg, weight));
@@ -175,9 +177,9 @@ $_font-types: (
     @if $is-bare-name {
       $registered: map.get($_loaded-fonts, $family);
       @if not $registered {
-        @error "font(): family '#{$family}' is not loaded. Call `@include font-load('#{$family}', '<url>')` first. Loaded fonts: #{map.keys($_loaded-fonts)}.";
+        @error "font(): family '#{$family}' is not registered. Call `@include font-load(#{$family}, ...)` first. Loaded slugs: #{map.keys($_loaded-fonts)}.";
       }
-      font-family: '#{$family}', #{map.get($registered, fallback)};
+      font-family: var(--font-#{$family});
     } @else {
       font-family: $family;
     }
@@ -212,51 +214,91 @@ $_font-types: (
 }
 
 // ============================================================================
-// ONE-OFF PAGE FONTS — load + (optional) theme-token alias
+// FONTS — register once, use anywhere via --font-<slug>
 // ----------------------------------------------------------------------------
-// `font-load()` registers a font once and emits the `@import url(...)` once
-// per compile. Passing `$alias: display` (or any of the theme font tokens —
-// display, script, serif, sans, mono, primary) writes a local
-// `--font-#{$alias}: '<name>', <fallback>` so the rest of the page can keep
-// using the existing token vocabulary.
+// Every `font-load()` call always emits `--font-<slug>: <stack>;` at :root,
+// so every loaded font is a CSS variable consumers can use 1 or 100 times:
 //
-// Apply via the existing `font()` mixin — it validates the family name
-// against the registry and fails loudly on typos.
+//   font-family: var(--font-<slug>);            // raw CSS
+//   @include m.font(reg, 7, $family: <slug>);   // through the mixin
+//
+// Three shapes, one mixin:
+//
+//   // 1) Hosted font (Google Fonts / CDN). The slug doubles as the font face
+//   //    name unless $name overrides it.
+//   @include font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+//   // → @import url(...);
+//   // → :root { --font-Pacifico: "Pacifico", sans-serif; }
+//
+//   // 2) System / pre-installed font alias (no URL needed — Option-4 path).
+//   @include font-load(meme,
+//     $fallback: ('Helvetica Neue', Helvetica, Arial, sans-serif));
+//   // → :root { --font-meme: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+//
+//   // 3) Override one of the 6 theme contract slots while registering:
+//   @include font-load('Pacifico', '<url>', $alias: display);
+//   // → @import + --font-Pacifico + --font-display now both = Pacifico
+//
+// To override a font in a scope (one page, one block, one element), set the
+// variable in that scope — standard CSS:
+//
+//   .landing-page { --font-meme: 'Pacifico', cursive; }
 //
 // Sister `font-load-local()` covers self-hosted woff2/ttf/etc. via @font-face.
-//
-// Usage:
-//   // Common case — Google Fonts:
-//   @include font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-//   .headline { @include font(reg, 7, $family: 'Pacifico'); }
-//
-//   // Theme-token override — page-scoped:
-//   @include font-load('Pacifico', '<url>', $alias: display);
-//   // now `var(--font-display)` resolves to Pacifico for this scope
-//
-//   // Self-hosted:
-//   @include font-load-local('Untitled Sans', '/fonts/UntitledSans.woff2');
-//   .body { @include font(reg, 3, $family: 'Untitled Sans'); }
 // ============================================================================
 $_loaded-fonts: () !default;
 
-@mixin font-load($name, $url, $alias: null, $fallback: sans-serif) {
-  $existing: map.get($_loaded-fonts, $name);
+@mixin font-load(
+  $slug,
+  $url: null,
+  $name: null,
+  $alias: null,
+  $fallback: sans-serif
+) {
+  // Face name = explicit $name, else the slug itself (for hosted fonts).
+  $face: $name or $slug;
+
+  // Build the stack the CSS variable will hold.
+  // Hosted: "<face>", <fallback>   (load the face, fall back to generic).
+  // System: <fallback>             (no face to load; fallback is the stack).
+  $stack: '#{$fallback}';
+  @if $url {
+    $stack: '"#{$face}", #{$fallback}';
+  }
+
+  // Registry — used by m.font($family: <slug>) to validate and resolve.
+  $existing: map.get($_loaded-fonts, $slug);
   @if $existing {
     @if map.get($existing, url) != $url {
-      @error "font-load(): '#{$name}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One name, one URL.";
+      @error "font-load(): slug '#{$slug}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One slug, one URL.";
     }
-    // Same name + URL = no-op. Emit nothing — registry already has it.
+    // Same slug + URL → registry no-op (still re-emits the CSS var below,
+    // which is harmless — same value, idempotent in compiled CSS).
   } @else {
-    $_loaded-fonts: map.set($_loaded-fonts, $name, (url: $url, fallback: $fallback)) !global;
-    @at-root {
-      /* stylelint-disable-next-line no-invalid-position-at-import-rule, import-notation -- @at-root lifts this @import to the top of the compiled stylesheet (valid position); url() notation is required because Sass rejects the bare-string form inside @at-root. */
-      @import url(#{$url});
+    $_loaded-fonts: map.set($_loaded-fonts, $slug, (
+      url: $url,
+      face: $face,
+      fallback: $fallback,
+      stack: $stack,
+    )) !global;
+    @if $url {
+      @at-root {
+        /* stylelint-disable-next-line no-invalid-position-at-import-rule, import-notation -- @at-root lifts this @import to the top of the compiled stylesheet (valid position); url() notation is required because Sass rejects the bare-string form inside @at-root. */
+        @import url(#{$url});
+      }
     }
   }
 
+  // Always emit --font-<slug> at :root so it works anywhere.
+  @at-root :root {
+    --font-#{$slug}: #{$stack};
+  }
+
+  // Optional: also override one of the 6 theme contract slots.
   @if $alias {
-    --font-#{$alias}: '#{$name}', #{$fallback};
+    @at-root :root {
+      --font-#{$alias}: #{$stack};
+    }
   }
 }
 

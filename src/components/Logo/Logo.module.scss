@@ -12,6 +12,16 @@
    ============================================================ */
 @use 'mixins' as m;
 
+/* Logo's own font dependency — Helvetica Neue is the CSS IS AWESOME meme's
+   identity and shouldn't theme-swap. font-load registers the slug `meme` and
+   emits `--font-meme: "Helvetica Neue", Helvetica, Arial, sans-serif;` at :root
+   in this module's compiled CSS. Any component (Seal, DraftStamp, future Brand)
+   that also wants this face calls `m.font-load(meme, ...)` at its own top — the
+   :root declaration ends up identical so browsers dedupe. Override the font
+   anywhere by setting `--font-meme` in a tighter scope. */
+@include m.font-load(meme,
+  $fallback: ('Helvetica Neue', Helvetica, Arial, sans-serif));
+
 .stage {
   position: relative;
   display: inline-block;
@@ -50,13 +60,9 @@
   padding: 0.3em 0.35em 0.35em; /* em-relative to logo-size; intentional */
   position: relative;
 
-  /* Font: Helvetica Neue is the canonical CSS IS AWESOME meme face —
-     hardcoded on purpose so it stays Helvetica across every theme.
-     Do NOT route through m.font-family(sans); each theme's sans token
-     resolves to a different face (Sketchbook → Inter, Cupertino → SF
-     Pro Text, etc.) and the meme would lose its identity. */
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  @include m.font($lh: 0.95, $ls: -0.01em);
+  /* Font block: meme (Helvetica) + line-height + letter-spacing in one
+     call. The slug `meme` was registered above via m.font-load. */
+  @include m.font($lh: 0.95, $ls: -0.01em, $family: meme);
   color: m.color(text-primary);
   overflow: visible;
   @include m.border(2px, solid, text-primary);
