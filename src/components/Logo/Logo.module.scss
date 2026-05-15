@@ -4,20 +4,30 @@
    construction-lines SVG and caption. Mirrors the global
    .logo-stage / .logo / .overflow / .logo-stage-caption
    rules in globals.css, but scoped and built from library mixins.
+
+   Reference implementation: this file is intentionally written
+   to show idiomatic css-is-awesome usage — every contract token
+   routed through m.color()/m.space()/m.font-family(), font
+   property blocks collapsed into m.font(), border via m.border().
    ============================================================ */
 @use 'mixins' as m;
 
 .stage {
   position: relative;
   display: inline-block;
+
+  /* 52px / 58px are bespoke proportional padding for the sketchbook
+     stage frame; they don't map to a space token. Kept as literals
+     so the meme proportions stay pixel-tuned. */
   padding: 52px 58px;
 }
 
 .stage::before {
   content: '';
   position: absolute;
-  inset: 24px 24px 24px 24px;
+  inset: m.space(5); /* 24px — 1.5rem */
   pointer-events: none;
+
   /* NOTE: the embedded SVG's stroke color `%23C9BDA5` is the Sketchbook
      native guide-color. It is intentionally a literal (not a theme token),
      so the construction-lines motif stays the warm tan regardless of theme.
@@ -37,16 +47,24 @@
   justify-items: start;
   width: var(--logo-size);
   aspect-ratio: 1 / 1;
-  padding: 0.3em 0.35em 0.35em;
+  padding: 0.3em 0.35em 0.35em; /* em-relative to logo-size; intentional */
   position: relative;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 400;
+
+  /* Font block: family + weight + line-height + letter-spacing collapsed
+     into m.font(). Note: m.font($family: m.font-family(sans)) — pass the
+     function result, not a bare name, so the mixin treats it as a CSS
+     value passthrough rather than a font-load registry lookup. */
+  @include m.font(
+    $family: m.font-family(sans),
+    $lh: 0.95,
+    $ls: -0.01em
+  );
   color: m.color(text-primary);
-  letter-spacing: -0.01em;
-  line-height: 0.95;
   overflow: visible;
-  border: 2px solid m.color(text-primary);
+  @include m.border(2px, solid, text-primary);
   background: transparent;
+
+  /* Bespoke offset drop-shadow with semi-transparent ink; not a token. */
   box-shadow: 3px 4px 0 rgba(42, 36, 30, 0.1);
 }
 
@@ -60,12 +78,15 @@
 
 .caption {
   position: absolute;
-  bottom: 8px;
+  bottom: m.space(1); /* 8px — 0.5rem */
+
+  /* 36px is bespoke — closest tokens are 32px (space 6) and 48px (space 7),
+     either would shift the caption visibly off the logo corner. */
   right: 36px;
-  font-family: m.font-family(script);
-  font-size: 1.5rem;
+
+  /* Font block: script family + size 6 (1.5rem / 2xl) + lh 1, collapsed. */
+  @include m.font(reg, 6, $lh: 1, $family: m.font-family(script));
   color: m.color(action-secondary-default);
   transform: rotate(-4deg);
-  line-height: 1;
   pointer-events: none;
 }
