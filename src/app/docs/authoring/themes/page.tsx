@@ -6,28 +6,68 @@ export default function AuthoringThemesPage() {
     <>
       <h1>Authoring a theme</h1>
       <p className="lead">
-        A theme is a single CSS file declaring the 123 tokens in the contract.
+        Since v0.8, a theme is a single SCSS source at{" "}
+        <code>scss/themes/&lt;name&gt;.scss</code> that compiles to one CSS file
+        at <code>public/themes/&lt;name&gt;/theme.css</code>. Both light and dark
+        modes live inside the single file via native <code>light-dark()</code>.
         The validator guarantees a clean one-file swap.
       </p>
 
       <h2 id="overview">Overview</h2>
       <ul>
         <li>
-          Every theme must declare every token in{" "}
-          <code>scripts/theme-contract.json</code> — currently{" "}
-          <strong>123 required tokens</strong>. Missing any one of them is a
-          validator failure.
+          Author SCSS source: <code>scss/themes/&lt;name&gt;.scss</code>. Wrap
+          everything in <code>@include cia.theme(&apos;name&apos;) {`{...}`}</code>{" "}
+          — the mixin emits the <code>:root[data-theme=&quot;name&quot;]</code>{" "}
+          selector + <code>color-scheme</code> declaration.
         </li>
         <li>
-          Themes live in <code>public/themes/&lt;your-theme&gt;/theme.css</code>{" "}
-          as a standalone file, or consolidated into the root{" "}
-          <code>public/theme.css</code> as a{" "}
-          <code>[data-theme=&quot;&lt;name&gt;&quot;]</code> block.
+          Build to CSS: <code>npm run build:css:themes</code> compiles every
+          source in <code>scss/themes/</code> to{" "}
+          <code>public/themes/&lt;name&gt;/theme.css</code>.
         </li>
         <li>
-          <code>node scripts/theme-validator.js</code> is the acceptance gate —
-          no theme ships without a passing run.
+          Validate: <code>node scripts/theme-validator.js --all</code>. Every
+          theme must declare every required token in{" "}
+          <code>scripts/theme-contract.json</code>. WCAG 2.2 AA contrast is also
+          checked.
         </li>
+      </ul>
+
+      <h2 id="quickstart">Quickstart — a new theme</h2>
+      <Example>
+        <Example.Code><span className="tok-com">{"// scss/themes/midnight.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'../mixins'</span> <span className="tok-prop">as</span> <span className="tok-val">m</span>;
+{"\n"}
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-val">m.theme(&apos;midnight&apos;)</span> {"{"}
+{"\n"}  <span className="tok-com">{"/* Surfaces — light-dark() handles both modes */"}</span>
+{"\n"}  <span className="tok-prop">--background-default</span>: <span className="tok-val">light-dark(#f5f5f7, #0a0a0e)</span>;
+{"\n"}  <span className="tok-prop">--surface-default</span>:    <span className="tok-val">light-dark(#ffffff, #14141a)</span>;
+{"\n"}  <span className="tok-prop">--text-primary</span>:       <span className="tok-val">light-dark(#0a0a0e, #f5f5f7)</span>;
+{"\n"}  <span className="tok-prop">--text-secondary</span>:     <span className="tok-val">light-dark(#54545e, #b5b5bf)</span>;
+{"\n"}
+{"\n"}  <span className="tok-com">{"/* Primary accent + auto-derived states via color-mix */"}</span>
+{"\n"}  <span className="tok-prop">--action-primary-default</span>: <span className="tok-val">light-dark(#3A5FCD, #60a5fa)</span>;
+{"\n"}  <span className="tok-sel">@include</span> <span className="tok-val">m.states(action-primary)</span>;
+{"\n"}
+{"\n"}  <span className="tok-com">{"/* Typography, radius, motion — identical across modes (no light-dark needed) */"}</span>
+{"\n"}  <span className="tok-prop">--font-sans</span>: <span className="tok-val">system-ui, sans-serif</span>;
+{"\n"}  <span className="tok-prop">--r-md</span>: <span className="tok-val">6px</span>;
+{"\n"}  <span className="tok-prop">--duration-fast</span>: <span className="tok-val">120ms</span>;
+{"\n"}{"}"}</Example.Code>
+      </Example>
+      <Example>
+        <Example.Code><span className="tok-com">{"# build + validate"}</span>
+{"\n"}<span className="tok-sel">npm</span> <span className="tok-val">run build:css:themes</span>
+{"\n"}<span className="tok-sel">node</span> <span className="tok-val">scripts/theme-validator.js public/themes/midnight/theme.css</span></Example.Code>
+      </Example>
+      <p>
+        Three shapes inside a single theme file:
+      </p>
+      <ul>
+        <li><strong>Mode-stable</strong> — declare <code>color-scheme: light</code> (or dark) explicitly and skip <code>light-dark()</code>. Used by Sketchbook (light-only brand) and Terminal (dark-only sacred).</li>
+        <li><strong>Symmetric (Pattern B)</strong> — <code>light-dark()</code> per color token; fonts/radii/motion identical across modes. Used by Boilerplate, Prism, Cupertino, Graphite, Press, Sketchbook (both modes).</li>
+        <li><strong>Asymmetric (Pattern C)</strong> — one nested <code>@media (prefers-color-scheme: dark)</code> block inside the theme for non-color overrides (different blur, font, or radius per mode). Used by Glass. <code>light-dark()</code> is color-only per spec; non-color values need the nested block.</li>
       </ul>
 
       <h2 id="token-contract">The token contract</h2>

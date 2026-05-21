@@ -4,23 +4,24 @@ This file is the entry point for AI coding agents (Aider, Codex, Cursor, Claude 
 
 ## What this library is
 
-A token-driven SCSS design system with a **single mixin-router per component**. One source of truth, three authoring tiers:
+A token-driven SCSS design system with a **single mixin-router per component**. **Mixin-first since v0.8** — the mixin is the API; the class/tag/selector is the consumer's choice. The npm package ships **zero JavaScript** by hard rule.
 
-- **Tier 1** — drop-in CSS classes (`.cia-btn-primary`). No build.
-- **Tier 2** — author your own class names, `@include` mixins for variants. SCSS build required.
-- **Tier 3** — bare-tag recipe. Zero classes, every common HTML element is styled.
+Three authoring tiers, in primary-to-fallback order:
 
-All three resolve to the same compiled output. Pick the lowest tier that works.
+- **Tier 2 (primary)** — `@use 'css-is-awesome' as cia;` then `.your-class { @include cia.btn(primary); }`. SCSS build required.
+- **Tier 1 (opt-in)** — drop-in CSS classes (`.cia-btn`). Default-off in Sass path; opt in via `@use cia with ($utilities: true)`. Pre-built CDN bundles still ship every utility.
+- **Tier 3 (opt-in Pico-mode)** — `@use 'css-is-awesome/scss/recipes/bare-tags';` one line styles every common HTML element. Wrapped in `:where()` (specificity 0,0,0) so consumer styles always win.
 
 ## Quick decisions for an AI agent
 
 When asked to add a UI element, follow this order:
 
-1. **Is the user already on Tier 1, 2, or 3?** Match the existing tier in the project.
-2. **Use a mixin if you need a custom variant.** `@include b.btn(primary, $r: full)` not `<button class="cia-btn-primary cia-rounded-full">`.
-3. **Never invent class names.** `cia-*` utilities exist for tokens (spacing, color, layout). Don't extend the `cia-` namespace; that's library-only.
+1. **Mixin-first.** `.your-class { @include cia.btn(primary); }` — write your own selector, `@include` the mixin. This is the v0.8 primary API.
+2. **Match the project's tier.** If they're already on Tier 1 classes (`<button class="cia-btn">`), stay there.
+3. **Never invent `cia-*` class names.** That prefix is library-owned. Consumer code uses its own naming.
 4. **All values come from tokens.** Never hardcode `#3A5FCD`, `1rem`, `8px`. Use `m.color(primary)`, `m.space(4)`, `m.radius(md)`.
-5. **One class per element on Tier 1.** No BEM. No `__element` / `--modifier` chains.
+5. **No BEM.** No `__element` / `--modifier` chains. `cia-` is a single-class namespace prefix, not BEM.
+6. **No JavaScript.** Cia ships zero JS in the npm package. The 6 interactive components (accordion, modal, tooltip, dropdown, tabs, copy-button) use native HTML primitives — `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`.
 
 ## Install
 
@@ -40,30 +41,39 @@ sass app.scss app.css --pkg-importer=node
 # Then prefix imports: @use 'pkg:css-is-awesome/scss/...'
 ```
 
-## Tier 2 example (the most common request)
+## Tier 2 example (the v0.8 primary path)
 
 ```scss
-@use 'css-is-awesome/scss/components/buttons' as b;
-@use 'css-is-awesome/scss/components/data'    as d;
-@use 'css-is-awesome/scss/mixins'              as m;
+@use 'css-is-awesome' as cia;
 
-.hero-cta    { @include b.btn(primary, $r: full); @include m.elevation(2); }
-.product-card{ @include d.card-base($shadow: 2); }
+.hero-cta     { @include cia.btn(primary); }
+.product-card { @include cia.card-base($shadow: 2); }
+.faq-item     { @include cia.accordion; }
+.confirm-dlg  { @include cia.modal; }
 ```
 
 ```html
 <a class="hero-cta" href="/buy">Buy now</a>
 <article class="product-card">…</article>
+<details name="faq" class="faq-item"><summary>Q?</summary><div>A.</div></details>
+<dialog class="confirm-dlg">…</dialog>
 ```
 
-## Theme system (1 file)
+The cia barrel re-exports every mixin: layout, typography, color, motion, helpers, plus every component. One `@use` gives you the whole API.
 
-A theme is a single CSS file declaring custom properties at `:root`. Replace `theme.css` to reskin the entire site. Themes shipped (each light + dark unless noted): sketchbook (css-is-awesome's brand), press, graphite, glass, cupertino, terminal, prism, plus the unbranded `boilerplate` starter — 8 families, 16 blocks total. All 16 shipped blocks pass the WCAG 2.2 AA contrast audit by default.
+## Theme system (1 file per theme, both modes inside)
+
+Each theme is a single CSS file declaring `:root[data-theme="<name>"]` with `light-dark()` for color tokens — the browser auto-swaps based on OS `prefers-color-scheme`. **Nine themes shipped:** boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal (dark-only sacred), terminal-light (light-only daylight editor). All pass the WCAG 2.2 AA contrast audit by default.
 
 ```html
-<link rel="stylesheet" href="node_modules/css-is-awesome/dist/css-is-awesome.min.css">
-<link rel="stylesheet" href="node_modules/css-is-awesome/public/theme.css">
-<html data-theme="prism-light"> <!-- swap to any theme name -->
+<link rel="stylesheet" href="node_modules/css-is-awesome/public/themes/boilerplate/theme.css">
+<html data-theme="boilerplate"> <!-- swap to any of 9 themes -->
+```
+
+**Paired themes (two brands by mode)** — no JS, no mixin:
+```html
+<link rel="stylesheet" href="/themes/sketchbook.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="/themes/terminal.css"   media="(prefers-color-scheme: dark)">
 ```
 
 Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every contract token (123 slots in v1; missing tokens always fail). The audit also runs a WCAG 2.2 AA contrast check; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
@@ -163,10 +173,12 @@ Inside this package (all whitelisted in `files`):
 ## Common gotchas for AI agents
 
 - **Don't write BEM.** No `cia-card__title--large`. The library is anti-BEM by design.
-- **Don't hardcode breakpoints.** Use `m.bp(md)` (or `m.bp-down`, `m.bp-between`). Numbers come from the contract.
-- **Variants are arguments, not classes.** `btn(primary)`, not `cia-btn cia-btn-primary` (Tier 1 utilities are an exception, but only at consumer level).
+- **Don't hardcode breakpoints.** Use `m.media(md)` (or `m.media-down`, `m.media-between`). Numbers come from the contract.
+- **Don't ship JavaScript.** The npm package has zero `.js`/`.mjs` files. JS-dependent features ship as separate add-on packages.
+- **Variants are arguments, not classes.** `cia.btn(primary)`, not `cia-btn cia-btn-primary` (Tier 1 utilities are an exception, but only at consumer level).
 - **The `cia-*` prefix is library-owned.** Consumer code should use its own naming for new classes.
 - **`scss/_app-styles.scss` is NOT part of the library entry.** It's a template for project-owned styles in a consuming boilerplate. Don't `@use` it from library code.
+- **v0.8 mixin renames** — `m.bp`→`m.media`, `m.cq`→`m.contain`, `m.color-raw`→`m.color-static`, `m.inset`→`m.pad`, `m.squish`→`m.pad-asym`, `m.font-load`→`m.font-face`. Old names error with "undefined mixin." No aliases.
 
 ## Tooling around the library (planned)
 

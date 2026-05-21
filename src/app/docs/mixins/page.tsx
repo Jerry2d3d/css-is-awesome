@@ -277,7 +277,7 @@ export default function DocsMixinsPage() {
 {"\n"}
 {"\n"}<span className="tok-sel">.hero</span> {"{"}
 {"\n"}  <span className="tok-prop">font-size</span>: <span className="tok-val">2rem</span>;
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.bp(md)</span> {"{"} <span className="tok-prop">font-size</span>: <span className="tok-val">3rem</span>; {"}"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.media(md)</span> {"{"} <span className="tok-prop">font-size</span>: <span className="tok-val">3rem</span>; {"}"}
 {"\n"}{"}"}</Example.Code>
       </Example>
 
@@ -300,7 +300,7 @@ export default function DocsMixinsPage() {
 {"\n"}
 {"\n"}<span className="tok-sel">.card</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.container(card)</span>;
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.cq(md, card)</span> {"{"} <span className="tok-prop">display</span>: <span className="tok-val">grid</span>; {"}"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.contain(md, card)</span> {"{"} <span className="tok-prop">display</span>: <span className="tok-val">grid</span>; {"}"}
 {"\n"}{"}"}</Example.Code>
       </Example>
 
@@ -341,12 +341,12 @@ export default function DocsMixinsPage() {
 {"\n"}
 {"\n"}<span className="tok-com">{"// --- Hosted font (Google / CDN) — call from a global .scss file ---"}</span>
 {"\n"}<span className="tok-com">{"// src/styles/fonts.scss (imported from layout.tsx)"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">'Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico'</span>);
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-face</span>(<span className="tok-val">'Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico'</span>);
 {"\n"}<span className="tok-com">{"// → emits @import url(...)"}</span>
 {"\n"}<span className="tok-com">{"// then declare the variable in globals.css and consume like step 2"}</span>
 {"\n"}
 {"\n"}<span className="tok-com">{"// --- Self-hosted font (woff2 / ttf) ---"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);</Example.Code>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-face-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);</Example.Code>
       </Example>
       <p>Tip: <code>m.font($family: meme)</code> emits <code>font-family: var(--font-meme)</code>. The slug is just a CSS variable name — no Sass-side registry, no validation. As long as <code>--font-meme</code> is declared somewhere in scope, the browser resolves it.</p>
 
