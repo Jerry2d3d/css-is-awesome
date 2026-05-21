@@ -26,6 +26,7 @@
   $border-color: border-default,
   $font-size: null
 ) {
+  min-height: var(--touch-target-min, 24px);                   /* WCAG 2.2 SC 2.5.8 */
   padding: var(--input-padding-y, #{m.space($py)}) var(--input-padding-x, #{m.space($px)});
   border: var(--input-border-width, #{$border-width}) solid m.color($border-color);
   border-radius: var(--input-radius, #{m.radius($r)});
@@ -39,7 +40,7 @@
   &:focus {
     outline: none;
     border-color: m.color(border-focus);
-    box-shadow: 0 0 0 3px rgba(m.color-raw(border-focus), 0.2);
+    box-shadow: 0 0 0 3px rgba(m.color-static(border-focus), 0.2);
   }
 
   &::placeholder {
@@ -102,10 +103,7 @@
     border-color: m.color($color);
   }
 
-  &:focus-visible {
-    outline: 2px solid m.color(border-focus);
-    outline-offset: 2px;
-  }
+  @include m.focus-ring;
 
   &:disabled { @include m.disabled; }
 }

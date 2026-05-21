@@ -129,6 +129,83 @@
 }
 
 /* ============================================================
+   MOAT — side-by-side LOC/JS comparison
+   ============================================================ */
+.moat {
+  max-width: 980px;
+  margin: 3.5rem auto 1rem;
+  padding: 2.5rem 1.5rem 0.5rem;
+  text-align: center;
+}
+.moatEyebrow {
+  font-family: var(--font-script);
+  font-size: 1.35rem;
+  color: var(--shu);
+  line-height: 1;
+  margin: 0 0 1.25rem;
+  font-weight: 600;
+}
+.moatColumns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  text-align: left;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+.moatCol {
+  background: var(--surface-raised, var(--paper-raised, #fff));
+  border: 1px solid var(--border-default, var(--hair, #ddd));
+  border-radius: var(--radius-md, 6px);
+  overflow: hidden;
+
+  header {
+    padding: 0.5rem 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary, var(--ink-soft, #555));
+    background: var(--surface-muted, var(--paper-sunk, #f4f1ea));
+    border-bottom: 1px solid var(--border-default, var(--hair, #ddd));
+
+    strong {
+      color: var(--text-primary, var(--ink));
+      font-weight: 600;
+    }
+  }
+
+  pre {
+    margin: 0;
+    padding: 0.875rem 1rem;
+    background: var(--code-bg, #1a1a1a);
+    color: var(--code-ink, #f4efe2);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  pre code { background: transparent; padding: 0; }
+}
+.moatNote {
+  font-family: var(--font-script);
+  font-size: 1.05rem;
+  color: var(--ink-soft, #555);
+  text-align: center;
+  margin: 1rem 0 0;
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--surface-muted, var(--paper-sunk, #f4f1ea));
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+}
+
+/* ============================================================
    MANIFESTO
    ============================================================ */
 .manifesto {

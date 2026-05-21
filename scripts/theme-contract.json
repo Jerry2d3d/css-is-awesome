@@ -157,5 +157,42 @@
     "--z-sticky",
     "--z-tooltip"
   ],
-  "optional": []
+  "optional": [
+    "--background-elevated",
+    "--background-hero",
+    "--background-overlay",
+    "--background-scrim",
+
+    "--logo-default",
+    "--logo-mark",
+    "--logo-monochrome",
+    "--logo-wordmark",
+
+    "--shadow-button",
+    "--shadow-card",
+    "--shadow-dropdown",
+    "--shadow-input-focus",
+    "--shadow-modal",
+    "--shadow-popover",
+    "--shadow-text",
+    "--shadow-tooltip",
+
+    "--radius-avatar",
+    "--radius-badge",
+    "--radius-button",
+    "--radius-card",
+    "--radius-input",
+    "--radius-modal",
+
+    "--border-card",
+    "--border-divider",
+    "--border-focus-ring",
+    "--border-input",
+
+    "--duration-button-hover",
+    "--duration-modal-open",
+    "--duration-toast-slide",
+
+    "--touch-target-min"
+  ]
 }

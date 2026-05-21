@@ -1,0 +1,162 @@
+// ============================================================================
+// THEME — Sketchbook
+// ============================================================================
+// css-is-awesome's brand identity. Warm paper, sumi ink, indigo accent,
+// vermilion seal. Hand-sketched personality with serif display + Caveat script.
+//
+// Light: warm off-paper newsprint. Dark: charcoal-paper studio at night.
+// Fonts, radii, motion are identical across modes — only colors and shadow
+// alphas differ. Pattern B.
+//
+// Selector: :root[data-theme="sketchbook"]
+// Replaces: [data-theme="sketchbook-light"] + [data-theme="sketchbook-dark"]
+// ============================================================================
+@use '../mixins' as m;
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@include m.theme('sketchbook') {
+  /* Surfaces — warm paper / warm charcoal paper */
+  --paper:        light-dark(#F7F3EA, #1A1815);
+  --paper-raised: light-dark(#FDFAF2, #2A2520);
+  --paper-sunk:   light-dark(#ECE5D3, #11100E);
+  --paper-glass:  light-dark(rgba(253, 250, 242, 0.75), rgba(42, 37, 32, 0.78));
+
+  /* Ink — warm pencil + sumi / warm cream */
+  --ink:       light-dark(#2A241E, #F4EFE2);
+  --ink-soft:  light-dark(#4A4037, #D8D0BE);
+  --ink-faint: light-dark(#726858, #A89E89);
+  --graphite:  light-dark(#3A332B, #E8E0CE);
+  --muted:     light-dark(#948977, #7A715F);
+
+  /* Construction lines */
+  --guide:      light-dark(#C9BDA5, #4A4239);
+  --guide-soft: light-dark(#DDD4C0, #382F27);
+  --hair:       light-dark(#D4CCBB, #3F362C);
+  --hair-soft:  light-dark(#E8E2D4, #2A241E);
+
+  /* Primary accent — indigo (lifted for dark paper) */
+  --ai:      light-dark(#1F3A5F, #6E8FBF);
+  --ai-ink:  light-dark(#14263F, #8DA8D1);
+  --ai-wash: light-dark(#E5EBF1, #1F2B3F);
+
+  /* Seal — vermilion (warm, brightens slightly on dark) */
+  --shu:      light-dark(#C1272D, #E36148);
+  --shu-wash: light-dark(#F6E3E1, #3A1A14);
+
+  /* Draft / marginalia — warm gold */
+  --ochre:      light-dark(#A37B30, #D4A04B);
+  --ochre-wash: light-dark(#F0E5CC, #382B14);
+
+  /* Code surface — inverts intentionally */
+  --code-bg:     light-dark(#2B2420, #F7F3EA);
+  --code-ink:    light-dark(#F7F3EA, #2B2420);
+  --code-muted:  light-dark(#A39787, #6B5E50);
+  --code-accent: light-dark(#E5B660, #A37B30);
+  --code-green:  light-dark(#A8B86C, #5A7A3A);
+  --code-blue:   light-dark(#94AFC9, #1F3A5F);
+
+  /* Typography — identical across modes */
+  --font-display: 'DM Serif Display', 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'Noto Serif JP', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace;
+
+  /* Radius — identical */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 6px;
+
+  /* Shadows — ink bleeding through paper / deep drop on charcoal */
+  --shadow-sm:  0 1px 2px   light-dark(rgba(42, 36, 30, 0.06), rgba(0, 0, 0, 0.35));
+  --shadow-md:  0 4px 18px  light-dark(rgba(42, 36, 30, 0.08), rgba(0, 0, 0, 0.45));
+  --shadow-lg:  0 12px 40px light-dark(rgba(42, 36, 30, 0.12), rgba(0, 0, 0, 0.55));
+  --shadow-xl:  0 20px 50px light-dark(rgba(42, 36, 30, 0.16), rgba(0, 0, 0, 0.65));
+  --shadow-2xl: 0 28px 70px light-dark(rgba(42, 36, 30, 0.22), rgba(0, 0, 0, 0.75));
+
+  /* Blur / glow — paper themes don't use either */
+  --blur-sm: none; --blur-md: none; --blur-lg: none;
+  --glow-sm: 0 0 0 transparent; --glow-md: 0 0 0 transparent; --glow-lg: 0 0 0 transparent;
+
+  /* Motion — editorial pace, identical */
+  --duration-fast:   180ms;
+  --duration-normal: 240ms;
+  --duration-slow:   380ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* Semantic aliases */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+  --surface-default:    var(--paper);
+  --surface-raised:     var(--paper-raised);
+  --surface-sunk:       var(--paper-sunk);
+  --surface-muted:      var(--paper-sunk);
+  --surface-subtle:     var(--paper-raised);
+  --surface-emphasis:   var(--ink);
+  --surface-glass:      var(--paper-glass);
+
+  --text-primary:    var(--ink);
+  --text-secondary:  var(--ink-soft);
+  --text-muted:      var(--ink-faint);
+  --text-tertiary:   var(--muted);
+  --text-inverse:    var(--paper);
+  --text-link:       var(--ai);
+  --text-link-hover: var(--ai-ink);
+
+  --border-default:  var(--hair);
+  --border-subtle:   var(--hair-soft);
+  --border-emphasis: light-dark(var(--ink), var(--guide));
+  --border-focus:    var(--ai);
+
+  --interactive-hover:  light-dark(rgba(42, 36, 30, 0.06), rgba(244, 239, 226, 0.06));
+  --interactive-active: light-dark(rgba(42, 36, 30, 0.12), rgba(244, 239, 226, 0.12));
+
+  --brand-primary:       var(--ai);
+  --brand-primary-hover: var(--ai-ink);
+
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  --feedback-info:    var(--ai);
+  --feedback-success: var(--code-green);
+  --feedback-warning: var(--ochre);
+  --feedback-error:   var(--shu);
+
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  --success-default: light-dark(#5A7A3A, #8DA86A);
+  --success-subtle:  light-dark(#EAEFDC, #1F2B14);
+  --success-text:    light-dark(#3F5627, #B8CC8E);
+
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    light-dark(#6B4E1E, #E8BF6E);
+
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    light-dark(#7A1A1F, #F08A72);
+
+  /* Library scales — identical */
+  --space-2xs: 0.25rem; --space-xs: 0.5rem; --space-sm: 0.75rem;
+  --space-md:  1rem;    --space-lg: 1.5rem; --space-xl: 2rem;
+  --radius-sm: var(--r-sm); --radius-md: var(--r-md); --radius-lg: var(--r-lg);
+  --radius-xl: 0.75rem; --radius-full: 9999px;
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem; --line-height-normal: 1.5; --font-weight-medium: 500;
+  --z-sticky: 1020; --z-dropdown: 1030; --z-backdrop: 1040;
+  --z-modal: 1050; --z-popover: 1060; --z-tooltip: 1070;
+}

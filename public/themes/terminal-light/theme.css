@@ -1,193 +1,142 @@
-/* ============================================================
-   THEME — Terminal Light (Daylight Editor, gray paper)
-   -----------------------------------------------------------
-   Companion to Terminal Dark (the VT100 phosphor CRT). This is
-   the same terminal opened in daylight — light gray paper,
-   near-black mono ink, classic light-syntax accents (blue
-   keywords, green strings, orange numbers). Mono everywhere,
-   zero radii, no glow.
-
-   Paper is a clear light GRAY (not off-white) to match the
-   feel of a modern light-mode editor and read as "deliberately
-   light" rather than "default white."
-
-   Pair partner: terminal-dark (use [data-theme="terminal-dark"]).
-   ============================================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
-
-[data-theme="terminal-light"] {
-  /* Surfaces — clear light gray paper, white-lift for raised panels */
-  --paper:        #E8E8E8;
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap");
+:root[data-theme=terminal-light] {
+  color-scheme: light;
+  /* Surfaces — clear light gray paper */
+  --paper: #E8E8E8;
   --paper-raised: #F5F5F5;
-  --paper-sunk:   #D8D8D8;
-  --paper-glass:  rgba(232, 232, 232, 0.85);
-
-  /* Ink — near-black mono ink */
-  --ink:        #1A1A1A;
-  --ink-soft:   #404040;
-  --ink-faint:  #666666;
-  --graphite:   #0A0A0A;
-  --muted:      #7C7C7C;
-
-  /* Hairlines / grid rules — medium gray */
-  --guide:      #B8B8B8;
+  --paper-sunk: #D8D8D8;
+  --paper-glass: rgba(232, 232, 232, 0.85);
+  /* Ink — near-black mono */
+  --ink: #1A1A1A;
+  --ink-soft: #404040;
+  --ink-faint: #666666;
+  --graphite: #0A0A0A;
+  --muted: #7C7C7C;
+  /* Hairlines — medium gray */
+  --guide: #B8B8B8;
   --guide-soft: #C8C8C8;
-  --hair:       #C0C0C0;
-  --hair-soft:  #D8D8D8;
-
-  /* Primary accent — classic terminal blue (VS Code keyword blue) */
-  --ai:         #0451A5;
-  --ai-ink:     #023268;
-  --ai-wash:    rgba(4, 81, 165, 0.10);
-
+  --hair: #C0C0C0;
+  --hair-soft: #D8D8D8;
+  /* Primary accent — VS Code keyword blue */
+  --ai: #0451A5;
+  --ai-ink: #023268;
+  --ai-wash: rgba(4, 81, 165, 0.10);
   /* Seal — error red */
-  --shu:        #B91C1C;
-  --shu-wash:   rgba(185, 28, 28, 0.10);
-
+  --shu: #B91C1C;
+  --shu-wash: rgba(185, 28, 28, 0.10);
   /* Accent — warning amber */
-  --ochre:      #B45309;
+  --ochre: #B45309;
   --ochre-wash: rgba(180, 83, 9, 0.10);
-
-  /* Code surface — slightly darker than paper for contrast */
-  --code-bg:     #DDDDDD;
-  --code-ink:    #1A1A1A;
-  --code-muted:  #707070;
-  --code-accent: #B45309;  /* numbers / literals — orange */
-  --code-green:  #008833;  /* strings — green */
-  --code-blue:   #0451A5;  /* keywords — blue */
-
-  /* Typography — mono everywhere, like Terminal Dark */
-  --font-mono:    'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;
-  --font-sans:    var(--font-mono);
-  --font-serif:   var(--font-mono);
+  /* Code surface */
+  --code-bg: #DDDDDD;
+  --code-ink: #1A1A1A;
+  --code-muted: #707070;
+  --code-accent: #B45309;
+  --code-green: #008833;
+  --code-blue: #0451A5;
+  /* Typography — mono everywhere */
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;
+  --font-sans: var(--font-mono);
+  --font-serif: var(--font-mono);
   --font-display: var(--font-mono);
-  --font-script:  var(--font-mono);
-
-  /* Radius — terminals are square in any mode */
+  --font-script: var(--font-mono);
+  /* Radius — terminals are square */
   --r-sm: 0;
   --r-md: 0;
   --r-lg: 0;
-
-  /* Shadows — subtle hairlines, no halo */
-  --shadow-sm:  0 0 0 1px rgba(26, 26, 26, 0.08);
-  --shadow-md:  0 0 0 1px rgba(26, 26, 26, 0.10), 0 1px 2px rgba(26, 26, 26, 0.06);
-  --shadow-lg:  0 0 0 1px rgba(26, 26, 26, 0.12), 0 2px 4px rgba(26, 26, 26, 0.08);
-  --shadow-xl:  0 0 0 1px rgba(26, 26, 26, 0.14), 0 4px 8px rgba(26, 26, 26, 0.10);
+  /* Shadows — hairline rings */
+  --shadow-sm: 0 0 0 1px rgba(26, 26, 26, 0.08);
+  --shadow-md: 0 0 0 1px rgba(26, 26, 26, 0.10), 0 1px 2px rgba(26, 26, 26, 0.06);
+  --shadow-lg: 0 0 0 1px rgba(26, 26, 26, 0.12), 0 2px 4px rgba(26, 26, 26, 0.08);
+  --shadow-xl: 0 0 0 1px rgba(26, 26, 26, 0.14), 0 4px 8px rgba(26, 26, 26, 0.10);
   --shadow-2xl: 0 0 0 1px rgba(26, 26, 26, 0.16), 0 8px 16px rgba(26, 26, 26, 0.12);
-
-  /* Blur — terminal has no frosted glass */
+  /* Blur / glow — daylight, no emission */
   --blur-sm: none;
   --blur-md: none;
   --blur-lg: none;
-
-  /* Glow — daylight, no emission */
   --glow-sm: 0 0 0 transparent;
   --glow-md: 0 0 0 transparent;
   --glow-lg: 0 0 0 transparent;
-
-  /* Motion — terminals are instant */
-  --duration-fast:   100ms;
+  /* Motion — instant */
+  --duration-fast: 100ms;
   --duration-normal: 140ms;
-  --duration-slow:   220ms;
-  --ease:            cubic-bezier(0.2, 0.0, 0.2, 1);
-
-  /* ----------------------------------------------------------
-     SEMANTIC ALIASES
-     ---------------------------------------------------------- */
-
+  --duration-slow: 220ms;
+  --ease: cubic-bezier(0.2, 0.0, 0.2, 1);
+  /* Semantic aliases */
   --background-default: var(--paper);
-  --background-subtle:  var(--paper-sunk);
-  --background-navbar:  var(--paper-raised);
-
-  --surface-default:   var(--paper);
-  --surface-raised:    var(--paper-raised);
-  --surface-sunk:      var(--paper-sunk);
-  --surface-muted:     var(--paper-sunk);
-  --surface-subtle:    var(--paper-raised);
-  --surface-emphasis:  var(--ink);
-  --surface-glass:     var(--paper-glass);
-
-  --text-primary:      var(--ink);
-  --text-secondary:    var(--ink-soft);
-  --text-muted:        var(--ink-faint);
-  --text-tertiary:     var(--muted);
-  --text-inverse:      var(--paper);
-  --text-link:         var(--ai);
-  --text-link-hover:   var(--ai-ink);
-
-  --border-default:    var(--hair);
-  --border-subtle:     var(--hair-soft);
-  --border-emphasis:   var(--ink);
-  --border-focus:      var(--ai);
-
-  /* Interactive overlays — ink-on-gray, dark wash */
-  --interactive-hover:  rgba(26, 26, 26, 0.05);
+  --background-subtle: var(--paper-sunk);
+  --background-navbar: var(--paper-raised);
+  --surface-default: var(--paper);
+  --surface-raised: var(--paper-raised);
+  --surface-sunk: var(--paper-sunk);
+  --surface-muted: var(--paper-sunk);
+  --surface-subtle: var(--paper-raised);
+  --surface-emphasis: var(--ink);
+  --surface-glass: var(--paper-glass);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted: var(--ink-faint);
+  --text-tertiary: var(--muted);
+  --text-inverse: var(--paper);
+  --text-link: var(--ai);
+  --text-link-hover: var(--ai-ink);
+  --border-default: var(--hair);
+  --border-subtle: var(--hair-soft);
+  --border-emphasis: var(--ink);
+  --border-focus: var(--ai);
+  --interactive-hover: rgba(26, 26, 26, 0.05);
   --interactive-active: rgba(26, 26, 26, 0.10);
-
-  --brand-primary:        var(--ai);
-  --brand-primary-hover:  var(--ai-ink);
-
-  --action-primary-default:   var(--ai);
-  --action-primary-hover:     var(--ai-ink);
-  --action-primary-active:    var(--ai-ink);
-  --action-primary-wash:      var(--ai-wash);
+  --brand-primary: var(--ai);
+  --brand-primary-hover: var(--ai-ink);
+  --action-primary-default: var(--ai);
+  --action-primary-hover: var(--ai-ink);
+  --action-primary-active: var(--ai-ink);
+  --action-primary-wash: var(--ai-wash);
   --action-secondary-default: var(--shu);
-  --action-secondary-hover:   var(--shu);
-  --action-secondary-active:  var(--shu);
-  --action-secondary-wash:    var(--shu-wash);
-  --action-tertiary-default:  var(--ochre);
-  --action-tertiary-hover:    var(--ochre);
-  --action-tertiary-active:   var(--ochre);
-  --action-tertiary-wash:     var(--ochre-wash);
-
-  --feedback-info:     var(--ai);
-  --feedback-success:  #008833;
-  --feedback-warning:  var(--ochre);
-  --feedback-error:    var(--shu);
-
+  --action-secondary-hover: var(--shu);
+  --action-secondary-active: var(--shu);
+  --action-secondary-wash: var(--shu-wash);
+  --action-tertiary-default: var(--ochre);
+  --action-tertiary-hover: var(--ochre);
+  --action-tertiary-active: var(--ochre);
+  --action-tertiary-wash: var(--ochre-wash);
+  --feedback-info: var(--ai);
+  --feedback-success: #008833;
+  --feedback-warning: var(--ochre);
+  --feedback-error: var(--shu);
   --info-default: var(--ai);
-  --info-subtle:  rgba(4, 81, 165, 0.10);
-  --info-text:    var(--ai-ink);
-
+  --info-subtle: rgba(4, 81, 165, 0.10);
+  --info-text: var(--ai-ink);
   --success-default: #008833;
-  --success-subtle:  rgba(0, 136, 51, 0.10);
-  --success-text:    #006622;
-
+  --success-subtle: rgba(0, 136, 51, 0.10);
+  --success-text: #006622;
   --warning-default: var(--ochre);
-  --warning-subtle:  rgba(180, 83, 9, 0.10);
-  --warning-text:    #92400E;
-
+  --warning-subtle: rgba(180, 83, 9, 0.10);
+  --warning-text: #92400E;
   --error-default: var(--shu);
-  --error-subtle:  rgba(185, 28, 28, 0.10);
-  --error-text:    #7F1D1D;
-
-  /* Space scale */
+  --error-subtle: rgba(185, 28, 28, 0.10);
+  --error-text: #7F1D1D;
+  /* Library scales */
   --space-2xs: 0.25rem;
-  --space-xs:  0.5rem;
-  --space-sm:  0.75rem;
-  --space-md:  1rem;
-  --space-lg:  1.5rem;
-  --space-xl:  2rem;
-
-  /* Radius alias — every slot is 0 */
-  --radius-sm:   0;
-  --radius-md:   0;
-  --radius-lg:   0;
-  --radius-xl:   0;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
   --radius-full: 0;
-
-  /* Typography — mono body, 15px matches Terminal Dark */
-  --font-primary:       var(--font-mono);
-  --font-size-base:     15px;
+  --font-primary: var(--font-mono);
+  --font-size-base: 15px;
   --line-height-normal: 1.5;
   --font-weight-medium: 500;
-
-  /* Z-index layers */
-  --z-sticky:   1020;
+  --z-sticky: 1020;
   --z-dropdown: 1030;
   --z-backdrop: 1040;
-  --z-modal:    1050;
-  --z-popover:  1060;
-  --z-tooltip:  1070;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
 }

@@ -7,7 +7,7 @@ import StatChip from "@/components/StatChip";
 export default function Home() {
   return (
     <>
-      <DraftStamp>v0.1 · Draft</DraftStamp>
+      <DraftStamp>v0.8 · Mixin-first</DraftStamp>
 
       <main className={styles.landing}>
         <div className={styles.inner}>
@@ -28,14 +28,55 @@ export default function Home() {
             <Link href="/about">About</Link>
           </nav>
 
-          <p className={styles.tagline}>Tokens, mixins, and one very honest joke. Tiny enough to read in an afternoon. Flexible enough to skin however you like.</p>
+          <p className={styles.tagline}>Bring your own selectors. We bring the design system.</p>
 
           <div className={styles.stats}>
-            <StatChip value="5" label="themes" />
-            <StatChip value="800+" label="LOC mixin API" />
-            <StatChip value="0" label="runtime deps" />
+            <StatChip value="0 KB" label="runtime JS" />
+            <StatChip value="9" label="themes" />
+            <StatChip value="6" label="zero-JS components" />
+            <StatChip value="8 KB" label="full bundle (gz)" />
           </div>
         </div>
+
+        <section className={styles.moat} aria-label="The moat — same accordion, less ceremony">
+          <p className={styles.moatEyebrow}>— same accordion, less ceremony —</p>
+          <div className={styles.moatColumns}>
+            <div className={styles.moatCol}>
+              <header>
+                <strong>cia</strong> · 12 LOC · 0 KB JS
+              </header>
+              <pre><code>{`<details name="faq" class="cia-accordion">
+  <summary>Question</summary>
+  <div>Answer</div>
+</details>
+<details name="faq" class="cia-accordion">
+  <summary>Another?</summary>
+  <div>Another.</div>
+</details>`}</code></pre>
+            </div>
+            <div className={styles.moatCol}>
+              <header>
+                <strong>Tailwind + Headless UI</strong> · 70 LOC · 22 KB JS
+              </header>
+              <pre><code>{`import { Disclosure } from '@headlessui/react'
+
+<div className="space-y-2">
+  <Disclosure>
+    <Disclosure.Button className="…">
+      Question
+    </Disclosure.Button>
+    <Disclosure.Panel className="…">
+      Answer
+    </Disclosure.Panel>
+  </Disclosure>
+  {/* …another Disclosure, manual close-others state */}
+</div>`}</code></pre>
+            </div>
+          </div>
+          <p className={styles.moatNote}>
+            Native <code>{`<details name="…">`}</code> auto-closes siblings. Browser does the work.
+          </p>
+        </section>
 
         <section className={styles.manifesto} aria-label="Why this exists">
           <p className={styles.manifestoEyebrow}>— why this exists —</p>

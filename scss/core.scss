@@ -6,6 +6,11 @@
 
 @include generator.generate-theme;
 
+// WCAG 2.2 SC 2.5.8 — minimum touch-target size. Themes can override.
+:root {
+  --touch-target-min: 24px;
+}
+
 *,
 *::before,
 *::after {

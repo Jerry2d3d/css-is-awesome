@@ -5,6 +5,7 @@
 // Variable names here match what the rest of the system expects.
 // ============================================================================
 @use 'sass:map';
+@use '../system' as s;
 @use './brand' as *;
 @use './colors-light' as *;
 @use './colors-dark' as *;
@@ -27,49 +28,11 @@ $theme-shadows-light: $shadows-light !default;
 $theme-shadows-dark: $shadows-dark !default;
 $theme-components: $components !default;
 
-// Spacing tokens (theme-level).
-// Numbered scale 1..9 is the source of truth; t-shirt aliases layer on top.
-// See scss/_system.scss for the canonical mapping table.
-
-$space-scale: (
-  1: 0.5rem,      // 8px    (xs)
-  2: 0.75rem,     // 12px   (sm)
-  3: 0.875rem,    // 14px   (gap — intentional, no t-shirt alias)
-  4: 1rem,        // 16px   (md)
-  5: 1.5rem,      // 24px   (lg)
-  6: 2rem,        // 32px   (xl)
-  7: 3rem,        // 48px   (2xl)
-  8: 4rem,        // 64px   (3xl)
-  9: 6rem,        // 96px   (4xl)
-) !default;
-
-$space-aliases: (
-  xs:  1,
-  sm:  2,
-  md:  4,
-  lg:  5,
-  xl:  6,
-  2xl: 7,
-  3xl: 8,
-  4xl: 9,
-) !default;
-
-$space: map.merge(
-  $space-scale,
-  (
-    none: 0,
-    2xs:  0.25rem,
-
-    xs:  map.get($space-scale, map.get($space-aliases, xs)),
-    sm:  map.get($space-scale, map.get($space-aliases, sm)),
-    md:  map.get($space-scale, map.get($space-aliases, md)),
-    lg:  map.get($space-scale, map.get($space-aliases, lg)),
-    xl:  map.get($space-scale, map.get($space-aliases, xl)),
-    2xl: map.get($space-scale, map.get($space-aliases, 2xl)),
-    3xl: map.get($space-scale, map.get($space-aliases, 3xl)),
-    4xl: map.get($space-scale, map.get($space-aliases, 4xl)),
-  )
-) !default;
+// Spacing tokens (theme-level) — deferred to scss/_system.scss as the
+// single source of truth. Theme authors override via the system layer.
+$space-scale:   s.$spacing-scale   !default;
+$space-aliases: s.$spacing-aliases !default;
+$space:         s.$spacing         !default;
 
 // Semantic spacing aliases
 $gap: (

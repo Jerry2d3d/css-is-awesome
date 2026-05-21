@@ -1,0 +1,165 @@
+// ============================================================================
+// THEME — Boilerplate
+// ============================================================================
+// The recommended starter theme. Neutral, low-flourish, easy to override —
+// intentionally a "blank canvas" rather than an opinion.
+//
+// Design intent:
+//   - Slate neutral grays + one restrained blue accent
+//   - System UI fonts (no @import — fastest first paint)
+//   - Subtle shadows. Standard radii (4 / 6 / 8 px).
+//   - No glass, no glow, no decorative texture.
+//
+// Selector: :root[data-theme="boilerplate"]
+// Replaces: [data-theme="boilerplate-light"] + [data-theme="boilerplate-dark"]
+// ============================================================================
+@use '../mixins' as m;
+
+@include m.theme('boilerplate') {
+  /* Surfaces */
+  --paper:        light-dark(#ffffff, #0f172a);
+  --paper-raised: light-dark(#ffffff, #1e293b);
+  --paper-sunk:   light-dark(#f8fafc, #020617);
+  --paper-glass:  light-dark(rgba(255, 255, 255, 0.85), rgba(15, 23, 42, 0.85));
+
+  /* Ink — slate neutral ramp */
+  --ink:       light-dark(#0f172a, #f8fafc);
+  --ink-soft:  light-dark(#1e293b, #e2e8f0);
+  --ink-faint: light-dark(#475569, #94a3b8);
+  --graphite:  light-dark(#0f172a, #f1f5f9);
+  --muted:     light-dark(#64748b, #64748b);
+
+  /* Lines */
+  --guide:      light-dark(#cbd5e1, #334155);
+  --guide-soft: light-dark(#e2e8f0, #1e293b);
+  --hair:       light-dark(#e2e8f0, #1e293b);
+  --hair-soft:  light-dark(#f1f5f9, #0f172a);
+
+  /* Primary accent */
+  --ai:      light-dark(#2563eb, #3b82f6);
+  --ai-ink:  light-dark(#1d4ed8, #60a5fa);
+  --ai-wash: light-dark(#eff6ff, #1e3a8a);
+
+  /* Seal — red */
+  --shu:      light-dark(#dc2626, #ef4444);
+  --shu-wash: light-dark(#fef2f2, #450a0a);
+
+  /* Tertiary — amber */
+  --ochre:      light-dark(#d97706, #f59e0b);
+  --ochre-wash: light-dark(#fffbeb, #422006);
+
+  /* Code surface */
+  --code-bg:     light-dark(#f8fafc, #020617);
+  --code-ink:    light-dark(#0f172a, #e2e8f0);
+  --code-muted:  light-dark(#64748b, #64748b);
+  --code-accent: light-dark(#c2410c, #fb923c);
+  --code-green:  light-dark(#15803d, #4ade80);
+  --code-blue:   light-dark(#2563eb, #60a5fa);
+
+  /* Typography — system stacks, no @import, identical */
+  --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-script:  ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif:   ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-sans:    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Radius — identical */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  /* Shadow — subtle, neutral slate / heavier on dark */
+  --shadow-sm:  0 1px 2px      light-dark(rgba(15, 23, 42, 0.04), rgba(0, 0, 0, 0.30));
+  --shadow-md:  0 1px 3px      light-dark(rgba(15, 23, 42, 0.06), rgba(0, 0, 0, 0.40)),
+                0 1px 2px      light-dark(rgba(15, 23, 42, 0.04), rgba(0, 0, 0, 0.30));
+  --shadow-lg:  0 4px 12px -2px  light-dark(rgba(15, 23, 42, 0.08), rgba(0, 0, 0, 0.55)),
+                0 2px 4px -2px   light-dark(rgba(15, 23, 42, 0.05), rgba(0, 0, 0, 0.30));
+  --shadow-xl:  0 12px 24px -8px light-dark(rgba(15, 23, 42, 0.10), rgba(0, 0, 0, 0.65)),
+                0 4px 8px -4px   light-dark(rgba(15, 23, 42, 0.06), rgba(0, 0, 0, 0.40));
+  --shadow-2xl: 0 24px 48px -12px light-dark(rgba(15, 23, 42, 0.15), rgba(0, 0, 0, 0.75));
+
+  /* Blur / glow — none */
+  --blur-sm: none; --blur-md: none; --blur-lg: none;
+  --glow-sm: 0 0 0 transparent; --glow-md: 0 0 0 transparent; --glow-lg: 0 0 0 transparent;
+
+  /* Motion — identical */
+  --duration-fast:   120ms;
+  --duration-normal: 180ms;
+  --duration-slow:   280ms;
+  --ease:            cubic-bezier(.4, 0, .2, 1);
+
+  /* Semantic aliases */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  light-dark(var(--paper), var(--paper-raised));
+  --surface-default:    var(--paper);
+  --surface-raised:     var(--paper-raised);
+  --surface-sunk:       var(--paper-sunk);
+  --surface-muted:      var(--paper-sunk);
+  --surface-subtle:     light-dark(var(--paper-sunk), var(--paper-raised));
+  --surface-emphasis:   var(--ink);
+  --surface-glass:      var(--paper-glass);
+
+  --text-primary:    var(--ink);
+  --text-secondary:  var(--ink-soft);
+  --text-muted:      var(--ink-faint);
+  --text-tertiary:   var(--muted);
+  --text-inverse:    var(--paper);
+  --text-link:       var(--ai);
+  --text-link-hover: var(--ai-ink);
+
+  --border-default:  var(--hair);
+  --border-subtle:   var(--hair-soft);
+  --border-emphasis: var(--guide);
+  --border-focus:    var(--ai);
+
+  --interactive-hover:  light-dark(rgba(15, 23, 42, 0.04), rgba(248, 250, 252, 0.05));
+  --interactive-active: light-dark(rgba(15, 23, 42, 0.08), rgba(248, 250, 252, 0.10));
+
+  --brand-primary:       var(--ai);
+  --brand-primary-hover: var(--ai-ink);
+
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  --feedback-info:    var(--ai);
+  --feedback-success: light-dark(#16a34a, #22c55e);
+  --feedback-warning: var(--ochre);
+  --feedback-error:   var(--shu);
+
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    light-dark(var(--ai-ink), #85BFFF);
+
+  --success-default: light-dark(#16a34a, #22c55e);
+  --success-subtle:  light-dark(#f0fdf4, #14532d);
+  --success-text:    light-dark(#15803d, #4ade80);
+
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    light-dark(#b45309, #fbbf24);
+
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    light-dark(#b91c1c, #fca5a5);
+
+  /* Library scales — identical */
+  --space-2xs: 0.25rem; --space-xs: 0.5rem; --space-sm: 0.75rem;
+  --space-md:  1rem;    --space-lg: 1.5rem; --space-xl: 2rem;
+  --radius-sm: var(--r-sm); --radius-md: var(--r-md); --radius-lg: var(--r-lg);
+  --radius-xl: 12px; --radius-full: 9999px;
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem; --line-height-normal: 1.5; --font-weight-medium: 500;
+  --z-sticky: 1020; --z-dropdown: 1030; --z-backdrop: 1040;
+  --z-modal: 1050; --z-popover: 1060; --z-tooltip: 1070;
+}

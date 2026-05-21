@@ -2,9 +2,10 @@
 // LAYOUT - Grid, Container, and Page Structure Mixins
 // ============================================================================
 // Smart defaults that work for 80% of cases. Override with parameters.
-// Usage: @include m.container;  @include m.grid(3);  @include m.page-layout;
+// Usage: @include m.wrap;       @include m.grid(3);  @include m.page-layout;
 // ============================================================================
 @use 'sass:map';
+@use 'sass:math';
 @use 'sass:meta';
 @use './system' as s;
 @use './theme' as t;
@@ -17,7 +18,7 @@
 //   @include container;            → 1280px max, responsive padding
 //   @include container(sm);        → 640px max
 //   @include container(full);      → no max-width, just padding
-//   @include container($px: 6);    → custom horizontal padding (space key 6)
+//   @include wrap($px: 6);         → custom horizontal padding (space key 6)
 
 $_container-widths: (
   sm:   40rem,
@@ -28,7 +29,7 @@ $_container-widths: (
   full: none,
 );
 
-@mixin container($size: xl, $px: null) {
+@mixin wrap($size: xl, $px: null) {
   width: 100%;
   margin-inline: auto;
 
@@ -191,4 +192,92 @@ $_container-widths: (
   border-inline-start: 1px solid var(--#{$color});
   margin-inline: $space-val;
   align-self: stretch;
+}
+
+// ============================================================================
+// INTRINSIC LAYOUT — Every Layout vocabulary, cia-native
+// ============================================================================
+
+// STACK — vertical rhythm via flex column + gap.
+// Usage:
+//   .field-group { @include stack; }
+//   .form        { @include stack($gap: 5); }
+@mixin stack($gap: 4) {
+  display: flex;
+  flex-direction: column;
+  gap: map.get(t.$space, $gap) or $gap;
+}
+
+// CLUSTER — wrapping inline group (pills, tags, button rows).
+// Usage:
+//   .toolbar { @include cluster; }
+//   .tag-row { @include cluster($gap: 1, $align: center); }
+@mixin cluster($gap: 2, $align: center, $justify: start) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: map.get(t.$space, $gap) or $gap;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+// SWITCHER — auto switches between row and column based on container width.
+// When container is wider than $threshold, items flow as a row. Below, stack.
+// Container-query aware: works inside any sized parent.
+// Usage:
+//   .form-row { @include switcher($threshold: 30rem); }
+@mixin switcher($threshold: 30rem, $gap: 4, $limit: 4) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: map.get(t.$space, $gap) or $gap;
+
+  > * {
+    flex-grow: 1;
+    flex-basis: calc((#{$threshold} - 100%) * 999);
+  }
+
+  > :nth-last-child(n+#{$limit + 1}),
+  > :nth-last-child(n+#{$limit + 1}) ~ * {
+    flex-basis: 100%;
+  }
+}
+
+// COVER — hero / full-height section with vertically-centered content.
+// Designated centered child gets margin-block: auto.
+// Usage:
+//   <section class="hero">
+//     <h1>Title</h1>
+//     <div class="cover-center">Centered content</div>
+//     <p>Footer note</p>
+//   </section>
+//
+//   .hero { @include cover; }
+@mixin cover($min-height: 100vh, $center-selector: '.cover-center', $padding: 5) {
+  display: flex;
+  flex-direction: column;
+  min-block-size: $min-height;
+  padding: map.get(t.$space, $padding) or $padding;
+
+  > * { margin-block: 1rem; }
+  > :first-child:not(#{$center-selector}) { margin-block-start: 0; }
+  > :last-child:not(#{$center-selector})  { margin-block-end: 0; }
+  > #{$center-selector} { margin-block: auto; }
+}
+
+// FRAME — aspect-ratio wrapper for media (images, video, iframes).
+// Usage:
+//   .video-wrap { @include frame; }                       → 16:9 default
+//   .square     { @include frame($ratio: 1); }
+//   .portrait   { @include frame($ratio: math.div(3, 4)); }
+@mixin frame($ratio: math.div(16, 9)) {
+  aspect-ratio: $ratio;
+  overflow: hidden;
+  display: block;
+
+  > img,
+  > video,
+  > iframe {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
 }

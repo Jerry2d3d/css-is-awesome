@@ -1,0 +1,225 @@
+// ============================================================================
+// THEME — Press
+// ============================================================================
+// Newsprint editorial.
+// Light: warm off-white paper, near-black ink, press-red accent.
+// Dark:  night-newsroom, paper inverts to ink, press red stays hot.
+//
+// Fonts, radii, motion, spacing, z-index are IDENTICAL across modes.
+// Only colors and shadow alphas differ — handled with light-dark().
+//
+// Selector: :root[data-theme="press"]
+// Modes:    light + dark via prefers-color-scheme (browser auto-switches).
+//
+// Replaces the old split files (press-light + press-dark). Consumers using
+// `<html data-theme="press-light">` must migrate to `<html data-theme="press">`.
+// ============================================================================
+@use '../mixins' as m;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@400;500;600;700&display=swap');
+
+@include m.theme('press') {
+  /* ----------------------------------------------------------------
+     Surfaces — light: warm newsprint / dark: near-ink newsroom
+     ---------------------------------------------------------------- */
+  --paper:        light-dark(#FAFAF7, #0E0E0E);
+  --paper-raised: light-dark(#FFFFFF, #1A1A1A);
+  --paper-sunk:   light-dark(#F2F1EC, #060606);
+  --paper-glass:  light-dark(rgba(255, 255, 255, 0.80), rgba(26, 26, 26, 0.82));
+
+  /* ----------------------------------------------------------------
+     Ink — light: warm near-black / dark: warm off-white
+     ---------------------------------------------------------------- */
+  --ink:       light-dark(#0A0A0A, #FAFAF7);
+  --ink-soft:  light-dark(#555555, #C8C6C0);
+  --ink-faint: light-dark(#727069, #8A8A86);
+  --graphite:  light-dark(#1A1A1A, #ECEAE4);
+  --muted:     light-dark(#8E8C86, #6B6963);
+
+  /* Rules / hairlines */
+  --guide:      light-dark(#1A1A1A, #ECEAE4);
+  --guide-soft: light-dark(#D9D7D1, #2A2A2A);
+  --hair:       light-dark(#1A1A1A, #2A2A2A);
+  --hair-soft:  light-dark(#ECEAE4, #1A1A1A);
+
+  /* Primary accent — near-ink editorial link */
+  --ai:      light-dark(#1A1A1A, #A8A8A8);
+  --ai-ink:  light-dark(#0A0A0A, #ECEAE4);
+  --ai-wash: light-dark(#ECEAE4, #1F1F1F);
+
+  /* Seal — press red */
+  --shu:      light-dark(#D93025, #FF4538);
+  --shu-wash: light-dark(#FBEAE8, rgba(255, 69, 56, 0.14));
+
+  /* Pull-quote / marginalia — warm gold */
+  --ochre:      light-dark(#B5873A, #E8B96E);
+  --ochre-wash: light-dark(#F4EBD6, rgba(232, 185, 110, 0.12));
+
+  /* Code surface */
+  --code-bg:     light-dark(#0A0A0A, #060606);
+  --code-ink:    #FAFAF7;
+  --code-muted:  #8A8A86;
+  --code-accent: #E8B96E;
+  --code-green:  #B8C57A;
+  --code-blue:   #94AFC9;
+
+  /* ----------------------------------------------------------------
+     Typography — identical across modes
+     ---------------------------------------------------------------- */
+  --font-display: 'Playfair Display', 'Tiempos', 'Fraunces', Georgia, serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'Playfair Display', 'Tiempos', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+
+  /* ----------------------------------------------------------------
+     Radius — identical, editorial = always tight
+     ---------------------------------------------------------------- */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 4px;
+
+  /* ----------------------------------------------------------------
+     Shadows — same shape, different alpha per mode (rgba is <color>)
+     ---------------------------------------------------------------- */
+  --shadow-sm:  0 1px 2px   light-dark(rgba(10, 10, 10, 0.05), rgba(0, 0, 0, 0.35));
+  --shadow-md:  0 6px 24px  light-dark(rgba(10, 10, 10, 0.06), rgba(0, 0, 0, 0.45));
+  --shadow-lg:  0 18px 48px light-dark(rgba(10, 10, 10, 0.09), rgba(0, 0, 0, 0.55));
+  --shadow-xl:  0 28px 64px light-dark(rgba(10, 10, 10, 0.12), rgba(0, 0, 0, 0.65));
+  --shadow-2xl: 0 40px 96px light-dark(rgba(10, 10, 10, 0.18), rgba(0, 0, 0, 0.75));
+
+  /* Blur / glow — editorial doesn't use these */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* ----------------------------------------------------------------
+     Motion — editorial pace, identical across modes
+     ---------------------------------------------------------------- */
+  --duration-fast:   200ms;
+  --duration-normal: 280ms;
+  --duration-slow:   420ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* ----------------------------------------------------------------
+     SEMANTIC ALIASES — bridge library expected names to Press palette
+     ---------------------------------------------------------------- */
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:  var(--paper);
+  --surface-raised:   var(--paper-raised);
+  --surface-sunk:     var(--paper-sunk);
+  --surface-muted:    var(--paper-sunk);
+  --surface-subtle:   var(--paper-raised);
+  --surface-emphasis: var(--ink);
+  --surface-glass:    var(--paper-glass);
+
+  /* Text */
+  --text-primary:    var(--ink);
+  --text-secondary:  var(--ink-soft);
+  --text-muted:      var(--ink-faint);
+  --text-tertiary:   var(--muted);
+  --text-inverse:    var(--paper);
+  --text-link:       light-dark(var(--ai), var(--ink));
+  --text-link-hover: light-dark(var(--ai-ink), var(--shu));
+
+  /* Borders */
+  --border-default:  var(--hair);
+  --border-subtle:   var(--hair-soft);
+  --border-emphasis: var(--ink);
+  --border-focus:    light-dark(var(--ai), var(--shu));
+
+  /* Interactive (hover / active wash) */
+  --interactive-hover:  light-dark(rgba(10, 10, 10, 0.05),    rgba(250, 250, 247, 0.05));
+  --interactive-active: light-dark(rgba(10, 10, 10, 0.10),    rgba(250, 250, 247, 0.10));
+
+  /* Brand */
+  --brand-primary:       light-dark(var(--ai), var(--ink));
+  --brand-primary-hover: light-dark(var(--ai-ink), var(--shu));
+
+  /* Action — three groups */
+  --action-primary-default:   light-dark(var(--ai), var(--ink));
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback (high-level semantic) */
+  --feedback-info:    var(--ai);
+  --feedback-success: var(--code-green);
+  --feedback-warning: var(--ochre);
+  --feedback-error:   var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success (restrained editorial green) */
+  --success-default: light-dark(#2F7A3A, #6FA85A);
+  --success-subtle:  light-dark(#E3EEDF, rgba(111, 168, 90, 0.14));
+  --success-text:    light-dark(#1F5228, #95C97F);
+
+  /* Status — warning (warm editorial ochre) */
+  --warning-default: light-dark(#A86A1A, var(--ochre));
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    light-dark(#6B4512, #F0CC8E);
+
+  /* Status — error (press red IS the error color) */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    light-dark(#8A1D15, #FF7A70);
+
+  /* ----------------------------------------------------------------
+     LIBRARY SCALES — identical across modes
+     ---------------------------------------------------------------- */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   6px;
+  --radius-full: 9999px;
+
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* ----------------------------------------------------------------
+     COMPONENT OVERRIDES — identical across modes
+     ---------------------------------------------------------------- */
+  --btn-radius:   var(--r-sm);                  /* 2px — near-square */
+  --card-radius:  var(--r-sm);                  /* 2px — boxed */
+  --card-shadow:  none;                          /* editorial is flat */
+  --card-border:  1px solid var(--hair);         /* thin rule instead */
+  --input-radius: var(--r-sm);                  /* 2px */
+  --modal-radius: var(--r-md);                  /* 3px */
+}

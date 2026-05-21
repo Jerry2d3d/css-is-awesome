@@ -59,7 +59,7 @@
   @return var(--brand-#{$name}, #{$fallback or currentColor});
 }
 
-@function color-raw($name) {
+@function color-static($name) {
   $value: map.get(t.$theme-light, $name);
   @if not $value {
     $value: map.get(t.$theme-brand, $name);
@@ -244,7 +244,7 @@ $_font-types: (
 // declared via the consumer's global stylesheet, same as system fonts.
 //
 //   // src/styles/fonts.scss (a global .scss imported from layout.tsx):
-//   @include m.font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico');
+//   @include m.font-face('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico');
 //
 //   // src/app/globals.css:
 //   :root { --font-pacifico: 'Pacifico', cursive; }
@@ -252,15 +252,15 @@ $_font-types: (
 //   // Any component:
 //   .heading { @include m.font($family: pacifico); }
 //
-// Sister `font-load-local()` covers self-hosted woff2/ttf/etc. via @font-face.
+// Sister `font-face-local()` covers self-hosted woff2/ttf/etc. via @font-face.
 // ============================================================================
 $_loaded-fonts: () !default;
 
-@mixin font-load($name, $url, $alias: null, $fallback: sans-serif) {
+@mixin font-face($name, $url, $alias: null, $fallback: sans-serif) {
   $existing: map.get($_loaded-fonts, $name);
   @if $existing {
     @if map.get($existing, url) != $url {
-      @error "font-load(): '#{$name}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One name, one URL.";
+      @error "font-face(): '#{$name}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One name, one URL.";
     }
     // Same name + URL = no-op. @import already emitted on the first call.
   } @else {
@@ -279,7 +279,7 @@ $_loaded-fonts: () !default;
   }
 }
 
-@mixin font-load-local(
+@mixin font-face-local(
   $name,
   $src,
   $weight: 400,
@@ -291,7 +291,7 @@ $_loaded-fonts: () !default;
   $existing: map.get($_loaded-fonts, $name);
   @if $existing {
     @if map.get($existing, src) != $src {
-      @error "font-load-local(): '#{$name}' is already registered with a different src. Existing: #{map.get($existing, src)}. New: #{$src}. One name, one src.";
+      @error "font-face-local(): '#{$name}' is already registered with a different src. Existing: #{map.get($existing, src)}. New: #{$src}. One name, one src.";
     }
     // Same name + src = no-op.
   } @else {
@@ -449,7 +449,7 @@ $_type-scale: (
 // BREAKPOINTS
 // ============================================================================
 
-@mixin bp($size) {
+@mixin media($size) {
   $width: $size;
   @if meta.type-of($size) != number {
     $width: map.get(s.$breakpoints, $size);
@@ -457,7 +457,7 @@ $_type-scale: (
   @media screen and (min-width: $width) { @content; }
 }
 
-@mixin bp-down($size) {
+@mixin media-down($size) {
   $width: $size;
   @if meta.type-of($size) != number {
     $width: map.get(s.$breakpoints, $size);
@@ -465,7 +465,7 @@ $_type-scale: (
   @media screen and (max-width: calc(#{$width} - 1px)) { @content; }
 }
 
-@mixin bp-between($min, $max) {
+@mixin media-between($min, $max) {
   $min-w: $min;
   $max-w: $max;
   @if meta.type-of($min) != number {
@@ -478,11 +478,11 @@ $_type-scale: (
 }
 
 // Convenience aliases
-@mixin mobile-only { @include bp-down(md) { @content; } }
-@mixin tablet { @include bp(md) { @content; } }
-@mixin tablet-only { @include bp-between(md, lg) { @content; } }
-@mixin desktop { @include bp(lg) { @content; } }
-@mixin wide { @include bp(xl) { @content; } }
+@mixin mobile-only { @include media-down(md) { @content; } }
+@mixin tablet { @include media(md) { @content; } }
+@mixin tablet-only { @include media-between(md, lg) { @content; } }
+@mixin desktop { @include media(lg) { @content; } }
+@mixin wide { @include media(xl) { @content; } }
 
 // ============================================================================
 // CONTAINER QUERIES
@@ -498,7 +498,7 @@ $_type-scale: (
   }
 }
 
-@mixin cq($size, $name: null) {
+@mixin contain($size, $name: null) {
   $width: $size;
   @if meta.type-of($size) != number {
     $width: map.get(s.$breakpoints, $size);
@@ -510,7 +510,7 @@ $_type-scale: (
   }
 }
 
-@mixin cq-down($size, $name: null) {
+@mixin contain-down($size, $name: null) {
   $width: $size;
   @if meta.type-of($size) != number {
     $width: map.get(s.$breakpoints, $size);
@@ -522,7 +522,7 @@ $_type-scale: (
   }
 }
 
-@mixin cq-between($min, $max, $name: null) {
+@mixin contain-between($min, $max, $name: null) {
   $min-w: $min;
   $max-w: $max;
   @if meta.type-of($min) != number {
@@ -636,19 +636,19 @@ $_flex-align: (
   @if $gap { gap: space($gap); }
 }
 
-@mixin inset($size: 4) {
+@mixin pad($size: 4) {
   padding: space($size);
 }
 
-@mixin inset-x($size: 4) {
+@mixin pad-x($size: 4) {
   padding-inline: space($size);
 }
 
-@mixin inset-y($size: 4) {
+@mixin pad-y($size: 4) {
   padding-block: space($size);
 }
 
-@mixin squish($y: 2, $x: 4) {
+@mixin pad-asym($y: 2, $x: 4) {
   padding: space($y) space($x);
 }
 
@@ -752,269 +752,62 @@ $_flex-align: (
 }
 
 // ============================================================================
-// COMPONENT BUILDERS
+// THEME
 // ============================================================================
+// Authoring helpers for theme files. Keep boilerplate out of per-theme source;
+// theme authors write only the token values.
 
-// Component mixin bodies wrap every override-controlled property in
-// `var(--<key>, <resolved-default>)`. Themes override the custom property
-// on :root; the library default is kept as the var() fallback so output
-// with no override is semantically identical to pre-1.3 behaviour.
-
-@mixin btn-base(
-  $py: 1,
-  $px: 4,
-  $r: md,
-  $font-weight: medium
-) {
-  @include button-reset;
-  @include inline(2);
-  font-weight: var(--btn-font-weight, #{font-weight($font-weight)});
-  padding: var(--btn-padding-y, #{space($py)}) var(--btn-padding-x, #{space($px)});
-  border-radius: var(--btn-radius, #{radius($r)});
-  @include transition(background-color, border-color, color, box-shadow, fast);
-  @include focus-ring;
-}
-
-@mixin card-base(
-  $p: 4,
-  $r: lg,
-  $shadow: 1,
-  $bg: surface-default
-) {
-  padding: var(--card-padding, #{space($p)});
-  border-radius: var(--card-radius, #{radius($r)});
-  background: color($bg);
-  @if $shadow and $shadow != none {
-    box-shadow: var(--card-shadow, #{shadow($shadow)});
+// Wraps a theme's :root[data-theme] selector + color-scheme around its body.
+//
+// Usage:
+//   @include theme('press') {
+//     --background-default: light-dark(#f7f2e8, #0a0a08);
+//     --ink:                light-dark(#1a1a1a, #f5f5f0);
+//   }
+//
+//   // Mode-stable themes pass an explicit scheme:
+//   @include theme('sketchbook', light) {
+//     --background-default: #faf8f1;
+//   }
+@mixin theme($name, $scheme: light dark) {
+  :root[data-theme="#{$name}"] {
+    color-scheme: #{$scheme};
+    @content;
   }
 }
 
-@mixin input-base(
-  $py: 1,
-  $px: 2,
-  $r: md,
-  $border-width: 1px,
-  $bg: surface-default,
-  $border-color: border-default
-) {
-  padding: var(--input-padding-y, #{space($py)}) var(--input-padding-x, #{space($px)});
-  border: var(--input-border-width, #{$border-width}) solid color($border-color);
-  border-radius: var(--input-radius, #{radius($r)});
-  background: color($bg);
-  @include transition(border-color, box-shadow, fast);
-
-  &:focus {
-    outline: none;
-    border-color: color(border-focus);
-    box-shadow: 0 0 0 3px rgba(color-raw(border-focus), 0.2);
-  }
-  &:disabled { @include disabled; }
+// Derives hover/active states from a base color via color-mix in oklch.
+// Mixes BLACK in light mode, WHITE in dark mode — so light hover = darker,
+// dark hover = lighter, both feel right without separate per-mode declarations.
+//
+// Usage:
+//   --action-primary-default: light-dark(#3A5FCD, #60a5fa);
+//   @include states(action-primary);
+//   /* emits --action-primary-hover and --action-primary-active */
+@mixin states($group, $hover-amount: 12%, $active-amount: 20%) {
+  --#{$group}-hover:  color-mix(in oklch, var(--#{$group}-default), light-dark(black, white) #{$hover-amount});
+  --#{$group}-active: color-mix(in oklch, var(--#{$group}-default), light-dark(black, white) #{$active-amount});
 }
 
-@mixin badge-base(
-  $py: 1,
-  $px: 1,
-  $r: full,
-  $font-size: 1
-) {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--badge-padding-y, #{space($py)}) var(--badge-padding-x, #{space($px)});
-  border-radius: var(--badge-radius, #{radius($r)});
-  @include font(medium, $font-size);
-}
-
-@mixin modal-base(
-  $p: 5,
-  $r: xl,
-  $shadow: 5,
-  $max-width: 500px
-) {
-  padding: var(--modal-padding, #{space($p)});
-  border-radius: var(--modal-radius, #{radius($r)});
-  background: color(surface-default);
-  box-shadow: var(--modal-shadow, #{shadow($shadow)});
-  width: 90%;
-  max-width: $max-width;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-@mixin tooltip-base(
-  $py: 1,
-  $px: 1,
-  $r: md,
-  $bg: text-primary,
-  $color: text-inverse
-) {
-  padding: var(--tooltip-padding-y, #{space($py)}) var(--tooltip-padding-x, #{space($px)});
-  border-radius: var(--tooltip-radius, #{radius($r)});
-  background: color($bg);
-  color: color($color);
-  @include font(reg, 1);
-  white-space: nowrap;
-}
-
-// ============================================================================
-// FORM LAYOUT
-// ============================================================================
-
-@mixin form-layout($gap: 4, $columns: 1) {
-  display: grid;
-  gap: space($gap);
-  @if $columns > 1 {
-    @include tablet {
-      grid-template-columns: repeat($columns, 1fr);
-    }
-  }
-}
-
-@mixin form-group($gap: 1, $direction: column) {
-  display: flex;
-  flex-direction: $direction;
-  gap: space($gap);
-}
-
-@mixin form-row($gap: 2, $align: center) {
-  display: flex;
-  align-items: $align;
-  gap: space($gap);
-}
-
-// ============================================================================
-// ANIMATION HELPERS
-// ============================================================================
-
-@mixin spin($duration: 1s) {
-  animation: spin $duration linear infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-
+// Registers a list of color tokens with @property so theme swaps animate
+// smoothly via `transition: --token 240ms`. Only emits when called.
+//
+// Usage:
+//   @include theme-properties((
+//     action-primary-default,
+//     action-primary-hover,
+//     action-primary-active,
+//     background-default,
+//     ink,
+//   ));
+@mixin theme-properties($tokens) {
   @at-root {
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-  }
-}
-
-@mixin pulse($duration: 2s) {
-  animation: pulse $duration ease-in-out infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-
-  @at-root {
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-  }
-}
-
-@mixin fade-in($duration: normal) {
-  $dur: map.get($_speeds, $duration) or $duration;
-  animation: fade-in $dur ease-out both;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    opacity: 1;
-  }
-
-  @at-root {
-    @keyframes fade-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  }
-}
-
-@mixin slide-up($duration: normal, $distance: 1rem) {
-  $dur: map.get($_speeds, $duration) or $duration;
-  animation: slide-up $dur ease-out both;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-
-  @at-root {
-    @keyframes slide-up {
-      from {
-        opacity: 0;
-        transform: translateY($distance);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
+    @each $token in $tokens {
+      @property --#{$token} {
+        syntax: '<color>';
+        inherits: true;
+        initial-value: transparent;
       }
     }
-  }
-}
-
-// ============================================================================
-// BACKWARD COMPATIBILITY ALIASES
-// ============================================================================
-
-@mixin card {
-  @include card-base;
-}
-
-@mixin button-outline {
-  @include btn-base;
-  background: transparent;
-  border: 1px solid color(border-default);
-  color: color(text-primary);
-
-  &:hover {
-    background: color(interactive-hover);
-    border-color: color(border-focus);
-  }
-
-  &:active {
-    background: color(interactive-active);
-  }
-}
-
-@mixin form-input {
-  @include input-base;
-}
-
-@mixin label-base {
-  display: block;
-  @include font(medium, 2);
-  color: color(text-primary);
-  margin-bottom: space(1);
-}
-
-@mixin button-primary {
-  @include btn-base;
-  background: color(action-primary-default);
-  color: color(text-inverse);
-
-  &:hover {
-    background: color(action-primary-hover);
-  }
-
-  &:active {
-    background: color(action-primary-active);
-  }
-}
-
-@mixin button-secondary {
-  @include btn-base;
-  background: color(action-secondary-default);
-  color: color(text-inverse);
-
-  &:hover {
-    background: color(action-secondary-hover);
-  }
-
-  &:active {
-    background: color(action-secondary-active);
   }
 }

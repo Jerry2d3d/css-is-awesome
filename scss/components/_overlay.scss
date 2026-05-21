@@ -56,6 +56,57 @@
 }
 
 // ----------------------------------------------------------------------------
+// MODAL — public mixin (wraps modal-base for <dialog> semantics)
+// ----------------------------------------------------------------------------
+// Usage (mixin):
+//   .my-dialog { @include modal; }
+//
+// Usage (utility class, opt-in convenience):
+//   <dialog class="cia-modal">…</dialog>
+//
+// Consumer triggers via native DOM: dialog.showModal() / dialog.close().
+// Escape-to-close, focus trapping, background-inert are all native browser
+// behavior — Baseline since 2022. cia ships zero JS for this.
+// ----------------------------------------------------------------------------
+@mixin modal {
+  @include modal-base;
+
+  /* Reset <dialog> browser defaults */
+  border: 0;
+  margin: auto;
+
+  /* Backdrop — native ::backdrop pseudo styles the dimmed background */
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Open animation — only emits when [open] mounts */
+  &[open] {
+    animation: cia-modal-open var(--duration-normal, 240ms) var(--ease, ease) both;
+  }
+  &[open]::backdrop {
+    animation: cia-modal-backdrop var(--duration-normal, 240ms) var(--ease, ease) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[open], &[open]::backdrop { animation: none; }
+  }
+
+  /* Keyframes scoped via @at-root — emit only when the mixin is called */
+  @at-root {
+    @keyframes cia-modal-open {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes cia-modal-backdrop {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
 // TOOLTIP
 // ----------------------------------------------------------------------------
 @mixin tooltip-base(
@@ -72,6 +123,49 @@
   @include m.font(reg, 1);
   white-space: nowrap;
   z-index: m.z(tooltip);
+}
+
+// ----------------------------------------------------------------------------
+// TOOLTIP — public mixin (wraps tooltip-base for [popover] semantics)
+// ----------------------------------------------------------------------------
+// Usage (mixin):
+//   .info-tip { @include tooltip; }
+//
+// Usage (utility class):
+//   <div popover="hint" class="cia-tooltip">…</div>
+//
+// Consumer pairs with a trigger button:
+//   <button popovertarget="tip-1" type="button" aria-describedby="tip-1">?</button>
+//
+// Browser handles show/close/Escape natively. cia ships zero JS.
+// Position is the consumer's responsibility — anchor() + position-area
+// recipes documented separately.
+// ----------------------------------------------------------------------------
+@mixin tooltip {
+  @include tooltip-base;
+
+  /* Reset [popover] browser defaults */
+  &[popover] {
+    margin: 0;
+    border: 0;
+    inset: unset;
+    overflow: visible;
+  }
+
+  &:popover-open {
+    animation: cia-tooltip-show var(--duration-fast, 180ms) var(--ease, ease) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:popover-open { animation: none; }
+  }
+
+  @at-root {
+    @keyframes cia-tooltip-show {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -121,4 +215,45 @@
   border: none;
   border-top: 1px solid m.color(border-default);
   margin: m.space($spacing) 0;
+}
+
+// ----------------------------------------------------------------------------
+// DROPDOWN — public mixin (wraps dropdown-menu for [popover] semantics)
+// ----------------------------------------------------------------------------
+// Usage (mixin):
+//   .user-menu { @include dropdown; }
+//
+// Usage (utility class):
+//   <div popover class="cia-dropdown">…</div>
+//
+// Consumer pairs with a trigger:
+//   <button popovertarget="user-menu" type="button">Menu</button>
+//
+// Browser handles auto-dismiss (click outside), Escape, focus. Zero cia JS.
+// Anchor positioning (anchor() + position-area) covered in a separate docs
+// recipe for browsers that support it.
+// ----------------------------------------------------------------------------
+@mixin dropdown {
+  @include dropdown-menu;
+
+  /* Reset [popover] browser defaults */
+  &[popover] {
+    margin: 0;
+    inset: unset;
+  }
+
+  &:popover-open {
+    animation: cia-dropdown-show var(--duration-fast, 180ms) var(--ease, ease) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:popover-open { animation: none; }
+  }
+
+  @at-root {
+    @keyframes cia-dropdown-show {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  }
 }

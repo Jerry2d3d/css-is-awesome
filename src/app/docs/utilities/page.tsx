@@ -18,6 +18,27 @@ export default function UtilitiesPage() {
         utilities are the escape hatch for rapid prototyping and small tweaks.
       </p>
 
+      <aside style={{
+        margin: "1.5rem 0",
+        padding: "1rem 1.25rem",
+        background: "var(--surface-subtle)",
+        borderInlineStart: "3px solid var(--action-primary-default)",
+        borderRadius: "var(--radius-md)",
+      }}>
+        <strong>Opt-in since v0.8.</strong> Utilities default to <em>off</em> in the Sass compile —
+        Sass-authoring consumers see zero <code>.cia-*</code> rules in their compiled CSS unless they opt in:
+        <Example>
+          <Example.Code><span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome'</span> <span className="tok-prop">as</span> <span className="tok-val">cia</span> <span className="tok-prop">with</span> (
+{"\n"}  <span className="tok-prop">$utilities</span>: <span className="tok-val">true</span>,         <span className="tok-com">{"// opt in to ~80 structural utility classes"}</span>
+{"\n"}  <span className="tok-prop">$responsive-spacing</span>: <span className="tok-val">true</span>,  <span className="tok-com">{"// opt in to .cia-sm-p-md, etc."}</span>
+{"\n"});</Example.Code>
+        </Example>
+        <p style={{ margin: "0.5rem 0 0" }}>
+          The pre-built <code>dist/css-is-awesome.utilities.css</code> still ships every utility for
+          non-Sass consumers (CDN drop-in). The opt-in flag governs the Sass compile path only.
+        </p>
+      </aside>
+
       <h2 id="naming">Naming convention</h2>
       <p>
         All utilities follow <code>cia-&lt;property&gt;-&lt;value&gt;</code> or{" "}

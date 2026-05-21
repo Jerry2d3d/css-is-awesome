@@ -7,16 +7,40 @@ export default function InstallPage() {
     <>
       <h1>Install css-is-awesome</h1>
       <p className="lead">
-        One design system, four install tiers — CDN for quick HTML, npm + SCSS for builds, a framework
-        integration for React/Next, or a single theme file you can airdrop into any project.
+        cia is mixin-first. The primary API is <code>@use 'css-is-awesome' as cia;</code> +{" "}
+        <code>@include cia.btn(primary)</code> on whatever selector you choose. Utility classes are an
+        opt-in convenience for non-Sass consumers — the npm package ships zero JavaScript.
+      </p>
+
+      <h2 id="quick-start">Quick start (Sass)</h2>
+      <p>The 30-second path. One install, one <code>@use</code>, write your own selectors against the mixin API.</p>
+      <Example>
+        <Example.Code><span className="tok-com">{"# install"}</span>
+{"\n"}<span className="tok-sel">npm</span> <span className="tok-val">install css-is-awesome</span></Example.Code>
+      </Example>
+      <Example>
+        <Example.Code><span className="tok-com">{"// app.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome'</span> <span className="tok-prop">as</span> <span className="tok-val">cia</span>;
+{"\n"}
+{"\n"}<span className="tok-sel">.checkout-cta</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">cia.btn(primary)</span>; {"}"}
+{"\n"}<span className="tok-sel">.faq-item</span>     {"{"} <span className="tok-prop">@include</span> <span className="tok-val">cia.accordion</span>; {"}"}
+{"\n"}<span className="tok-sel">.modal</span>        {"{"} <span className="tok-prop">@include</span> <span className="tok-val">cia.modal</span>; {"}"}</Example.Code>
+      </Example>
+      <Example>
+        <Example.Code><span className="tok-com">{"<!-- pair the theme.css with a data-theme attribute -->"}</span>
+{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"/cia/themes/boilerplate.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}<span className="tok-sel">{"<html"}</span> <span className="tok-prop">data-theme</span>=<span className="tok-val">"boilerplate"</span><span className="tok-sel">{">"}</span></Example.Code>
+      </Example>
+      <p>
+        That&rsquo;s the whole pitch. One <code>{`<link>`}</code> for the theme, one <code>@use</code> for the mixins, your own selectors do the wiring.
       </p>
 
       <h2 id="pick-your-path">Pick your path</h2>
-      <p>Match your scenario to an install tier. Each tier ships the same tokens and components — only the delivery differs.</p>
+      <p>Four delivery shapes. Each ships the same tokens and components — only the consumption differs.</p>
       <ul>
-        <li><strong>HTML file, no build</strong> — reach for the <a href="#cdn">CDN</a>. Two <code>&lt;link&gt;</code> tags, zero tooling.</li>
-        <li><strong>Sass build pipeline</strong> — use <a href="#npm-scss">npm + SCSS</a>. The full mixin API plus per-component partials are exposed as first-class <code>@use</code> entries.</li>
-        <li><strong>React / Next.js project</strong> — follow the <a href="#react-next">framework integration</a>. Import in <code>app/layout.tsx</code>, wire the <code>data-theme</code> attribute.</li>
+        <li><strong>Sass build pipeline (recommended)</strong> — see the <a href="#quick-start">quick start</a> above and the <a href="#npm-scss">full npm + SCSS</a> section. The primary cia experience.</li>
+        <li><strong>React / Next.js project</strong> — same as Sass; see the <a href="#react-next">framework integration</a> notes for <code>app/layout.tsx</code> wiring.</li>
+        <li><strong>HTML file, no build</strong> — reach for the <a href="#cdn">CDN</a>. Two <code>&lt;link&gt;</code> tags, zero tooling. Utility classes available.</li>
         <li><strong>Single file airdrop</strong> — <a href="#download">download a theme file</a> and drop it next to your existing stylesheet.</li>
       </ul>
 

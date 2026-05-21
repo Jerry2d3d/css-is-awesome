@@ -1,0 +1,72 @@
+// ============================================================================
+// TABS
+// ============================================================================
+// Native <input type="radio"> state + :has() + :nth-of-type() pattern.
+// Zero JavaScript for panel-switching.
+//
+// Usage:
+//   <div class="cia-tabs">
+//     <input type="radio" name="t" id="t1" checked>
+//     <input type="radio" name="t" id="t2">
+//     <div class="cia-tab-list" role="tablist">
+//       <label for="t1" role="tab">Tab 1</label>
+//       <label for="t2" role="tab">Tab 2</label>
+//     </div>
+//     <div class="cia-tab-panel" role="tabpanel">Content 1</div>
+//     <div class="cia-tab-panel" role="tabpanel">Content 2</div>
+//   </div>
+//
+// A11y baseline: keyboard nav (Tab + arrows + Space) and screen-reader text
+// are native. For full aria-selected sync ship the tiny opt-in JS shim
+// documented at /docs/components/tabs#aria.
+//
+// :has() Baseline Dec 2023; :nth-of-type() universal.
+// ============================================================================
+@use '../mixins' as m;
+
+@mixin tabs($max-tabs: 12) {
+  display: flex;
+  flex-direction: column;
+
+  /* Hide radios — functional only, not visual */
+  > input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  > .cia-tab-list {
+    display: flex;
+    gap: m.space(1);
+    border-block-end: 1px solid m.color(border-default);
+
+    > label {
+      padding: m.space(2) m.space(3);
+      cursor: pointer;
+      color: m.color(text-secondary);
+      border-block-end: 2px solid transparent;
+      margin-block-end: -1px;
+      min-height: var(--touch-target-min, 24px);
+      @include m.transition(border-color, color);
+
+      &:hover { color: m.color(text-primary); }
+      @include m.focus-ring;
+    }
+  }
+
+  > .cia-tab-panel {
+    display: none;
+    padding-block-start: m.space(4);
+  }
+
+  /* For each (nth input checked) → show nth panel + style nth label */
+  @for $i from 1 through $max-tabs {
+    &:has(> input:nth-of-type(#{$i}):checked) > .cia-tab-panel:nth-of-type(#{$i}) {
+      display: block;
+    }
+    &:has(> input:nth-of-type(#{$i}):checked) > .cia-tab-list > label:nth-of-type(#{$i}) {
+      color: m.color(text-primary);
+      border-block-end-color: m.color(action-primary-default);
+    }
+  }
+}

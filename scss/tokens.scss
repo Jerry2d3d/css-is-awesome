@@ -1,0 +1,23 @@
+// ============================================================================
+// TOKENS — :root CSS variables only, no rules, no utilities, no resets.
+// ============================================================================
+// The purest mixin-first emit: import this if all you want is cia's tokens.
+// Consumers who bring their own everything else, theme our way.
+//
+// Usage in HTML (pre-built):
+//   <link rel="stylesheet" href="css-is-awesome/dist/tokens.css">
+//
+// Usage in SCSS:
+//   @use 'css-is-awesome/scss/tokens';
+//
+// Output: only `:root { --foo: ...; --bar: ...; }` declarations.
+// ~1 KB gzipped. The pure-token path.
+// ============================================================================
+@use './generator';
+
+@include generator.generate-theme;
+
+// WCAG 2.2 SC 2.5.8 — minimum touch-target size. Themes can override.
+:root {
+  --touch-target-min: 24px;
+}

@@ -214,8 +214,8 @@
 // Author-side code names its own classes (`navbar-logo`, `navbar-menu-btn`).
 .navbar {
   @include m.flex($justify: between);
-  @include m.inset-y(sm);
-  @include m.inset-x(md);
+  @include m.pad-y(sm);
+  @include m.pad-x(md);
   @include m.border(1px, solid, border-default, bottom);
 }
 
@@ -258,7 +258,7 @@
 
 // Spacing
 .section {
-  @include m.inset(lg);
+  @include m.pad(lg);
   @include m.flex($direction: column, $gap: md);
 }
 
@@ -312,6 +312,6 @@ CORE MIXINS:
   m.color(name)       m.space(n)            m.radius(size)
   m.font(type, ...)   m.border(...)         m.elevation(level)
   m.transition(...)   m.flex($justify, $gap, $direction, ...)
-  m.inset(size)       m.squish(y, x)
+  m.pad(size)       m.pad-asym(y, x)
   m.btn-base(...)     m.card-base(...)      m.input-base(...)
 */
