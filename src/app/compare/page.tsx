@@ -28,7 +28,7 @@ const ROWS: Row[] = [
   { feature: "Icon system",                      cia: "49-glyph core + drop-in + per-theme override", tailwind: false, bootstrap: "separate Bootstrap Icons package", note: "Lucide-vendored core pack at public/icons/core/. Drop a new SVG in to add it; declare a CSS var to override per theme." },
   { feature: "Requires a build step",            cia: false, tailwind: true,  bootstrap: false },
   { feature: "JavaScript dependency",            cia: false, tailwind: false, bootstrap: true, note: "Bootstrap's dropdowns, modals, tabs need bootstrap.js" },
-  { feature: "Readable class names in your HTML",cia: true,  tailwind: "debatable", bootstrap: true, note: "cia and Bootstrap use semantic BEM-style; Tailwind stacks utilities" },
+  { feature: "Who picks the class names in your HTML", cia: "you do (mixin-first)", tailwind: "compose utility tokens", bootstrap: "BEM-style names baked in", note: "Under v0.8 mixin-first, cia consumers write their own selectors (.checkout-cta, .faq-item) and @include the mixin. Bootstrap ships BEM-style component classes (.btn-primary, .card-header). Tailwind stacks utility classes in markup. cia is the only one that doesn't dictate naming." },
   { feature: "Tree-shakeable",     cia: "opt-in core/utils bundles", tailwind: true, bootstrap: "sort of" },
   { feature: "React components shipped (docs site)", cia: "47", tailwind: "0 (utility-only)", bootstrap: "~30" },
   { feature: "Years of battle-testing", cia: "new", tailwind: "5+", bootstrap: "12+" },
