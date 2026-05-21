@@ -2,6 +2,137 @@
 
 Breaking changes between css-is-awesome versions, and how to migrate.
 
+## v0.8 — mixin-first reframe + theme system collapse
+
+**Status:** breaking, no aliases. v0.8 is the pre-v1.0 lock-in pass.
+
+### What changed at a glance
+
+| Area | v0.7 | v0.8 |
+|---|---|---|
+| Primary API | utility classes + mixins | **mixin-first** (consumer picks their own selectors) |
+| Themes | 14 files (`press-light` + `press-dark` × 7 families) | **9 single-file themes** using `light-dark()` |
+| Theme selectors | `[data-theme="press-light"]` / `[data-theme="press-dark"]` | `[data-theme="press"]` |
+| Responsive `:` utilities | `.cia-sm:flex`, `.cia-md:hidden` etc. | **killed** (saves 8 KB gz) |
+| Utility classes (Sass path) | always emitted | **opt-in** via `@use ... with ($utilities: true)` |
+| JavaScript in npm package | optional add-ons | **zero** — hard rule |
+| Mixin names | 12 names renamed to spec vocabulary | see rename table below |
+
+### 1. Rename `data-theme` attribute values
+
+```html
+<!-- v0.7 -->
+<html data-theme="press-light">
+<html data-theme="press-dark">
+
+<!-- v0.8 -->
+<html data-theme="press">  <!-- both modes inside one theme file -->
+```
+
+The single-file themes use `light-dark()` for color tokens; the browser
+auto-swaps based on the user's OS `prefers-color-scheme`.
+
+### 2. Rename mixin calls
+
+| v0.7 | v0.8 |
+|---|---|
+| `@include m.bp(md) { … }` | `@include m.media(md) { … }` |
+| `@include m.bp-down(md) { … }` | `@include m.media-down(md) { … }` |
+| `@include m.bp-between(sm, lg)` | `@include m.media-between(sm, lg)` |
+| `@include m.cq(md) { … }` | `@include m.contain(md) { … }` |
+| `@include m.cq-down(md)` | `@include m.contain-down(md)` |
+| `m.color-raw(border-focus)` | `m.color-static(border-focus)` |
+| `@include m.inset(4)` | `@include m.pad(4)` |
+| `@include m.inset-x(4)` | `@include m.pad-x(4)` |
+| `@include m.inset-y(2)` | `@include m.pad-y(2)` |
+| `@include m.squish(2, 4)` | `@include m.pad-asym(2, 4)` |
+| `@include m.font-load('Inter', '/inter.woff2')` | `@include m.font-face('Inter', '/inter.woff2')` |
+| `@include m.font-load-local('Inter', '/inter.woff2')` | `@include m.font-face-local('Inter', '/inter.woff2')` |
+| Layout `@include m.container` | `@include m.wrap` |
+
+No aliases. Use a regex search-replace on your codebase, or wait for a
+codemod (planned for the future `@cia/codemod` package, v1.x).
+
+### 3. Remove responsive `:` utility classes
+
+```html
+<!-- v0.7 -->
+<div class="cia-sm:flex cia-md:hidden">
+
+<!-- v0.8 -->
+<!-- Option A: opt back in to responsive utilities -->
+<!-- in your app.scss: -->
+<!--   @use 'css-is-awesome' as cia with ($responsive-spacing: true); -->
+
+<!-- Option B (recommended): use the mixin form -->
+<div class="my-thing">
+<!-- in your SCSS: -->
+<!--   .my-thing {
+        @include cia.media(md) { display: flex; }
+      } -->
+```
+
+The responsive utility generator was emitting ~85 lines of cartesian-product
+classes that most consumers never used. Killing them dropped `main.scss` from
+16.6 KB gz to 8.2 KB gz.
+
+### 4. Opt back in to utility classes (Sass consumers)
+
+```scss
+// v0.7 — all utilities always emitted
+@use 'css-is-awesome' as cia;
+
+// v0.8 — utilities opt-in
+@use 'css-is-awesome' as cia with (
+  $utilities: true,             // emit .cia-* utility classes
+  $responsive-spacing: true,    // emit .cia-sm-p-md, etc.
+);
+```
+
+**Pre-built CDN consumers are unaffected** — `dist/css-is-awesome.utilities.css`
+still ships every utility class. The opt-in governs the Sass compile path only.
+
+### 5. Move JS handlers out of cia-core dependencies
+
+If you were relying on a JS shim shipped in `dist/`, it's gone. The
+CopyButton JS handler now lives at `public/copy-button.mjs` (not in the
+npm package). Three migration options:
+
+1. **Copy-paste the recipe** from `/docs/recipes/copy-button`. ~700 bytes,
+   framework-free.
+2. **Write your own handler** following the documented contract
+   (delegated click, `data-copy-target`, `data-copied` state).
+3. **Wait for `@cia/copy-button`** add-on package (v1.x roadmap).
+
+### 6. Embrace mixin-first authoring
+
+The v0.8 reframe is more philosophical than mechanical: **cia ships the
+mixin; you ship the class name**. Pre-v0.8 docs led with class examples
+(`<button class="cia-btn-primary">`); v0.8 docs lead with mixin examples:
+
+```scss
+// v0.7 — class form was primary
+<button class="cia-btn-primary">Save</button>
+
+// v0.8 — mixin form is primary
+<button class="save-btn">Save</button>
+
+// in your SCSS:
+.save-btn { @include cia.btn(primary); }
+```
+
+You can still use the `.cia-*` classes if you opt them in — they're a
+convenience layer now, not the primary API.
+
+### Where to read more
+
+- [`CHANGELOG.md`](./CHANGELOG.md) — full breaking-change list with code-level detail
+- [`AGENTS.md`](./AGENTS.md) — authoring guide updated for v0.8
+- `/docs/install` on the docs site — the new mixin-first install path
+- `/docs/themes/pairing` — the new `<link media>` paired-brand trick
+
+---
+
 ## v0.7 — theme names carry a `-light` / `-dark` suffix
 
 **Status:** breaking (alias-cushioned). Approved pre-1.0.

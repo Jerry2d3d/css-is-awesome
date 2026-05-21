@@ -4,38 +4,43 @@
 
 [![CI](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml/badge.svg)](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml) [![Node](https://img.shields.io/badge/node-%E2%89%A520-43853d?logo=node.js&logoColor=white)](./package.json) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![semantic-release](https://img.shields.io/badge/semantic--release-enabled-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-One CSS file. Six voices. Swap the file, the whole site reskins. Built to be small enough to read in an afternoon.
+**Bring your own selectors. We bring the design system.** One CSS file per theme. Nine themes. Zero JavaScript in the npm package. Six zero-JS interactive components. Small enough to read in an afternoon.
 
 ## Three ways to use it
 
-> Full breakdown in [THREE-TIERS.md](./THREE-TIERS.md). All three resolve to the same router mixin per component — mix them freely in one app.
+> Full breakdown in [THREE-TIERS.md](./THREE-TIERS.md). cia is **mixin-first** since v0.8 — utility classes are an opt-in convenience.
 
-### 1. Drop-in CSS (zero build)
-
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.7/public/theme.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.7/dist/css-is-awesome.min.css">
-```
-
-jsDelivr auto-mirrors npm. Theme stylesheet first (it sets the tokens), library second. Then use utility classes (`cia-flex`, `cia-p-md`) or single-class components (`cia-btn-primary`, `cia-card`, `cia-alert`). Pick a tier-specific bundle if you want to drop weight: `/dist/css-is-awesome.core.min.css` (~2.4 KB gz, tokens + resets only) or `/dist/css-is-awesome.utilities.min.css` (~11.5 KB gz, no components). For Subresource Integrity hashes see [`/docs/install#cdn-sri`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/src/app/docs/install/page.tsx).
-
-### 2. SCSS with mixin API
+### 1. SCSS with mixin API (recommended)
 
 ```bash
 npm install css-is-awesome
-# Tier 2 also wants the Sass compiler:
 npm install -D sass
 ```
 
 ```scss
-@use 'css-is-awesome/scss/components/buttons' as b;
+@use 'css-is-awesome' as cia;
 
-.my-cta {
-  @include b.btn(primary, $px: 6, $r: full);
-}
+.checkout-cta { @include cia.btn(primary); }
+.faq-item     { @include cia.accordion; }
+.modal        { @include cia.modal; }
 ```
 
-Author your own class names; the mixin handles the variant. 50+ atomic mixins — `btn(variant)`, `card-base`, `input-base`, `check-base`, `switch-base`, `tab-item`, `badge-base`, `alert-base`, `modal-base`, `tooltip-base`, `dropdown-*`, `nav-*`, `pagination`, `breadcrumb`, `avatar`, and more. Every parameter overridable. Full mixin reference and tier guidance live in [`AGENTS.md`](./AGENTS.md).
+```html
+<link rel="stylesheet" href="/cia/themes/boilerplate.css">
+<html data-theme="boilerplate">
+```
+
+Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button`. Full reference at [`/docs/mixins`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/src/app/docs/mixins/page.tsx).
+
+### 2. Drop-in CSS (zero build)
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/public/themes/boilerplate/theme.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/dist/css-is-awesome.min.css">
+<html data-theme="boilerplate">
+```
+
+Theme first (sets the tokens), library second. Bundle tiers — `dist/tokens.css` (2.3 KB gz, `:root` vars only), `dist/css-is-awesome.core.min.css` (2.7 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (8.2 KB gz, full).
 
 ### 3. Bare tags (opt-in Pico-mode)
 
@@ -49,33 +54,33 @@ Author your own class names; the mixin handles the variant. 50+ atomic mixins �
 <input type="email">
 ```
 
-One line styles the whole site. Zero classes. Any class-based selector you add wins automatically (specificity `0,0,1`, no `:where()` / `@layer`).
+One line styles the whole site. Zero classes. Wrapped in `:where()` (specificity `0,0,0`), so any consumer selector — even another bare tag — wins automatically. No `@layer`, no cascade pollution.
 
 ## Themes
 
-Swap by replacing `public/theme.css` (or flipping `<html data-theme="...">`):
+**One file per theme since v0.8.** Each theme contains both light + dark modes via native `light-dark()`. Set `<html data-theme="...">` and the browser handles the rest.
 
-| Theme              | Mood                                                          |
-|--------------------|---------------------------------------------------------------|
-| boilerplate-light  | Neutral slate + clean blue, system fonts, drop-in starter     |
-| boilerplate-dark   | Dark companion of the boilerplate starter                     |
-| sketchbook-light   | Warm washi paper, sumi ink, indigo accent (brand default)     |
-| press-light        | Editorial newsprint, Playfair serif, press-red accent         |
-| graphite-dark      | Space-gray aluminum dark mode, system blue                    |
-| glass-light        | visionOS glassmorphism, iOS indigo, dual-rim highlights       |
-| cupertino-light    | macOS Sonoma window, SF Pro, system blue                      |
-| terminal           | VT100 phosphor green, zero radii, CRT glow (single-mode)      |
+| Theme         | Mood                                                          | Modes |
+|---------------|---------------------------------------------------------------|-------|
+| boilerplate   | Neutral slate + clean blue, system fonts, drop-in starter     | both |
+| sketchbook    | Warm washi paper / charcoal at night, sumi ink, indigo accent | both (brand default) |
+| press         | Editorial newsprint / night-edition, Playfair serif, press-red | both |
+| prism         | Vercel/Linear/Radix aesthetic, refined blue, neutral grays    | both |
+| cupertino     | macOS AppKit, SF Pro, system blue, vibrancy blurs             | both |
+| glass         | visionOS glassmorphism, iOS indigo, blur asymmetric per mode  | both (Pattern C) |
+| graphite      | Brushed silver / machined dark aluminum, SF system stack      | both |
+| terminal      | VT100 phosphor green, zero radii, CRT glow                    | dark-only |
+| terminal-light | Daylight editor companion to terminal                        | light-only |
 
-Companion `-light` / `-dark` modes also ship for press, glass, cupertino, and prism — see `public/themes/` and `/themes` on the docs site for the full gallery.
+**Pair two themes per mode** with native `<link media>`:
+```html
+<link rel="stylesheet" href="/themes/sketchbook.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="/themes/terminal.css"   media="(prefers-color-scheme: dark)">
+```
 
-Theme names carry a `-light` / `-dark` mode suffix since v0.7. Terminal is the
-intentional exception — a "terminal-light" is no longer terminal, the CRT
-chassis IS the theme. The unsuffixed v0.6 names (`sketchbook`, `press`,
-`graphite`, `glass`, `cupertino`) keep working through 0.7.x as backward-compat
-aliases and are removed in v0.8 — see [`MIGRATION.md`](./MIGRATION.md) and the
-[CHANGELOG](./CHANGELOG.md) for the timeline.
+Newspaper by day, hacker terminal by night. No JS, no mixin — pure browser behavior. Most design systems give you dark mode; cia lets you ship a second brand at night. See [`/docs/themes/pairing`](./src/app/docs/themes/pairing/page.tsx).
 
-Each theme is one file of CSS custom properties. Tokens only — no component rules. See `public/themes/` for the sources and `/themes` on the docs site for live previews + downloads. Full contract documented in [THEMING.md](./THEMING.md).
+Each theme is one file of CSS custom properties. Tokens only — no component rules. See `public/themes/<name>/theme.css` for the compiled output and `scss/themes/<name>.scss` for the sources. Full contract documented in [THEMING.md](./THEMING.md).
 
 ## Token contract
 
@@ -105,13 +110,19 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 | `npm run validate-themes` | Validate every theme against the 123-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7) |
 | `npm run validate-icons` | Validate the `core` icon pack against the 49-glyph contract |
 
-## Size
+## Size (v0.8 gzipped)
 
-Verified at Phase 2: **2 KB gzipped** for core (tokens + resets), **10 KB gzipped** for the full bundle (tokens + utilities + components).
+| Bundle | Size | Use case |
+|---|---|---|
+| `dist/tokens.css` | 2.3 KB | Tokens only (`:root` CSS variables, no rules) — the purest mixin-first emit |
+| `dist/css-is-awesome.core.min.css` | 2.7 KB | Tokens + resets, no utilities or components |
+| `dist/css-is-awesome.min.css` | 8.2 KB | Full bundle (everything) |
+| Per-theme `themes/<name>.css` | ~1.5-2.3 KB | One file per theme, both modes via `light-dark()` |
+| **JavaScript shipped in package** | **0 KB** | Zero. Period. JS-driven features ship as separate add-on packages. |
 
 ## Status
 
-Pre-1.0. Active development. v0.7 is the first npm publish — themes, animations, atomic mixins, the WCAG 2.2 AA contrast linter, and the boilerplate starter theme are all in place. See [ROADMAP.md](./ROADMAP.md) for what's next and [CHANGELOG.md](./CHANGELOG.md) for what's shipped.
+Pre-1.0. v0.8 is the mixin-first reframe — twelve mixin renames, theme system collapsed from 14 files to 9 single-file themes, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities. The npm package now ships ZERO JavaScript by hard rule. See [CHANGELOG.md](./CHANGELOG.md) for the breaking-change list and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 upgrade path.
 
 For the deep authoring reference (tier decisions, mixin contracts, agent rules), read [`AGENTS.md`](./AGENTS.md).
 

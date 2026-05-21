@@ -11,6 +11,141 @@ automated releases.
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-05-21 — Mixin-first reframe
+
+The big one. cia is now **mixin-first** end-to-end: the mixin is the API, the
+class/tag/selector is the consumer's choice. The npm package ships **zero
+JavaScript** by hard rule.
+
+### BREAKING — Mixin renames (no aliases, hard cut)
+
+| Old | New | Why |
+|---|---|---|
+| `m.bp` | `m.media` | Matches CSS `@media` |
+| `m.bp-down` | `m.media-down` | Same family |
+| `m.bp-between` | `m.media-between` | Same family |
+| `m.cq` | `m.contain` | Matches `container-type` mental model |
+| `m.cq-down` | `m.contain-down` | Same |
+| `m.cq-between` | `m.contain-between` | Same |
+| `m.color-raw` | `m.color-static` | "static" makes runtime-vs-compile clearer |
+| `m.inset` | `m.pad` | `inset` collides with CSS property |
+| `m.inset-x` | `m.pad-x` | Same family |
+| `m.inset-y` | `m.pad-y` | Same family |
+| `m.squish` | `m.pad-asym` | Cute → ambiguous; `pad-asym` is descriptive |
+| `m.font-load` | `m.font-face` | Matches `@font-face` at-rule emitted |
+| `m.font-load-local` | `m.font-face-local` | Same |
+| Layout `m.container` | `m.wrap` | Resolves collision with the CSS-containment `m.container` |
+
+### BREAKING — Theme system collapsed
+
+- 14 hand-authored `public/themes/<name-mode>/theme.css` files → 9 single-file
+  themes generated from `scss/themes/<name>.scss` sources via `light-dark()`.
+- New selector: `:root[data-theme="press"]` instead of
+  `[data-theme="press-light"]` / `[data-theme="press-dark"]`. **Consumers must
+  rename `data-theme` attribute values** — drop the `-light`/`-dark` suffix.
+- Glass uses Pattern C (nested `@media` block for blur/glow that differs per
+  mode); all other themes use Pattern B (one block, `light-dark()` per token).
+- Terminal + Terminal-light are two separate themes, not a paired family —
+  intentional. Different brand identities.
+
+### BREAKING — Responsive `:` utilities killed
+
+- `.cia-sm:flex`, `.cia-md:hidden`, etc. — gone. They were generating ~85
+  lines of cartesian-product responsive utility classes that almost nobody
+  was opting in to.
+- `main.scss` compiled bundle dropped from 16.6 KB gz → 8.2 KB gz (50%).
+- Consumers needing responsive utilities: opt back in via `@use cia with
+  ($responsive-spacing: true)` once the opt-in API ships.
+
+### BREAKING — Utility classes opt-in (Sass path)
+
+- Default for Sass-authoring consumers: zero `.cia-*` rules emitted.
+- Opt in via `@use 'css-is-awesome' as cia with ($utilities: true)`.
+- Pre-built `dist/css-is-awesome.utilities.css` still ships every utility for
+  CDN drop-in consumers — unchanged. Opt-in governs the Sass compile path only.
+
+### BREAKING — Zero JavaScript in npm package
+
+- New hard rule. Audit-able: `find node_modules/css-is-awesome -name "*.mjs"
+  -o -name "*.js" -o -name "*.cjs"` returns nothing.
+- The optional `copy-button` JS shim moved to `public/copy-button.mjs`
+  (website-only, not in the published `files` manifest).
+- A future `@cia/copy-button` add-on package will be the canonical opt-in path
+  for JS-augmented features (v1.x).
+
+### Added — Zero-JS interactive component slate
+
+- `cia.accordion` — native `<details name="...">` mutual exclusion
+- `cia.modal` — native `<dialog>` + `::backdrop` + `@starting-style`
+- `cia.tooltip` — native `popover="hint"`
+- `cia.dropdown` — native `[popover]` + auto-dismiss + animation
+- `cia.tabs` — radio + `:has()` + `:nth-of-type()` panel switching
+- `cia.copy-button` + `cia.copy-toast` — styled button (JS handler is a
+  documented recipe at `/docs/recipes/copy-button`, NOT shipped)
+
+### Added — Intrinsic layout vocabulary
+
+- `m.stack` — vertical rhythm via flex column + gap
+- `m.cluster` — wrapping inline group (pills/tags/buttons)
+- `m.switcher` — auto row↔column based on container width
+- `m.cover` — hero with vertically-centered child
+- `m.frame` — aspect-ratio wrapper for media
+
+### Added — Foundation mixins
+
+- `m.theme($name, $scheme)` — wraps a theme's `:root[data-theme=…]` block
+- `m.states($group)` — derives hover/active via `color-mix(in oklch, ..., light-dark(black, white), N%)`
+- `m.theme-properties($tokens)` — emits `@property` registrations for animated theme swaps
+- `m.focus-ring` — centralized; all interactive components route through it
+- `m.sr-only` mixin + opt-in `.cia-sr-only` utility
+
+### Added — Tokens-only micro-bundle
+
+- New `scss/tokens.scss` → `dist/tokens.css` (2.3 KB gz). Pure `:root` CSS
+  variables, no rules, no resets. The purest mixin-first emit.
+- New `dist/tokens.d.ts` — TypeScript declarations for 123 tokens, IDE
+  autocomplete + AI tooling readiness.
+
+### Added — DTCG ingestion
+
+- New `scripts/dtcg-to-scss.mjs` — converts DTCG v2025.10 JSON tokens into
+  a cia theme SCSS source. Built-in mapping table for color/surface/text/
+  action/status/border/type/shape/space paths.
+
+### Added — Docs site refresh
+
+- Homepage hero: "Bring your own selectors. We bring the design system." +
+  moat comparison section (cia 12 LOC vs Tailwind+HUI 70 LOC accordion).
+- 6 component pages at `/docs/components/{accordion,modal,tooltip,dropdown,tabs,copy-button}`.
+- 3 recipe pages at `/docs/recipes/{anchor-positioning,copy-button,tabs-aria}`.
+- `/docs/themes/pairing` — the `<link media>` two-brand-by-mode recipe.
+- `/compare` refreshed with v0.8 stats + new rows.
+- `/docs/install` mixin-first lead (instead of CDN-first).
+- `/docs/utilities` opt-in callout.
+
+### Fixed — 5-bug cleanup punch list
+
+- `scss/_index.scss:12` invalid `@forward 'mixins' as *` syntax (file
+  previously failed to compile).
+- `scss/_mixins.scss` `btn-base` calling removed `inline()` mixin → now
+  `m.flex($inline: true, $gap: 2)`.
+- 267 lines of dead duplicate mixins removed from `_mixins.scss` (lines 754-1020).
+- Layout `m.container` → `m.wrap` resolves duplicate-mixin collision.
+- `theme/_index.scss` spacing maps now defer to `_system.scss` (single source).
+
+### Locked — Architectural rules (memory)
+
+- Mixin-first: cia is the mixin; class/tag is the consumer's choice.
+- No `@layer` — use `:where()` for the Tier 3 bare-tag fix.
+- No JavaScript in the npm package — period.
+- One theme = one file.
+- No Storybook — docs site + `@cia/mcp-server` cover both audiences.
+- No BEM — `__` and `--` modifier patterns forbidden in cia source.
+
+---
+
+## [Unreleased — pre-v0.8]
+
 ### Changed — Flex layout API consolidated to `m.flex` (BREAKING)
 
 - New `m.flex($direction, $gap, $align, $justify, $wrap, $inline)`
