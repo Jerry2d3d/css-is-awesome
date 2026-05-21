@@ -18,6 +18,12 @@ next-env.d.ts
 # Claude Code state (agent worktrees, local config)
 .claude/
 
+# Agent working state (panel decisions, research artifacts — not shipped)
+.agent/
+
+# MCP server config (local dev tool only)
+.mcp.json
+
 # Playwright (report + transient results only — baseline screenshots
 # under tests/__screenshots__/ ARE committed so PRs visibly diff).
 playwright-report/

@@ -82,6 +82,29 @@ Newspaper by day, hacker terminal by night. No JS, no mixin — pure browser beh
 
 Each theme is one file of CSS custom properties. Tokens only — no component rules. See `public/themes/<name>/theme.css` for the compiled output and `scss/themes/<name>.scss` for the sources. Full contract documented in [THEMING.md](./THEMING.md).
 
+### Edit a theme or make your own
+
+**You can.** Themes are open files. Edit any token, make brand-new themes, mix and match — cia treats themes as data, not internal magic.
+
+```bash
+# 1. Copy an existing theme as a starting point
+cp scss/themes/boilerplate.scss scss/themes/midnight.scss
+
+# 2. Edit tokens (see scss/themes/*.scss for the pattern + light-dark() usage)
+#    Wrap in @include cia.theme('midnight') { ... }
+
+# 3. Build to public/themes/midnight/theme.css
+npm run build:css:themes
+
+# 4. Validate against the token contract + a11y audit
+node scripts/theme-validator.js public/themes/midnight/theme.css
+
+# 5. Use it
+#    <html data-theme="midnight">
+```
+
+Full authoring walkthrough: [`/docs/authoring/themes`](./src/app/docs/authoring/themes/page.tsx). The contract (123 tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
+
 ## Token contract
 
 Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else.

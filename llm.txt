@@ -1,0 +1,113 @@
+# css-is-awesome — single-fetch summary for AI agents
+
+> If you're an AI agent (Claude Code, Cursor, Copilot, Aider, Gemini, etc.)
+> working with or installing css-is-awesome, this file is your entry point.
+> One read, then dispatch to the deeper docs by filename.
+
+## What cia is
+
+A token-driven SCSS design system. **Mixin-first** (since v0.8) — the mixin
+is the API, the class/tag/selector is the consumer's choice. The npm package
+ships **zero JavaScript** by hard rule.
+
+## How consumers install it (the primary path)
+
+```bash
+npm install css-is-awesome
+npm install -D sass
+```
+
+```scss
+// in their app.scss
+@use 'css-is-awesome' as cia;
+
+.checkout-cta { @include cia.btn(primary); }
+.faq-item     { @include cia.accordion; }
+.modal        { @include cia.modal; }
+```
+
+```html
+<!-- in their HTML -->
+<link rel="stylesheet" href="/cia/themes/boilerplate/theme.css">
+<html data-theme="boilerplate">
+```
+
+## What cia provides (one-line each)
+
+- **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more.
+- **9 themes** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal (dark), terminal-light. Each ships as one CSS file with both light + dark modes inside via `light-dark()`.
+- **6 zero-JS interactive components** — accordion (`<details name>`), modal (`<dialog>`), tooltip (`popover="hint"`), dropdown (`[popover]`), tabs (radio + `:has()`), copy-button (Clipboard API via consumer-wired JS).
+- **123 contract tokens** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
+
+## Hard rules (do not violate)
+
+1. **No JavaScript in the cia npm package.** Zero `.js`/`.mjs` files ship. JS-augmented features (CopyButton handler, future force-mode) ship as separate add-on packages.
+2. **No `@layer`.** Tier 3 bare-tags use `:where()` (specificity 0,0,0). Cascade pollution kills the consumer experience.
+3. **No BEM.** No `__element` / `--modifier` chains in cia source. Consumers pick their own selector names — cia has no opinion.
+4. **No Storybook.** Docs site + `@cia/mcp-server` cover both human and AI audiences.
+5. **One theme = one file.** Both light + dark inside via `light-dark()`.
+6. **`cia-` prefix is library-owned.** Consumer classes use their own naming.
+
+## Themes are open — consumers CAN edit and create their own
+
+This is the most-missed piece. **Consumers CAN:**
+
+1. **Edit any shipped theme** — open `scss/themes/<name>.scss`, change tokens, `npm run build:css:themes`. Done.
+2. **Make a brand-new theme** — copy any theme as starting point, rename, edit, build, validate.
+3. **Override tokens at consumer level** — `:root[data-theme="boilerplate"] { --action-primary-default: #ff0066; }` in their own SCSS. No fork needed.
+
+```scss
+// new theme template
+@use '../mixins' as m;
+@include m.theme('mybrand') {
+  --background-default: light-dark(#fff, #0a0a0e);
+  --action-primary-default: light-dark(#3A5FCD, #60a5fa);
+  @include m.states(action-primary);
+  /* + 120 more tokens — full list in scripts/theme-contract.json */
+}
+```
+
+The validator (`node scripts/theme-validator.js`) is the gate — 123 tokens + WCAG 2.2 AA contrast required.
+
+## Paired themes (two brand identities by mode)
+
+Native HTML, no cia API:
+```html
+<link rel="stylesheet" href="/themes/sketchbook.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="/themes/terminal.css"   media="(prefers-color-scheme: dark)">
+```
+Newspaper by day, hacker terminal by night. Most design systems give you dark mode; cia lets you ship a second brand at night.
+
+## Where to read next (by intent)
+
+| If you need... | Read |
+|---|---|
+| Install steps + every consumption path | `README.md` |
+| Mixin reference (every public mixin) | `src/app/docs/mixins/page.tsx` |
+| Component examples | `src/app/docs/components/*/page.tsx` (6 components) |
+| Theme authoring (full walkthrough) | `src/app/docs/authoring/themes/page.tsx` |
+| Theme contract (123 tokens, machine-readable) | `scripts/theme-contract.json` |
+| Theme pairing (`<link media>` recipe) | `src/app/docs/themes/pairing/page.tsx` |
+| CopyButton JS recipe | `src/app/docs/recipes/copy-button/page.tsx` |
+| Anchor positioning recipe | `src/app/docs/recipes/anchor-positioning/page.tsx` |
+| Tabs ARIA shim recipe | `src/app/docs/recipes/tabs-aria/page.tsx` |
+| v0.7 → v0.8 migration | `MIGRATION.md` |
+| Full breaking-change history | `CHANGELOG.md` |
+| Deeper architecture rules | `AGENTS.md` |
+
+## Common AI agent traps
+
+- **Don't write BEM.** No `cia-card__title--large`.
+- **Don't hardcode breakpoints/colors/spacing.** Use `m.media(md)`, `m.color(primary)`, `m.space(4)`.
+- **Don't suggest a JS dependency for components.** The native primitive does the work.
+- **Don't assume utility classes are emitted by default in Sass.** They opt in via `@use cia with ($utilities: true)`.
+- **v0.8 rename traps:** `m.bp` → `m.media`, `m.cq` → `m.contain`, `m.inset` → `m.pad`, `m.squish` → `m.pad-asym`, `m.font-load` → `m.font-face`, `m.color-raw` → `m.color-static`, layout `m.container` → `m.wrap`. No aliases.
+- **v0.8 theme rename:** `data-theme="press-light"` → `data-theme="press"`. Both modes are inside the single theme file now.
+
+## MCP server (planned for v1.0)
+
+`@cia/mcp-server` will expose `install-component`, `install-theme`, `generate-theme`, `validate-theme`, `explain-mixin`, `migrate-tailwind` as tools for AI agents. Until it ships, this file + the markdown docs are the source of truth.
+
+---
+
+*Generated 2026-05-21 for cia v0.8. Update when the API surface changes.*

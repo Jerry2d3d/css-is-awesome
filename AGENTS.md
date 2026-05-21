@@ -70,6 +70,30 @@ Each theme is a single CSS file declaring `:root[data-theme="<name>"]` with `lig
 <html data-theme="boilerplate"> <!-- swap to any of 9 themes -->
 ```
 
+### Themes are open — edit or create your own
+
+**Consumers can edit any shipped theme and make brand-new themes.** Themes are data, not internal magic. Three ways:
+
+1. **Edit a shipped theme in place** — open `scss/themes/<name>.scss`, change tokens, run `npm run build:css:themes`.
+2. **Copy + rename** — `cp scss/themes/boilerplate.scss scss/themes/mybrand.scss`, edit, build, validate, ship. Set `<html data-theme="mybrand">`.
+3. **Override at consumer level** — `:root[data-theme="boilerplate"] { --action-primary-default: #ff0066; }` in your own SCSS. No fork needed.
+
+Authoring template:
+```scss
+// scss/themes/midnight.scss
+@use '../mixins' as m;
+
+@include m.theme('midnight') {
+  --background-default: light-dark(#f5f5f7, #0a0a0e);
+  --text-primary:       light-dark(#0a0a0e, #f5f5f7);
+  --action-primary-default: light-dark(#3A5FCD, #60a5fa);
+  @include m.states(action-primary);  // derives hover/active
+  /* ... 120 more tokens — see scripts/theme-contract.json for the full slot list */
+}
+```
+
+The validator (`node scripts/theme-validator.js`) enforces the 123-token contract + WCAG 2.2 AA contrast. Themes that miss tokens or fail contrast cannot ship without `--allow-a11y-fail`.
+
 **Paired themes (two brands by mode)** — no JS, no mixin:
 ```html
 <link rel="stylesheet" href="/themes/sketchbook.css" media="(prefers-color-scheme: light)">
