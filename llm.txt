@@ -34,7 +34,7 @@ npm install -D sass
 
 ## What cia provides (one-line each)
 
-- **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more.
+- **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.stepper`, `cia.progress`, `cia.wizard-shell`, `cia.sidebar`, `cia.toolbar`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more.
 - **9 themes** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal (dark), terminal-light. Each ships as one CSS file with both light + dark modes inside via `light-dark()`.
 - **6 zero-JS interactive components** — accordion (`<details name>`), modal (`<dialog>`), tooltip (`popover="hint"`), dropdown (`[popover]`), tabs (radio + `:has()`), copy-button (Clipboard API via consumer-wired JS).
 - **123 contract tokens** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
@@ -103,6 +103,9 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 - **Don't assume utility classes are emitted by default in Sass.** They opt in via `@use cia with ($utilities: true)`.
 - **v0.8 rename traps:** `m.bp` → `m.media`, `m.cq` → `m.contain`, `m.inset` → `m.pad`, `m.squish` → `m.pad-asym`, `m.font-load` → `m.font-face`, `m.color-raw` → `m.color-static`, layout `m.container` → `m.wrap`. No aliases.
 - **v0.8 theme rename:** `data-theme="press-light"` → `data-theme="press"`. Both modes are inside the single theme file now.
+- **v0.8.1 progress rename:** `m.progress-track` → `m.progress-track-base`; `m.progress-fill` → `m.progress-fill-base`. New `m.progress` composer wraps both via `[data-slot="fill"]` markup.
+- **v0.8.1 animations split:** When @use'ing animations from a `.module.scss`, use `scss/animations` (mixin-only, safe). The keyframes + utility classes + global safety net now live in `scss/animations-utilities` — load that once globally (via `main.scss` or your app's global SCSS).
+- **v0.8.1 file move:** `badge-base` / `badge` moved from `_feedback.scss` to `_data.scss`. Use the cia barrel (`@use 'css-is-awesome' as cia; cia.badge-base;`) instead of path-specific imports.
 
 ## MCP server (planned for v1.0)
 
