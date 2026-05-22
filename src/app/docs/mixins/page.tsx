@@ -628,8 +628,9 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">badge</span>(<span className="tok-val">$status: info</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">tag</span>(<span className="tok-val">$py: 2xs, $px: 2, $r: md, $font-size: 2, $removable: false</span>);
 {"\n"}
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress-track</span>(<span className="tok-val">$height, $r: full, $bg: surface-muted</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress-fill</span>(<span className="tok-val">$color: action-primary-default</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress-track-base</span>(<span className="tok-val">$height, $r: full, $bg: surface-muted</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress-fill-base</span>(<span className="tok-val">$color: action-primary-default</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress</span>(<span className="tok-val">$height, $r: full, $bg: surface-muted, $fill: action-primary-default</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">spinner</span>(<span className="tok-val">...</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">skeleton</span>(<span className="tok-val">...</span>);</Example.Code>
       </Example>
@@ -731,7 +732,8 @@ export default function DocsMixinsPage() {
         <li><strong>Icons:</strong> <code>svg</code>, <code>svg-bg</code>, <code>svg-text</code>, <code>fa-load</code>, <code>fa</code>, <code>fa-icon</code>, <code>fa-text</code>, <code>fa-spin</code></li>
         <li><strong>Buttons:</strong> <code>btn-base</code>, <code>btn-primary</code>, <code>btn-secondary</code>, <code>btn-outline</code>, <code>btn-ghost</code>, <code>btn-icon</code></li>
         <li><strong>Data:</strong> <code>table-base</code>, <code>table-responsive</code>, <code>card-base</code>, <code>card-header</code>, <code>card-footer</code>, <code>card-interactive</code>, <code>list-base</code>, <code>list-item</code>, <code>avatar</code>, <code>avatar-placeholder</code>, <code>avatar-group</code></li>
-        <li><strong>Feedback:</strong> <code>alert-base</code>, <code>alert</code>, <code>toast-base</code>, <code>badge-base</code>, <code>badge</code>, <code>tag</code>, <code>progress-track</code>, <code>progress-fill</code>, <code>spinner</code>, <code>skeleton</code></li>
+        <li><strong>Feedback:</strong> <code>alert-base</code>, <code>alert</code>, <code>toast-base</code>, <code>tag</code>, <code>progress</code>, <code>progress-track-base</code>, <code>progress-fill-base</code>, <code>spinner</code>, <code>skeleton</code></li>
+        <li><strong>Data:</strong> <code>table-base</code>, <code>card-base</code>, <code>badge-base</code>, <code>badge</code></li>
         <li><strong>Forms:</strong> <code>input-base</code>, <code>select-base</code>, <code>textarea-base</code>, <code>check-base</code>, <code>radio-base</code>, <code>switch-base</code>, <code>slider-base</code>, <code>label-base</code>, <code>form-layout</code>, <code>form-group</code>, <code>form-row</code>, <code>form-help</code>, <code>form-error</code></li>
         <li><strong>Navigation:</strong> <code>navbar-base</code>, <code>navbar-brand</code>, <code>navbar-nav</code>, <code>navbar-link</code>, <code>nav-base</code>, <code>breadcrumb</code>, <code>tabs-base</code>, <code>tab-item</code>, <code>pagination</code>, <code>pagination-item</code></li>
         <li><strong>Overlays:</strong> <code>modal-backdrop</code>, <code>modal-base</code>, <code>modal-header</code>, <code>modal-footer</code>, <code>tooltip-base</code>, <code>popover-base</code>, <code>dropdown-menu</code>, <code>dropdown-item</code>, <code>dropdown-divider</code></li>

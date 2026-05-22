@@ -1,8 +1,8 @@
 @use 'mixins' as m;
-@use 'components/feedback' as fb;
+@use 'components/data' as d;
 
 .badge {
-  @include fb.badge-base;
+  @include d.badge-base;
   @include m.flex($inline: true, $gap: 1);
   white-space: nowrap;
 }
@@ -14,7 +14,7 @@
   border-radius: 50%;
 }
 
-.info    { @include fb.badge($status: info); }
-.success { @include fb.badge($status: success); }
-.warning { @include fb.badge($status: warning); }
-.error   { @include fb.badge($status: error); }
+.info    { @include d.badge($status: info); }
+.success { @include d.badge($status: success); }
+.warning { @include d.badge($status: warning); }
+.error   { @include d.badge($status: error); }

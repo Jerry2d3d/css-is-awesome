@@ -7,12 +7,12 @@
 }
 
 .track {
-  @include fb.progress-track;
+  @include fb.progress-track-base;
   overflow: hidden;
 }
 
 .fill {
-  @include fb.progress-fill;
+  @include fb.progress-fill-base;
   height: 100%;
   transition: width 240ms var(--ease);
 }
