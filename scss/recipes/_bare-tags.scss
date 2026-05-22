@@ -187,3 +187,45 @@
     padding: m.space(2);
   }
 }
+
+// ----------------------------------------------------------------------------
+// V0.8 NATIVE COMPONENTS — sensible defaults for <dialog>, <progress>
+// ----------------------------------------------------------------------------
+// Round out Tier 3 for the v0.8 zero-JS component slate. Pair with the
+// existing component mixins (cia.modal, cia.progress) when richer styling
+// is needed.
+
+:where(dialog) {
+  @include m.modal-base;
+  border: 0;
+  margin: auto;
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
+}
+
+:where(progress) {
+  inline-size: 100%;
+  block-size: 0.5rem;
+  appearance: none;
+  border: 0;
+  border-radius: m.radius(full);
+  background: m.color(surface-muted);
+  overflow: hidden;
+
+  &::-webkit-progress-bar {
+    background: m.color(surface-muted);
+    border-radius: m.radius(full);
+  }
+  &::-webkit-progress-value {
+    background: m.color(action-primary-default);
+    border-radius: inherit;
+    @include m.transition(inline-size, slow);
+  }
+  &::-moz-progress-bar {
+    background: m.color(action-primary-default);
+    border-radius: inherit;
+  }
+}

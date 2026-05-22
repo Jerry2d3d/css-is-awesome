@@ -2,6 +2,91 @@
 
 Breaking changes between css-is-awesome versions, and how to migrate.
 
+## v0.8.1 — animations split + small renames
+
+Patch release with one real fix (animations CSS Modules bug) and two small
+renames. No structural changes.
+
+### What changed at a glance
+
+| Area | v0.8.0 | v0.8.1 |
+|---|---|---|
+| `_animations.scss` shape | Mixed mixins + top-level CSS rules in one file | **Split** — mixins in `_animations.scss`, rules + keyframes in `_animations-utilities.scss` |
+| `progress-track` / `progress-fill` mixin names | Without `-base` suffix | **`-base` suffix added** to signal "compose me" |
+| `badge-base` / `badge` location | In `_feedback.scss` | **Moved to `_data.scss`** (next to `card-base` / `table-base`) |
+
+### 1. CSS Modules consumers — animations split
+
+If you previously imported animations from a `.module.scss` and hit
+`Selector "*, *::before, *::after" is not pure`, that's now fixed:
+
+```scss
+// component.module.scss — works now in v0.8.1
+@use 'css-is-awesome/scss/animations' as anim;
+.my-spinner { @include anim.animate(spin, $iteration: infinite, $timing: linear); }
+```
+
+**But the keyframes need to be loaded globally once.** Easiest path: keep
+the `@use 'css-is-awesome/scss/main';` line in your global SCSS — it
+already loads both halves. Or load the new utilities file directly:
+
+```scss
+// globals.scss (loaded once at app root)
+@use 'css-is-awesome/scss/animations-utilities';
+```
+
+### 2. Rename `progress-track` → `progress-track-base`
+
+```scss
+// v0.8.0
+.my-track { @include m.progress-track; }
+.my-fill  { @include m.progress-fill; }
+
+// v0.8.1
+.my-track { @include m.progress-track-base; }
+.my-fill  { @include m.progress-fill-base; }
+
+// OR use the new composer:
+.my-progress { @include m.progress; }
+```
+
+The new `m.progress` composer reads `[data-slot="fill"]` markup — see the
+mixin docstring for the recipe.
+
+### 3. `badge-base` / `badge` moved to `_data.scss`
+
+If you had a path-specific import:
+
+```scss
+// v0.8.0
+@use 'css-is-awesome/scss/components/feedback' as f;
+.my-badge { @include f.badge-base; }
+
+// v0.8.1 — option A: use the cia barrel (recommended)
+@use 'css-is-awesome' as cia;
+.my-badge { @include cia.badge-base; }
+
+// v0.8.1 — option B: import from data
+@use 'css-is-awesome/scss/components/data' as d;
+.my-badge { @include d.badge-base; }
+```
+
+The cia barrel re-exports all components, so the recommended Option A
+unsubscribes you from future location changes.
+
+### New mixins (additive, no migration needed)
+
+- `m.wizard-shell` — 3-row layout with shared horizontal rhythm (stepper + body + controls)
+- `m.stepper`, `m.stepper-circle`, `m.stepper-connector` — status-driven progress indicator
+- `m.progress` — composed router (track + fill via `[data-slot]`)
+- `m.sidebar` — Every-Layout sidebar (fixed nav + flexible content, gracefully stacks)
+- `m.toolbar` — cluster with auto-margin `[data-slot="trailing"]`
+
+Plus bare-tags additions for `<dialog>` and `<progress>` (opt-in via the
+existing `bare-tags` recipe).
+
+---
+
 ## v0.8 — mixin-first reframe + theme system collapse
 
 **Status:** breaking, no aliases. v0.8 is the pre-v1.0 lock-in pass.

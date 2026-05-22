@@ -11,6 +11,56 @@ automated releases.
 
 ## [Unreleased]
 
+## [0.8.1] — 2026-05-21 — Animations split + 5 new mixins (dogfood patch)
+
+Patch release responding to boiler-project-ai dogfood feedback. One real bug
+(animations partial breaking Next.js CSS Modules), five new mixin primitives
+the consumer was hand-rolling.
+
+### BREAKING (small) — `_animations.scss` split + `progress-track`/`progress-fill` rename
+
+- **`_animations.scss` split into two files.**
+  - `scss/_animations.scss` keeps the mixins (`animate`, `animate-on`,
+    `$_anims`/`$_speeds` maps) — safe to `@use` from `.module.scss`
+    in Next.js / Vite / Parcel CSS-Modules pipelines.
+  - `scss/_animations-utilities.scss` (NEW) holds keyframes, `.cia-anim-*`
+    classes, `.cia-hover-*` classes, and the global `*, *::before, *::after`
+    reduced-motion safety net. Load ONCE globally.
+  - `main.scss` already loads both — full-bundle consumers unaffected.
+  - Why: top-level `*, *::before, *::after` in the same file as the mixin
+    surface caused `Selector "*, *::before, *::after" is not pure` build
+    errors when a `.module.scss` did `@use 'css-is-awesome/scss/animations' as anim`.
+- **`progress-track` / `progress-fill` renamed to `-base` suffix.**
+  - `m.progress-track` → `m.progress-track-base`
+  - `m.progress-fill` → `m.progress-fill-base`
+  - Signals "compose me" intent and unblocks the new `progress()` router name.
+- **`badge-base` / `badge` moved from `_feedback.scss` to `_data.scss`.**
+  - Lives next to `card-base` / `table-base` where consumers expect it.
+  - Path-specific imports (`@use 'css-is-awesome/scss/components/feedback' as f; f.badge-base;`)
+    will break — switch to the cia barrel (`@use 'css-is-awesome' as cia; cia.badge-base;`)
+    or import from `data` instead. The cia barrel re-exports all components.
+
+### Added — 5 new mixins (boiler-driven additions)
+
+- **`m.wizard-shell($min-height, $gutter, $body-padding, $rail-padding, $max-width, $footer-border)`** — 3-row grid layout with shared horizontal rhythm. Header + scrollable body + footer; all three rows share `padding-inline` so stepper above + controls below align with the body. `<div data-slot="header|body|footer">…</div>` markup.
+- **`m.stepper($orientation, $variant, $size)` + `m.stepper-circle($size, $r)` + `m.stepper-connector($thickness)`** — status-driven progress indicator. `[data-status="upcoming|active|completed|warning|error"]` parent attribute drives the palette. Composable: use just the circle, or the full strip.
+- **`m.progress($height, $r, $bg, $fill)`** — composed router over `progress-track-base` + `progress-fill-base`. Consumer markup: `<div role="progressbar"><span data-slot="fill" style="inline-size: 60%"></span></div>`.
+- **`m.sidebar($side, $side-width, $content-min, $gap)`** — Every-Layout sidebar primitive. Fixed-width nav + flexible content, gracefully stacks when content falls below `$content-min`. `[data-slot="side|content"]` markup.
+- **`m.toolbar($gap, $align)`** — cluster with auto-margin trailing slot. Left group + right group via `[data-slot="trailing"]`.
+
+### Added — Tier 3 bare-tags additions
+
+- `:where(dialog)` — wraps `m.modal-base` + `::backdrop` blur for a sensible default `<dialog>` look.
+- `:where(progress)` — themed `<progress>` element using cia tokens.
+- Both still ship at specificity (0,0,0) via the existing `:where()` wrap.
+
+### Locked architectural rule
+
+- **No top-level rules in mixin-surface partials.** Any cia partial whose
+  public surface is mixins MUST NOT emit CSS rules at file scope. Rule-emitting
+  code lives in dedicated `*-utilities.scss` files or entry points. Enforced
+  via convention; future CI test planned.
+
 ## [0.8.0] — 2026-05-21 — Mixin-first reframe
 
 The big one. cia is now **mixin-first** end-to-end: the mixin is the API, the

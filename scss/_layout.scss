@@ -281,3 +281,119 @@ $_container-widths: (
     object-fit: cover;
   }
 }
+
+// ============================================================================
+// APP-SHELL FAMILY — wizard-shell + sidebar + toolbar
+// ============================================================================
+
+// WIZARD-SHELL — 3-row layout with shared horizontal rhythm.
+// Stepper at top + body in middle + controls at bottom all use the same
+// padding-inline. Body scrolls; header and footer rails are fixed-height.
+//
+// Usage:
+//   <div class="my-wizard">
+//     <header data-slot="header"><Stepper /></header>
+//     <main   data-slot="body">{stepContent}</main>
+//     <footer data-slot="footer"><BackButton/><NextButton/></footer>
+//   </div>
+//   .my-wizard { @include wizard-shell; }
+@mixin wizard-shell(
+  $min-height: 100dvh,
+  $gutter: 6,
+  $body-padding: 5,
+  $rail-padding: 3,
+  $max-width: lg,
+  $footer-border: true,
+) {
+  min-block-size: $min-height;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+
+  > [data-slot='header'],
+  > [data-slot='body'],
+  > [data-slot='footer'] {
+    padding-inline: map.get(t.$space, $gutter) or $gutter;
+  }
+  > [data-slot='header'] {
+    padding-block: map.get(t.$space, $rail-padding) or $rail-padding;
+  }
+  > [data-slot='body']   {
+    padding-block: map.get(t.$space, $body-padding) or $body-padding;
+    overflow-y: auto;
+
+    @if $max-width != none {
+      $bp: map.get(s.$breakpoints, $max-width) or $max-width;
+      display: grid;
+      justify-content: center;
+      > * {
+        max-inline-size: $bp;
+        inline-size: 100%;
+      }
+    }
+  }
+  > [data-slot='footer'] {
+    padding-block: map.get(t.$space, $rail-padding) or $rail-padding;
+    @if $footer-border {
+      border-block-start: 1px solid var(--border-subtle, #{map.get(t.$theme-light, border-subtle)});
+    }
+  }
+}
+
+// SIDEBAR — Every-Layout primitive: fixed-width nav + flexible content.
+// Wraps to stack when content falls below $content-min of the container.
+//
+// Usage:
+//   <div class="layout">
+//     <aside data-slot="side">…</aside>
+//     <main  data-slot="content">…</main>
+//   </div>
+//   .layout { @include sidebar; }
+//
+//   // Side on the right:
+//   .layout { @include sidebar($side: end); }
+@mixin sidebar(
+  $side: start,
+  $side-width: 16rem,
+  $content-min: 50%,
+  $gap: 4,
+) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: map.get(t.$space, $gap) or $gap;
+
+  > [data-slot='side'] {
+    flex-basis: $side-width;
+    flex-grow: 1;
+  }
+
+  > [data-slot='content'] {
+    flex-basis: 0;
+    flex-grow: 999;
+    min-inline-size: $content-min;
+  }
+
+  @if $side == end {
+    > [data-slot='side'] { order: 2; }
+  }
+}
+
+// TOOLBAR — cluster with auto-margin trailing slot.
+// Left group + right group on the same row (e.g. DataTable filters + actions,
+// modal footer with Cancel left / Confirm right).
+//
+// Usage:
+//   <div class="my-toolbar">
+//     <span>Filters: …</span>
+//     <span data-slot="trailing"><Button>Save</Button></span>
+//   </div>
+//   .my-toolbar { @include toolbar; }
+@mixin toolbar($gap: 3, $align: center) {
+  display: flex;
+  align-items: $align;
+  gap: map.get(t.$space, $gap) or $gap;
+  flex-wrap: wrap;
+
+  > [data-slot='trailing'] {
+    margin-inline-start: auto;
+  }
+}

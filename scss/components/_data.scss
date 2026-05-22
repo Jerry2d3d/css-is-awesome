@@ -1,10 +1,32 @@
 // ============================================================================
-// DATA DISPLAY — Table, Card, List, Avatar
+// DATA DISPLAY — Table, Card, List, Badge, Avatar
 // ============================================================================
 @use 'sass:map';
 @use '../theme' as t;
 @use '../system' as s;
 @use '../mixins' as m;
+
+// ----------------------------------------------------------------------------
+// BADGE — moved here from _feedback.scss in v0.8.1 (alongside card / table).
+// ----------------------------------------------------------------------------
+@mixin badge-base(
+  $py: 1,
+  $px: 1,
+  $r: full,
+  $font-size: 1
+) {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--badge-padding-y, #{m.space($py)}) var(--badge-padding-x, #{m.space($px)});
+  border-radius: var(--badge-radius, #{m.radius($r)});
+  @include m.font(medium, $font-size);
+}
+
+@mixin badge($status: info) {
+  @include badge-base;
+  background: m.color(#{$status}-subtle);
+  color: m.color(#{$status}-text);
+}
 
 // ----------------------------------------------------------------------------
 // TABLE

@@ -1,0 +1,143 @@
+// ============================================================================
+// STEPPER — multi-step progress indicator with status-driven styling
+// ============================================================================
+// Mixin-first surface — consumer owns the markup (which React component goes
+// in each slot, how status is computed). cia provides the geometry + status
+// palette via [data-status="upcoming|active|completed|warning|error"].
+//
+// Three composable mixins:
+//   - stepper-circle($size, $r) — single step indicator (number/check/icon)
+//   - stepper-connector         — line between two steps
+//   - stepper($orientation, $variant, $size) — composed router for the
+//     whole strip via [data-slot="circle|label|connector"]
+//
+// Usage (typical):
+//   <ol class="checkout-stepper">
+//     <li data-status="completed"><span data-slot="circle">✓</span><span data-slot="label">Account</span></li>
+//     <li data-status="active"   ><span data-slot="circle">2</span><span data-slot="label">Profile</span></li>
+//     <li data-status="upcoming" ><span data-slot="circle">3</span><span data-slot="label">Review</span></li>
+//   </ol>
+//   .checkout-stepper { @include stepper; }
+//
+// Colorblind-friendly status shapes (check / triangle / diamond) are
+// React-side concerns; pair this mixin with a Status component that swaps
+// the data-status icon. The mixin only ships the color palette.
+// ============================================================================
+@use 'sass:map';
+@use '../theme' as t;
+@use '../system' as s;
+@use '../mixins' as m;
+
+// ----------------------------------------------------------------------------
+// STEPPER-CIRCLE — single status-driven indicator
+// ----------------------------------------------------------------------------
+@mixin stepper-circle(
+  $size: 36px,
+  $r: full,
+) {
+  inline-size: $size;
+  block-size: $size;
+  border-radius: m.radius($r);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  @include m.transition(background-color, border-color, color);
+
+  // Status palette — parent [data-status] drives every state.
+  [data-status='upcoming']  > & {
+    background: m.color(surface-default);
+    border: 2px solid m.color(border-default);
+    color: m.color(text-muted);
+  }
+  [data-status='active'] > & {
+    background: m.color(action-primary-default);
+    color: m.color(text-inverse);
+    box-shadow: 0 0 0 4px color-mix(in oklch, m.color(action-primary-default), transparent 80%);
+  }
+  [data-status='completed'] > & {
+    background: m.color(success-default);
+    color: m.color(text-inverse);
+  }
+  [data-status='warning'] > & {
+    background: m.color(warning-subtle);
+    border: 2px solid m.color(warning-text);
+    color: m.color(warning-text);
+  }
+  [data-status='error'] > & {
+    background: m.color(error-subtle);
+    border: 2px solid m.color(error-text);
+    color: m.color(error-text);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// STEPPER-CONNECTOR — 2px line between steps, status-aware color
+// ----------------------------------------------------------------------------
+@mixin stepper-connector($thickness: 2px) {
+  flex-grow: 1;
+  block-size: $thickness;
+  background: m.color(border-default);
+  @include m.transition(background-color);
+
+  [data-status='completed'] ~ * > & {
+    background: m.color(success-default);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// STEPPER — composed router
+// ----------------------------------------------------------------------------
+// Builds the full strip with circle + connector + label slots. Consumer
+// chooses orientation (horizontal/vertical), variant (numbered/labeled),
+// and circle size.
+@mixin stepper(
+  $orientation: horizontal,
+  $variant: numbered,
+  $size: 36px,
+  $gap: 2,
+) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: m.space($gap);
+
+  @if $orientation == horizontal {
+    flex-direction: row;
+    align-items: center;
+  } @else if $orientation == vertical {
+    flex-direction: column;
+    align-items: flex-start;
+  } @else {
+    @error "stepper(): unknown orientation '#{$orientation}'. Known: horizontal, vertical";
+  }
+
+  > li {
+    display: inline-flex;
+    align-items: center;
+    gap: m.space($gap);
+    flex-shrink: 0;
+
+    @if $orientation == horizontal {
+      // The connector slot grows between steps.
+      flex-grow: 1;
+      &:last-child { flex-grow: 0; }
+    }
+  }
+
+  [data-slot='circle']    { @include stepper-circle($size); }
+  [data-slot='connector'] { @include stepper-connector; }
+
+  [data-slot='label'] {
+    @include m.font(medium, 2);
+    color: m.color(text-secondary);
+
+    [data-status='active'] > & {
+      color: m.color(text-primary);
+    }
+    [data-status='completed'] > & {
+      color: m.color(success-text);
+    }
+  }
+}
