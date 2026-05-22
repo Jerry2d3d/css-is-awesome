@@ -9,6 +9,7 @@
 @use 'sass:meta';
 @use './system' as s;
 @use './theme' as t;
+@use './mixins' as m;
 
 // ============================================================================
 // CONTAINER
@@ -312,13 +313,13 @@ $_container-widths: (
   > [data-slot='header'],
   > [data-slot='body'],
   > [data-slot='footer'] {
-    padding-inline: map.get(t.$space, $gutter) or $gutter;
+    padding-inline: m.space($gutter);
   }
   > [data-slot='header'] {
-    padding-block: map.get(t.$space, $rail-padding) or $rail-padding;
+    padding-block: m.space($rail-padding);
   }
   > [data-slot='body']   {
-    padding-block: map.get(t.$space, $body-padding) or $body-padding;
+    padding-block: m.space($body-padding);
     overflow-y: auto;
 
     @if $max-width != none {
@@ -332,7 +333,7 @@ $_container-widths: (
     }
   }
   > [data-slot='footer'] {
-    padding-block: map.get(t.$space, $rail-padding) or $rail-padding;
+    padding-block: m.space($rail-padding);
     @if $footer-border {
       border-block-start: 1px solid var(--border-subtle, #{map.get(t.$theme-light, border-subtle)});
     }
@@ -359,7 +360,7 @@ $_container-widths: (
 ) {
   display: flex;
   flex-wrap: wrap;
-  gap: map.get(t.$space, $gap) or $gap;
+  gap: m.space($gap);
 
   > [data-slot='side'] {
     flex-basis: $side-width;
@@ -390,7 +391,7 @@ $_container-widths: (
 @mixin toolbar($gap: 3, $align: center) {
   display: flex;
   align-items: $align;
-  gap: map.get(t.$space, $gap) or $gap;
+  gap: m.space($gap);
   flex-wrap: wrap;
 
   > [data-slot='trailing'] {

@@ -105,7 +105,7 @@
   height: 100%;
   border-radius: inherit;
   background: m.color($color);
-  @include m.transition(width, slow);
+  @include m.transition(inline-size, slow);
 }
 
 @mixin progress(

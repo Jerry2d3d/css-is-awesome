@@ -11,6 +11,48 @@ automated releases.
 
 ## [Unreleased]
 
+## [0.8.2] — 2026-05-21 — Panel R7 bug-fix patch
+
+Hotfix responding to the css-scss-master panel audit of v0.8.1. Two real
+build/render bugs caught + four behavior fixes. All compile-verified.
+
+### Fixed
+
+- **Bare-tags recipe `<dialog>` block** — `@include m.modal-base` was failing
+  with "Undefined mixin" because `_bare-tags.scss` `@use`'s `mixins as m` but
+  `modal-base` lives in `_overlay.scss`. Added `@use '../components/overlay' as o;`
+  and switched the call to `o.modal-base`. (Same "didn't grep callers" miss as
+  Badge in `c06324d` — feedback memory `grep-callers-before-rename-or-move`
+  is now in place.)
+- **Stepper composed router selectors** — `[data-status='upcoming'] > &`
+  inside `stepper-circle` was compiling to the wrong selector when used via
+  `stepper()` (the nested selector resolved with `&` AFTER the parent,
+  inverting the intent). Rewritten: status palette now lives at the composer
+  level via `> li[data-status='...'] > [data-slot='circle']` selectors.
+  Standalone `stepper-circle` retained as the "upcoming default" primitive.
+- **Stepper connector over-painted** — `[data-status='completed'] ~ * > &`
+  matched every trailing connector after the first completed step. Switched
+  to `+ li` (adjacent sibling only).
+- **`progress-fill-base` transitions `width`** — animated `width` skipped the
+  transition when consumer used `inline-size` (RTL-correct logical property).
+  Switched to `inline-size`.
+- **`wizard-shell` / `sidebar` / `toolbar` bypassed `m.space()`** — using raw
+  `map.get(t.$space, …)` meant runtime `--space-*` overrides had no effect on
+  the new mixins. Added `@use './mixins' as m;` to `_layout.scss` and switched
+  the new mixins to `m.space()`. Token-theming parity restored.
+- **`_index.scss` barrel now forwards `./animations-utilities`** — survived
+  v0.8.1 only because `main.scss` loaded both halves. Bare `@use 'css-is-awesome' as cia`
+  now correctly exposes the keyframes + utility classes too.
+- **Dead `$variant` param in `stepper()` removed.**
+
+### Investigated, no change
+
+- `if(sass($cond): a; else: b)` syntax in `_layout.scss:46`, `_data.scss:45`,
+  `_mixins.scss:630` was flagged as "not valid Dart Sass" by the audit.
+  Compile test passes cleanly with no deprecation warning. The form is
+  Sass's actively-recommended replacement for the deprecated `if($c, a, b)`
+  short form. No change required.
+
 ## [0.8.1] — 2026-05-21 — Animations split + 5 new mixins (dogfood patch)
 
 Patch release responding to boiler-project-ai dogfood feedback. One real bug

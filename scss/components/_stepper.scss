@@ -3,15 +3,17 @@
 // ============================================================================
 // Mixin-first surface — consumer owns the markup (which React component goes
 // in each slot, how status is computed). cia provides the geometry + status
-// palette via [data-status="upcoming|active|completed|warning|error"].
+// palette via [data-status="upcoming|active|completed|warning|error"] on the
+// <li> element.
 //
 // Three composable mixins:
-//   - stepper-circle($size, $r) — single step indicator (number/check/icon)
-//   - stepper-connector         — line between two steps
-//   - stepper($orientation, $variant, $size) — composed router for the
-//     whole strip via [data-slot="circle|label|connector"]
+//   - stepper-circle($size, $r) — single step indicator (default = upcoming look)
+//   - stepper-connector         — line between two steps (default = neutral)
+//   - stepper($orientation, $size, $gap) — composed router. Wraps circles +
+//     connectors + labels and applies the FULL status palette via parent
+//     [data-status] on each <li>.
 //
-// Usage (typical):
+// Usage:
 //   <ol class="checkout-stepper">
 //     <li data-status="completed"><span data-slot="circle">✓</span><span data-slot="label">Account</span></li>
 //     <li data-status="active"   ><span data-slot="circle">2</span><span data-slot="label">Profile</span></li>
@@ -29,8 +31,11 @@
 @use '../mixins' as m;
 
 // ----------------------------------------------------------------------------
-// STEPPER-CIRCLE — single status-driven indicator
+// STEPPER-CIRCLE — single indicator (default "upcoming" appearance)
 // ----------------------------------------------------------------------------
+// Status palette is applied by stepper() at the composer level where the
+// parent [data-status] context exists. Standalone use gives you the
+// upcoming look — override the status palette in your own SCSS.
 @mixin stepper-circle(
   $size: 36px,
   $r: full,
@@ -44,56 +49,27 @@
   flex-shrink: 0;
   @include m.transition(background-color, border-color, color);
 
-  // Status palette — parent [data-status] drives every state.
-  [data-status='upcoming']  > & {
-    background: m.color(surface-default);
-    border: 2px solid m.color(border-default);
-    color: m.color(text-muted);
-  }
-  [data-status='active'] > & {
-    background: m.color(action-primary-default);
-    color: m.color(text-inverse);
-    box-shadow: 0 0 0 4px color-mix(in oklch, m.color(action-primary-default), transparent 80%);
-  }
-  [data-status='completed'] > & {
-    background: m.color(success-default);
-    color: m.color(text-inverse);
-  }
-  [data-status='warning'] > & {
-    background: m.color(warning-subtle);
-    border: 2px solid m.color(warning-text);
-    color: m.color(warning-text);
-  }
-  [data-status='error'] > & {
-    background: m.color(error-subtle);
-    border: 2px solid m.color(error-text);
-    color: m.color(error-text);
-  }
+  // Default = upcoming status
+  background: m.color(surface-default);
+  border: 2px solid m.color(border-default);
+  color: m.color(text-muted);
 }
 
 // ----------------------------------------------------------------------------
-// STEPPER-CONNECTOR — 2px line between steps, status-aware color
+// STEPPER-CONNECTOR — line between steps (default neutral)
 // ----------------------------------------------------------------------------
 @mixin stepper-connector($thickness: 2px) {
   flex-grow: 1;
   block-size: $thickness;
   background: m.color(border-default);
   @include m.transition(background-color);
-
-  [data-status='completed'] ~ * > & {
-    background: m.color(success-default);
-  }
 }
 
 // ----------------------------------------------------------------------------
-// STEPPER — composed router
+// STEPPER — composed router (applies the full status palette)
 // ----------------------------------------------------------------------------
-// Builds the full strip with circle + connector + label slots. Consumer
-// chooses orientation (horizontal/vertical), variant (numbered/labeled),
-// and circle size.
 @mixin stepper(
   $orientation: horizontal,
-  $variant: numbered,
   $size: 36px,
   $gap: 2,
 ) {
@@ -120,24 +96,64 @@
     flex-shrink: 0;
 
     @if $orientation == horizontal {
-      // The connector slot grows between steps.
       flex-grow: 1;
       &:last-child { flex-grow: 0; }
     }
   }
 
+  // Slot primitives — defaults
   [data-slot='circle']    { @include stepper-circle($size); }
   [data-slot='connector'] { @include stepper-connector; }
-
   [data-slot='label'] {
     @include m.font(medium, 2);
     color: m.color(text-secondary);
+  }
 
-    [data-status='active'] > & {
+  // Status palette — applied at the composer level so the parent <li>
+  // [data-status] context is available without selector contortions.
+  > li[data-status='active'] {
+    > [data-slot='circle'] {
+      background: m.color(action-primary-default);
+      border-color: transparent;
+      color: m.color(text-inverse);
+      box-shadow: 0 0 0 4px color-mix(in oklch, m.color(action-primary-default), transparent 80%);
+    }
+    > [data-slot='label'] {
       color: m.color(text-primary);
     }
-    [data-status='completed'] > & {
+  }
+
+  > li[data-status='completed'] {
+    > [data-slot='circle'] {
+      background: m.color(success-default);
+      border-color: transparent;
+      color: m.color(text-inverse);
+    }
+    > [data-slot='label'] {
       color: m.color(success-text);
     }
+  }
+
+  > li[data-status='warning'] {
+    > [data-slot='circle'] {
+      background: m.color(warning-subtle);
+      border-color: m.color(warning-text);
+      color: m.color(warning-text);
+    }
+  }
+
+  > li[data-status='error'] {
+    > [data-slot='circle'] {
+      background: m.color(error-subtle);
+      border-color: m.color(error-text);
+      color: m.color(error-text);
+    }
+  }
+
+  // Connector palette — only the connector IMMEDIATELY after a completed
+  // step gets the success color. Adjacent sibling (+), not general sibling (~),
+  // so connectors after an "upcoming" step don't get over-greened.
+  > li[data-status='completed'] + li > [data-slot='connector'] {
+    background: m.color(success-default);
   }
 }

@@ -12,7 +12,8 @@
 @forward './mixins';            // No prefix - main API
 @forward './layout';            // Layout mixins (grid, wrap, page)
 @forward './icons' as icon-*;   // Icon mixins with prefix
-@forward './animations';        // Keyframes + animate() mixin + .cia-anim-* utilities
+@forward './animations';            // animate() + animate-on() mixins (CSS-Modules-safe)
+@forward './animations-utilities';  // Keyframes + .cia-anim-* + global reduced-motion safety net
 @forward './components';        // Component mixins (btn, card, nav, etc.)
 
 // For direct access to maps (advanced usage)

@@ -27,6 +27,7 @@
 @use '../components/buttons' as b;
 @use '../components/forms' as f;
 @use '../components/data' as d;
+@use '../components/overlay' as o;
 
 // ----------------------------------------------------------------------------
 // TYPOGRAPHY
@@ -196,7 +197,7 @@
 // is needed.
 
 :where(dialog) {
-  @include m.modal-base;
+  @include o.modal-base;
   border: 0;
   margin: auto;
 
