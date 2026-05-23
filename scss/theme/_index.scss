@@ -30,9 +30,9 @@ $theme-components: $components !default;
 
 // Spacing tokens (theme-level) — deferred to scss/_system.scss as the
 // single source of truth. Theme authors override via the system layer.
-$space-scale:   s.$spacing-scale   !default;
+$space-scale: s.$spacing-scale   !default;
 $space-aliases: s.$spacing-aliases !default;
-$space:         s.$spacing         !default;
+$space: s.$spacing         !default;
 
 // Semantic spacing aliases
 $gap: (

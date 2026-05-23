@@ -14,12 +14,12 @@
 // ============================================================================
 @use '../mixins' as m;
 
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
 
 @include m.theme('glass') {
   /* Surfaces — frosted translucent / blue-black void */
   --paper:        light-dark(#F4EEFF, #0A0F1A);
-  --paper-raised: light-dark(#FFFFFF, #141E32);
+  --paper-raised: light-dark(#FFF, #141E32);
   --paper-sunk:   light-dark(#E8E0F5, #050810);
   --paper-glass:  light-dark(rgba(255, 255, 255, 0.55), rgba(20, 30, 50, 0.60));
 
@@ -101,7 +101,12 @@
   --duration-slow:   380ms;
   --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
 
-  /* ---- Pattern C: dark-mode overrides for NON-COLOR tokens ---- */
+  /* ---- Pattern C: dark-mode overrides for NON-COLOR tokens ----
+   * stylelint can't trace through @include m.theme() to know the
+   * parent selector is :root[data-theme="glass"]; the declarations
+   * below are valid in compiled output (Sass hoists @media + scopes
+   * the vars under the parent selector). */
+  /* stylelint-disable no-invalid-position-declaration -- see comment above */
   @media (prefers-color-scheme: dark) {
     --blur-sm: blur(12px) saturate(160%);
     --blur-md: blur(18px) saturate(180%);
@@ -120,6 +125,7 @@
       inset -2px 0 0 rgba(255, 255, 255, 0.08),
       inset 0 0 40px rgba(111, 169, 255, 0.08);
   }
+  /* stylelint-enable no-invalid-position-declaration */
 
   /* Semantic aliases */
   --background-default: var(--paper);

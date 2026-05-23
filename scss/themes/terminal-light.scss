@@ -12,7 +12,7 @@
 // ============================================================================
 @use '../mixins' as m;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap';
 
 @include m.theme('terminal-light', light) {
   /* Surfaces — clear light gray paper */
@@ -24,7 +24,7 @@
   /* Ink — near-black mono */
   --ink:       #1A1A1A;
   --ink-soft:  #404040;
-  --ink-faint: #666666;
+  --ink-faint: #666;
   --graphite:  #0A0A0A;
   --muted:     #7C7C7C;
 
@@ -48,11 +48,11 @@
   --ochre-wash: rgba(180, 83, 9, 0.10);
 
   /* Code surface */
-  --code-bg:     #DDDDDD;
+  --code-bg:     #DDD;
   --code-ink:    #1A1A1A;
   --code-muted:  #707070;
   --code-accent: #B45309;
-  --code-green:  #008833;
+  --code-green:  #083;
   --code-blue:   #0451A5;
 
   /* Typography — mono everywhere */
@@ -127,7 +127,7 @@
   --action-tertiary-wash:     var(--ochre-wash);
 
   --feedback-info:    var(--ai);
-  --feedback-success: #008833;
+  --feedback-success: #083;
   --feedback-warning: var(--ochre);
   --feedback-error:   var(--shu);
 
@@ -135,9 +135,9 @@
   --info-subtle:  rgba(4, 81, 165, 0.10);
   --info-text:    var(--ai-ink);
 
-  --success-default: #008833;
+  --success-default: #083;
   --success-subtle:  rgba(0, 136, 51, 0.10);
-  --success-text:    #006622;
+  --success-text:    #062;
 
   --warning-default: var(--ochre);
   --warning-subtle:  rgba(180, 83, 9, 0.10);
