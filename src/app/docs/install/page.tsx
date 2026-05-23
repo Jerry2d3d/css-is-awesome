@@ -49,9 +49,9 @@ export default function InstallPage() {
       <Example>
         <Example.Code><span className="tok-com">{"<!-- in your <head> -->"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span>
-{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/public/theme.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/public/theme.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span>
-{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/dist/css-is-awesome.min.css"</span><span className="tok-sel">{">"}</span></Example.Code>
+{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/dist/css-is-awesome.min.css"</span><span className="tok-sel">{">"}</span></Example.Code>
       </Example>
       <p>Verify by dropping a button into the body — if it renders with the theme&rsquo;s primary color, you&rsquo;re wired up.</p>
       <Example>
@@ -68,17 +68,17 @@ export default function InstallPage() {
       </p>
       <Example>
         <Example.Code><span className="tok-com">{"# fetch the sha384 for the version you're pinning"}</span>
-{"\n"}<span className="tok-sel">curl</span> <span className="tok-val">https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/dist/css-is-awesome.min.css.sha384</span>
-{"\n"}<span className="tok-sel">curl</span> <span className="tok-val">https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/public/theme.css.sha384</span></Example.Code>
+{"\n"}<span className="tok-sel">curl</span> <span className="tok-val">https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/dist/css-is-awesome.min.css.sha384</span>
+{"\n"}<span className="tok-sel">curl</span> <span className="tok-val">https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/public/theme.css.sha384</span></Example.Code>
       </Example>
       <Example>
         <Example.Code><span className="tok-com">{"<!-- pinned <link> tags with integrity + crossorigin -->"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span>
-{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/public/theme.css"</span>
+{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/public/theme.css"</span>
 {"\n"}      <span className="tok-prop">integrity</span>=<span className="tok-val">"sha384-…paste from above…"</span>
 {"\n"}      <span className="tok-prop">crossorigin</span>=<span className="tok-val">"anonymous"</span><span className="tok-sel">{">"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span>
-{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.0/dist/css-is-awesome.min.css"</span>
+{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/dist/css-is-awesome.min.css"</span>
 {"\n"}      <span className="tok-prop">integrity</span>=<span className="tok-val">"sha384-…paste from above…"</span>
 {"\n"}      <span className="tok-prop">crossorigin</span>=<span className="tok-val">"anonymous"</span><span className="tok-sel">{">"}</span></Example.Code>
       </Example>
@@ -122,7 +122,7 @@ export default function InstallPage() {
 {"\n"}
 {"\n"}<span className="tok-sel">export default function</span> <span className="tok-val">RootLayout</span>({"{ children }"}) {"{"}
 {"\n"}  <span className="tok-sel">return</span> (
-{"\n"}    <span className="tok-sel">{"<html"}</span> <span className="tok-prop">lang</span>=<span className="tok-val">"en"</span> <span className="tok-prop">data-theme</span>=<span className="tok-val">"sketchbook-light"</span><span className="tok-sel">{">"}</span>
+{"\n"}    <span className="tok-sel">{"<html"}</span> <span className="tok-prop">lang</span>=<span className="tok-val">"en"</span> <span className="tok-prop">data-theme</span>=<span className="tok-val">"sketchbook"</span><span className="tok-sel">{">"}</span>
 {"\n"}      <span className="tok-sel">{"<body>"}</span>{"{children}"}<span className="tok-sel">{"</body>"}</span>
 {"\n"}    <span className="tok-sel">{"</html>"}</span>
 {"\n"}  );
@@ -143,12 +143,15 @@ export default function InstallPage() {
       <h2 id="download">Download a theme file</h2>
       <p>Every shipped theme is a single <code>theme.css</code> file. Grab one, place it in your project, and link to it. This path also works for any custom theme you self-host — the file is just tokens on <code>:root</code>.</p>
       <ul>
-        <li><a href={asset("/theme.css")} download="theme-sketchbook-light.css">sketchbook-light</a> &mdash; warm paper, sumi ink, indigo accent</li>
-        <li><a href={asset("/themes/press-light/theme.css")} download>press-light</a> &mdash; editorial newsprint</li>
-        <li><a href={asset("/themes/graphite-dark/theme.css")} download>graphite-dark</a> &mdash; neutral grayscale utility</li>
-        <li><a href={asset("/themes/glass-light/theme.css")} download>glass-light</a> &mdash; translucent surfaces, soft light</li>
-        <li><a href={asset("/themes/cupertino-light/theme.css")} download>cupertino-light</a> &mdash; Apple-flavored system look</li>
-        <li><a href={asset("/themes/terminal/theme.css")} download>terminal</a> &mdash; monospace green-on-black</li>
+        <li><a href={asset("/themes/boilerplate/theme.css")} download>boilerplate</a> &mdash; neutral starter, system fonts, clean blue accent</li>
+        <li><a href={asset("/themes/sketchbook/theme.css")} download>sketchbook</a> &mdash; warm paper, sumi ink, indigo accent (brand default)</li>
+        <li><a href={asset("/themes/press/theme.css")} download>press</a> &mdash; editorial newsprint, Playfair serif</li>
+        <li><a href={asset("/themes/prism/theme.css")} download>prism</a> &mdash; Vercel/Linear/Radix aesthetic, refined blue</li>
+        <li><a href={asset("/themes/cupertino/theme.css")} download>cupertino</a> &mdash; macOS AppKit, SF Pro, system blue</li>
+        <li><a href={asset("/themes/glass/theme.css")} download>glass</a> &mdash; visionOS glassmorphism, iOS indigo</li>
+        <li><a href={asset("/themes/graphite/theme.css")} download>graphite</a> &mdash; brushed silver / machined dark aluminum</li>
+        <li><a href={asset("/themes/terminal/theme.css")} download>terminal</a> &mdash; VT100 phosphor green, dark-only</li>
+        <li><a href={asset("/themes/terminal-light/theme.css")} download>terminal-light</a> &mdash; daylight editor companion to terminal</li>
       </ul>
       <p>Drop the file into your project (for example <code>public/themes/</code> or <code>assets/css/</code>) and reference it with a standard <code>&lt;link&gt;</code>, paired with the compiled library.</p>
       <Example>
