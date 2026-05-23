@@ -213,19 +213,19 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [x] **`npm pack` smoke test** — Agent X verified the tarball: 162 kB packed / 1.0 MB unpacked / 125 files. No `dist/components/`, no `src/`, no tests, no `.next/` or `out/`. Top-level layout: `dist/`, `scss/`, `public/` (now includes `icons/`), `figma-tokens/`, both `LICENSE` files, key `.md` docs.
 - [x] **Hand-design boilerplate theme** at `public/themes/boilerplate/theme.css` (tracked in Phase 4.5 — done).
 - [x] **Add `public/icons` and `LICENSE-third-party` to `package.json` `files`** so the new Lucide pack ships in the tarball.
-- [ ] **`npm publish` 0.7.0** (`npm publish --access public`) — first public registry cut as a styling-only package. Bump version to `0.7.0` first. **Awaiting explicit user go.**
-- [ ] **Boilerplate consumer install from registry** — real downstream project installs `css-is-awesome@0.7.0`, drops in the boilerplate theme, confirms full system + utilities work end-to-end. Consumer copies its own components from `src/components/` shadcn-style.
+- [x] **`npm publish` 0.7.0+** — the package shipped publicly via semantic-release. Current published version is **0.8.2** (panel R7 bug-fix patch, 2026-05-21) after the v0.8 mixin-first reframe (BREAKING) and v0.8.1 animations split.
+- [x] **Boilerplate consumer install** — boiler-project-ai is on `feature/v2.5-wave8-bare-tags` consuming `css-is-awesome@0.8.2` via `file:` workspace dep. Wave 8 atom conversion wrapped on the feature branch (2026-05-21). End-to-end mixin API + bare-tags Tier-2 pattern verified.
 
 ### Follow-on
-- [ ] Verify jsDelivr + unpkg auto-serve the `dist/` files
-- [ ] README "CDN" section with exact `<link>` tag
+- [x] Verify jsDelivr + unpkg auto-serve the `dist/` files — README shows `cdn.jsdelivr.net/npm/css-is-awesome@0.8/...` examples for both theme files + bundle.
+- [x] README "CDN" section with exact `<link>` tag — shipped.
 - [ ] SRI hashes for security-conscious users
 - [ ] **CDN review before v1.0** — is jsDelivr still the right call, or should we move to a self-hosted edge or alternate CDN? Audit uptime, cache hit rate, supply-chain posture, tracking concerns; decide stay or switch (see Epic 5 Feature 5.14 US-5.14.4).
-- [ ] **AI-agent instruction files** — `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` shipped at package root and whitelisted in `files`. Pointers to the deep `css-is-awesome.instructions.md`.
+- [x] **AI-agent instruction files** — `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `llm.txt` all shipped at package root.
 - [ ] GitHub Release with bundled zip download (for non-npm users)
-- [ ] `package.json` `exports` field for correct module resolution
+- [x] `package.json` `exports` field for correct module resolution — shipped.
 
-**Release:** `v0.7.0` — first npm + CDN cut. SemVer begins; v1.0.0 is reserved for once the CDN smoke is verified live and the API has stabilised in production usage (Phase 6+).
+**Released through 0.8.2** (2026-05-21). The mixin-first v0.8 reframe (BREAKING) shipped, followed by 0.8.1 animations split + 5 new mixins, then 0.8.2 panel R7 bug-fix patch. The 27-tool MCP server (`@cia/mcp-server`) shipped alongside (2026-05-22). v1.0.0 is reserved for production-stability sign-off (Phase 6+).
 
 ---
 
@@ -281,10 +281,10 @@ Decide:
   the npm publish is still gated (Phase 5). Update to reflect the
   actual release history once 0.7.0 publishes.
 - [ ] "**Five voices, one system**" + "Sketchbook arrives later in
-  the year" — there are now 8 themes (Sketchbook, Press, Graphite,
-  Glass, Cupertino, Terminal, Boilerplate, Prism), and Sketchbook
-  shipped. Update theme count + remove the "later in the year"
-  framing.
+  the year" — there are now 9 themes (Sketchbook, Press, Graphite,
+  Glass, Cupertino, Terminal, Terminal-light, Boilerplate, Prism),
+  and Sketchbook shipped. Update theme count + remove the "later in
+  the year" framing.
 - [ ] `<Seal>Approved · v0.1</Seal>` at the bottom — version drift
   (already tracked in Step 1, dedupe).
 - [ ] Light content pass on the principles + "what it isn't"
@@ -329,7 +329,7 @@ stale version copy:
   `List`, `MenuItem`, `Pagination`, `Popover`, `Radio`, `Select`,
   `Slider`, `Switch`, `Textarea`, `Tooltip` aren't shown on the
   site).
-- [ ] **Cross-theme spot-check** — every page in all 8 themes ×
+- [ ] **Cross-theme spot-check** — every page in all 9 themes ×
   light/dark. Catches hex fallbacks the static audit missed.
 - [ ] **Lighthouse + axe pass** — automated a11y + perf baseline,
   fix what surfaces.
@@ -343,12 +343,13 @@ docs-site quality only.
 
 **Goal:** Solidify as a real project.
 
+- [x] **MCP server** (shipped 2026-05-22) — 27 tools across 8 resource families (themes / mixins / functions / tokens / animations / components / recipes / docs) + `assemble_prompt`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can discover the entire library surface without grep-walking. `mcp/server.cjs` + `bin: css-is-awesome-mcp`. See README "MCP server" section.
+- [x] GitHub Action: CI (build + lint), Release (semver + npm publish + changelog) — semantic-release wired up since v0.7.
+- [x] Badge suite in README (npm version, license, semantic-release) — shipped.
+- [x] Contribution guide + issue templates — `CONTRIBUTING.md` + `CONTRIBUTING-THEMES.md` shipped.
 - [ ] TypeScript token definitions (`tokens.d.ts`) — type-safe token access from JS
 - [ ] PostCSS plugin for tree-shaking unused utilities
 - [ ] Starter templates: plain HTML, Vite, Next.js, Astro
-- [ ] GitHub Action: CI (build + lint), Release (semver + npm publish + changelog)
-- [ ] Badge suite in README (npm version, downloads, bundle size, license)
-- [ ] Contribution guide + issue templates
 - [ ] Storybook or Ladle instance — lives in Gremlin UI's repo, not here (see Phase 8).
 
 ---
