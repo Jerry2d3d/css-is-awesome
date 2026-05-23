@@ -83,14 +83,39 @@
 
 // Solid variants — same shape, different default tokens. Used by primary,
 // secondary, and any future "filled" variant (e.g. tertiary).
+//
+// State cascade: when consumer passes only $bg (custom palette), hover +
+// active derive from $bg via the same color-mix(in oklch) formula m.states()
+// uses (12% hover, 20% active, light-dark-aware). Explicit $bg-hover /
+// $bg-active still take precedence when supplied. No $bg = original behavior
+// (use $hover / $active token defaults).
 @mixin _btn-solid(
   $default, $hover, $active,
   $bg: null, $bg-hover: null, $bg-active: null, $color: null
 ) {
   background: m.color($bg or $default);
   color: m.color($color or text-inverse);
-  &:hover  { background: m.color($bg-hover  or $hover); }
-  &:active { background: m.color($bg-active or $active); }
+
+  &:hover {
+    @if $bg-hover {
+      background: m.color($bg-hover);
+    } @else if $bg {
+      background: color-mix(in oklch, m.color($bg), light-dark(black, white) 12%);
+    } @else {
+      background: m.color($hover);
+    }
+  }
+
+  &:active {
+    @if $bg-active {
+      background: m.color($bg-active);
+    } @else if $bg {
+      background: color-mix(in oklch, m.color($bg), light-dark(black, white) 20%);
+    } @else {
+      background: m.color($active);
+    }
+  }
+
   &:disabled, &[disabled] { @include m.disabled; }
 }
 
