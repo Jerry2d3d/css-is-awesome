@@ -180,28 +180,6 @@ function buildDownloadCSS(
   return header + body;
 }
 
-// Build a v0.8-conformant theme SCSS file using cia's m.theme() mixin.
-// Drop into a consumer's SCSS entry; m.theme() handles the :root selector +
-// the light-dark() bodies. Mirrors the shape of scss/themes/<name>.scss.
-function buildDownloadSCSS(
-  name: string,
-  family: string,
-  defaults: { light: Record<string, string>; dark: Record<string, string> },
-  overrides: { light: Record<string, string>; dark: Record<string, string> },
-): string {
-  const { tokenLines, darkOverrideLines } = emitTokenLines(defaults, overrides);
-  const stamp = new Date().toISOString().slice(0, 10);
-  const header =
-    `// ${name} — generated ${stamp} via the css-is-awesome theme editor\n` +
-    `// Forked from "${family}". Use: <html data-theme="${name}">\n\n` +
-    `@use 'css-is-awesome/scss/mixins' as m;\n\n`;
-  let body = `@include m.theme('${name}') {\n${tokenLines.join("\n")}\n`;
-  if (darkOverrideLines.length) {
-    body += `\n  @media (prefers-color-scheme: dark) {\n${darkOverrideLines.join("\n")}\n  }\n`;
-  }
-  body += "}\n";
-  return header + body;
-}
 
 function triggerDownload(filename: string, css: string): void {
   const blob = new Blob([css], { type: "text/css;charset=utf-8" });
@@ -339,16 +317,10 @@ export default function ThemeEditorDock() {
     setOverrides({ light: {}, dark: {} });
   }
 
-  function downloadCSS() {
+  function download() {
     const safeName = sanitizeName(nameInput, `${family}-custom`);
     const css = buildDownloadCSS(safeName, family, defaultsByMode, overrides);
     triggerDownload(`${safeName}.css`, css);
-  }
-
-  function downloadSCSS() {
-    const safeName = sanitizeName(nameInput, `${family}-custom`);
-    const scss = buildDownloadSCSS(safeName, family, defaultsByMode, overrides);
-    triggerDownload(`${safeName}.scss`, scss);
   }
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -673,18 +645,10 @@ export default function ThemeEditorDock() {
             <button
               type="button"
               className={[styles.btn, styles.btnPrimary].join(" ")}
-              onClick={downloadCSS}
-              title="Download as a drop-in .css file using v0.8 light-dark() syntax"
+              onClick={download}
+              title="Download the theme as a drop-in tokens-only .css file"
             >
-              ↓ CSS
-            </button>
-            <button
-              type="button"
-              className={styles.btn}
-              onClick={downloadSCSS}
-              title="Download as a .scss file using @include m.theme() for cia consumers"
-            >
-              ↓ SCSS
+              ↓ Download
             </button>
           </div>
           {importMsg && (
