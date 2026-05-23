@@ -107,10 +107,46 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 - **v0.8.1 animations split:** When @use'ing animations from a `.module.scss`, use `scss/animations` (mixin-only, safe). The keyframes + utility classes + global safety net now live in `scss/animations-utilities` — load that once globally (via `main.scss` or your app's global SCSS).
 - **v0.8.1 file move:** `badge-base` / `badge` moved from `_feedback.scss` to `_data.scss`. Use the cia barrel (`@use 'css-is-awesome' as cia; cia.badge-base;`) instead of path-specific imports.
 
-## MCP server (planned for v1.0)
+## MCP server (SHIPPED in v0.8.2 — 2026-05-22)
 
-`@cia/mcp-server` will expose `install-component`, `install-theme`, `generate-theme`, `validate-theme`, `explain-mixin`, `migrate-tailwind` as tools for AI agents. Until it ships, this file + the markdown docs are the source of truth.
+cia ships an MCP stdio server at `mcp/server.cjs` with 27 tools across 8 resource families: themes, mixins, functions, tokens, animations, components, recipes, docs. Plus `assemble_prompt` for context bundling.
+
+Add to your MCP client's `.mcp.json`:
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "node",
+      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+    }
+  }
+}
+```
+Or `npx css-is-awesome-mcp`. SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in the client project to run it.
+
+## Recipes (v1.0 preview — landing in 1.0.0)
+
+cia v1.0 ships a **recipes book**: portable patterns for building accessible components in any framework. Each recipe is a markdown file at `scss/recipes/<name>.md` with:
+
+- raw HTML structure
+- `cia.X` mixin calls for styling
+- a11y checklist (WCAG 2.2 AA grade)
+- code samples in React + Vue + Svelte + vanilla
+
+AI agents read recipes via MCP `list_recipes` / `get_recipe(name)` and generate consumer components in any framework. Humans read them at `/docs/recipes` and copy patterns directly.
+
+The first 5 recipes ship in v1.0: dialog, combobox, datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `roadmap/epics/v1-0/EPIC-01-recipes-book.md` for the schema + roadmap.
+
+## Priority ladder (the v1.0 pitch order)
+
+1. **Users first** — easy to learn, no framework lock-in, no maintenance treadmill
+2. **Tokens** — one source of truth, swap one value = whole app shifts
+3. **Theme editor on website** — visual customization for all 123 tokens at `/themes`
+4. **Mixin-first speed** — `@include cia.btn(primary)` on any selector
+5. **AI second (huge bonus)** — recipes book + MCP make cia uniquely AI-composable
+
+Humans first. AI's role is to compose, not to lead the pitch.
 
 ---
 
-*Generated 2026-05-21 for cia v0.8. Update when the API surface changes.*
+*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for v1.0 architecture lock. Update when the API surface changes.*

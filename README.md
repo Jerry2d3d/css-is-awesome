@@ -4,7 +4,9 @@
 
 [![CI](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml/badge.svg)](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml) [![Node](https://img.shields.io/badge/node-%E2%89%A520-43853d?logo=node.js&logoColor=white)](./package.json) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![semantic-release](https://img.shields.io/badge/semantic--release-enabled-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-**Bring your own selectors. We bring the design system.** One CSS file per theme. Nine themes. Zero JavaScript in the npm package. Six zero-JS interactive components. Small enough to read in an afternoon.
+**Bring your own selectors. We bring the design system.** One CSS file per theme. Nine themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
+
+> **v1.0 preview — landing in 1.0.0:** a **recipes book** for building any component (dialog, combobox, datepicker, data-table, command-palette) in any framework using cia mixins. AI agents read recipes via MCP and generate components in your stack; humans read them at `/docs/recipes`. See [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/) for the full v1.0 plan.
 
 ## Three ways to use it
 
