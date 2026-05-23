@@ -4,9 +4,11 @@
 // Smart defaults that work for 80% of cases. Override with parameters.
 // Usage: @include m.wrap;       @include m.grid(3);  @include m.page-layout;
 // ============================================================================
+@use 'sass:list';
 @use 'sass:map';
 @use 'sass:math';
 @use 'sass:meta';
+@use 'sass:string';
 @use './system' as s;
 @use './theme' as t;
 @use './mixins' as m;
@@ -103,60 +105,177 @@ $_container-widths: (
 }
 
 // ============================================================================
-// PAGE LAYOUT
+// PAGE LAYOUT — Named-Region Engine
 // ============================================================================
-// Full-page grid: header + main + footer. Sticky footer built in.
-// Usage:
-//   body { @include page-layout; }
-//   body { @include page-layout(sidebar-left); }
+// One engine, FOUR ways to use it — simplest → most powerful. Users pick the
+// tier they're comfortable with; every tier compiles to plain
+// grid-template-areas with zero runtime cost.
+//
+//   Tier 0  @include m.page-layout(sidebar-left);          // preset keyword
+//   Tier 1  @include m.named-layout(app, $wire: true);     // reusable map + auto-place
+//   Tier 2  @include m.layout((nav),(side body),(foot));   // build from YOUR names
+//   Tier 3  body { @include m.page-layout-switchable; }    // runtime data-layout switch
+// ============================================================================
 
-@mixin page-layout($variant: default) {
-  display: grid;
-  min-height: 100vh;
+// ----------------------------------------------------------------------------
+// ENGINE — turn a list of region rows into a grid-template-areas spec.
+// Returns (areas: <space-list of quoted strings>, cols: <int>, regions: <rows>).
+//
+// Fill rule: a row with fewer names than the widest row stretches its LAST
+// region to fill the width — so a single-name row becomes a full-width band,
+// and every generated template is a valid rectangle no matter what's passed.
+// ----------------------------------------------------------------------------
+@function _layout-spec($rows) {
+  $max: 1;
+  $norm: ();
+  @each $row in $rows {
+    $cells: if(sass(meta.type-of($row) != list): ($row,); else: $row);
+    $norm: list.append($norm, $cells, comma);
+    $max: math.max($max, list.length($cells));
+  }
 
-  @if $variant == default {
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas:
-      "header"
-      "main"
-      "footer";
-  } @else if $variant == sidebar-left {
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      "header header"
-      "sidebar main"
-      "footer footer";
-
-    @media screen and (max-width: calc(#{map.get(s.$breakpoints, md)} - 1px)) {
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "header"
-        "main"
-        "footer";
+  $template: ();
+  @each $cells in $norm {
+    $n: list.length($cells);
+    $line: list.nth($cells, 1);
+    @if $max > 1 {                       // guard: Sass @for counts DOWN if from > through
+      @for $i from 2 through $max {
+        $next: if(sass($i <= $n): list.nth($cells, $i); else: list.nth($cells, $n));
+        $line: "#{$line} #{$next}";
+      }
     }
-  } @else if $variant == sidebar-right {
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "header header"
-      "main sidebar"
-      "footer footer";
+    $template: list.append($template, string.quote($line), space);
+  }
 
-    @media screen and (max-width: calc(#{map.get(s.$breakpoints, md)} - 1px)) {
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "header"
-        "main"
-        "footer";
+  @return (areas: $template, cols: $max, regions: $norm);
+}
+
+// Flatten regions → ordered, de-duped single-column stack (used for mobile collapse).
+@function _layout-flatten($regions) {
+  $flat: ();
+  @each $cells in $regions {
+    @each $name in $cells {
+      @if not list.index($flat, $name) { $flat: list.append($flat, $name); }
+    }
+  }
+  @return $flat;
+}
+
+// ----------------------------------------------------------------------------
+// TIER 2 — generic builder from region names YOU choose.
+//   @include m.layout(nav, body, foot);                     // single-column stack
+//   @include m.layout((header),(sidebar main),(footer));    // rows of columns
+//   @include m.layout((a),(b c), $tracks: 16rem 1fr);       // custom column tracks
+//   @include m.layout((a),(b c), $wire: true);              // auto-place by data-area
+// ----------------------------------------------------------------------------
+@mixin layout($rows...) {
+  $opts: meta.keywords($rows);
+  $gap: map.get($opts, gap) or 4;
+  $tracks: map.get($opts, tracks) or null;
+  $wire: map.get($opts, wire);
+
+  $spec: _layout-spec($rows);
+  display: grid;
+  gap: m.space($gap);
+  grid-template-columns: if(sass($tracks): $tracks; else: repeat(#{map.get($spec, cols)}, 1fr));
+  grid-template-areas: map.get($spec, areas);
+
+  @if $wire {
+    @each $cells in map.get($spec, regions) {
+      @each $name in $cells {
+        > [data-area="#{$name}"] { grid-area: $name; }
+      }
     }
   }
 }
 
-@mixin page-header { grid-area: header; }
-@mixin page-main { grid-area: main; }
-@mixin page-footer { grid-area: footer; }
+// Place a child into a named region (when not using $wire). Or just write
+// `grid-area: <name>` yourself.
+@mixin area($name) { grid-area: $name; }
+
+// ----------------------------------------------------------------------------
+// TIER 0 / 1 — named presets. One shared registry feeds page-layout,
+// named-layout, AND the runtime switcher. Add a layout = ONE map entry.
+// ----------------------------------------------------------------------------
+$_layouts: (
+  default:       ((header), (main), (footer)),
+  sidebar-left:  ((header), (sidebar main), (footer)),
+  sidebar-right: ((header), (main sidebar), (footer)),
+  holy-grail:    ((header), (nav main aside), (footer)),
+);
+
+// Tier 1: reusable named layout. Forwards $gap / $tracks / $wire to layout().
+// (Named args BEFORE the rest arg — required by Dart Sass 2.0.)
+@mixin named-layout($name, $gap: 4, $tracks: null, $wire: null) {
+  $rows: map.get($_layouts, $name);
+  @if not $rows {
+    @error "Unknown layout '#{$name}'. Available: #{map.keys($_layouts)}";
+  }
+  @include layout($gap: $gap, $tracks: $tracks, $wire: $wire, $rows...);
+}
+
+// Tier 0: full page shell — viewport height, sticky footer, auto mobile collapse.
+//   body { @include m.page-layout; }
+//   body { @include m.page-layout(holy-grail); }
+@mixin page-layout($variant: default, $collapse-at: md) {
+  $rows: map.get($_layouts, $variant);
+  @if not $rows {
+    @error "Unknown page-layout '#{$variant}'. Available: #{map.keys($_layouts)}";
+  }
+  $spec: _layout-spec($rows);
+
+  display: grid;
+  min-block-size: 100dvh;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: repeat(#{map.get($spec, cols)}, 1fr);
+  grid-template-areas: map.get($spec, areas);
+
+  @if map.get($spec, cols) > 1 {
+    @include m.media-down($collapse-at) {
+      $stacked: _layout-spec(_layout-flatten(map.get($spec, regions)));
+      grid-template-columns: 1fr;
+      grid-template-areas: map.get($stacked, areas);
+    }
+  }
+}
+
+// Region placement helpers (unchanged from the original API).
+@mixin page-header  { grid-area: header; }
+@mixin page-main    { grid-area: main; }
+@mixin page-footer  { grid-area: footer; }
 @mixin page-sidebar { grid-area: sidebar; }
+@mixin page-nav     { grid-area: nav; }
+@mixin page-aside   { grid-area: aside; }
+
+// ----------------------------------------------------------------------------
+// TIER 3 — runtime switching, ZERO recompile. Selector-based (NOT custom
+// properties — Sass strips the quotes off grid-template-areas when
+// interpolated into a custom prop, producing invalid CSS).
+//
+//   body { @include m.page-layout-switchable; }
+//   <body data-layout="sidebar-left">         // flip live: el.dataset.layout = 'holy-grail'
+// ----------------------------------------------------------------------------
+@mixin page-layout-switchable($collapse-at: md) {
+  display: grid;
+  min-block-size: 100dvh;
+  grid-template-rows: auto 1fr auto;
+
+  @each $name, $rows in $_layouts {
+    &[data-layout="#{$name}"] {
+      $spec: _layout-spec($rows);
+      grid-template-columns: repeat(#{map.get($spec, cols)}, 1fr);
+      grid-template-areas: map.get($spec, areas);
+
+      @if map.get($spec, cols) > 1 {
+        @include m.media-down($collapse-at) {
+          $stacked: _layout-spec(_layout-flatten(map.get($spec, regions)));
+          grid-template-columns: 1fr;
+          grid-template-areas: map.get($stacked, areas);
+        }
+      }
+    }
+  }
+}
 
 // ============================================================================
 // SECTION
