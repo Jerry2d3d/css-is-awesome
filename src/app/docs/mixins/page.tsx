@@ -22,7 +22,7 @@ export default function DocsMixinsPage() {
         is the barrel for core layout, typography, colour, interactive and effect
         mixins — the atomic vocabulary. Each component partial in{" "}
         <code>scss/components/*</code> exports its own composite mixins
-        (<code>btn-primary</code>, <code>card-base</code>, <code>input-base</code>,
+        (<code>btn</code>, <code>card-base</code>, <code>input-base</code>,
         etc.) so you only import the components you need and your compiled CSS
         stays lean.
       </p>
@@ -33,7 +33,7 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'cia/scss/components/forms'</span> <span className="tok-sel">as</span> <span className="tok-prop">f</span>;
 {"\n"}
 {"\n"}<span className="tok-sel">.my-cta</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">b.btn-primary()</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary)</span>;
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.elevation(2)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
@@ -188,13 +188,13 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-com">{"// JS:    el.dataset.flow = 'col';"}</span></Example.Code>
       </Example>
 
-      <h3 id="container"><code>container</code></h3>
-      <p>Page-width container with responsive horizontal padding. Sizes: <code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>2xl</code>, <code>full</code>.</p>
+      <h3 id="wrap"><code>wrap</code></h3>
+      <p>Page-width wrap with responsive horizontal padding. Sizes: <code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>2xl</code>, <code>full</code>. (Renamed from <code>container</code> in v0.8 — the namer mixin for container queries kept the <code>container</code> name; this layout-wrap mixin became <code>wrap</code> to avoid the collision.)</p>
       <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">container</span>(<span className="tok-val">$size: xl, $px: null</span>);
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">wrap</span>(<span className="tok-val">$size: xl, $px: null</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">.page</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.container(lg)</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.wrap(lg)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
 
@@ -365,13 +365,13 @@ export default function DocsMixinsPage() {
 {"\n"}{"}"}</Example.Code>
       </Example>
 
-      <h3 id="cq"><code>container</code>, <code>cq</code>, <code>cq-down</code>, <code>cq-between</code></h3>
-      <p>Container queries. Name the container with <code>container</code>, then query it with <code>cq</code> variants.</p>
+      <h3 id="contain"><code>container</code>, <code>contain</code>, <code>contain-down</code>, <code>contain-between</code></h3>
+      <p>Container queries. Name the container with <code>container</code>, then query it with <code>contain</code> variants. (Renamed from <code>cq</code> / <code>cq-down</code> / <code>cq-between</code> in v0.8 to read better; the namer <code>container</code> kept its name.)</p>
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">container</span>(<span className="tok-val">$name: null, $type: inline-size</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">cq</span>(<span className="tok-val">$size, $name: null</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">cq-down</span>(<span className="tok-val">$size, $name: null</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">cq-between</span>(<span className="tok-val">$min, $max, $name: null</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">contain</span>(<span className="tok-val">$size, $name: null</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">contain-down</span>(<span className="tok-val">$size, $name: null</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">contain-between</span>(<span className="tok-val">$min, $max, $name: null</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">.card</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.container(card)</span>;
@@ -796,16 +796,16 @@ export default function DocsMixinsPage() {
         examples.
       </p>
       <ul>
-        <li><strong>Layout:</strong> <code>flex</code>, <code>flow</code>, <code>flow-switchable</code>, <code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code>, <code>container</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code>, <code>layout</code>, <code>named-layout</code>, <code>area</code>, <code>page-layout-switchable</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
-        <li><strong>Breakpoints:</strong> <code>bp</code>, <code>bp-down</code>, <code>bp-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
-        <li><strong>Container queries:</strong> <code>container</code>, <code>cq</code>, <code>cq-down</code>, <code>cq-between</code></li>
+        <li><strong>Layout:</strong> <code>flex</code>, <code>flow</code>, <code>flow-switchable</code>, <code>pad</code>, <code>pad-x</code>, <code>pad-y</code>, <code>pad-asym</code>, <code>wrap</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code>, <code>layout</code>, <code>named-layout</code>, <code>area</code>, <code>page-layout-switchable</code>, <code>stack</code>, <code>cluster</code>, <code>switcher</code>, <code>cover</code>, <code>frame</code>, <code>sidebar</code>, <code>toolbar</code>, <code>wizard-shell</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
+        <li><strong>Breakpoints:</strong> <code>media</code>, <code>media-down</code>, <code>media-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
+        <li><strong>Container queries:</strong> <code>container</code>, <code>contain</code>, <code>contain-down</code>, <code>contain-between</code></li>
         <li><strong>Typography:</strong> <code>font</code>, <code>type</code>, <code>truncate</code></li>
         <li><strong>Borders & effects:</strong> <code>border</code>, <code>elevation</code></li>
         <li><strong>Interactive:</strong> <code>focus-ring</code>, <code>hover</code>, <code>interactive</code>, <code>transition</code>, <code>disabled</code>, <code>sr-only</code></li>
         <li><strong>Resets:</strong> <code>button-reset</code>, <code>list-reset</code>, <code>header-reset</code>, <code>form-reset</code></li>
         <li><strong>Animation:</strong> <code>animate</code>, <code>animate-on</code>, <code>spin</code>, <code>pulse</code>, <code>fade-in</code>, <code>slide-up</code></li>
         <li><strong>Icons:</strong> <code>svg</code>, <code>svg-bg</code>, <code>svg-text</code>, <code>fa-load</code>, <code>fa</code>, <code>fa-icon</code>, <code>fa-text</code>, <code>fa-spin</code></li>
-        <li><strong>Buttons:</strong> <code>btn-base</code>, <code>btn-primary</code>, <code>btn-secondary</code>, <code>btn-outline</code>, <code>btn-ghost</code>, <code>btn-icon</code></li>
+        <li><strong>Buttons:</strong> <code>btn-base</code>, <code>btn</code>, <code>btn-icon</code> (variants <code>primary</code> / <code>secondary</code> / <code>outline</code> / <code>ghost</code> / status are parameters to <code>btn()</code>, not separate mixins)</li>
         <li><strong>Data:</strong> <code>table-base</code>, <code>table-responsive</code>, <code>card-base</code>, <code>card-header</code>, <code>card-footer</code>, <code>card-interactive</code>, <code>list-base</code>, <code>list-item</code>, <code>avatar</code>, <code>avatar-placeholder</code>, <code>avatar-group</code></li>
         <li><strong>Feedback:</strong> <code>alert-base</code>, <code>alert</code>, <code>toast-base</code>, <code>tag</code>, <code>progress</code>, <code>progress-track-base</code>, <code>progress-fill-base</code>, <code>spinner</code>, <code>skeleton</code></li>
         <li><strong>Data:</strong> <code>table-base</code>, <code>card-base</code>, <code>badge-base</code>, <code>badge</code></li>
