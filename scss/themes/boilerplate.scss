@@ -17,8 +17,8 @@
 
 @include m.theme('boilerplate') {
   /* Surfaces */
-  --paper:        light-dark(#ffffff, #0f172a);
-  --paper-raised: light-dark(#ffffff, #1e293b);
+  --paper:        light-dark(#fff, #0f172a);
+  --paper-raised: light-dark(#fff, #1e293b);
   --paper-sunk:   light-dark(#f8fafc, #020617);
   --paper-glass:  light-dark(rgba(255, 255, 255, 0.85), rgba(15, 23, 42, 0.85));
 

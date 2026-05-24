@@ -10,12 +10,12 @@
 // ============================================================================
 @use '../mixins' as m;
 
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap';
 
 @include m.theme('cupertino') {
   /* Surfaces — AppKit panels */
   --paper:        light-dark(#F5F5F7, #1E1E1E);
-  --paper-raised: light-dark(#FFFFFF, #2A2A2A);
+  --paper-raised: light-dark(#FFF, #2A2A2A);
   --paper-sunk:   light-dark(#E9E9EC, #141414);
   --paper-glass:  light-dark(rgba(255, 255, 255, 0.72), rgba(42, 42, 42, 0.72));
 

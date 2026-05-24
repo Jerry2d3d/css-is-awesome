@@ -6,6 +6,8 @@ This file is the entry point for AI coding agents (Aider, Codex, Cursor, Claude 
 
 A token-driven SCSS design system with a **single mixin-router per component**. **Mixin-first since v0.8** — the mixin is the API; the class/tag/selector is the consumer's choice. The npm package ships **zero JavaScript** by hard rule.
 
+**v1.0 architecture (locked 2026-05-23):** humans-first, AI-second. The 5-pillar priority is **(1) users first, (2) tokens, (3) theme editor on the website, (4) mixin-first speed, (5) AI as composer via recipes book + MCP server**. v1.0 ships the recipes book + theme editor polish + Tailwind/Bootstrap migration CLI + playground + MCP polish. No separate React component library (Jerry's call — recipes are the deliverable). Full backlog: [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/).
+
 Three authoring tiers, in primary-to-fallback order:
 
 - **Tier 2 (primary)** — `@use 'css-is-awesome' as cia;` then `.your-class { @include cia.btn(primary); }`. SCSS build required.

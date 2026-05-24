@@ -13,12 +13,12 @@
 // ============================================================================
 @use '../mixins' as m;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap';
 
 @include m.theme('prism') {
   /* Surfaces */
-  --paper:        light-dark(#ffffff, #09090b);
-  --paper-raised: light-dark(#ffffff, #18181b);
+  --paper:        light-dark(#fff, #09090b);
+  --paper-raised: light-dark(#fff, #18181b);
   --paper-sunk:   light-dark(#f4f4f5, #27272a);
   --paper-glass:  light-dark(rgba(255, 255, 255, 0.80), rgba(24, 24, 27, 0.80));
 

@@ -339,7 +339,78 @@ docs-site quality only.
 
 ---
 
-## Phase 6 — Ecosystem (v1.1+)
+## Phase 5.9 — v1.0 Lockdown (recipes-first)
+
+**Locked 2026-05-23** after long architecture synthesis (panel review + Gemini external read + Jerry instinct refinement).
+
+**Goal:** Ship v1.0 as a humans-first design system whose AI-friendliness is the bonus. Five tracks, ~42 user stories, ~18-26 working days.
+
+### Priority ladder (the v1.0 pitch order)
+
+1. **Users first** — easy to learn, no framework lock-in, no maintenance treadmill
+2. **Tokens** — one source of truth, swap one value = whole app shifts
+3. **Theme editor on website** — visual customization for all 123 tokens
+4. **Mixin-first speed** — `@include cia.btn(primary)` on any selector
+5. **AI second (huge bonus)** — recipes book + MCP server make cia uniquely AI-composable
+
+### The 5 epics
+
+Full backlog: [`roadmap/epics/v1-0/README.md`](./roadmap/epics/v1-0/README.md).
+
+| # | Epic | Mission | Effort | Stories |
+|---|---|---|---|---|
+| [01](./roadmap/epics/v1-0/EPIC-01-recipes-book.md) | **Recipes Book** | Recipe format + first 5 recipes (dialog, combobox, datepicker, data-table, command-palette). MCP exposes them. | ~5-7 days | 13 |
+| [02](./roadmap/epics/v1-0/EPIC-02-theme-editor-polish.md) | **Theme Editor Polish** | Download `.scss`/`.css`, share URL, inline contrast validator, reset/diff. | ~3-4 days | 9 |
+| [03](./roadmap/epics/v1-0/EPIC-03-migration-on-ramp.md) | **Migration On-Ramp** | `npx cia migrate` from Tailwind config + Bootstrap variables. | ~3-5 days | 6 |
+| [04](./roadmap/epics/v1-0/EPIC-04-playground.md) | **Playground** | `/playground` page with in-browser SCSS compile + theme picker + share URL. | ~4-6 days | 7 |
+| [05](./roadmap/epics/v1-0/EPIC-05-bug-fixes-mcp-polish.md) | **Bug Fixes + MCP Polish** | Round 8 audit cleanup + MCP tests + `/docs/composition` page. | ~3-4 days | 7 |
+
+### What is KILLED at v1.0 lock
+
+- ❌ `@cia/react` as a separate npm component library Jerry maintains forever
+- ❌ shadcn-style component ejection CLI for cia
+- ❌ `@cia/a11y` as cia-original JS shims (deferred → `@cia/a11y-recipes` post-v1.0)
+- ❌ Component library as the v1.0 selling point — recipes ARE the deliverable
+- ❌ VS Code extension at v1.0 (deferred to v1.5; playground covers the demo need)
+
+### What is DEFERRED to post-v1.0
+
+See [`roadmap/epics/v1-0/post-v1-ideas.md`](./roadmap/epics/v1-0/post-v1-ideas.md). Highlights: VS Code extension (v1.5), Recipes Maker, `@cia/a11y-recipes`, `npm create cia` wizard, framework recipe packs (`@cia/angular`, etc.), Figma plugin, RTL audit, theme marketplace.
+
+### Definition of done
+
+- All 5 epic DODs met (42 stories shipped or punted)
+- Tarball under 250 KB packed
+- Zero JS in npm `files` manifest (CLI in `bin/` allowed)
+- `validate-themes` passes FAIL-by-default across 9 themes
+- `validate-recipes` passes in CI
+- README, llm.txt, AGENTS.md, CHANGELOG, MIGRATION updated
+- semantic-release publishes `1.0.0` cleanly
+
+**Release:** `v1.0.0` — the recipes-first reframe.
+
+---
+
+## Phase 6 — Post-v1.0 sequence (v1.1 → v2.0)
+
+**Locked 2026-05-23** alongside Phase 5.9. Full epic + feature + user-story backlog at [`roadmap/epics/`](./roadmap/epics/README.md).
+
+| Release | Theme | Epic folder | Stories | Effort |
+|---|---|---|---|---|
+| **v1.1** | Recipes momentum (7 more recipes, install wizard, @cia/a11y-recipes add-on, @cia/react codegen POC) | [v1-1](./roadmap/epics/v1-1/README.md) | 43 | ~25-35 days |
+| **v1.2** | Coverage (RTL audit, form-validation recipes, i18n recipes, print recipe, MUI + Chakra migration) | [v1-2](./roadmap/epics/v1-2/README.md) | 32 | ~16-22 days |
+| **v1.3** | Ecosystem (Figma plugin, theme marketplace, DTCG migration CLI, @cia/angular) | [v1-3](./roadmap/epics/v1-3/README.md) | 34 | ~28-35 days |
+| v1.4 | *Reserved — scoped based on v1.1-v1.3 community feedback* | — | — | — |
+| **v1.5** | IDE integration (VS Code extension) | [v1-5](./roadmap/epics/v1-5/README.md) | 15 | ~10 days |
+| **v2.0** | Visual builder (Recipes Maker — Jerry's idea, may never ship) | [v2-0](./roadmap/epics/v2-0/README.md) | 18 | ~15-20 days |
+
+**Total post-v1.0 planned stories:** 142. **Total estimated effort:** ~94-122 working days.
+
+The original Phase 6 ("Ecosystem v1.1+") below describes legacy items some of which have shipped (MCP server, CI, semantic-release, badges) and others (TypeScript token defs, PostCSS plugin, starter templates) which are now absorbed into post-v1.0 epics or deferred. Preserved for history:
+
+---
+
+### Phase 6 (legacy — partially shipped, partially superseded)
 
 **Goal:** Solidify as a real project.
 
@@ -367,26 +438,27 @@ docs-site quality only.
 
 ---
 
-## Phase 8 — Companion products (post-1.0)
+## Phase 8 — Companion products (post-1.0) — REVISED 2026-05-23
 
-**Goal:** Ship the React layer and the Next.js starter as separate products that depend on css-is-awesome. Naming for the React lib is still TBD: **"Gremlin UI"** vs **"Components are Awesome"** vs **"Gremlin Components"**.
+**Original plan (Gremlin UI as a sister React component library Jerry maintains) was REPLACED 2026-05-23** after architecture synthesis. The decision:
 
-These live OUTSIDE this repo (separate package, separate semver, separate README). Tracked here so the strategic split is visible.
+- **No separate React component library to maintain.** "I don't want to keep up with a component library" — Jerry, 2026-05-23.
+- **boiler-project-ai becomes a SHOWCASE / reference implementation**, NOT a published @cia/react npm package. It dogfoods cia recipes and proves the pattern. May ship publicly later as a consumer-grade React kit, but NOT the cia product.
+- **Recipes book (Phase 5.9 Epic 01) replaces the React component library** as the v1.0 deliverable.
 
-### Gremlin UI (sister npm package)
-- [ ] **Trigger:** starts when css-is-awesome `1.0` ships AND the ~17 components the boilerplate already wants are stable in `src/components/`.
-- [ ] Stand up its own repo (or workspace package — see [`roadmap/product-architecture.md`](./roadmap/product-architecture.md) open question).
-- [ ] Migrate components from this repo's `src/components/` (or the rescoped subset from Epic 03).
-- [ ] Declare `css-is-awesome` as a peer dependency for theming.
-- [ ] Storybook or Ladle for the component catalog.
-- [ ] Independent semver, independent CHANGELOG.
+### Showcase: boiler-project-ai (separate repo, Jerry's)
+- [ ] Rebuild boiler on top of v0.8.2+ cia, consuming via `file:` or `npm install`
+- [ ] Eat cia recipes — every boiler component built from a published recipe
+- [ ] Public README positions it as "the reference cia app, not a component library"
+- [ ] Possible future release as `@jerry2d3d/cia-boiler` or similar Jerry-namespaced package; out of cia repo scope
 
-### Gremlin Boilerplate (Next.js starter)
-- [ ] **Trigger:** starts when Gremlin UI hits a usable `0.x` AND css-is-awesome `0.7+` is on the registry.
-- [ ] Evolve `boiler-project-ai` into the official starter.
-- [ ] Pre-wires css-is-awesome (theme + utilities) + Gremlin UI + auth + opinionated app shell.
-- [ ] One-command bootstrap (e.g. `npx create-gremlin-app`).
-- [ ] Documented as the recommended on-ramp for new full-stack projects.
+### Framework recipe packs (deferred to post-v1.0 — see [post-v1-ideas.md](./roadmap/epics/v1-0/post-v1-ideas.md))
+- `@cia/react` — trigger: v1.1 IF generated-from-recipes proves viable
+- `@cia/angular` — Jerry's stated next-framework target after `@cia/react`
+- `@cia/vue`, `@cia/svelte` — lowest priority unless community demand surfaces
+
+### Original Gremlin UI / Gremlin Boilerplate plan (ARCHIVED)
+Naming "Gremlin UI" / "Gremlin Components" / "Companion Boilerplate" — all retired. The Phase 5.9 recipes-first architecture means cia ships ONE thing (the styling engine + recipes), not three coupled products.
 
 ---
 

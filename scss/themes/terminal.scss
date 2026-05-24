@@ -11,7 +11,7 @@
 // ============================================================================
 @use '../mixins' as m;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap';
 
 @include m.theme('terminal', dark) {
   /* Surfaces — deep warm black + phosphor haze */

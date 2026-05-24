@@ -112,33 +112,74 @@ function sanitizeName(input: string, fallback = "mytheme"): string {
   return cleaned || fallback;
 }
 
-// Build a complete cia-conformant theme.css. Every block contains every
-// contract token so the output passes the validator standalone.
+// Resolve a token's per-mode values from overrides + defaults, then emit:
+// - "missing default" sentinel if both modes are empty
+// - single bare value if both modes match (or only one is set)
+// - light-dark() wrapper for COLOR tokens that differ between modes
+// - bare light value + collected dark override (for non-color tokens that
+//   differ — caller injects them into a nested @media block)
+function emitTokenLines(
+  defaults: { light: Record<string, string>; dark: Record<string, string> },
+  overrides: { light: Record<string, string>; dark: Record<string, string> },
+): { tokenLines: string[]; darkOverrideLines: string[] } {
+  const tokenLines: string[] = [];
+  const darkOverrideLines: string[] = [];
+
+  for (const spec of CATALOG) {
+    const lightV = overrides.light[spec.token] || defaults.light[spec.token] || "";
+    const darkV = overrides.dark[spec.token] || defaults.dark[spec.token] || "";
+
+    if (!lightV && !darkV) {
+      tokenLines.push(`  ${spec.token}: ;  /* missing default */`);
+      continue;
+    }
+    if (lightV === darkV || !darkV) {
+      tokenLines.push(`  ${spec.token}: ${lightV};`);
+      continue;
+    }
+    if (!lightV) {
+      tokenLines.push(`  ${spec.token}: ${darkV};`);
+      continue;
+    }
+    // Light and dark differ
+    if (spec.type === "color") {
+      tokenLines.push(`  ${spec.token}: light-dark(${lightV}, ${darkV});`);
+    } else {
+      tokenLines.push(`  ${spec.token}: ${lightV};`);
+      darkOverrideLines.push(`    ${spec.token}: ${darkV};`);
+    }
+  }
+
+  return { tokenLines, darkOverrideLines };
+}
+
+// Build a complete v0.8-conformant theme.css. Color tokens differing between
+// modes use light-dark(); non-color differences emit a nested @media block.
+// Output passes the validator standalone and matches the shape of every
+// shipped theme at public/themes/<name>/theme.css.
 function buildDownloadCSS(
   name: string,
   family: string,
   defaults: { light: Record<string, string>; dark: Record<string, string> },
   overrides: { light: Record<string, string>; dark: Record<string, string> },
 ): string {
-  function lines(mode: "light" | "dark"): string {
-    return CATALOG.map((spec) => {
-      const v = overrides[mode][spec.token] || defaults[mode][spec.token];
-      return v ? `  ${spec.token}: ${v};` : `  ${spec.token}: ;  /* missing default */`;
-    }).join("\n");
-  }
+  const { tokenLines, darkOverrideLines } = emitTokenLines(defaults, overrides);
   const stamp = new Date().toISOString().slice(0, 10);
   const header =
     `/*\n` +
     ` * ${name} — generated ${stamp} via the css-is-awesome theme editor\n` +
     ` * Forked from "${family}". Drop in as theme.css and use:\n` +
-    ` *   <html data-theme="${name}-light">  or  data-theme="${name}-dark"\n` +
+    ` *   <html data-theme="${name}">\n` +
     ` */\n\n`;
-  return (
-    header +
-    `[data-theme="${name}-light"] {\n${lines("light")}\n}\n\n` +
-    `[data-theme="${name}-dark"] {\n${lines("dark")}\n}\n`
-  );
+  let body =
+    `:root[data-theme="${name}"] {\n  color-scheme: light dark;\n${tokenLines.join("\n")}\n}\n`;
+  if (darkOverrideLines.length) {
+    body +=
+      `\n@media (prefers-color-scheme: dark) {\n  :root[data-theme="${name}"] {\n${darkOverrideLines.join("\n")}\n  }\n}\n`;
+  }
+  return header + body;
 }
+
 
 function triggerDownload(filename: string, css: string): void {
   const blob = new Blob([css], { type: "text/css;charset=utf-8" });
@@ -605,6 +646,7 @@ export default function ThemeEditorDock() {
               type="button"
               className={[styles.btn, styles.btnPrimary].join(" ")}
               onClick={download}
+              title="Download the theme as a drop-in tokens-only .css file"
             >
               ↓ Download
             </button>

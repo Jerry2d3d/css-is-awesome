@@ -208,9 +208,9 @@ export default function DocsMixinsPage() {
       </Example>
 
       <h3 id="page-layout"><code>page-layout</code></h3>
-      <p>Full-page grid with sticky footer. Variants: <code>default</code>, <code>sidebar-left</code>, <code>sidebar-right</code>. Pair with <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code> grid-area helpers.</p>
+      <p>Full-page grid with sticky footer + automatic mobile collapse below the breakpoint. Variants: <code>default</code>, <code>sidebar-left</code>, <code>sidebar-right</code>, <code>holy-grail</code>. Pair with <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code> grid-area helpers. For runtime switching, see <code>page-layout-switchable</code>; for custom region names, see <code>layout</code>.</p>
       <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">page-layout</span>(<span className="tok-val">$variant: default</span>);
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">page-layout</span>(<span className="tok-val">$variant: default, $collapse-at: md</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">body</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.page-layout(sidebar-left)</span>;
@@ -219,6 +219,52 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">aside</span>  {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.page-sidebar</span>; {"}"}
 {"\n"}<span className="tok-sel">main</span>   {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.page-main</span>; {"}"}
 {"\n"}<span className="tok-sel">footer</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.page-footer</span>; {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="layout"><code>layout</code></h3>
+      <p>Build any page layout from your own region names. Single-column stack or rows of columns — the engine guarantees a valid rectangular <code>grid-template-areas</code>. A row with fewer names than the widest row stretches its last region to fill (so a single-name row becomes a full-width band). Accepts <code>$gap</code>, <code>$tracks</code> for custom column tracks, and <code>$wire</code> to auto-place children by <code>[data-area]</code>.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">layout</span>(<span className="tok-val">$rows...</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// single-column stack"}</span>
+{"\n"}<span className="tok-sel">.app</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.layout(nav, body, foot)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// rows of columns"}</span>
+{"\n"}<span className="tok-sel">.dashboard</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.layout((header), (sidebar main), (footer))</span>;
+{"\n"}{"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// custom column tracks + auto-place via [data-area]"}</span>
+{"\n"}<span className="tok-sel">.app-shell</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.layout((nav), (side body), (foot), $tracks: 16rem 1fr, $wire: true)</span>;
+{"\n"}{"}"}</Example.Code>
+      </Example>
+
+      <h3 id="named-layout"><code>named-layout</code></h3>
+      <p>Reusable named layout from the built-in registry (<code>default</code>, <code>sidebar-left</code>, <code>sidebar-right</code>, <code>holy-grail</code>). Forwards <code>$gap</code>, <code>$tracks</code>, <code>$wire</code> to <code>layout</code>. Use when you want a preset by name with the option to auto-place children by <code>[data-area]</code>.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">named-layout</span>(<span className="tok-val">$name, $gap: 4, $tracks: null, $wire: null</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.app</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.named-layout(holy-grail, $wire: true)</span>; {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="area"><code>area</code></h3>
+      <p>Place a child element into a named grid region. Equivalent to writing <code>grid-area: &lt;name&gt;</code> by hand.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">area</span>(<span className="tok-val">$name</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.sidebar</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.area(sidebar)</span>; {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="page-layout-switchable"><code>page-layout-switchable</code></h3>
+      <p>Runtime layout switching with zero recompile. Drop on <code>body</code>; toggle <code>&lt;body data-layout=&quot;...&quot;&gt;</code> at runtime (e.g. <code>document.body.dataset.layout = &apos;holy-grail&apos;</code>). All four built-in layouts plus auto mobile collapse, baked into one selector-based rule per layout. Selector-based (not custom properties) because Sass strips quotes from <code>grid-template-areas</code> when interpolated into a custom prop.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">page-layout-switchable</span>(<span className="tok-val">$collapse-at: md</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">body</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.page-layout-switchable</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// HTML: <body data-layout='sidebar-left'>"}</span>
+{"\n"}<span className="tok-com">{"// JS:   document.body.dataset.layout = 'holy-grail';"}</span></Example.Code>
       </Example>
 
       <h3 id="section"><code>section</code></h3>
@@ -721,7 +767,7 @@ export default function DocsMixinsPage() {
         examples.
       </p>
       <ul>
-        <li><strong>Layout:</strong> <code>flex</code>, <code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code>, <code>container</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
+        <li><strong>Layout:</strong> <code>flex</code>, <code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code>, <code>container</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code>, <code>layout</code>, <code>named-layout</code>, <code>area</code>, <code>page-layout-switchable</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
         <li><strong>Breakpoints:</strong> <code>bp</code>, <code>bp-down</code>, <code>bp-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
         <li><strong>Container queries:</strong> <code>container</code>, <code>cq</code>, <code>cq-down</code>, <code>cq-between</code></li>
         <li><strong>Typography:</strong> <code>font</code>, <code>type</code>, <code>truncate</code></li>

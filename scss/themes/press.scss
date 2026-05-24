@@ -16,14 +16,14 @@
 // ============================================================================
 @use '../mixins' as m;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@400;500;600;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@400;500;600;700&display=swap';
 
 @include m.theme('press') {
   /* ----------------------------------------------------------------
      Surfaces — light: warm newsprint / dark: near-ink newsroom
      ---------------------------------------------------------------- */
   --paper:        light-dark(#FAFAF7, #0E0E0E);
-  --paper-raised: light-dark(#FFFFFF, #1A1A1A);
+  --paper-raised: light-dark(#FFF, #1A1A1A);
   --paper-sunk:   light-dark(#F2F1EC, #060606);
   --paper-glass:  light-dark(rgba(255, 255, 255, 0.80), rgba(26, 26, 26, 0.82));
 
@@ -31,7 +31,7 @@
      Ink — light: warm near-black / dark: warm off-white
      ---------------------------------------------------------------- */
   --ink:       light-dark(#0A0A0A, #FAFAF7);
-  --ink-soft:  light-dark(#555555, #C8C6C0);
+  --ink-soft:  light-dark(#555, #C8C6C0);
   --ink-faint: light-dark(#727069, #8A8A86);
   --graphite:  light-dark(#1A1A1A, #ECEAE4);
   --muted:     light-dark(#8E8C86, #6B6963);
