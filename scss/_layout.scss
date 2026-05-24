@@ -403,6 +403,84 @@ $_layouts: (
 }
 
 // ============================================================================
+// FLOW — preset flexbox layer over the existing m.flex() engine
+// ============================================================================
+// One-word switchable flex default + responsive axis switch. Same "presets
+// over one engine" pattern as page-layout for grid — no duplicated property
+// logic; flow() delegates to m.flex().
+//
+//   Tier 0  @include m.flow;                          // sensible flex row
+//   Tier 0  @include m.flow(col);                     // switch row → col → wrap...
+//   Tier 0  @include m.flow(row, $at: md, $then: col);// responsive axis switch
+//   Tier 1  @include m.stack / m.cluster / m.toolbar  // existing semantic names (keep)
+//   Tier 2  @include m.flex($direction:.., $justify:..)  // existing full-control primitive
+//   Tier 3  @include m.flow-switchable;  <el data-flow="col">  // runtime switch
+// ============================================================================
+
+// Preset registry. Each entry is a complete flex config bundle. Add a mode =
+// one map entry. justify/align use flex()'s shorthand vocabulary.
+$_flow: (
+  row:     (direction: row,    wrap: nowrap, justify: start,         align: center),
+  col:     (direction: column, wrap: nowrap, justify: start,         align: stretch),
+  wrap:    (direction: row,    wrap: wrap,   justify: start,         align: center),
+  center:  (direction: row,    wrap: nowrap, justify: center,        align: center),
+  between: (direction: row,    wrap: nowrap, justify: space-between, align: center),
+  around:  (direction: row,    wrap: nowrap, justify: space-around,  align: center),
+);
+
+// One-word flex default with an optional breakpoint axis-switch.
+//   $preset  one of $_flow keys (default: row)
+//   $gap     space-scale key (default: 4)
+//   $at      breakpoint key/value — below it, swap to $then
+//   $then    preset to switch to below $at (e.g. row → col on mobile)
+@mixin flow($preset: row, $gap: 4, $at: null, $then: null) {
+  $cfg: map.get($_flow, $preset);
+  @if not $cfg {
+    @error "Unknown flow '#{$preset}'. Available: #{map.keys($_flow)}";
+  }
+  @include m.flex(
+    $direction: map.get($cfg, direction),
+    $wrap:      map.get($cfg, wrap),
+    $justify:   map.get($cfg, justify),
+    $align:     map.get($cfg, align),
+    $gap:       $gap
+  );
+
+  @if $at and $then {
+    $alt: map.get($_flow, $then);
+    @if not $alt {
+      @error "Unknown flow '#{$then}'. Available: #{map.keys($_flow)}";
+    }
+    @include m.media-down($at) {
+      @include m.flex(
+        $direction: map.get($alt, direction),
+        $wrap:      map.get($alt, wrap),
+        $justify:   map.get($alt, justify),
+        $align:     map.get($alt, align),
+        $gap:       $gap
+      );
+    }
+  }
+}
+
+// Tier 3 (optional) — runtime switch with zero recompile.
+//   .bar { @include m.flow-switchable; }
+//   <div class="bar" data-flow="between">…</div>   // el.dataset.flow = 'col'
+@mixin flow-switchable($gap: 4) {
+  @each $name, $cfg in $_flow {
+    &[data-flow="#{$name}"] {
+      @include m.flex(
+        $direction: map.get($cfg, direction),
+        $wrap:      map.get($cfg, wrap),
+        $justify:   map.get($cfg, justify),
+        $align:     map.get($cfg, align),
+        $gap:       $gap
+      );
+    }
+  }
+}
+
+// ============================================================================
 // APP-SHELL FAMILY — wizard-shell + sidebar + toolbar
 // ============================================================================
 

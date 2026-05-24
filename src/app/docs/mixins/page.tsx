@@ -159,6 +159,35 @@ export default function DocsMixinsPage() {
 {"\n"}{"}"}</Example.Code>
       </Example>
 
+      <h3 id="flow"><code>flow</code></h3>
+      <p>One-word switchable flex default — a preset layer over the existing <code>flex</code> engine (no duplicated property logic). Pass a preset keyword to switch the whole config; optionally pass <code>$at</code> + <code>$then</code> to swap the axis at a breakpoint. Presets: <code>row</code> (default), <code>col</code>, <code>wrap</code>, <code>center</code>, <code>between</code>, <code>around</code>. The semantic primitives <code>stack</code> / <code>cluster</code> / <code>toolbar</code> stay — they read better as named patterns; <code>flow</code> is the generic switchable workhorse.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">flow</span>(<span className="tok-val">$preset: row, $gap: 4, $at: null, $then: null</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// sensible flex row"}</span>
+{"\n"}<span className="tok-sel">.bar</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// switch row → column"}</span>
+{"\n"}<span className="tok-sel">.menu</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow(col)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// pushed apart"}</span>
+{"\n"}<span className="tok-sel">.toolbar</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow(between)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// responsive axis switch — row desktop, column below md"}</span>
+{"\n"}<span className="tok-sel">.cardrow</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow(row, $at: md, $then: col)</span>; {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="flow-switchable"><code>flow-switchable</code></h3>
+      <p>Runtime flex switching with zero recompile. Drop on any element; toggle <code>data-flow="..."</code> at runtime. Emits one selector-based rule per preset in the registry. Pairs with the <code>flow</code> presets above.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">flow-switchable</span>(<span className="tok-val">$gap: 4</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.bar</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow-switchable</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// HTML:  <div class='bar' data-flow='between'>…</div>"}</span>
+{"\n"}<span className="tok-com">{"// JS:    el.dataset.flow = 'col';"}</span></Example.Code>
+      </Example>
+
       <h3 id="container"><code>container</code></h3>
       <p>Page-width container with responsive horizontal padding. Sizes: <code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>2xl</code>, <code>full</code>.</p>
       <Example>
@@ -767,7 +796,7 @@ export default function DocsMixinsPage() {
         examples.
       </p>
       <ul>
-        <li><strong>Layout:</strong> <code>flex</code>, <code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code>, <code>container</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code>, <code>layout</code>, <code>named-layout</code>, <code>area</code>, <code>page-layout-switchable</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
+        <li><strong>Layout:</strong> <code>flex</code>, <code>flow</code>, <code>flow-switchable</code>, <code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code>, <code>container</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code>, <code>layout</code>, <code>named-layout</code>, <code>area</code>, <code>page-layout-switchable</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
         <li><strong>Breakpoints:</strong> <code>bp</code>, <code>bp-down</code>, <code>bp-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
         <li><strong>Container queries:</strong> <code>container</code>, <code>cq</code>, <code>cq-down</code>, <code>cq-between</code></li>
         <li><strong>Typography:</strong> <code>font</code>, <code>type</code>, <code>truncate</code></li>
