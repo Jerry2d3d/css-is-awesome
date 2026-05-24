@@ -16,6 +16,15 @@ import {
   isConsolidated,
   type ParsedBlock,
 } from "@/lib/theme-parse";
+import {
+  copyShareLink,
+  decodePayload,
+  encodePayload,
+  getShareParam,
+  hasAnyOverrides,
+  setShareParam,
+  type SharePayload,
+} from "@/lib/theme-share";
 
 type Mode = "light" | "dark";
 const STYLE_TAG_ID = "cia-theme-overrides";
@@ -294,6 +303,80 @@ export default function ThemeEditorDock() {
     writeStore(store);
   }, [overrides, family]);
 
+  // ----- Share via URL -----------------------------------------------------
+  // On mount: if the URL carries a `?t=...` payload, decode it. If the
+  // sender's family differs from the current page family, switch to it via
+  // setTheme() and stash the overrides in a ref; the family-change effect
+  // below picks them up once family has settled. Same-family case applies
+  // overrides immediately.
+  const pendingShare = useRef<SharePayload | null>(null);
+  useEffect(() => {
+    const param = getShareParam();
+    if (!param) return;
+    decodePayload(param)
+      .then((payload) => {
+        if (payload.f !== family) {
+          pendingShare.current = payload;
+          setTheme(`${payload.f}-${currentMode}`);
+        } else {
+          setOverrides({ light: payload.l, dark: payload.d });
+          setNameInput(`${payload.f}-shared`);
+        }
+      })
+      .catch((err) => {
+        setImportMsg({
+          kind: "err",
+          text: `Share URL decode failed: ${err instanceof Error ? err.message : String(err)}`,
+        });
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // When family changes (e.g. after the mount-share switched the page
+  // theme), apply any pending share overrides ONCE the new family is
+  // active. Runs after the family effect above, so the localStorage
+  // overrides it sets get superseded by the URL-supplied ones.
+  useEffect(() => {
+    const pending = pendingShare.current;
+    if (pending && pending.f === family) {
+      setOverrides({ light: pending.l, dark: pending.d });
+      setNameInput(`${pending.f}-shared`);
+      pendingShare.current = null;
+    }
+  }, [family]);
+
+  // Write the current state to the URL whenever overrides change. Debounced
+  // 300ms so typing doesn't thrash history.replaceState.
+  const writeUrlTimer = useRef<number | null>(null);
+  useEffect(() => {
+    if (writeUrlTimer.current !== null) {
+      window.clearTimeout(writeUrlTimer.current);
+    }
+    writeUrlTimer.current = window.setTimeout(async () => {
+      if (!hasAnyOverrides(overrides)) {
+        setShareParam(null);
+        return;
+      }
+      try {
+        const encoded = await encodePayload({
+          v: 1,
+          f: family,
+          l: overrides.light,
+          d: overrides.dark,
+        });
+        setShareParam(encoded);
+      } catch {
+        // URL write failed (CompressionStream missing, etc.) — editor
+        // still works, just no share URL until the user clicks Share.
+      }
+    }, 300);
+    return () => {
+      if (writeUrlTimer.current !== null) {
+        window.clearTimeout(writeUrlTimer.current);
+      }
+    };
+  }, [overrides, family]);
+
   function commit(spec: TokenSpec, value: string) {
     setOverrides((prev) => {
       if (spec.mode === "shared") {
@@ -321,6 +404,41 @@ export default function ThemeEditorDock() {
     const safeName = sanitizeName(nameInput, `${family}-custom`);
     const css = buildDownloadCSS(safeName, family, defaultsByMode, overrides);
     triggerDownload(`${safeName}.css`, css);
+  }
+
+  // Copy a share URL to the clipboard. Flushes any pending debounced URL
+  // write first so the copied URL always matches what's on screen, then
+  // hands off to the clipboard helper.
+  async function copyShare() {
+    if (writeUrlTimer.current !== null) {
+      window.clearTimeout(writeUrlTimer.current);
+      writeUrlTimer.current = null;
+    }
+    try {
+      if (hasAnyOverrides(overrides)) {
+        const encoded = await encodePayload({
+          v: 1,
+          f: family,
+          l: overrides.light,
+          d: overrides.dark,
+        });
+        setShareParam(encoded);
+      } else {
+        setShareParam(null);
+      }
+      await copyShareLink();
+      setImportMsg({
+        kind: "ok",
+        text: hasAnyOverrides(overrides)
+          ? "Copied — recipients see your edited theme."
+          : "Copied — share link uses the base theme (no overrides set).",
+      });
+    } catch (err) {
+      setImportMsg({
+        kind: "err",
+        text: err instanceof Error ? err.message : "Share copy failed.",
+      });
+    }
   }
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -641,6 +759,14 @@ export default function ThemeEditorDock() {
               title="Upload an existing theme.css to keep editing"
             >
               ↑ Import
+            </button>
+            <button
+              type="button"
+              className={styles.btn}
+              onClick={copyShare}
+              title="Copy a URL that reproduces this exact theme for anyone you send it to"
+            >
+              ↗ Share
             </button>
             <button
               type="button"
