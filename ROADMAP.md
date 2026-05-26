@@ -392,26 +392,6 @@ See [`roadmap/epics/v1-0/post-v1-ideas.md`](./roadmap/epics/v1-0/post-v1-ideas.m
 | 7 | `/showcase` rebuild + `/docs/migrate-from-shadcn` guide | The shadcn graduate is cia's named target — they need a specific bridge, not generic docs. Showcase rebuild demonstrates cia + boilerplate-slim in real layouts. |
 | 8 | Boiler-project-ai relaunch + invite 5-10 external testers + launch post + first 3 community PRs welcomed | First real consumer + early community signals + public launch. |
 
-### Post-launch: ongoing YouTube channel — season production model
-
-The channel is a **CSS/SCSS knowledge channel sponsored by cia**, NOT a cia tutorial channel. Channel name differs from cia (e.g. "Jerry on CSS"). cia gets the "brought to you by" credit; the content is broader. Six topic clusters: modern CSS techniques · design system opinions · AI + CSS · build sessions · industry analysis · tools & tips.
-
-**Production model — like TV seasons (locked 2026-05-26):**
-
-1. **Production block** — 3-4 weeks of intensive batch recording. 12-15 videos per season (calibrated down from Jerry's 27 to preserve parallel cia development time).
-2. **Release block** — 1 video per week through the season. 12-15 weeks of content per season.
-3. **Inter-season break** — recharge + plan next batch.
-4. **Ad-hoc videos** — slot in between scheduled releases for time-sensitive topics (AI changes, MCP updates, competitor launches, breaking CSS spec news).
-5. **Fresh slots** — reserve 2-3 video slots per season for last-minute recording so the season can react to recent events.
-
-**Roughly 2 seasons per year + ad-hoc = 30-40 videos per year. Sustainable.**
-
-**Season 1 — "Modern CSS in 2026"** — 12-15 videos on container queries, `light-dark()`, anchor positioning, `:has()`, view transitions, etc. Builds audience. cia mentioned naturally as the sponsor.
-
-**Pre-launch sequence:** start 3 broad-CSS videos BEFORE v1.0 launches (parallel to the 8-week sprint) to build 100-500 subs that are there for the launch. v1.0 launch becomes its own video: *"I just shipped this — here's why."*
-
-Full strategy + memory: `project_youtube_channel_strategy.md`.
-
 ### Definition of "the best out there" after this sprint
 
 - [ ] Migration CLI handles real Tailwind + Bootstrap configs end-to-end
@@ -423,7 +403,6 @@ Full strategy + memory: `project_youtube_channel_strategy.md`.
 - [ ] `/showcase` rebuilt + `/docs/migrate-from-shadcn` guide published
 - [ ] Boiler dogfoods cia + ≥5 external testers have built something real
 - [ ] Launch post on Bluesky / X / dev.to / Substack
-- [ ] YouTube channel created with 3 launch-day videos uploaded
 
 **Skipping earlier weeks breaks the chain.** Migration first because it unlocks evaluation. Recipes second because they're day-one deliverable. Playground third because it's the demo surface. Composition + validator fourth because they close Gemini's critique. Blog posts fifth because they validate the architecture in public. boilerplate-slim multi-framework sixth because it's the breadth signal. Showcase + migrate-from-shadcn seventh because they're the conversion bridge. Launch eighth because by then we have something defensible.
 
@@ -591,6 +570,126 @@ Items 1-13, 15, 16, the a11y linter triage, and the theme-editor import round-tr
 - **README homepage URL** + Pages-deploy verification.
 - **Icon index page** listing every glyph in every pack.
 - **Pull Sketchbook docs-flourishes** (seal, draft stamp, brush rules) out of any future "base system" port.
+
+---
+
+## YouTube channel — after v1.0 locks in
+
+**Locked 2026-05-26.** End-of-roadmap item by design. No filming until cia v1.0 is stable. Videos recorded against a moving target go stale before they release.
+
+### The lock-in gate (do not record before this)
+
+All of the following must be true before Season 1 production begins:
+
+- [ ] cia v1.0.0 published to npm
+- [ ] All v1.0 epic acceptance criteria met (42 stories shipped or explicitly punted)
+- [ ] No planned mixin renames or API changes within the next 6 months
+- [ ] Recipes book stable — at least 11 recipes shipped and not changing
+- [ ] Theme editor polish complete (download, share URL, contrast validator)
+- [ ] MCP server v1.0 stable; no breaking schema changes planned
+- [ ] First 30 days of real consumer signal collected post-launch (catch any "we missed X" before locking content)
+- [ ] CHANGELOG settles for at least 30 days without a major API entry
+
+Recording a 12-15 video season takes 3-4 weeks of intensive production. If cia ships v1.0.1 mid-recording with a renamed mixin, half the videos go stale before they release. The gate protects against that.
+
+### The framing — sponsored, not subject
+
+The channel is a **CSS/SCSS knowledge channel sponsored by css-is-awesome**, NOT a cia tutorial channel. Channel name differs from cia (top candidate: **Jerry on CSS** — founder authority, portable across whatever Jerry builds next). cia gets the "brought to you by" credit; the content is broader.
+
+```
+WRONG: "How to use css-is-awesome" (limited runway, sales-y)
+RIGHT: "Real CSS / modern CSS / design system opinions —
+       brought to you by css-is-awesome" (infinite runway, authority)
+```
+
+This mirrors Vercel's marketing model (talks about web platform; Next.js sells itself) rather than Linear's (product-focused, slower growth).
+
+### Topic clusters
+
+Six content lanes. cia appears organically across all six — never the headline, always present.
+
+1. **Modern CSS techniques** — container queries, `light-dark()`, anchor positioning, `:has()`, view transitions, scroll-driven animations
+2. **Design system opinions** — mixin-first vs class-soup, tokens beyond colors, theme architecture, why component libraries fail
+3. **AI + CSS** — how AI agents read CSS, MCP for design systems, prompting Claude for components, the recipe book pattern
+4. **Build sessions** — command palette in 15 min, print invoices from HTML, theme editor live-coded
+5. **Industry analysis** — Tailwind v4 vs shadcn vs cia, design system failure modes, Bootstrap→modern migration
+6. **Tools & tips** — SCSS mixins, dev tools, VS Code extensions, debugging CSS
+
+### Production model — TV seasons
+
+1. **Production block** — 3-4 weeks of intensive batch recording. **12-15 videos per season** (calibrated down from Jerry's initial 27-video target so the math works in 3-4 weeks of part-time production; ~5.5 hrs per video × 13 = ~72 hrs).
+2. **Release block** — 1 video per week through the season. 12-15 weeks of content per season at a steady cadence.
+3. **Inter-season break** — recharge + plan next batch. 4 weeks typical.
+4. **Ad-hoc videos** — slot in between scheduled releases for time-sensitive topics (AI changes, MCP updates, competitor launches, breaking CSS spec news). Label them differently (e.g. "Hot Take" or "News Cut") so they don't confuse the season arc.
+5. **Fresh slots** — reserve 2-3 video slots per season for last-minute recording so the season can react to recent events without breaking the schedule.
+
+Roughly **2 seasons per year + ad-hoc = 30-40 videos per year**. Sustainable. Avoids the burnout-by-video-5 that kills most weekly channels.
+
+### Season planning
+
+Each season has a narrative arc. Viewers come back for the next season because they know what it's about.
+
+| Season | Theme | Goal |
+|---|---|---|
+| **Season 1** | "Modern CSS in 2026" | Broad audience build. Container queries, `light-dark()`, anchor positioning, `:has()`, view transitions. cia mentioned naturally as the sponsor. |
+| **Season 2** | "Design System Opinions" | cia's natural territory. Mixin-first, token architecture, theme strategy, why component libraries fail. |
+| **Season 3** | "AI + CSS" | cia's distinctive angle. MCP for design systems, prompting Claude for components, the recipe book pattern. |
+| **Season 4+** | TBD | Based on what S1-S3 audience responds to. Ship-then-see applies. |
+
+**Final episode of each season teases the next** — 60-second trailer at the end of the season finale. Builds anticipation for the next batch.
+
+### Production setup decisions
+
+Lock these BEFORE video 1 (one-time decisions; reuse forever):
+
+| Decision | Recommendation |
+|---|---|
+| **Channel name** | Jerry on CSS (top pick), Real CSS, or Awesome CSS |
+| **Recording software** | OBS Studio (free, cross-platform) |
+| **Microphone** | One decent USB mic — Shure MV7, RØDE NT-USB+, or Audio-Technica AT2020USB+ (~$150-200) |
+| **Editing software** | DaVinci Resolve (free, pro-grade) or CapCut (faster for short videos) |
+| **Format** | Voice-over screen recording is the starting default (fastest production, lowest friction). Add face-cam after 5-10 videos if Jerry wants. |
+| **Length** | 8-15 minutes per video (sweet spot for retention without burnout) |
+| **Thumbnail template** | 3-5 word title + visual; consistent design across all videos |
+| **Intro/outro motif** | 5 seconds max; don't waste retention budget on branded intros |
+| **Description template** | 1-paragraph hook + chapter timestamps + relevant links |
+| **Release rhythm** | Same day + time each week during a season (algorithm rewards consistency). Public commitment posted at season start. |
+
+### Calibration math on Jerry's original 27-videos-per-season target
+
+| Step | Time per video |
+|---|---|
+| Outline / script | 30-60 min |
+| Recording (incl. re-takes) | 1-2 hrs |
+| Editing | 2-4 hrs |
+| Thumbnail design | 20-40 min |
+| Description + chapters + tags | 15 min |
+| **Total per video** | **~4-7 hrs** |
+
+27 videos × 5.5 hrs average = ~148 hours. In 3-4 weeks of full-time production that's possible but **exhausting** — and Jerry is also building cia + boilerplate-slim in parallel. **12-15 videos per season** uses ~66-83 hours, realistic in 3-4 weeks of half-time YouTube work. If Season 1 production goes faster than expected, batch 3-5 extra videos for Season 1.5 or save for Season 2.
+
+### Success metric
+
+After Season 1 (12-15 videos shipped over 12-15 weeks), the question is: **is the channel growing organically?**
+
+- Subscriber count growing at 50+ per video → working, plan Season 2
+- Average view duration > 40% → working, content is right
+- Both stagnating → pivot format OR kill the channel; don't grind on dead content
+
+### What this channel is NOT
+
+- NOT a daily vlog
+- NOT a sales channel for cia
+- NOT a "subscribe, like, comment, hit the bell" channel (that script is dead)
+- NOT a guaranteed-weekly-content channel (sustainability over speed)
+- NOT a channel for content cross-posted from blog (different medium, different audience)
+- NOT something that ships during the v1.0 sprint — see the LOCK-IN GATE above
+
+### Trigger to begin
+
+When the lock-in gate items above are all checked. Likely **3-6 months after v1.0 launches** — give the product time to settle, collect real consumer signal, lock the API, then start filming.
+
+Full strategy + memory (with rationale, name-discussion details, format math, and "ship-then-see" alignment) lives in `project_youtube_channel_strategy.md`.
 
 ---
 
