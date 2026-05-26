@@ -201,7 +201,9 @@ $letter-spacings: (
 ) !default;
 
 // ----------------------------------------------------------------------------
-// BREAKPOINTS - Mobile first (rem for accessibility)
+// BREAKPOINTS — direction-agnostic (rem for accessibility)
+// Pair with m.media / m.media-down / m.media-between per design intent;
+// cia is responsive, not mobile-first.
 // IMPORTANT: These MUST stay as SCSS values (not CSS vars).
 // @media queries cannot use CSS custom properties.
 // ----------------------------------------------------------------------------

@@ -78,7 +78,7 @@ User stories from any epic may ship across multiple phases. Epics don't gate pha
 - [x] **Position:** `.cia-static`, `.cia-relative`, `.cia-absolute`, `.cia-fixed`, `.cia-sticky`
 - [x] **Border/Radius:** `.cia-rounded-sm/md/lg/full`, `.cia-border`, `.cia-border-0`
 - [x] **Shadow:** `.cia-shadow-sm/md/lg/xl`, `.cia-shadow-inner`, `.cia-shadow-none`
-- [x] **Responsive variants:** `.cia-sm\:flex`, `.cia-md\:hidden`, etc. (included, mobile-first)
+- [x] **Responsive variants:** `.cia-sm\:flex`, `.cia-md\:hidden`, etc. (included, `min-width` syntax; both directions supported via `m.media` / `m.media-down`)
 
 ### Build outputs
 - [x] `dist/css-is-awesome.css` — full system + utilities (10 KB gzip)
