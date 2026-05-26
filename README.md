@@ -113,7 +113,7 @@ Every theme declares the same slots: **surfaces · ink · lines · primary · se
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server at [`mcp/server.cjs`](./mcp/server.cjs) — any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can discover cia's full surface (themes, mixins, functions, tokens, components, recipes, docs) without grep-walking the repo. Exposes 27 tools across 8 families plus `assemble_prompt` for ready-to-paste context bundles. Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
+cia ships a Model Context Protocol stdio server at [`mcp/server.cjs`](./mcp/server.cjs) — any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can discover cia's full surface (themes, mixins, functions, tokens, components, recipes, docs) without grep-walking the repo. Exposes 27 tools across 8 families plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
 
 Add to your client's `.mcp.json`:
 

@@ -379,6 +379,59 @@ export default function DocsMixinsPage() {
 {"\n"}{"}"}</Example.Code>
       </Example>
 
+      <h2 id="geometric-utilities">Geometric utilities</h2>
+      <p>
+        Pure functions for sizes that aren&apos;t a design choice — they&apos;re geometric truth shared across Figma, the design system, and the codebase. <strong>NOT themeable;</strong> consumers don&apos;t tune the 4px grid. Distinct from <code>m.space()</code> which IS themeable (consumer can re-tune the spacing scale per theme).
+      </p>
+      <p>
+        Both functions return <code>rem</code> (so user zoom + browser default font-size still scale) and inline at the call site — they emit nothing on their own. The functions exist so AI tools (MCP <code>resolve_size</code>, Figma → Code) have a deterministic surface from design intent to cia code.
+      </p>
+
+      <h3 id="m-grid"><code>grid</code></h3>
+      <p>Explicit geometric size on cia&apos;s 4px coordinate system. <code>n</code> is the step count (<code>n × 0.25rem</code>). Use for icon widths, control heights, fixed dimensions that must align with the design grid.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@function</span> <span className="tok-prop">grid</span>(<span className="tok-val">$n, $base: 0.25rem</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.icon-sm</span>     {"{"} <span className="tok-prop">width</span>: <span className="tok-val">m.grid(4)</span>;  {"}"}   <span className="tok-com">{"// 16px"}</span>
+{"\n"}<span className="tok-sel">.control-md</span>  {"{"} <span className="tok-prop">height</span>: <span className="tok-val">m.grid(10)</span>; {"}"}  <span className="tok-com">{"// 40px"}</span>
+{"\n"}<span className="tok-sel">.avatar-xl</span>   {"{"} <span className="tok-prop">inline-size</span>: <span className="tok-val">m.grid(20)</span>; {"}"}<span className="tok-com">{"// 80px"}</span></Example.Code>
+      </Example>
+
+      <h3 id="m-px"><code>px</code></h3>
+      <p>Raw pixel value converted to <code>rem</code>, intentionally off-grid. Use for the rare one-off value that doesn&apos;t fit any cia scale — a <code>17px</code> hero margin, a <code>33px</code> badge offset. <strong>Prefer <code>m.grid()</code> / <code>m.space()</code> / the typed token functions when they fit</strong> — <code>m.px()</code> is the escape hatch, not the default.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@function</span> <span className="tok-prop">px</span>(<span className="tok-val">$value</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.hero</span>    {"{"} <span className="tok-prop">margin-block-start</span>: <span className="tok-val">m.px(33)</span>; {"}"}  <span className="tok-com">{"// 2.0625rem"}</span>
+{"\n"}<span className="tok-sel">.badge</span>   {"{"} <span className="tok-prop">margin-inline-end</span>: <span className="tok-val">m.px(17)</span>;  {"}"}  <span className="tok-com">{"// 1.0625rem"}</span></Example.Code>
+      </Example>
+
+      <h3 id="m-grid-from-px"><code>grid-from-px</code></h3>
+      <p>Snap a px value to the nearest cia grid step. For <strong>tooling</strong> (Figma → Code, MCP, codegen) — pure math, no rendering output. AI agents call this to map a design&apos;s px value to the cia step, then emit <code>m.grid(step)</code> in generated code.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@function</span> <span className="tok-prop">grid-from-px</span>(<span className="tok-val">$px, $base-px: 4</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// Returns the step number (integer). Compose with m.grid()"}</span>
+{"\n"}<span className="tok-com">{"// to emit the rem value, e.g. m.grid( m.grid-from-px(24) )"}</span>
+{"\n"}<span className="tok-com">{"//"}</span>
+{"\n"}<span className="tok-com">{"// m.grid-from-px(24)   → 6"}</span>
+{"\n"}<span className="tok-com">{"// m.grid-from-px(17)   → 4   (rounds to nearest step)"}</span>
+{"\n"}<span className="tok-com">{"// m.grid-from-px(100)  → 25"}</span></Example.Code>
+      </Example>
+
+      <h3 id="grid-decision-tree">Which function should I use?</h3>
+      <p>The decision tree for picking the right size mechanism in cia:</p>
+      <ul>
+        <li><strong>color / type / radius / shadow / motion</strong> → themed tokens: <code>m.color()</code>, <code>m.font-size()</code>, <code>m.radius()</code>, <code>m.shadow()</code>, <code>m.duration()</code></li>
+        <li><strong>margin / padding / gap</strong> → <code>m.space(n)</code> (themeable spacing scale)</li>
+        <li><strong>explicit geometric size on the grid</strong> → <code>m.grid(n)</code> (4px grid, not themed)</li>
+        <li><strong>off-grid pixel value</strong> (rare) → <code>m.px(value)</code> (raw rem conversion)</li>
+        <li><strong>component</strong> → <code>m.btn()</code> / <code>m.modal()</code> / etc., overriding parameters as needed</li>
+      </ul>
+      <p>
+        Full decision tree with composition fallbacks: <code>/docs/composition</code>.
+      </p>
+
       <h2 id="typography">Typography</h2>
       <p>
         All typography is token-driven. <code>font</code> composes weight,
@@ -797,6 +850,7 @@ export default function DocsMixinsPage() {
       </p>
       <ul>
         <li><strong>Layout:</strong> <code>flex</code>, <code>flow</code>, <code>flow-switchable</code>, <code>pad</code>, <code>pad-x</code>, <code>pad-y</code>, <code>pad-asym</code>, <code>wrap</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code>, <code>layout</code>, <code>named-layout</code>, <code>area</code>, <code>page-layout-switchable</code>, <code>stack</code>, <code>cluster</code>, <code>switcher</code>, <code>cover</code>, <code>frame</code>, <code>sidebar</code>, <code>toolbar</code>, <code>wizard-shell</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
+        <li><strong>Geometric utilities (functions):</strong> <code>grid</code>, <code>px</code>, <code>grid-from-px</code></li>
         <li><strong>Breakpoints:</strong> <code>media</code>, <code>media-down</code>, <code>media-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
         <li><strong>Container queries:</strong> <code>container</code>, <code>contain</code>, <code>contain-down</code>, <code>contain-between</code></li>
         <li><strong>Typography:</strong> <code>font</code>, <code>type</code>, <code>truncate</code></li>
