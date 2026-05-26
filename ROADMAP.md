@@ -377,30 +377,62 @@ Full backlog: [`roadmap/epics/v1-0/README.md`](./roadmap/epics/v1-0/README.md).
 
 See [`roadmap/epics/v1-0/post-v1-ideas.md`](./roadmap/epics/v1-0/post-v1-ideas.md). Highlights: VS Code extension (v1.5), Recipes Maker, `@cia/a11y-recipes`, `npm create cia` wizard, framework recipe packs (`@cia/angular`, etc.), Figma plugin, RTL audit, theme marketplace.
 
-### 6-week pre-release sprint — the GOOD → GREAT path
+### 8-week pre-release sprint — the GOOD → GREAT path
 
-**Locked 2026-05-26** after a real-talk assessment. The architecture is already GREAT; the shipped surface is thin. This sprint closes the gap before public launch.
+**Locked 2026-05-26 (revised same day).** The architecture is GREAT; the shipped surface needs to catch up. This 8-week sprint closes that gap before public launch. Each week ships as its own feature branch + PR.
 
 | Wk | Ship | Why this week |
 |---|---|---|
 | 1 | `npx cia migrate tailwind` + `npx cia migrate bootstrap` (Epic 03, 6 stories) | Single biggest adoption hack. Every "should I switch?" stops at "I have a tuned Tailwind config" until this ships. |
-| 2 | 5 recipes: combobox, datepicker, data-table, command-palette, toast (Epic 01 F1.2 + v1.1 toast) | Catalog jumps 1 → 6 recipes. These are the hard ones shadcn nails. Closes the "thin catalog" perception. |
-| 3 | `/playground` page (Epic 04, 7 stories) | Every Tailwind launch tweet links Tailwind Play. cia has no equivalent today. Every recipe page links "Try it →". |
-| 4 | `/docs/composition` + theme editor inline contrast validator + 5 more recipes (breadcrumb, pagination, form-validation, file-upload, page-header) | Closes Gemini's #1 strategic critique. Visible WCAG win. Catalog at ~11 recipes. |
+| 2 | 5 hard recipes: combobox, datepicker, data-table, command-palette, toast (Epic 01 F1.2 + v1.1 toast) | Catalog jumps 1 → 6. These are the hard ones shadcn nails. Closes the "thin catalog" perception. |
+| 3 | `/playground` page (Epic 04, 7 stories) | Every Tailwind launch tweet links Tailwind Play. cia has no equivalent. Every recipe page links "Try it →". |
+| 4 | Theme editor inline contrast validator + 5 more recipes (breadcrumb, pagination, form-validation, file-upload, page-header) | Visible WCAG win. Catalog at ~11 recipes. (`/docs/composition` standalone deferred — its story lives on the YouTube channel after launch.) |
 | 5 | First 3 blog posts (pivot narratives) | Gremlin UI → recipes pivot, `@layer` → `:where()` pivot, Zero-JS positioning real-talk. Honest decision storytelling validates the architecture publicly. |
-| 6 | Boiler-project-ai relaunch + invite 3-5 external testers + launch post | First real consumer + early community signals + public launch. |
+| 6 | **boilerplate-slim Angular set (34) + HTML set (34) complete** (separate repo) | Multi-framework proof. shadcn comparison flips ("React-only" → "React + Angular + HTML at v1.0"). |
+| 7 | `/showcase` rebuild + `/docs/migrate-from-shadcn` guide | The shadcn graduate is cia's named target — they need a specific bridge, not generic docs. Showcase rebuild demonstrates cia + boilerplate-slim in real layouts. |
+| 8 | Boiler-project-ai relaunch + invite 5-10 external testers + launch post + first 3 community PRs welcomed | First real consumer + early community signals + public launch. |
 
-Definition of "the best out there" after this sprint:
+### Post-launch: ongoing YouTube channel (last roadmap item)
+
+Not a one-time video — an ongoing channel showing how to build things with cia. Cadence: 1 video every 2 weeks after launch. First 3 launch-aligned videos:
+1. Theme editor tour + custom theme in 5 minutes
+2. The MCP + recipes loop — AI builds a component from a theme + recipe
+3. Building a bespoke component with cia mixins (the "/docs/composition" story, told in video)
+
+Sustainable cadence beats burst-and-burn. Most design-system YouTube channels die at video 5; aim for video 25 by year-end.
+
+### Definition of "the best out there" after this sprint
+
 - [ ] Migration CLI handles real Tailwind + Bootstrap configs end-to-end
 - [ ] 11+ recipes shipped across overlay / input / data / navigation / feedback
 - [ ] `/playground` functional in-browser; every recipe page links to a starter URL
-- [ ] `/docs/composition` proves the parameter-power moat
 - [ ] Inline contrast validator runs live in the theme editor
 - [ ] First 3 blog posts published with citations + dated decision receipts
-- [ ] Boiler dogfoods cia + ≥3 external testers have built something real
+- [ ] boilerplate-slim ships React + Angular + HTML (34 each)
+- [ ] `/showcase` rebuilt + `/docs/migrate-from-shadcn` guide published
+- [ ] Boiler dogfoods cia + ≥5 external testers have built something real
 - [ ] Launch post on Bluesky / X / dev.to / Substack
+- [ ] YouTube channel created with 3 launch-day videos uploaded
 
-**Skipping any earlier week breaks the chain.** Migration first because it unlocks evaluation. Recipes second because they're day-one deliverable. Playground third because it's the demo surface. Composition + validator fourth because they close Gemini's critique. Blog posts fifth because they validate the architecture in public. Launch sixth because by then we have something defensible.
+**Skipping earlier weeks breaks the chain.** Migration first because it unlocks evaluation. Recipes second because they're day-one deliverable. Playground third because it's the demo surface. Composition + validator fourth because they close Gemini's critique. Blog posts fifth because they validate the architecture in public. boilerplate-slim multi-framework sixth because it's the breadth signal. Showcase + migrate-from-shadcn seventh because they're the conversion bridge. Launch eighth because by then we have something defensible.
+
+### The two-product architecture (separate repos)
+
+cia's umbrella decomposes into TWO products with a one-way dependency:
+
+| | **css-is-awesome** (cia) | **boilerplate-slim** |
+|---|---|---|
+| What | Styling foundation: tokens + mixins + themes + recipes + MCP | 34 components × 3 frameworks (React + Angular + HTML) |
+| Zero JS in npm package | ✅ Hard rule | ❌ Ships JS (consumer-facing components) |
+| Standalone use | ✅ Yes | ❌ Requires cia |
+| Repo | `Jerry2d3d/css-is-awesome` | `Jerry2d3d/boilerplate-slim` (separate) |
+| Semver | Independent | Independent, pins to cia |
+
+Never fold boilerplate-slim into cia npm. Never make cia depend on boilerplate-slim. Update each on its own cadence.
+
+### Wishlist — open ideas
+
+Open list of ideas that could make cia better, captured in [`WISHLIST.md`](./WISHLIST.md). Seeded entries (2026-05-26): **Figma → MCP → Code** (designer-to-code loop, HTML output target), **HTML → PDF** (standalone tool wrapping `@media print` + headless browser). These are seeds, not committed work — promote to an epic when they earn their weight.
 
 ### Definition of done
 
