@@ -337,10 +337,12 @@ export default function UtilitiesPage() {
 
       <h2 id="responsive">Responsive variants</h2>
       <p>
-        Mobile-first breakpoint prefixes apply the rule at and above the named
-        breakpoint. The pattern is{" "}
+        Responsive breakpoint prefixes apply the rule at and above the named
+        breakpoint (<code>min-width</code> syntax). The pattern is{" "}
         <code>cia-&lt;bp&gt;\:&lt;utility&gt;</code> — in HTML you write it unescaped,
-        e.g. <code>cia-md:flex</code>.
+        e.g. <code>cia-md:flex</code>. For the other direction, reach for the{" "}
+        <code>m.media-down</code> mixin in SCSS; cia is responsive at every
+        viewport, not mobile-first.
       </p>
       <table>
         <thead>

@@ -2,7 +2,7 @@
    All visual tokens come from the active cia theme so the dock itself
    reskins along with the page it edits. */
 
-$panel-width: 380px;
+$panel-width: 440px;
 
 .pill {
   position: fixed;
@@ -523,6 +523,7 @@ $panel-width: 380px;
   font-weight: 600;
   font-size: 0.8rem;
   cursor: pointer;
+  white-space: nowrap;   // keep arrow + label inline, no break at the space
 
   &:hover:not(:disabled) {
     background: var(--paper-sunk, rgba(0, 0, 0, 0.05));

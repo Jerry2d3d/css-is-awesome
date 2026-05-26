@@ -113,7 +113,7 @@ Every theme declares the same slots: **surfaces · ink · lines · primary · se
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server at [`mcp/server.cjs`](./mcp/server.cjs). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot, etc.) can connect to it to discover the entire library surface — themes, mixins, functions, tokens, animations, components, recipes, and docs — without grep-walking the repo.
+cia ships a Model Context Protocol stdio server at [`mcp/server.cjs`](./mcp/server.cjs) — any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can discover cia's full surface (themes, mixins, functions, tokens, components, recipes, docs) without grep-walking the repo. Exposes 27 tools across 8 families plus `assemble_prompt` for ready-to-paste context bundles. Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
 
 Add to your client's `.mcp.json`:
 
@@ -128,30 +128,7 @@ Add to your client's `.mcp.json`:
 }
 ```
 
-(Or `npx css-is-awesome-mcp` — the `bin` is wired in `package.json`.)
-
-The MCP SDK is an **optional peer dependency** — install it in the client's project if you want to run the server:
-
-```bash
-npm install -D @modelcontextprotocol/sdk zod
-```
-
-The server exposes 27 tools across 8 resource families:
-
-| Family | Tools | What it surfaces |
-|---|---|---|
-| Themes | `list_themes`, `get_theme`, `search_themes` | All 9 shipped themes with full token assignments + raw SCSS |
-| Mixins | `list_mixins`, `get_mixin`, `search_mixins` | 138 public mixins (core + layout + animation + per-component) with signature, doc, body, line range |
-| Functions | `list_functions`, `get_function`, `search_functions` | 21 public `@function`s (color, space, radius, shadow, font-size, z, …) |
-| Tokens | `list_tokens`, `get_token`, `search_tokens` | 123 required + 30 optional contract tokens. `get_token` returns sample values across themes and the list of mixins/functions that reference it |
-| Animations | `list_animations`, `get_animation` | 12-slug vocabulary, 3 speeds, 4 hover effects, the `animate` / `animate-on` mixin records |
-| Components | `list_components`, `get_component` | 10 component files (accordion, buttons, copy-button, data, feedback, forms, navigation, overlay, stepper, tabs) with all their mixins |
-| Recipes | `list_recipes`, `get_recipe` | Opt-in SCSS recipes (currently `bare-tags`) |
-| Docs | `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme` | Full markdown bodies of every top-level doc |
-
-Plus `assemble_prompt` — builds a ready-to-paste context block from an intent like `mixin:btn`, `component:overlay`, `theme:terminal`, `tokens`, `animations`, `recipe:bare-tags`, or `overview`.
-
-Discovery is pure filesystem scan — no database, no build step. The server is safe to run from any clone or installed `node_modules/css-is-awesome/`.
+The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in your project to run the server.
 
 ## Running the docs site locally
 
