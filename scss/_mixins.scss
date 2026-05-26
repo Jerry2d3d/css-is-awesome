@@ -6,6 +6,7 @@
 // ============================================================================
 @use 'sass:map';
 @use 'sass:list';
+@use 'sass:math';
 @use 'sass:meta';
 @use 'sass:string';
 @use './theme' as t;
@@ -98,6 +99,62 @@
 @function padding($type: normal) {
   $fallback: map.get(t.$padding, $type);
   @return var(--padding-#{$type}, #{$fallback or 1rem});
+}
+
+// ============================================================================
+// GEOMETRIC GRID — explicit sizes on cia's 4px coordinate system
+// ============================================================================
+// Pure functions for sizes that aren't a design choice — they're geometric
+// truth shared across Figma, the design system, and the codebase. NOT
+// themeable; consumers don't tune the 4px grid. Distinct from space() which
+// IS themeable (consumer can re-tune the spacing scale per theme).
+//
+// Use grid() for icon widths, control heights, fixed dimensions that must
+// align with the design grid. Use px() for the rare off-grid pixel value
+// that doesn't fit any system (a 17px hero margin, a 33px badge offset).
+// Both return rem (for a11y zoom + browser-default-font-size respect).
+// Both inline at call site — no custom properties emitted.
+//
+// Decision tree:
+//   color/type/radius/shadow/motion  → m.color() / m.font-size() / m.radius() / m.shadow() / m.duration()  (themed tokens)
+//   margin / padding / gap           → m.space(n)         (themeable spacing scale)
+//   explicit geometric size on grid  → m.grid(n)          (this section — 4px grid, not themed)
+//   off-grid pixel value (rare)      → m.px(value)        (this section — raw rem conversion)
+//   component                        → m.btn() / m.modal() / etc. + parameter-power overrides
+//
+// MCP / Figma → Code: AI agents resolve a design's px value via
+// `step = math.round(px / 4)` and emit `m.grid(step)`. See the
+// `resolve_size` MCP tool for the canonical mapping.
+// ============================================================================
+
+// Geometric value on the 4px grid. n is the step count (n × 0.25rem).
+//   m.grid(4)   →  1rem       (16px)
+//   m.grid(6)   →  1.5rem     (24px)
+//   m.grid(10)  →  2.5rem     (40px)
+//   m.grid(20)  →  5rem       (80px)
+@function grid($n, $base: 0.25rem) {
+  @return $n * $base;
+}
+
+// Raw pixel value converted to rem (off-grid, intentional). For values
+// that genuinely don't fit any cia scale. Prefer m.grid() / m.space() /
+// the typed token functions when they fit — m.px() is the escape hatch,
+// not the default. Returns rem so user zoom + browser font-size scaling
+// still work.
+//   m.px(17)   →  1.0625rem
+//   m.px(33)   →  2.0625rem
+@function px($value) {
+  @return math.div($value, 16) * 1rem;
+}
+
+// Snap a px value to the nearest cia grid step. For tooling
+// (Figma → code, MCP, codegen) — pure math, no rendering output. AI
+// agents call this to map a design's px value to the cia grid step,
+// then emit m.grid(step) in generated code.
+//   m.grid-from-px(24)  →  6
+//   m.grid-from-px(17)  →  4   (rounds to nearest grid step)
+@function grid-from-px($px, $base-px: 4) {
+  @return math.round(math.div($px, $base-px));
 }
 
 // ============================================================================
