@@ -1081,6 +1081,43 @@ const handlers = {
       prompt: lines.join('\n'),
     };
   },
+
+  /**
+   * Snap a design px value to cia's 4px geometric grid.
+   * Returns the step number, the SCSS call to emit (m.grid(n) when the
+   * value is exactly on the grid; m.px(value) as the off-grid fallback),
+   * and a human-readable note for AI consumers.
+   *
+   * Contract: AI agents receiving a px value from a design tool (Figma,
+   * mockup, screenshot) should call this and emit the returned scssCall
+   * in their generated SCSS — never raw rem/px literals when a cia
+   * function applies.
+   */
+  resolve_size({ px, base = 4 } = {}) {
+    if (typeof px !== 'number' || !isFinite(px) || px < 0) {
+      throw new Error('resolve_size: px must be a non-negative finite number');
+    }
+    if (typeof base !== 'number' || base <= 0) {
+      throw new Error('resolve_size: base must be a positive number (default 4)');
+    }
+    const step = Math.round(px / base);
+    const snappedPx = step * base;
+    const exact = snappedPx === px;
+    const remValue = step * (base / 16); // assumes 16px root font-size
+    const rawRem = px / 16;
+    return {
+      px,
+      base,
+      step,
+      exact,
+      rem: Number(remValue.toFixed(6)),
+      scssCall: exact ? `m.grid(${step})` : `m.px(${px})`,
+      alternative: exact ? null : `m.grid(${step})  // snaps to ${snappedPx}px (${Number(remValue.toFixed(4))}rem)`,
+      notes: exact
+        ? `${px}px is exactly on cia's 4px grid at step ${step}. Use m.grid(${step}) — emits ${Number(remValue.toFixed(4))}rem.`
+        : `${px}px is OFF cia's 4px grid (nearest step ${step} = ${snappedPx}px). Two options: (a) m.px(${px}) emits ${Number(rawRem.toFixed(4))}rem off-grid, or (b) m.grid(${step}) snaps to ${snappedPx}px which is ${Number(remValue.toFixed(4))}rem. Prefer (b) unless the design intent specifically requires the off-grid value.`,
+    };
+  },
 };
 
 function readDocFile(name) {
@@ -1280,6 +1317,15 @@ async function startServer() {
       args: z.string().optional().describe('Optional user input appended to the assembled block.'),
     },
   }, async (a) => ok(handlers.assemble_prompt(a || {})));
+
+  // Size resolution — map design px values to cia's 4px geometric grid.
+  server.registerTool('resolve_size', {
+    description: 'Snap a design px value to cia\'s 4px geometric grid. Returns the step number, the SCSS call to emit (m.grid(n) when exactly on grid; m.px(value) when off-grid), the equivalent rem, and a human-readable note. AI agents: call this whenever you get a px value from a design tool (Figma, mockup, screenshot) and need to express it in cia code. NEVER write raw rem/px literals when a cia function applies. See /docs/composition for the full decision tree.',
+    inputSchema: {
+      px: z.number().describe('The px value from the design (e.g. 24 for a 24px button height).'),
+      base: z.number().optional().describe('Grid base in px (default 4, matching cia\'s 4px grid).'),
+    },
+  }, async (a) => ok(handlers.resolve_size(a || {})));
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

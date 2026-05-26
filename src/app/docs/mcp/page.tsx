@@ -40,7 +40,7 @@ export default function McpPage() {
         <Example.Code>{`npm install -D @modelcontextprotocol/sdk zod`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 27 across 8 families</h2>
+      <h2 id="tools">Tools — 27 across 8 families + 2 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -177,6 +177,39 @@ export default function McpPage() {
           surface (themes, mixin count, key conventions)
         </li>
       </ul>
+
+      <h2 id="resolve-size">
+        <code>resolve_size</code>
+      </h2>
+      <p>
+        Snap a design px value to cia&apos;s 4px geometric grid. The other
+        AI-facing tool besides <code>assemble_prompt</code>. Returns the
+        step number, the SCSS call to emit{" "}
+        (<code>m.grid(n)</code> when exactly on-grid; <code>m.px(value)</code>{" "}
+        when off-grid), the equivalent rem, and a human-readable note.
+      </p>
+      <p>
+        <strong>Contract for AI agents:</strong> call this whenever you
+        receive a px value from a design tool (Figma, mockup, screenshot)
+        and need to express it in cia code. NEVER write raw rem/px literals
+        when a cia function applies. See <a href="/docs/composition">the composition decision tree</a> for the full rules.
+      </p>
+      <Example>
+        <Example.Code>{`// AI receives "24px button height" from a Figma design
+resolve_size({ px: 24 })
+// →  { step: 6, exact: true, rem: 1.5, scssCall: "m.grid(6)", ... }
+//
+// AI emits in generated SCSS:
+//   .my-btn { height: m.grid(6); }
+
+// Off-grid case: AI receives "17px hero margin"
+resolve_size({ px: 17 })
+// →  { step: 4, exact: false, rem: 1, scssCall: "m.px(17)",
+//      alternative: "m.grid(4)  // snaps to 16px (1rem)", ... }
+//
+// AI follows the note: prefer the snapped grid value unless the
+// design intent specifically requires the off-grid value.`}</Example.Code>
+      </Example>
 
       <h2 id="security">Security + portability</h2>
       <p>
