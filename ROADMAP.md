@@ -392,14 +392,25 @@ See [`roadmap/epics/v1-0/post-v1-ideas.md`](./roadmap/epics/v1-0/post-v1-ideas.m
 | 7 | `/showcase` rebuild + `/docs/migrate-from-shadcn` guide | The shadcn graduate is cia's named target — they need a specific bridge, not generic docs. Showcase rebuild demonstrates cia + boilerplate-slim in real layouts. |
 | 8 | Boiler-project-ai relaunch + invite 5-10 external testers + launch post + first 3 community PRs welcomed | First real consumer + early community signals + public launch. |
 
-### Post-launch: ongoing YouTube channel (last roadmap item)
+### Post-launch: ongoing YouTube channel — season production model
 
-Not a one-time video — an ongoing channel showing how to build things with cia. Cadence: 1 video every 2 weeks after launch. First 3 launch-aligned videos:
-1. Theme editor tour + custom theme in 5 minutes
-2. The MCP + recipes loop — AI builds a component from a theme + recipe
-3. Building a bespoke component with cia mixins (the "/docs/composition" story, told in video)
+The channel is a **CSS/SCSS knowledge channel sponsored by cia**, NOT a cia tutorial channel. Channel name differs from cia (e.g. "Jerry on CSS"). cia gets the "brought to you by" credit; the content is broader. Six topic clusters: modern CSS techniques · design system opinions · AI + CSS · build sessions · industry analysis · tools & tips.
 
-Sustainable cadence beats burst-and-burn. Most design-system YouTube channels die at video 5; aim for video 25 by year-end.
+**Production model — like TV seasons (locked 2026-05-26):**
+
+1. **Production block** — 3-4 weeks of intensive batch recording. 12-15 videos per season (calibrated down from Jerry's 27 to preserve parallel cia development time).
+2. **Release block** — 1 video per week through the season. 12-15 weeks of content per season.
+3. **Inter-season break** — recharge + plan next batch.
+4. **Ad-hoc videos** — slot in between scheduled releases for time-sensitive topics (AI changes, MCP updates, competitor launches, breaking CSS spec news).
+5. **Fresh slots** — reserve 2-3 video slots per season for last-minute recording so the season can react to recent events.
+
+**Roughly 2 seasons per year + ad-hoc = 30-40 videos per year. Sustainable.**
+
+**Season 1 — "Modern CSS in 2026"** — 12-15 videos on container queries, `light-dark()`, anchor positioning, `:has()`, view transitions, etc. Builds audience. cia mentioned naturally as the sponsor.
+
+**Pre-launch sequence:** start 3 broad-CSS videos BEFORE v1.0 launches (parallel to the 8-week sprint) to build 100-500 subs that are there for the launch. v1.0 launch becomes its own video: *"I just shipped this — here's why."*
+
+Full strategy + memory: `project_youtube_channel_strategy.md`.
 
 ### Definition of "the best out there" after this sprint
 
