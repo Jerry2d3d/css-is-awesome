@@ -377,6 +377,31 @@ Full backlog: [`roadmap/epics/v1-0/README.md`](./roadmap/epics/v1-0/README.md).
 
 See [`roadmap/epics/v1-0/post-v1-ideas.md`](./roadmap/epics/v1-0/post-v1-ideas.md). Highlights: VS Code extension (v1.5), Recipes Maker, `@cia/a11y-recipes`, `npm create cia` wizard, framework recipe packs (`@cia/angular`, etc.), Figma plugin, RTL audit, theme marketplace.
 
+### 6-week pre-release sprint — the GOOD → GREAT path
+
+**Locked 2026-05-26** after a real-talk assessment. The architecture is already GREAT; the shipped surface is thin. This sprint closes the gap before public launch.
+
+| Wk | Ship | Why this week |
+|---|---|---|
+| 1 | `npx cia migrate tailwind` + `npx cia migrate bootstrap` (Epic 03, 6 stories) | Single biggest adoption hack. Every "should I switch?" stops at "I have a tuned Tailwind config" until this ships. |
+| 2 | 5 recipes: combobox, datepicker, data-table, command-palette, toast (Epic 01 F1.2 + v1.1 toast) | Catalog jumps 1 → 6 recipes. These are the hard ones shadcn nails. Closes the "thin catalog" perception. |
+| 3 | `/playground` page (Epic 04, 7 stories) | Every Tailwind launch tweet links Tailwind Play. cia has no equivalent today. Every recipe page links "Try it →". |
+| 4 | `/docs/composition` + theme editor inline contrast validator + 5 more recipes (breadcrumb, pagination, form-validation, file-upload, page-header) | Closes Gemini's #1 strategic critique. Visible WCAG win. Catalog at ~11 recipes. |
+| 5 | First 3 blog posts (pivot narratives) | Gremlin UI → recipes pivot, `@layer` → `:where()` pivot, Zero-JS positioning real-talk. Honest decision storytelling validates the architecture publicly. |
+| 6 | Boiler-project-ai relaunch + invite 3-5 external testers + launch post | First real consumer + early community signals + public launch. |
+
+Definition of "the best out there" after this sprint:
+- [ ] Migration CLI handles real Tailwind + Bootstrap configs end-to-end
+- [ ] 11+ recipes shipped across overlay / input / data / navigation / feedback
+- [ ] `/playground` functional in-browser; every recipe page links to a starter URL
+- [ ] `/docs/composition` proves the parameter-power moat
+- [ ] Inline contrast validator runs live in the theme editor
+- [ ] First 3 blog posts published with citations + dated decision receipts
+- [ ] Boiler dogfoods cia + ≥3 external testers have built something real
+- [ ] Launch post on Bluesky / X / dev.to / Substack
+
+**Skipping any earlier week breaks the chain.** Migration first because it unlocks evaluation. Recipes second because they're day-one deliverable. Playground third because it's the demo surface. Composition + validator fourth because they close Gemini's critique. Blog posts fifth because they validate the architecture in public. Launch sixth because by then we have something defensible.
+
 ### Definition of done
 
 - All 5 epic DODs met (42 stories shipped or punted)
