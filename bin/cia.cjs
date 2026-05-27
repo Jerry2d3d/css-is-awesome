@@ -39,16 +39,28 @@ Run \`cia <command> --help\` for command-specific help.
 const MIGRATE_HELP = `cia migrate — convert another design system's config to a cia theme
 
 Usage:
-  cia migrate <tool> [path]
+  cia migrate <tool> [path] [options]
 
 Tools:
-  tailwind   Read a tailwind.config.{js,ts,mjs,cjs} and dump its theme as JSON.
-             Future PRs: map to cia tokens + emit theme.scss with @include cia.theme().
-  bootstrap  Planned. Read _variables.scss and map to cia tokens.
+  tailwind   Read a tailwind.config.{js,ts,mjs,cjs} and write a cia
+             theme.scss with HIGH/MEDIUM/LOW/UNMAPPED confidence levels.
+             Run \`cia migrate tailwind --help\` for full options.
+
+  bootstrap  Read a Bootstrap _variables.scss (or custom-variables.scss)
+             and write a cia theme.scss. Maps \$primary / \$body-bg /
+             \$border-radius / \$font-family-base / \$spacer / status colors
+             via Bootstrap convention.
+             Run \`cia migrate bootstrap --help\` for full options.
+
+Common options (both tools):
+  --name <name>    Theme name. Default: migrated
+  --out <path>     Custom output path. Default: ./cia-themes/<name>.scss
+  --json           Skip the file write and dump JSON to stdout (pipe-safe).
 
 Examples:
   cia migrate tailwind ./tailwind.config.js
-  cia migrate tailwind                       # auto-detect
+  cia migrate bootstrap ./scss/_variables.scss --name acme
+  cia migrate bootstrap ./scss/_variables.scss --json | jq '.cia.report'
 `;
 
 function fail(message, exit = 1) {
@@ -87,12 +99,11 @@ async function main() {
       return;
     }
     if (tool === 'bootstrap') {
-      fail(
-        `migrate bootstrap is not implemented yet (planned for v0.9 — see ` +
-          `roadmap/epics/v1-0/EPIC-03-migration-on-ramp.md F3.2).`,
-      );
+      const { run } = require('./migrate-bootstrap.cjs');
+      await run(migrateArgs);
+      return;
     }
-    fail(`unknown migrate tool '${tool}'. Available now: tailwind. Planned: bootstrap.`);
+    fail(`unknown migrate tool '${tool}'. Available: tailwind, bootstrap.`);
   }
 
   fail(`unknown command '${command}'. Run \`cia --help\` for usage.`);
