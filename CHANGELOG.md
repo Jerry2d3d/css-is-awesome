@@ -11,6 +11,26 @@ automated releases.
 
 ## [Unreleased]
 
+### Added
+
+- **Print / PDF — pure-CSS, zero-JS.** "The page IS the PDF source." Four
+  new mixins in `scss/_mixins.scss` (namespaced `cia.` / `m.`): `print`
+  (bare `@media print { @content }` wrapper, co-locate inside a selector to
+  override on paper), `print-base($freeze-animations, $size, $margin)`
+  (root-only page defaults — emits `@page`, freezes animations so nothing
+  prints invisible, and emits the print variable control plane),
+  `print-hidden` (hide chrome on paper), and `print-only` (show an element
+  only on paper, hidden on screen). Three custom properties from
+  `print-base`: `--is-print` (`0` on screen, `1` on paper; readable in
+  `calc()` / `opacity` / `@container style(--is-print: 1)`), `--print-hide`
+  (display for `print-hidden`, default `none`), and `--print-show` (display
+  for `print-only`, default `revert`) — override either locally to keep or
+  lay out an element with no rule rewrite. New recipe at
+  `scss/recipes/print-to-pdf.md` (layout, simple) with framework examples,
+  read by humans at `/docs/recipes/print-to-pdf`. No Puppeteer, no server —
+  the browser's native Print → Save as PDF is the generator. Pulled forward
+  from v1.2 into v1.0.
+
 ## [0.8.2] — 2026-05-21 — Panel R7 bug-fix patch
 
 Hotfix responding to the css-scss-master panel audit of v0.8.1. Two real

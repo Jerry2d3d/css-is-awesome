@@ -379,6 +379,37 @@ export default function DocsMixinsPage() {
 {"\n"}{"}"}</Example.Code>
       </Example>
 
+      <h2 id="print">Print / PDF</h2>
+      <p>
+        Turn any page into a faithful PDF with nothing but a print stylesheet — zero JS, no library, no server. The page <em>is</em> the PDF source, and the browser&apos;s native Print → &ldquo;Save as PDF&rdquo; is the generator. Full walkthrough in the <a href="/docs/recipes/print-to-pdf">print-to-pdf recipe</a>.
+      </p>
+
+      <h3 id="m-print-base"><code>print-base</code></h3>
+      <p>Page-level defaults, on by default. Include <strong>once at the stylesheet root</strong> (it emits <code>@page</code>, which is invalid nested in a selector). Sets the page box, freezes animations so nothing prints invisible, and emits the print variable control plane.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">print-base</span>(<span className="tok-val">$freeze-animations: true, $size: letter, $margin: 0.5in</span>);
+{"\n"}
+{"\n"}<span className="tok-prop">@include</span> <span className="tok-val">m.print-base</span>;                                  <span className="tok-com">{"// at root"}</span>
+{"\n"}<span className="tok-prop">@include</span> <span className="tok-val">m.print-base($size: A4, $freeze-animations: false)</span>;</Example.Code>
+      </Example>
+
+      <h3 id="m-print"><code>print</code>, <code>print-hidden</code>, <code>print-only</code></h3>
+      <p><code>print</code> wraps a bare <code>@media print</code> block so an override sits next to the rule it changes. <code>print-hidden</code> drops chrome on paper (the &ldquo;hide the nav&rdquo; case); <code>print-only</code> reveals paper-only content (an inline URL footer, a &ldquo;printed on&rdquo; stamp).</p>
+      <Example>
+        <Example.Code><span className="tok-sel">.site-nav</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print-hidden</span>; {"}"}
+{"\n"}<span className="tok-sel">.url-foot</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print-only</span>; {"}"}
+{"\n"}<span className="tok-sel">.subtitle</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print</span> {"{"} <span className="tok-prop">color</span>: <span className="tok-val">m.color(text-secondary)</span>; {"}"} {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="print-vars">The variable filter system</h3>
+      <p>
+        <code>print-base</code> emits three custom properties that are the control plane — flip them and the output changes with no rule rewrite. <code>--is-print</code> is <code>0</code> on screen / <code>1</code> on paper (read it in <code>calc()</code>, <code>opacity</code>, or <code>@container style()</code>); <code>--print-hide</code> and <code>--print-show</code> are the <code>display</code> values applied to hidden / paper-only elements. Re-aim either on a single element for a per-element exception.
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">.legal</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print-hidden</span>; <span className="tok-prop">--print-hide</span>: <span className="tok-val">revert</span>; {"}"} <span className="tok-com">{"// keep this one on paper"}</span>
+{"\n"}<span className="tok-sel">.cover</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print</span> {"{"} <span className="tok-prop">opacity</span>: <span className="tok-val">var(--is-print)</span>; {"}"} {"}"} <span className="tok-com">{"// fades in only on paper"}</span></Example.Code>
+      </Example>
+
       <h2 id="geometric-utilities">Geometric utilities</h2>
       <p>
         Pure functions for sizes that aren&apos;t a design choice — they&apos;re geometric truth shared across Figma, the design system, and the codebase. <strong>NOT themeable;</strong> consumers don&apos;t tune the 4px grid. Distinct from <code>m.space()</code> which IS themeable (consumer can re-tune the spacing scale per theme).
@@ -853,6 +884,7 @@ export default function DocsMixinsPage() {
         <li><strong>Geometric utilities (functions):</strong> <code>grid</code>, <code>px</code>, <code>grid-from-px</code></li>
         <li><strong>Breakpoints:</strong> <code>media</code>, <code>media-down</code>, <code>media-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
         <li><strong>Container queries:</strong> <code>container</code>, <code>contain</code>, <code>contain-down</code>, <code>contain-between</code></li>
+        <li><strong>Print / PDF:</strong> <code>print</code>, <code>print-base</code>, <code>print-hidden</code>, <code>print-only</code> <em>(+ <code>--is-print</code> / <code>--print-hide</code> / <code>--print-show</code> vars)</em></li>
         <li><strong>Typography:</strong> <code>font</code>, <code>type</code>, <code>truncate</code></li>
         <li><strong>Borders & effects:</strong> <code>border</code>, <code>elevation</code></li>
         <li><strong>Interactive:</strong> <code>focus-ring</code>, <code>hover</code>, <code>interactive</code>, <code>transition</code>, <code>disabled</code>, <code>sr-only</code></li>
