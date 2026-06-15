@@ -542,6 +542,83 @@ $_type-scale: (
 @mixin wide { @include media(xl) { @content; } }
 
 // ============================================================================
+// PRINT
+// ============================================================================
+// Print/PDF control. A browser already has a world-class PDF engine — the page
+// IS the PDF source. These own the `@media print` layer: `print-base` ships
+// sensible page-level defaults ON; the rest are per-element toggles. Nothing
+// emits until called, and nothing here needs a button or a server — Ctrl+P
+// (or the print dialog's "Save as PDF") drives it all.
+// ============================================================================
+
+// Primitive: bare print media wrapper. Co-locate inside the selector it changes
+// so the override lives next to the rule it overrides.
+//   .subtitle { color: #ccc; @include m.print { color: #555; } }
+@mixin print {
+  @media print { @content; }
+}
+
+// Page-level defaults, ON by default. Include ONCE at the stylesheet ROOT —
+// NOT inside a selector. It emits `@page`, which is invalid nested under a rule
+// (`@page { body { … } }` does nothing). Toggle pieces off via args.
+//   @include m.print-base;                 // at root
+//   @include m.print-base($size: A4, $freeze-animations: false);
+//
+// Emits the print VARIABLE control plane — the whole filter flips from here:
+//   --is-print     0 on screen, 1 on paper. Read it in calc()/opacity/
+//                  @container style(--is-print: 1) for custom print effects.
+//   --print-hide   display applied to elements carrying `print-hidden`.
+//   --print-show   display applied to elements carrying `print-only`.
+// Override either locally for a per-element exception — no rule rewrite:
+//   .keep-this { --print-hide: revert; }   // stays on paper despite print-hidden
+//   .pdf-row   { --print-show: flex; }     // print-only block laid out as flex
+@mixin print-base($freeze-animations: true, $size: letter, $margin: 0.5in) {
+  :root {
+    --is-print: 0;
+    --print-hide: none;
+    --print-show: revert;
+  }
+
+  @media print {
+    :root { --is-print: 1; }
+
+    @page { size: $size; margin: $margin; }
+
+    @if $freeze-animations {
+      // The opacity:0 entrance-fade trap: a PDF snapshotted mid-animation
+      // prints invisible text. Freeze everything and force it visible.
+      /* stylelint-disable declaration-no-important -- !important is the canonical pattern for the print freeze: it must override any animation/transition/opacity declared anywhere in the document so no content prints invisible. */
+      * {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        scale: none !important;
+      }
+      /* stylelint-enable declaration-no-important */
+    }
+  }
+}
+
+// Hide on paper — the "hide the nav" case. The display VALUE is variable-driven
+// (--print-hide), so consumers re-aim it per element without a rule rewrite;
+// !important on the declaration keeps the hide reliable against component
+// `display` rules. Requires `print-base` at the root for the variable default.
+@mixin print-hidden {
+  /* stylelint-disable-next-line declaration-no-important -- hide-on-print must beat any component display rule; the value stays variable-driven via --print-hide. */
+  @media print { display: var(--print-hide, none) !important; }
+}
+
+// Show ONLY on paper (e.g. an inline URL footer). Hidden on screen; the paper
+// display is variable-driven (--print-show) so a print-only block can be flex.
+@mixin print-only {
+  /* stylelint-disable declaration-no-important -- show/hide-on-print must beat component display rules; values stay variable-driven. */
+  @media screen { display: none !important; }
+  @media print  { display: var(--print-show, revert) !important; }
+  /* stylelint-enable declaration-no-important */
+}
+
+// ============================================================================
 // CONTAINER QUERIES
 // ============================================================================
 // Component-level responsive design. Use alongside viewport breakpoints.

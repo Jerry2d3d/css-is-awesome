@@ -6,7 +6,7 @@
 
 **Bring your own selectors. We bring the design system.** One CSS file per theme. Nine themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
 
-> **v1.0 preview — landing in 1.0.0:** a **recipes book** for building any component (dialog, combobox, datepicker, data-table, command-palette) in any framework using cia mixins. AI agents read recipes via MCP and generate components in your stack; humans read them at `/docs/recipes`. See [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/) for the full v1.0 plan.
+> **v1.0 preview — landing in 1.0.0:** a **recipes book** for building any component (dialog, combobox, datepicker, data-table, command-palette, print-to-pdf) in any framework using cia mixins. AI agents read recipes via MCP and generate components in your stack; humans read them at `/docs/recipes`. See [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/) for the full v1.0 plan.
 
 ## Three ways to use it
 
@@ -32,7 +32,7 @@ npm install -D sass
 <html data-theme="boilerplate">
 ```
 
-Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button`. Full reference at [`/docs/mixins`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/src/app/docs/mixins/page.tsx).
+Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button` — plus print-to-PDF via a pure-CSS `@media print` layer. Full reference at [`/docs/mixins`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/src/app/docs/mixins/page.tsx).
 
 ### 2. Drop-in CSS (zero build)
 

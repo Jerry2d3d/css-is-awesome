@@ -200,6 +200,7 @@ Inside this package (all whitelisted in `files`):
 
 - **Don't write BEM.** No `cia-card__title--large`. The library is anti-BEM by design.
 - **Don't hardcode breakpoints.** Use `m.media(md)` (or `m.media-down`, `m.media-between`). Numbers come from the contract.
+- **Print/PDF is a pure-CSS layer.** Include `m.print-base` once at the stylesheet ROOT (it emits `@page`), then `m.print-hidden` to drop chrome and `m.print-only` to reveal paper-only content. Read `--is-print` (`0` screen / `1` paper) for custom effects. cia ships **zero JS** for it — the browser's native Print → Save as PDF is the generator.
 - **Don't ship JavaScript.** The npm package has zero `.js`/`.mjs` files. JS-dependent features ship as separate add-on packages.
 - **Variants are arguments, not classes.** `cia.btn(primary)`, not `cia-btn cia-btn-primary` (Tier 1 utilities are an exception, but only at consumer level).
 - **The `cia-*` prefix is library-owned.** Consumer code should use its own naming for new classes.

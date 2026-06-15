@@ -120,6 +120,73 @@ function listScssFiles(dir) {
     .map((f) => path.join(dir, f));
 }
 
+// Recipes come in two kinds:
+//   - markdown pattern recipes (<slug>.md) — the v1.0 recipes book: YAML
+//     frontmatter + prose + framework examples. A pattern to follow, NOT a
+//     SCSS import. Skips _templates and README.md.
+//   - opt-in SCSS recipes (_<slug>.scss, e.g. bare-tags) — wire mixins to
+//     bare HTML tags (Pico-mode); consumed via @use.
+function listRecipeFiles(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const out = [];
+  for (const f of fs.readdirSync(dir).sort()) {
+    if (f.endsWith('.md')) {
+      if (f.startsWith('_') || f.toLowerCase() === 'readme.md') continue;
+      out.push({ abs: path.join(dir, f), kind: 'md', name: f.slice(0, -3) });
+    } else if (f.endsWith('.scss')) {
+      out.push({ abs: path.join(dir, f), kind: 'scss', name: path.basename(f, '.scss').replace(/^_/, '') });
+    }
+  }
+  return out;
+}
+
+// Minimal flat-YAML frontmatter parser (key: value pairs between --- fences).
+function parseFrontmatter(text) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!m) return null;
+  const meta = {};
+  for (const line of m[1].split(/\r?\n/)) {
+    const kv = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+    if (kv) meta[kv[1]] = kv[2].replace(/^["']|["']$/g, '').trim();
+  }
+  return meta;
+}
+
+// Normalize either recipe kind into a single shape for the MCP tools.
+function recipeInfo(file) {
+  const text = readFileNormalized(file.abs) || '';
+  if (file.kind === 'md') {
+    const fm = parseFrontmatter(text) || {};
+    const name = fm.name || file.name;
+    return {
+      name,
+      kind: 'md',
+      path: relFromRoot(file.abs),
+      description: fm.description || firstSentence(text),
+      category: fm.category || null,
+      complexity: fm.complexity || null,
+      usage: `Pattern recipe — read it (get_recipe) and follow it in your stack; humans read it at /docs/recipes/${name}. Not a SCSS import.`,
+      body: text,
+    };
+  }
+  const headerLines = [];
+  for (const l of text.split('\n')) {
+    if (l.startsWith('//')) headerLines.push(l.replace(/^\/\/\s?/, ''));
+    else if (l.trim() === '') headerLines.push('');
+    else break;
+  }
+  return {
+    name: file.name,
+    kind: 'scss',
+    path: relFromRoot(file.abs),
+    description: firstSentence(headerLines.join('\n')),
+    category: null,
+    complexity: null,
+    usage: `@use 'css-is-awesome/scss/recipes/${file.name}';`,
+    body: text,
+  };
+}
+
 function ensureInProject(fp) {
   const abs = path.resolve(fp);
   if (!abs.startsWith(path.resolve(PROJECT_ROOT))) {
@@ -856,44 +923,36 @@ const handlers = {
   // ─── Recipes ───────────────────────────────────────────────────────────
 
   list_recipes() {
-    const items = [];
-    for (const abs of listScssFiles(RECIPES_DIR)) {
-      const name = path.basename(abs, '.scss').replace(/^_/, '');
-      const text = readFileNormalized(abs) || '';
-      const headerLines = [];
-      for (const l of text.split('\n')) {
-        if (l.startsWith('//')) headerLines.push(l.replace(/^\/\/\s?/, ''));
-        else if (l.trim() === '') headerLines.push('');
-        else break;
-      }
-      items.push({
-        name,
-        path: relFromRoot(abs),
-        description: firstSentence(headerLines.join('\n')),
-        usage: `@use 'css-is-awesome/scss/recipes/${name}';`,
-      });
-    }
+    const items = listRecipeFiles(RECIPES_DIR).map((f) => {
+      const info = recipeInfo(f);
+      return {
+        name: info.name,
+        kind: info.kind,
+        category: info.category,
+        complexity: info.complexity,
+        path: info.path,
+        description: info.description,
+        usage: info.usage,
+      };
+    });
     return { total: items.length, items };
   },
 
   get_recipe({ name } = {}) {
     if (!name) throw new Error('get_recipe: name is required');
-    const needle = String(name).trim();
-    const abs = path.join(RECIPES_DIR, `_${needle}.scss`);
-    if (!fs.existsSync(abs)) throw new Error(`Unknown recipe: ${needle}. Try list_recipes.`);
-    const body = readFileNormalized(abs) || '';
-    const headerLines = [];
-    for (const l of body.split('\n')) {
-      if (l.startsWith('//')) headerLines.push(l.replace(/^\/\/\s?/, ''));
-      else if (l.trim() === '') headerLines.push('');
-      else break;
-    }
+    const needle = String(name).trim().replace(/\.(md|scss)$/, '').replace(/^_/, '');
+    const file = listRecipeFiles(RECIPES_DIR).find((f) => f.name === needle);
+    if (!file) throw new Error(`Unknown recipe: ${needle}. Try list_recipes.`);
+    const info = recipeInfo(file);
     return {
-      name: needle,
-      path: relFromRoot(abs),
-      description: headerLines.join('\n').trim(),
-      usage: `@use 'css-is-awesome/scss/recipes/${needle}';`,
-      body,
+      name: info.name,
+      kind: info.kind,
+      category: info.category,
+      complexity: info.complexity,
+      path: info.path,
+      description: info.description,
+      usage: info.usage,
+      body: info.body,
     };
   },
 
@@ -1259,13 +1318,13 @@ async function startServer() {
 
   // Recipes
   server.registerTool('list_recipes', {
-    description: 'List recipes from scss/recipes/. Recipes are opt-in SCSS files that wire mixins to bare HTML tags (Pico-mode).',
+    description: 'List recipes from scss/recipes/. Two kinds: markdown pattern recipes (kind:"md" — dialog, combobox, print-to-pdf: a pattern to follow in any framework, with category + complexity) and opt-in SCSS recipes (kind:"scss" — e.g. bare-tags, consumed via @use).',
     inputSchema: {},
   }, async () => ok(handlers.list_recipes()));
 
   server.registerTool('get_recipe', {
-    description: 'Return one recipe: description, @use import path, and raw SCSS body.',
-    inputSchema: { name: z.string().describe('Recipe name (e.g. "bare-tags").') },
+    description: 'Return one recipe: name, kind ("md" pattern recipe or "scss" import), category/complexity, usage, and full body (markdown for md recipes, SCSS for scss recipes).',
+    inputSchema: { name: z.string().describe('Recipe slug (e.g. "print-to-pdf", "combobox", "bare-tags").') },
   }, async (a) => ok(handlers.get_recipe(a || {})));
 
   // Docs (each as its own tool so callers don't need to guess paths)

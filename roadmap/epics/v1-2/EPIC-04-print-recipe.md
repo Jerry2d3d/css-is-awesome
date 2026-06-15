@@ -1,6 +1,15 @@
 # EPIC v1.2-04 — Print Recipe (and the PDF answer)
 
-**Status:** Planned (v1.2)
+> **⚠️ SUPERSEDED — delivered early in v1.0 (2026-06-08).** Print/PDF was
+> pulled forward from v1.2 and shipped in v1.0 as a pure-CSS, zero-JS layer.
+> The recipe lives at [`scss/recipes/print-to-pdf.md`](../../../scss/recipes/print-to-pdf.md),
+> backed by four mixins in `scss/_mixins.scss`: `print`, `print-base`
+> (root-only — emits `@page`), `print-hidden`, and `print-only`, plus the
+> `--is-print` / `--print-hide` / `--print-show` variables. Humans read it at
+> `/docs/recipes/print-to-pdf`. This file is kept for historical scope; the
+> stories below describe the original v1.2 plan, not the delivered shape.
+
+**Status:** Superseded — delivered early in v1.0 (2026-06-08)
 **Effort estimate:** ~1-2 days
 **Stories:** 5
 

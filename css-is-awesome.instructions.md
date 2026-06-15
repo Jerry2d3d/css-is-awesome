@@ -159,6 +159,43 @@ Order of preference: **rem → em → vw/vh → ch → %**.
 - `ch` for text-width sizing.
 - `%` only when the size genuinely must be a percentage of the parent (`width: 100%` to fill).
 
+### Print / PDF
+
+Print is a pure-CSS layer — zero JS. "The page IS the PDF source." The
+browser's native Print → Save as PDF is the generator; cia just supplies the
+`@media print` styling. Four mixins:
+
+- **`print`** — bare `@media print { @content }` wrapper. Co-locate it inside
+  a selector to override that element on paper.
+- **`print-base($freeze-animations: true, $size: letter, $margin: 0.5in)`** —
+  page-level defaults, ON by default. Include it **once at the stylesheet
+  ROOT** — it emits `@page` (invalid when nested in a selector), freezes
+  animations so nothing prints invisible, and emits the print variable
+  control plane.
+- **`print-hidden`** — hide an element on paper (the "hide the nav" case).
+- **`print-only`** — show an element only on paper (e.g. an inline URL
+  footer); hidden on screen.
+
+```scss
+@use 'css-is-awesome' as cia;
+@include cia.print-base;                 // at ROOT — sets @page, freezes animations, emits vars
+.site-nav { @include cia.print-hidden; } // hide chrome on paper
+```
+
+`print-base` emits three custom properties — the variable filter system:
+
+- **`--is-print`** — `0` on screen, `1` on paper. Read it in `calc()` /
+  `opacity` / `@container style(--is-print: 1)` for custom print effects.
+- **`--print-hide`** — display applied to `print-hidden` elements (default
+  `none`). Override locally (`--print-hide: revert`) to keep one element on
+  paper with no rule rewrite.
+- **`--print-show`** — display applied to `print-only` elements (default
+  `revert`). Override locally (`--print-show: flex`) to lay out a print-only
+  block.
+
+Visibility is variable-driven by design: override `--print-hide` /
+`--print-show` per element instead of rewriting rules.
+
 ---
 
 ## HTML & semantic structure
