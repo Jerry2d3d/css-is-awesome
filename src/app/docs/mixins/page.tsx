@@ -381,7 +381,7 @@ export default function DocsMixinsPage() {
 
       <h2 id="print">Print / PDF</h2>
       <p>
-        Turn any page into a faithful PDF with nothing but a print stylesheet — zero JS, no library, no server. The page <em>is</em> the PDF source, and the browser&apos;s native Print → &ldquo;Save as PDF&rdquo; is the generator. Full walkthrough in the <a href="/docs/recipes/print-to-pdf">print-to-pdf recipe</a>.
+        Turn any page into a faithful PDF with nothing but a print stylesheet — zero JS, no library, no server. The page <em>is</em> the PDF source, and the browser&apos;s native Print → &ldquo;Save as PDF&rdquo; is the generator. Full walkthrough in the <Link href="/docs/recipes/print-to-pdf">print-to-pdf recipe</Link>.
       </p>
 
       <h3 id="m-print-base"><code>print-base</code></h3>
