@@ -42,16 +42,19 @@ function fromUrlSafeBase64(s: string): Uint8Array {
 
 // ----- gzip via CompressionStream where available ------------------------
 
+// A Uint8Array is a valid BlobPart at runtime; the `as BlobPart` cast satisfies
+// the stricter `Uint8Array<ArrayBufferLike>` generic that @types/node 22 +
+// TypeScript 5.9 introduced (it rejects the possible SharedArrayBuffer backing).
 async function gzip(bytes: Uint8Array): Promise<Uint8Array> {
   const buf = await new Response(
-    new Blob([bytes]).stream().pipeThrough(new CompressionStream("gzip")),
+    new Blob([bytes as BlobPart]).stream().pipeThrough(new CompressionStream("gzip")),
   ).arrayBuffer();
   return new Uint8Array(buf);
 }
 
 async function gunzip(bytes: Uint8Array): Promise<Uint8Array> {
   const buf = await new Response(
-    new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip")),
+    new Blob([bytes as BlobPart]).stream().pipeThrough(new DecompressionStream("gzip")),
   ).arrayBuffer();
   return new Uint8Array(buf);
 }
