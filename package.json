@@ -23,6 +23,10 @@
       "style": "./dist/css-is-awesome.css",
       "default": "./dist/css-is-awesome.css"
     },
+    "./api": {
+      "sass": "./scss/api.scss"
+    },
+    "./api.scss": "./scss/api.scss",
     "./core": "./dist/css-is-awesome.core.css",
     "./core.css": "./dist/css-is-awesome.core.css",
     "./tokens": "./dist/tokens.css",
@@ -102,6 +106,7 @@
     "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
     "validate-themes": "node scripts/theme-validator.js --all",
     "validate-icons": "node scripts/icon-validator.js",
+    "validate-api": "node scripts/validate-api.mjs",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
     "playwright:install": "playwright install chromium --with-deps",

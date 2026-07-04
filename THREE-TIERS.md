@@ -31,18 +31,18 @@ css-is-awesome ships three authoring surfaces for the same components. Pick the 
 ## Tier 2 — SCSS mixins + HTML (with build)
 
 ```scss
-// app.scss
-@use 'css-is-awesome/scss/components/buttons' as b;
-@use 'css-is-awesome/scss/components/data'    as d;
-@use 'css-is-awesome/scss/mixins'             as m;
+// component styles (Card.module.scss, app.scss, …)
+@use 'css-is-awesome/api' as cia;   // one zero-emit barrel — the whole API
 
 .hero-cta {
-  @include b.btn(primary, $px: 6, $r: full);
-  @include m.elevation(2);
+  @include cia.btn(primary, $px: 6, $r: full);
+  @include cia.elevation(2);
 }
-.checkout-cancel { @include b.btn(outline); }
-.product-card    { @include d.card-base($shadow: 2); }
+.checkout-cancel { @include cia.btn(outline); }
+.product-card    { @include cia.card-base($shadow: 2); }
 ```
+
+> Prefer granular imports? `@use 'css-is-awesome/scss/components/buttons' as b;` etc. still work — the `/api` barrel just bundles them under one namespace.
 
 ```html
 <a class="hero-cta" href="/buy">Buy now</a>

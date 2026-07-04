@@ -18,8 +18,8 @@ npm install -D sass
 ```
 
 ```scss
-// in their app.scss
-@use 'css-is-awesome' as cia;
+// in a component stylesheet (or their app.scss) — mixins only, emits no :root
+@use 'css-is-awesome/api' as cia;
 
 .checkout-cta { @include cia.btn(primary); }
 .faq-item     { @include cia.accordion; }
@@ -57,12 +57,12 @@ This is the most-missed piece. **Consumers CAN:**
 3. **Override tokens at consumer level** — `:root[data-theme="boilerplate"] { --action-primary-default: #ff0066; }` in their own SCSS. No fork needed.
 
 ```scss
-// new theme template
-@use '../mixins' as m;
-@include m.theme('mybrand') {
+// new theme template (a global stylesheet — emits :root)
+@use 'css-is-awesome/api' as cia;
+@include cia.theme('mybrand') {
   --background-default: light-dark(#fff, #0a0a0e);
   --action-primary-default: light-dark(#3A5FCD, #60a5fa);
-  @include m.states(action-primary);
+  @include cia.states(action-primary);
   /* + 120 more tokens — full list in scripts/theme-contract.json */
 }
 ```
@@ -98,14 +98,14 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 ## Common AI agent traps
 
 - **Don't write BEM.** No `cia-card__title--large`.
-- **Don't hardcode breakpoints/colors/spacing.** Use `m.media(md)`, `m.color(primary)`, `m.space(4)`.
+- **Don't hardcode breakpoints/colors/spacing.** Use `cia.media(md)`, `cia.color(primary)`, `cia.space(4)`.
 - **Don't suggest a JS dependency for components.** The native primitive does the work.
 - **Don't assume utility classes are emitted by default in Sass.** They opt in via `@use cia with ($utilities: true)`.
-- **v0.8 rename traps:** `m.bp` → `m.media`, `m.cq` → `m.contain`, `m.inset` → `m.pad`, `m.squish` → `m.pad-asym`, `m.font-load` → `m.font-face`, `m.color-raw` → `m.color-static`, layout `m.container` → `m.wrap`. No aliases.
+- **v0.8 rename traps:** `cia.bp` → `cia.media`, `cia.cq` → `cia.contain`, `cia.inset` → `cia.pad`, `cia.squish` → `cia.pad-asym`, `cia.font-load` → `cia.font-face`, `cia.color-raw` → `cia.color-static`, layout `cia.container` → `cia.wrap`. No aliases.
 - **v0.8 theme rename:** `data-theme="press-light"` → `data-theme="press"`. Both modes are inside the single theme file now.
-- **v0.8.1 progress rename:** `m.progress-track` → `m.progress-track-base`; `m.progress-fill` → `m.progress-fill-base`. New `m.progress` composer wraps both via `[data-slot="fill"]` markup.
+- **v0.8.1 progress rename:** `cia.progress-track` → `cia.progress-track-base`; `cia.progress-fill` → `cia.progress-fill-base`. New `cia.progress` composer wraps both via `[data-slot="fill"]` markup.
 - **v0.8.1 animations split:** When @use'ing animations from a `.module.scss`, use `scss/animations` (mixin-only, safe). The keyframes + utility classes + global safety net now live in `scss/animations-utilities` — load that once globally (via `main.scss` or your app's global SCSS).
-- **v0.8.1 file move:** `badge-base` / `badge` moved from `_feedback.scss` to `_data.scss`. Use the cia barrel (`@use 'css-is-awesome' as cia; cia.badge-base;`) instead of path-specific imports.
+- **v0.8.1 file move:** `badge-base` / `badge` moved from `_feedback.scss` to `_data.scss`. Use the cia barrel (`@use 'css-is-awesome/api' as cia; cia.badge-base;`) instead of path-specific imports.
 
 ## MCP server (SHIPPED in v0.8.2 — 2026-05-22)
 

@@ -356,8 +356,9 @@ function parseThemeFile(absPath) {
   if (text == null) return null;
   const baseName = path.basename(absPath, '.scss');
 
-  // Find theme name from `@include m.theme('name')` or `[data-theme="name"]`
-  const includeMatch = text.match(/@include\s+m\.theme\s*\(\s*['"]([^'"]+)['"]\s*\)/);
+  // Find theme name from `@include <ns>.theme('name')` (any namespace: m, cia, …)
+  // or `[data-theme="name"]`.
+  const includeMatch = text.match(/@include\s+[\w-]+\.theme\s*\(\s*['"]([^'"]+)['"]\s*\)/);
   const dataMatch = text.match(/\[data-theme=['"]([^'"]+)['"]\]/);
   const name = (includeMatch && includeMatch[1]) || (dataMatch && dataMatch[1]) || baseName;
 
@@ -1043,7 +1044,7 @@ const handlers = {
         }
         sub('Usage pattern');
         lines.push('```scss');
-        lines.push('@use \'css-is-awesome\' as cia;');
+        lines.push('@use \'css-is-awesome/api\' as cia;');
         lines.push('');
         lines.push(`.my-${c.name} { @include cia.${c.name}; }`);
         lines.push('```');
@@ -1170,11 +1171,11 @@ const handlers = {
       step,
       exact,
       rem: Number(remValue.toFixed(6)),
-      scssCall: exact ? `m.grid(${step})` : `m.px(${px})`,
-      alternative: exact ? null : `m.grid(${step})  // snaps to ${snappedPx}px (${Number(remValue.toFixed(4))}rem)`,
+      scssCall: exact ? `cia.grid(${step})` : `cia.px(${px})`,
+      alternative: exact ? null : `cia.grid(${step})  // snaps to ${snappedPx}px (${Number(remValue.toFixed(4))}rem)`,
       notes: exact
-        ? `${px}px is exactly on cia's 4px grid at step ${step}. Use m.grid(${step}) — emits ${Number(remValue.toFixed(4))}rem.`
-        : `${px}px is OFF cia's 4px grid (nearest step ${step} = ${snappedPx}px). Two options: (a) m.px(${px}) emits ${Number(rawRem.toFixed(4))}rem off-grid, or (b) m.grid(${step}) snaps to ${snappedPx}px which is ${Number(remValue.toFixed(4))}rem. Prefer (b) unless the design intent specifically requires the off-grid value.`,
+        ? `${px}px is exactly on cia's 4px grid at step ${step}. Use cia.grid(${step}) — emits ${Number(remValue.toFixed(4))}rem.`
+        : `${px}px is OFF cia's 4px grid (nearest step ${step} = ${snappedPx}px). Two options: (a) cia.px(${px}) emits ${Number(rawRem.toFixed(4))}rem off-grid, or (b) cia.grid(${step}) snaps to ${snappedPx}px which is ${Number(remValue.toFixed(4))}rem. Prefer (b) unless the design intent specifically requires the off-grid value.`,
     };
   },
 };
@@ -1379,7 +1380,7 @@ async function startServer() {
 
   // Size resolution — map design px values to cia's 4px geometric grid.
   server.registerTool('resolve_size', {
-    description: 'Snap a design px value to cia\'s 4px geometric grid. Returns the step number, the SCSS call to emit (m.grid(n) when exactly on grid; m.px(value) when off-grid), the equivalent rem, and a human-readable note. AI agents: call this whenever you get a px value from a design tool (Figma, mockup, screenshot) and need to express it in cia code. NEVER write raw rem/px literals when a cia function applies. See /docs/composition for the full decision tree.',
+    description: 'Snap a design px value to cia\'s 4px geometric grid. Returns the step number, the SCSS call to emit (cia.grid(n) when exactly on grid; cia.px(value) when off-grid), the equivalent rem, and a human-readable note. AI agents: call this whenever you get a px value from a design tool (Figma, mockup, screenshot) and need to express it in cia code. NEVER write raw rem/px literals when a cia function applies. See /docs/composition for the full decision tree.',
     inputSchema: {
       px: z.number().describe('The px value from the design (e.g. 24 for a 24px button height).'),
       base: z.number().optional().describe('Grid base in px (default 4, matching cia\'s 4px grid).'),

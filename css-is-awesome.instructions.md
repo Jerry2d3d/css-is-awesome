@@ -10,7 +10,7 @@ Authoring rules for css-is-awesome itself AND for consumer apps that use it. Dro
 
 1. **Drop-in (HTML, no build).** Link `dist/css-is-awesome.css` and a theme file. Use `.cia-*` utility classes in markup. Themes swap via `<html data-theme="press-light">`.
 2. **React.** Import a shipped component (`<Button variant="primary">`). Components are token-driven and theme-swap-safe out of the box.
-3. **Power user (SCSS).** `@use 'css-is-awesome/scss/mixins' as m;` and `@include btn(primary, $px: 6) { … }` to deviate from defaults.
+3. **Power user (SCSS).** `@use 'css-is-awesome/api' as cia;` and `@include cia.btn(primary, $px: 6) { … }` to deviate from defaults.
 
 You only write per-component SCSS when you're deviating from a base mixin. If you're applying the default look, use Tier 1 or Tier 2.
 
@@ -47,9 +47,9 @@ You're deviating from a base mixin's defaults. Then:
 
 ```scss
 // MyButton.module.scss
-@use 'css-is-awesome/scss/components/buttons' as b;
+@use 'css-is-awesome/api' as cia;
 
-.myCta { @include b.btn(primary, $px: 6, $r: full); }
+.myCta { @include cia.btn(primary, $px: 6, $r: full); }
 ```
 
 ### Mixin-first
@@ -60,9 +60,9 @@ Every visual primitive in the library is a mixin (`btn-base`, `card-base`, `inpu
 
 ```scss
 // Yes — token-driven, theme-swap-safe.
-padding-block: m.space(2);
-color: m.color(text-primary);
-border-radius: m.radius(md);
+padding-block: cia.space(2);
+color: cia.color(text-primary);
+border-radius: cia.radius(md);
 
 // No — literal, breaks theme-swap.
 padding: 8px;
@@ -72,24 +72,24 @@ border-radius: 4px;
 
 Tokens come from the theme contract (`scripts/theme-contract.json` — 123 required slots). Themes swap via `<html data-theme="press-light">` and every token resolves to the active theme's value.
 
-### Flex via `m.flex`
+### Flex via `cia.flex`
 
-`m.flex` is the one flex primitive. Pass only what differs from the
+`cia.flex` is the one flex primitive. Pass only what differs from the
 defaults — `$direction: row`, `$align: center`, `$justify: start`,
 `$wrap: nowrap`, `$gap: null`, `$inline: false`.
 
 ```scss
 // Header bar / accordion trigger
-@include m.flex($justify: between, $gap: 3);
+@include cia.flex($justify: between, $gap: 3);
 
 // Vertical stack with gap
-@include m.flex($direction: column, $gap: 4);
+@include cia.flex($direction: column, $gap: 4);
 
 // Perfectly centered children
-@include m.flex($justify: center);
+@include cia.flex($justify: center);
 
 // Inline chip lockup
-@include m.flex($inline: true, $gap: 2);
+@include cia.flex($inline: true, $gap: 2);
 ```
 
 `$justify` accepts the shorthand `start`/`end`/`center`/`between`/
@@ -112,18 +112,18 @@ Use `padding-block` / `padding-inline` / `margin-block` / `margin-inline` / `bor
 
 ```scss
 /* Yes */
-padding-block: m.space(2);
-padding-inline: m.space(4);
-margin-block-end: m.space(3);
-border-block-end: 1px solid m.color(border-default);
+padding-block: cia.space(2);
+padding-inline: cia.space(4);
+margin-block-end: cia.space(3);
+border-block-end: 1px solid cia.color(border-default);
 
 /* No */
-padding-top: m.space(2);
-padding-bottom: m.space(2);
-padding-left: m.space(4);
-padding-right: m.space(4);
-margin-bottom: m.space(3);
-border-bottom: 1px solid m.color(border-default);
+padding-top: cia.space(2);
+padding-bottom: cia.space(2);
+padding-left: cia.space(4);
+padding-right: cia.space(4);
+margin-bottom: cia.space(3);
+border-bottom: 1px solid cia.color(border-default);
 ```
 
 Logical properties auto-flip for RTL languages (Arabic, Hebrew) and vertical writing modes. The library's internal mixins emit logical properties.
@@ -177,7 +177,7 @@ browser's native Print → Save as PDF is the generator; cia just supplies the
   footer); hidden on screen.
 
 ```scss
-@use 'css-is-awesome' as cia;
+@use 'css-is-awesome/api' as cia;
 @include cia.print-base;                 // at ROOT — sets @page, freezes animations, emits vars
 .site-nav { @include cia.print-hidden; } // hide chrome on paper
 ```
@@ -374,13 +374,13 @@ See `/docs/authoring/themes` for the full guide.
 
 ```scss
 /* 2) Use it from any component (mixin form OR raw CSS — both work) */
-.logo  { @include m.font($family: meme, $color: text-primary, $lh: 0.95, $ls: -0.01em); }
+.logo  { @include cia.font($family: meme, $color: text-primary, $lh: 0.95, $ls: -0.01em); }
 .stamp { font-family: var(--font-meme); }
 ```
 
-`m.font` takes every text-style property in one call: `$type` (weight + style preset), `$size`, `$lh`, `$ls`, `$family`, `$color`. Pass only what you need — null defaults skip the emit.
+`cia.font` takes every text-style property in one call: `$type` (weight + style preset), `$size`, `$lh`, `$ls`, `$family`, `$color`. Pass only what you need — null defaults skip the emit.
 
-`m.font($family: <slug>)` emits `font-family: var(--font-<slug>);` — no registration, no Sass-side magic. The slug is just a CSS variable name. As long as `--font-<slug>` is declared *somewhere* in scope (globals, theme, page, block), the browser resolves it.
+`cia.font($family: <slug>)` emits `font-family: var(--font-<slug>);` — no registration, no Sass-side magic. The slug is just a CSS variable name. As long as `--font-<slug>` is declared *somewhere* in scope (globals, theme, page, block), the browser resolves it.
 
 **Override anywhere CSS variables work:**
 
@@ -392,11 +392,11 @@ See `/docs/authoring/themes` for the full guide.
 <h1 style="--font-meme: 'Comic Sans MS'">                 // one element
 ```
 
-**Hosted fonts (Google Fonts / CDN)** — use `m.font-load(name, url)` from a *global* Sass file (not a `.module.scss`, because CSS Modules' pure mode rejects the `@import` placement). It registers the URL once and emits the `@import url(...)`.
+**Hosted fonts (Google Fonts / CDN)** — use `cia.font-face(name, url)` from a *global* Sass file (not a `.module.scss`, because CSS Modules' pure mode rejects the `@import` placement). It registers the URL once and emits the `@import url(...)`.
 
 ```scss
 // src/styles/fonts.scss (a global .scss imported from layout.tsx)
-@include m.font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@include cia.font-face('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 ```
 
 ```css
@@ -406,10 +406,10 @@ See `/docs/authoring/themes` for the full guide.
 
 ```scss
 /* component */
-.headline { @include m.font($family: pacifico); }
+.headline { @include cia.font($family: pacifico); }
 ```
 
-**Self-hosted fonts** — `m.font-load-local('Untitled Sans', '/fonts/UntitledSans.woff2')` for the `@font-face` declaration; declare the CSS variable separately the same way.
+**Self-hosted fonts** — `cia.font-face-local('Untitled Sans', '/fonts/UntitledSans.woff2')` for the `@font-face` declaration; declare the CSS variable separately the same way.
 
 ---
 
@@ -420,7 +420,7 @@ See `/docs/authoring/themes` for the full guide.
 - Form controls have `<label>` (above).
 - Use `role` and `aria-*` only when native semantics are insufficient — e.g., disclosure widgets, custom dropdowns, ARIA live regions.
 - Keyboard navigation works: dialogs trap focus, Escape closes overlays, arrow keys cycle through tab lists.
-- Focus rings come from `m.focus-ring` (or `:focus-visible`) — don't remove the outline without a replacement.
+- Focus rings come from `cia.focus-ring` (or `:focus-visible`) — don't remove the outline without a replacement.
 - Honor `prefers-reduced-motion` — animation mixins do this automatically; don't fight it.
 - Color is never the only cue — pair status colors with an icon or text label.
 
@@ -450,7 +450,7 @@ See `/docs/authoring/themes` for the full guide.
 **Q3: Does your new component just need the library's default look applied?**
 
 - **Yes** → Compose `.cia-*` utility classes in `className`, OR use our React components as primitives. **No SCSS file needed.**
-- **No, I need to deviate** → Tier 3 (SCSS). Write `Component.module.scss`, `@use 'css-is-awesome/scss/mixins' as m;`, `@include btn(primary, $px: 6) { /* deviations */ }`.
+- **No, I need to deviate** → Tier 3 (SCSS). Write `Component.module.scss`, `@use 'css-is-awesome/api' as cia;`, `@include cia.btn(primary, $px: 6) { /* deviations */ }`.
 
 ---
 

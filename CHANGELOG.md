@@ -13,6 +13,31 @@ automated releases.
 
 ### Added
 
+- **`css-is-awesome/api` — zero-emit authoring barrel for per-component styles.**
+  New `scss/api.scss` + package export `"css-is-awesome/api"` forwards the full
+  mixin/function/token-map API but emits **zero CSS** until a mixin is actually
+  called. This is the correct entry point for a component stylesheet
+  (`Card.module.scss`), because it prints no `:root` block and is therefore safe
+  under Next.js CSS Modules "pure" mode:
+
+  ```scss
+  @use 'css-is-awesome/api' as cia;
+  .card { @include cia.card-base($shadow: 2); background: cia.color(surface-default); }
+  ```
+
+  Tokens + keyframes still live at the app root (emitted once by the CSS bundle
+  or a theme stylesheet); components only pull in the mixins. `scss/_index.scss`
+  is now the "kitchen-sink" barrel (`api` + the global `.cia-anim-*` utilities)
+  and derives its API surface from `api.scss`, so the two can't drift. Guarded by
+  `npm run validate-api` (a Sass compile-assertion test).
+
+  Fixes a latent consume-time bug: `spinner()` and `skeleton()` previously
+  defined their `@keyframes` at module top level, which leaked CSS on import and
+  would be renamed by CSS Modules (breaking the animation reference). Their
+  keyframes now emit via `@at-root` inside the mixin — only when called, and
+  co-emitted with the reference so CSS Modules renames both together (matching
+  the existing `_overlay.scss` pattern).
+
 - **Print / PDF — pure-CSS, zero-JS.** "The page IS the PDF source." Four
   new mixins in `scss/_mixins.scss` (namespaced `cia.` / `m.`): `print`
   (bare `@media print { @content }` wrapper, co-locate inside a selector to
@@ -30,6 +55,29 @@ automated releases.
   read by humans at `/docs/recipes/print-to-pdf`. No Puppeteer, no server —
   the browser's native Print → Save as PDF is the generator. Pulled forward
   from v1.2 into v1.0.
+
+### Changed
+
+- **Docs now teach the two-import model with the `cia.` namespace consistently.**
+  AGENTS.md, `llm.txt`, `css-is-awesome.instructions.md`, THREE-TIERS.md,
+  MIGRATION.md, the `/docs/install` page, and the MCP server (`assemble_prompt`
+  usage blocks + `resolve_size` suggestions) now show component styles importing
+  `@use 'css-is-awesome/api' as cia;` (zero-emit) and reference every mixin as
+  `cia.*` instead of the inconsistent `m.*`. The root/global bundle
+  (`@use 'css-is-awesome'`, optionally `with (...)`) stays the token-emitting
+  entry. The MCP theme-name parser now matches any namespace (`m.theme`,
+  `cia.theme`, …).
+
+### Fixed
+
+- **Docs no longer show imports/mixins that don't compile.** The previously
+  documented `@use 'css-is-awesome' as cia;` for component styles resolved to the
+  CSS-emitting bundle (no mixin API, and it emitted `:root` — rejected by CSS
+  Modules pure mode); it now points at `css-is-awesome/api`. Icon examples used
+  `m.svg(...)` (never defined — icons are `cia.icon-svg` via the barrel, or
+  `i.svg` via `css-is-awesome/scss/icons`), and the font examples referenced the
+  removed `font-load` / `font-load-local` names (now `cia.font-face` /
+  `cia.font-face-local`). All doc snippets are verified to compile through `/api`.
 
 ## [0.8.2] — 2026-05-21 — Panel R7 bug-fix patch
 

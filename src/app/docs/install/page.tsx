@@ -7,7 +7,7 @@ export default function InstallPage() {
     <>
       <h1>Install css-is-awesome</h1>
       <p className="lead">
-        cia is mixin-first. The primary API is <code>@use 'css-is-awesome' as cia;</code> +{" "}
+        cia is mixin-first. The primary API is <code>@use 'css-is-awesome/api' as cia;</code> +{" "}
         <code>@include cia.btn(primary)</code> on whatever selector you choose. Utility classes are an
         opt-in convenience for non-Sass consumers — the npm package ships zero JavaScript.
       </p>
@@ -100,13 +100,12 @@ export default function InstallPage() {
         That single line emits tokens, base resets, animations, utilities, and component classes. From here, author your own classes against the mixin API.
       </p>
       <Example>
-        <Example.Code><span className="tok-com">{"// app.scss — mixin API only, you control the output"}</span>
-{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/mixins'</span> <span className="tok-prop">as</span> <span className="tok-val">m</span>;
-{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/components/buttons'</span> <span className="tok-prop">as</span> <span className="tok-val">b</span>;
+        <Example.Code><span className="tok-com">{"// Card.module.scss — zero-emit barrel, you control the output"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/api'</span> <span className="tok-prop">as</span> <span className="tok-val">cia</span>;
 {"\n"}
 {"\n"}<span className="tok-sel">.hero-cta</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary, $px: 6, $r: full)</span>;
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.elevation(2)</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">cia.btn(primary, $px: 6, $r: full)</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">cia.elevation(2)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
       <p>

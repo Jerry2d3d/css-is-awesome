@@ -7,12 +7,18 @@ into your project.
 
 ## Canonical example
 
-```scss
-@use 'css-is-awesome/scss/components/buttons' as b;
-@use 'css-is-awesome/scss/mixins'              as m;
+Per-component styles import the **zero-emit authoring barrel** — the whole API
+under one namespace, and nothing is printed until you call a mixin (safe inside
+a `.module.scss` under Next.js CSS Modules pure mode):
 
-.hero-cta { @include b.btn(primary, $r: full); @include m.elevation(2); }
+```scss
+@use 'css-is-awesome/api' as cia;
+
+.hero-cta { @include cia.btn(primary, $r: full); @include cia.elevation(2); }
 ```
+
+The global tokens (`:root { --… }`) are emitted once at your app root by the CSS
+bundle (`css-is-awesome`) or a theme stylesheet — not per component.
 
 Compile with Sass + a load path (or the modern package importer):
 
@@ -27,7 +33,8 @@ sass app.scss app.css --load-path=node_modules
 | `main.scss`             | Full library entry — tokens + resets + utilities.              |
 | `core.scss`             | Tokens + resets only (pair with your own utility set).         |
 | `utilities-only.scss`   | Drop-in `cia-*` utility classes, no tokens or resets.          |
-| `_index.scss`           | Barrel re-export of every public surface (`@use … as ds`).     |
+| `api.scss`              | **Zero-emit authoring barrel** — `@use 'css-is-awesome/api' as cia;`. Full mixin/function API, prints nothing until called. Use in component `.module.scss` files. |
+| `_index.scss`           | Kitchen-sink barrel — `api` **plus** the global `.cia-anim-*` utility CSS. |
 | `_mixins.scss`          | Core mixin API: `color`, `space`, `btn-base`, `font`, etc.     |
 | `_layout.scss`          | `container`, `grid`, `page-layout`, stack/inline helpers.      |
 | `_utilities.scss`       | `cia-*` utility class generator (margin, padding, color, …).   |
