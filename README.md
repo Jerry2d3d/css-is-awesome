@@ -34,6 +34,17 @@ npm install -D sass
 
 Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button` — plus print-to-PDF via a pure-CSS `@media print` layer. Full reference at [`/docs/mixins`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/src/app/docs/mixins/page.tsx).
 
+**Two imports, two jobs.** Emit the tokens once from your root/global stylesheet (`@use 'css-is-awesome';` or `<link>` a theme file), then import the **zero-emit authoring barrel** in each component stylesheet:
+
+```scss
+// Card.module.scss — emits no :root, safe under Next.js CSS Modules pure mode
+@use 'css-is-awesome/api' as cia;
+
+.product-card { @include cia.card-base($shadow: 2); }
+```
+
+> **Turbopack caveat.** Turbopack (Next.js) collapses the Sass module graph and errors on **any** forwarding barrel — including `css-is-awesome/api` and `css-is-awesome/scss/components`. Turbopack consumers must import the **leaf** module instead: `@use 'css-is-awesome/scss/mixins' as cia;`. Every other Sass toolchain (Vite, webpack, the `sass` CLI) can use `/api`.
+
 ### 2. Drop-in CSS (zero build)
 
 ```html
@@ -113,7 +124,7 @@ Every theme declares the same slots: **surfaces · ink · lines · primary · se
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server at [`mcp/server.cjs`](./mcp/server.cjs) — any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can discover cia's full surface (themes, mixins, functions, tokens, components, recipes, docs) without grep-walking the repo. Exposes 27 tools across 8 families plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **28 tools** across 8 families (themes, mixins, functions, tokens · 123 of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
 
 Add to your client's `.mcp.json`:
 

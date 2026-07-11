@@ -40,7 +40,7 @@ export default function McpPage() {
         <Example.Code>{`npm install -D @modelcontextprotocol/sdk zod`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 27 across 8 families + 2 specialty tools</h2>
+      <h2 id="tools">Tools — 28 total: 26 across 8 families + 2 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -71,8 +71,8 @@ export default function McpPage() {
               <code>search_mixins</code>
             </td>
             <td>
-              138 public mixins (core + layout + animation + per-component) with
-              signature, doc, body, line range
+              150 public mixins (core, layout, animation, icons, generator +
+              per-component) with signature, doc, body, line range
             </td>
           </tr>
           <tr>
@@ -82,7 +82,7 @@ export default function McpPage() {
               <code>search_functions</code>
             </td>
             <td>
-              21 public <code>@function</code>s (color, space, radius, shadow,
+              24 public <code>@function</code>s (color, space, radius, shadow,
               font-size, z, &hellip;)
             </td>
           </tr>
@@ -124,7 +124,11 @@ export default function McpPage() {
             <td>
               <code>list_recipes</code>, <code>get_recipe</code>
             </td>
-            <td>Recipe book markdown files under <code>scss/recipes/</code></td>
+            <td>
+              Recipes under <code>scss/recipes/</code> — both markdown pattern
+              recipes (dialog, combobox, print-to-pdf) and opt-in SCSS recipes
+              (e.g. bare-tags, consumed via <code>@use</code>)
+            </td>
           </tr>
           <tr>
             <td>Docs</td>
@@ -185,7 +189,7 @@ export default function McpPage() {
         Snap a design px value to cia&apos;s 4px geometric grid. The other
         AI-facing tool besides <code>assemble_prompt</code>. Returns the
         step number, the SCSS call to emit{" "}
-        (<code>m.grid(n)</code> when exactly on-grid; <code>m.px(value)</code>{" "}
+        (<code>cia.grid(n)</code> when exactly on-grid; <code>cia.px(value)</code>{" "}
         when off-grid), the equivalent rem, and a human-readable note.
       </p>
       <p>
@@ -197,15 +201,15 @@ export default function McpPage() {
       <Example>
         <Example.Code>{`// AI receives "24px button height" from a Figma design
 resolve_size({ px: 24 })
-// →  { step: 6, exact: true, rem: 1.5, scssCall: "m.grid(6)", ... }
+// →  { step: 6, exact: true, rem: 1.5, scssCall: "cia.grid(6)", ... }
 //
 // AI emits in generated SCSS:
-//   .my-btn { height: m.grid(6); }
+//   .my-btn { height: cia.grid(6); }
 
 // Off-grid case: AI receives "17px hero margin"
 resolve_size({ px: 17 })
-// →  { step: 4, exact: false, rem: 1, scssCall: "m.px(17)",
-//      alternative: "m.grid(4)  // snaps to 16px (1rem)", ... }
+// →  { step: 4, exact: false, rem: 1, scssCall: "cia.px(17)",
+//      alternative: "cia.grid(4)  // snaps to 16px (1rem)", ... }
 //
 // AI follows the note: prefer the snapped grid value unless the
 // design intent specifically requires the off-grid value.`}</Example.Code>

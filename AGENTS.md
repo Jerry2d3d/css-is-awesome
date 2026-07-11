@@ -68,6 +68,8 @@ The cia barrel re-exports every mixin: layout, typography, color, motion, helper
 - **Root / global** (once) — emit the tokens: `<link>` a theme CSS file, or `@use 'css-is-awesome';` in your global stylesheet. This prints `:root { --… }`.
 - **Each component** (`Card.module.scss`) — `@use 'css-is-awesome/api' as cia;` and only call mixins. **Never** `@use 'css-is-awesome'` (the bundle) from a component file — it re-emits `:root`, which CSS Modules pure mode rejects.
 
+**⚠️ Turbopack caveat (Next.js).** Turbopack collapses the Sass module graph and errors on **any** cia forwarding barrel — both `css-is-awesome/api` and `css-is-awesome/scss/components`. Under Turbopack, import the **leaf** module instead: `@use 'css-is-awesome/scss/mixins' as cia;` (this is how the Boiler showcase consumes cia). Every non-Turbopack Sass toolchain (Vite, webpack, the `sass` CLI) can use `/api`. The two-import split (tokens at root, mixins per component) still applies either way — only the module specifier changes.
+
 ## Theme system (1 file per theme, both modes inside)
 
 Each theme is a single CSS file declaring `:root[data-theme="<name>"]` with `light-dark()` for color tokens — the browser auto-swaps based on OS `prefers-color-scheme`. **Nine themes shipped:** boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal (dark-only sacred), terminal-light (light-only daylight editor). All pass the WCAG 2.2 AA contrast audit by default.
@@ -216,14 +218,42 @@ Inside this package (all whitelisted in `files`):
 - **`scss/_app-styles.scss` is NOT part of the library entry.** It's a template for project-owned styles in a consuming boilerplate. Don't `@use` it from library code.
 - **v0.8 mixin renames** — `cia.bp`→`cia.media`, `cia.cq`→`cia.contain`, `cia.color-raw`→`cia.color-static`, `cia.inset`→`cia.pad`, `cia.squish`→`cia.pad-asym`, `cia.font-load`→`cia.font-face`. Old names error with "undefined mixin." No aliases.
 
-## Tooling around the library (planned)
+## MCP server (SHIPPED — use it)
 
-- **MCP server** (`@css-is-awesome/mcp`, post-1.0) — programmatic introspection of tokens, mixins, components.
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` v0.8.2, protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. **Prefer querying it over guessing** — it returns cia's real mixin signatures, tokens, themes, and recipes.
+
+Wire it into your MCP client's `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "node",
+      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+    }
+  }
+}
+```
+
+The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in the client project to run it. It exposes **28 tools** across 8 families:
+
+- **Themes** — `list_themes`, `get_theme`, `search_themes`
+- **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
+- **Functions** — `list_functions`, `get_function`, `search_functions`
+- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (123 contract tokens)
+- **Animations** — `list_animations`, `get_animation`
+- **Components** — `list_components`, `get_component`
+- **Recipes** — `list_recipes`, `get_recipe`
+- **Doc readers** — `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme`
+- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value)
+
+## Other tooling (planned)
+
 - **`cia` CLI** (post-1.0) — `cia init`, `cia add button`, `cia theme new`, `cia theme validate`.
 - **JSON token export** at a stable URL — DTCG-format token list.
 - **`llm.txt`** at the docs site root — single-fetch summary for any AI agent.
 
-When those ship, this file will link them. Until then, the markdown files above are the source of truth.
+When those ship, this file will link them. Until then, the markdown files above (and the MCP server) are the source of truth.
 
 ---
 
