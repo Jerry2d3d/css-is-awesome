@@ -66,6 +66,7 @@
     "dist",
     "figma-tokens",
     "mcp",
+    "scripts/theme-contract.json",
     "bin",
     "public/theme.css",
     "public/themes",
