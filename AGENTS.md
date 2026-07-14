@@ -23,7 +23,7 @@ When asked to add a UI element, follow this order:
 3. **Never invent `cia-*` class names.** That prefix is library-owned. Consumer code uses its own naming.
 4. **All values come from tokens.** Never hardcode `#3A5FCD`, `1rem`, `8px`. Use `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`.
 5. **No BEM.** No `__element` / `--modifier` chains. `cia-` is a single-class namespace prefix, not BEM.
-6. **No JavaScript.** Cia ships zero JS in the npm package. The 6 interactive components (accordion, modal, tooltip, dropdown, tabs, copy-button) use native HTML primitives — `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`.
+6. **No JavaScript.** Cia ships zero JS in the npm package. The 6 interactive components (accordion, modal, tooltip, dropdown, tabs, copy-button) use native HTML primitives — `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`. **This rule binds cia, not you.** If you're *consuming* cia (building an app/component library on top of it), write JavaScript/framework components freely — React, SVG charts, interactivity, all of it — and use cia purely for styling (mixins + tokens). Compose the mixins to build any visual you want; you are not limited to cia's pre-made component mixins.
 
 ## Install
 
