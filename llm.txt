@@ -102,6 +102,7 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 - **Don't write BEM.** No `cia-card__title--large`.
 - **Don't hardcode breakpoints/colors/spacing.** Use `cia.media(md)`, `cia.color(primary)`, `cia.space(4)`.
 - **Don't suggest a JS dependency for components.** The native primitive does the work.
+- **Style semantic state off ARIA, not a parallel `data-*`.** `[aria-selected]`, `[aria-expanded]`, `[aria-invalid]`, `:disabled/[aria-disabled]`, `[aria-pressed]`, `[aria-checked]`, `[aria-current]`, `[role="tab"]` are the styling hooks for stateful components — accessible-by-construction (can't style the state without setting the ARIA a screen reader needs). Reserve `data-*` for cosmetic-only variants (`data-size`, `data-variant`).
 - **Don't assume utility classes are emitted by default in Sass.** They opt in via `@use cia with ($utilities: true)`.
 - **v0.8 rename traps:** `cia.bp` → `cia.media`, `cia.cq` → `cia.contain`, `cia.inset` → `cia.pad`, `cia.squish` → `cia.pad-asym`, `cia.font-load` → `cia.font-face`, `cia.color-raw` → `cia.color-static`, layout `cia.container` → `cia.wrap`. No aliases.
 - **v0.8 theme rename:** `data-theme="press-light"` → `data-theme="press"`. Both modes are inside the single theme file now.
