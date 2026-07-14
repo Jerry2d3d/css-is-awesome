@@ -111,7 +111,7 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 
 ## MCP server (SHIPPED in v0.8.2 — 2026-05-22)
 
-cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` v0.8.2, protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin and included in the `files` manifest — so it lands in every consumer's `node_modules`. **28 tools** across 8 resource families: themes, mixins, functions, tokens (123 of them), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
+cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` v0.8.2, protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin and included in the `files` manifest — so it lands in every consumer's `node_modules`. **29 tools** across 8 resource families: themes, mixins, functions, tokens (123 of them), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
 
 Add to your MCP client's `.mcp.json`:
 ```json

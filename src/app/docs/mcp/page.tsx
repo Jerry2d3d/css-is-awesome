@@ -40,7 +40,7 @@ export default function McpPage() {
         <Example.Code>{`npm install -D @modelcontextprotocol/sdk zod`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 28 total: 26 across 8 families + 2 specialty tools</h2>
+      <h2 id="tools">Tools — 29 total: 27 across 8 families + 2 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -111,7 +111,8 @@ export default function McpPage() {
           <tr>
             <td>Components</td>
             <td>
-              <code>list_components</code>, <code>get_component</code>
+              <code>list_components</code>, <code>get_component</code>,{" "}
+              <code>search_components</code>
             </td>
             <td>
               10 component files (accordion, buttons, copy-button, data,

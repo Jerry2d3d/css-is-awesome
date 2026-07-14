@@ -13,7 +13,7 @@
  *   Functions:     list_functions,  get_function,  search_functions
  *   Tokens:        list_tokens,     get_token,     search_tokens
  *   Animations:    list_animations, get_animation
- *   Components:    list_components, get_component
+ *   Components:    list_components, get_component, search_components
  *   Recipes:       list_recipes,    get_recipe
  *   Docs:          read_llm_txt, read_changelog, read_migration,
  *                  read_theming, read_agents, read_contract,
@@ -921,6 +921,31 @@ const handlers = {
     };
   },
 
+  search_components({ query, limit = 100 } = {}) {
+    if (!query || typeof query !== 'string') throw new Error('search_components: query is required');
+    const q = query.toLowerCase();
+    const matches = [];
+    for (const c of getComponents()) {
+      const mixins = getAllDeclarations().filter(
+        (d) => d.component === c.name && d.kind === 'mixin' && !d.name.startsWith('_')
+      );
+      const hay = `${c.name}\n${c.description}\n${mixins
+        .map((m) => `${m.name}\n${m.signature}\n${m.doc}\n${m.body}`)
+        .join('\n')}`.toLowerCase();
+      if (hay.includes(q)) {
+        matches.push({
+          name: c.name,
+          description: firstSentence(c.description),
+          mixinCount: c.mixinCount,
+          path: c.path,
+          snippet: snippet(`${c.description}\n${mixins.map((m) => m.doc).join('\n')}`, query),
+        });
+        if (matches.length >= limit) break;
+      }
+    }
+    return { total: matches.length, items: matches };
+  },
+
   // ─── Recipes ───────────────────────────────────────────────────────────
 
   list_recipes() {
@@ -1316,6 +1341,14 @@ async function startServer() {
     description: 'Return one component: description, all its public mixins (signature + summary + body), and the source path.',
     inputSchema: { name: z.string().describe('Component name (e.g. "buttons", "overlay", "forms").') },
   }, async (a) => ok(handlers.get_component(a || {})));
+
+  server.registerTool('search_components', {
+    description: 'Substring search across component names, descriptions, and their mixin names/signatures/docs/bodies.',
+    inputSchema: {
+      query: z.string(),
+      limit: z.number().int().min(1).max(200).optional(),
+    },
+  }, async (a) => ok(handlers.search_components(a || {})));
 
   // Recipes
   server.registerTool('list_recipes', {
