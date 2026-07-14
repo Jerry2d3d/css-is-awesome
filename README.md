@@ -126,20 +126,28 @@ Every theme declares the same slots: **surfaces · ink · lines · primary · se
 
 cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **28 tools** across 8 families (themes, mixins, functions, tokens · 123 of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
 
-Add to your client's `.mcp.json`:
+**Setup is two steps — do both, or the server won't start.**
 
-```json
-{
-  "mcpServers": {
-    "css-is-awesome": {
-      "command": "node",
-      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
-    }
-  }
-}
-```
+1. Install the SDK peer deps. The MCP SDK needs `@modelcontextprotocol/sdk` + `zod`; they're declared as *optional* peers so npm skips them by default. Without them the server exits and your MCP client shows only a generic "failed to connect":
 
-The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in your project to run the server.
+   ```bash
+   npm install -D @modelcontextprotocol/sdk zod
+   ```
+
+2. Add to your client's `.mcp.json` (the `npx` form uses the shipped bin and is CWD-independent):
+
+   ```json
+   {
+     "mcpServers": {
+       "css-is-awesome": {
+         "command": "npx",
+         "args": ["css-is-awesome-mcp"]
+       }
+     }
+   }
+   ```
+
+   Equivalent explicit path: `"command": "node", "args": ["node_modules/css-is-awesome/mcp/server.cjs"]`.
 
 ## Running the docs site locally
 
