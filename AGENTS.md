@@ -6,6 +6,8 @@ This file is the entry point for AI coding agents (Aider, Codex, Cursor, Claude 
 
 A token-driven SCSS design system with a **single mixin-router per component**. **Mixin-first since v0.8** — the mixin is the API; the class/tag/selector is the consumer's choice. The npm package ships **zero JavaScript** by hard rule.
 
+**Every mixin is a knob-board.** Each look/feel dimension is an *input*, so a consumer can restyle any mixin at any time by changing an argument — row→column is just `@include cia.flex($direction: column)`, never a hand-written `flex-direction`. Customization lives in the mixin's arguments; the consumer stays one line. **If a visual dimension can only be reached by overriding in CSS, that's a missing input — add it to the mixin.** Fewer SCSS lines always wins.
+
 **v1.0 architecture (locked 2026-05-23):** humans-first, AI-second. The 5-pillar priority is **(1) users first, (2) tokens, (3) theme editor on the website, (4) mixin-first speed, (5) AI as composer via recipes book + MCP server**. v1.0 ships the recipes book + theme editor polish + Tailwind/Bootstrap migration CLI + playground + MCP polish. No separate React component library (Jerry's call — recipes are the deliverable). Full backlog: [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/).
 
 Three authoring tiers, in primary-to-fallback order:
@@ -18,7 +20,7 @@ Three authoring tiers, in primary-to-fallback order:
 
 When asked to add a UI element, follow this order:
 
-1. **Mixin-first.** `.your-class { @include cia.btn(primary); }` — write your own selector, `@include` the mixin. This is the v0.8 primary API.
+1. **Mixin-first, inputs-first.** `.your-class { @include cia.btn(primary); }` — write your own selector, `@include` the mixin. Need a variation? **Pass it as an input** — `@include cia.flex($direction: column)`, `@include cia.card-base($shadow: 2, $r: xl)` — never hand-write the CSS an input already controls. Fewer SCSS lines always wins. This is the v0.8 primary API.
 2. **Match the project's tier.** If they're already on Tier 1 classes (`<button class="cia-btn">`), stay there.
 3. **Never invent `cia-*` class names.** That prefix is library-owned. Consumer code uses its own naming.
 4. **All values come from tokens.** Never hardcode `#3A5FCD`, `1rem`, `8px`. Use `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`.
