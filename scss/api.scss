@@ -1,0 +1,61 @@
+// ============================================================================
+// API - Authoring Barrel (zero-emit)
+// ============================================================================
+// Import this in a COMPONENT stylesheet to reach the whole mixin/function API
+// WITHOUT emitting any CSS. Nothing is printed until you actually call a mixin.
+//
+// This is the entry point for per-component styles (e.g. Card.module.scss):
+//
+//   @use 'css-is-awesome/api' as cia;
+//
+//   .card {
+//     background: cia.color(surface-default);
+//     padding: cia.space(4);
+//     border-radius: cia.radius(md);
+//     @include cia.card-base($shadow: 2);
+//   }
+//
+// It emits ZERO bytes and NO `:root` block, so it is safe inside a
+// `.module.scss` under Next.js CSS Modules "pure" mode.
+//
+// The GLOBAL tokens (`:root { --… }`) and animation keyframes are emitted ONCE
+// at your app root by a separate import — the CSS bundle (`css-is-awesome`) or
+// a theme stylesheet. Tokens + keyframes live at the root; each component only
+// pulls in the mixins here. `cia.animate(fade-in)` emits an `animation-name`
+// that references the globally-defined keyframe — the keyframe itself is NOT
+// re-emitted per component (that is why `animations-utilities` is deliberately
+// NOT forwarded here; see `_index.scss` for the kitchen-sink barrel).
+//
+// See also:
+//   - `css-is-awesome`         → the CSS bundle (emits tokens + base, use once)
+//   - `css-is-awesome/tokens`  → tokens-only CSS
+//   - `css-is-awesome/api`     → THIS file: mixins/functions, zero emit
+// ============================================================================
+
+@use './system' as s;
+@use './theme' as t;
+
+// Forward the full authoring API. Every entry below is zero-emit: mixins and
+// functions print nothing until called; token maps are compile-time only.
+@forward './system' as sys-*;
+@forward './theme' as theme-*;
+@forward './generator';
+@forward './mixins';            // No prefix - main API
+@forward './layout';            // Layout mixins (grid, wrap, page)
+@forward './icons' as icon-*;   // Icon mixins with prefix
+@forward './animations';        // animate() + animate-on() mixins (CSS-Modules-safe)
+@forward './components';        // Component mixins (btn, card, nav, etc.)
+
+// NOTE: './animations-utilities' (keyframes + .cia-anim-* classes + global
+// reduced-motion safety net) is intentionally NOT forwarded here — it emits
+// CSS and belongs in the global bundle, loaded once.
+
+// Re-export key maps for advanced usage (variable declarations — no CSS).
+$spacing: s.$spacing;
+$breakpoints: s.$breakpoints;
+$z-layers: s.$z-layers;
+$font-sizes: s.$font-sizes;
+$theme-brand: t.$theme-brand;
+$theme-light: t.$theme-light;
+$theme-dark: t.$theme-dark;
+$theme-radius: t.$theme-radius;

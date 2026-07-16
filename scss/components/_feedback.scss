@@ -140,14 +140,17 @@
     animation: cia-spinner-pulse 1.2s ease-in-out infinite;
     border-top-color: m.color($color);
   }
-}
 
-@keyframes cia-spinner-rotate {
-  to { transform: rotate(360deg); }
-}
-@keyframes cia-spinner-pulse {
-  0%, 100% { opacity: 0.4; }
-  50%      { opacity: 1; }
+  /* Keyframes scoped via @at-root — emit only when the mixin is called */
+  @at-root {
+    @keyframes cia-spinner-rotate {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes cia-spinner-pulse {
+      0%, 100% { opacity: 0.4; }
+      50%      { opacity: 1; }
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -179,13 +182,16 @@
     background-image: none;
     animation: cia-skeleton-pulse 1.6s ease-in-out infinite;
   }
-}
 
-@keyframes cia-skeleton-shimmer {
-  0%   { background-position: -100% 0; }
-  100% { background-position: 200% 0; }
-}
-@keyframes cia-skeleton-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.7; }
+  /* Keyframes scoped via @at-root — emit only when the mixin is called */
+  @at-root {
+    @keyframes cia-skeleton-shimmer {
+      0%   { background-position: -100% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes cia-skeleton-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.7; }
+    }
+  }
 }

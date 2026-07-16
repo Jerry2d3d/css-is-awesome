@@ -13,7 +13,7 @@
  *   Functions:     list_functions,  get_function,  search_functions
  *   Tokens:        list_tokens,     get_token,     search_tokens
  *   Animations:    list_animations, get_animation
- *   Components:    list_components, get_component
+ *   Components:    list_components, get_component, search_components
  *   Recipes:       list_recipes,    get_recipe
  *   Docs:          read_llm_txt, read_changelog, read_migration,
  *                  read_theming, read_agents, read_contract,
@@ -356,8 +356,9 @@ function parseThemeFile(absPath) {
   if (text == null) return null;
   const baseName = path.basename(absPath, '.scss');
 
-  // Find theme name from `@include m.theme('name')` or `[data-theme="name"]`
-  const includeMatch = text.match(/@include\s+m\.theme\s*\(\s*['"]([^'"]+)['"]\s*\)/);
+  // Find theme name from `@include <ns>.theme('name')` (any namespace: m, cia, …)
+  // or `[data-theme="name"]`.
+  const includeMatch = text.match(/@include\s+[\w-]+\.theme\s*\(\s*['"]([^'"]+)['"]\s*\)/);
   const dataMatch = text.match(/\[data-theme=['"]([^'"]+)['"]\]/);
   const name = (includeMatch && includeMatch[1]) || (dataMatch && dataMatch[1]) || baseName;
 
@@ -920,6 +921,31 @@ const handlers = {
     };
   },
 
+  search_components({ query, limit = 100 } = {}) {
+    if (!query || typeof query !== 'string') throw new Error('search_components: query is required');
+    const q = query.toLowerCase();
+    const matches = [];
+    for (const c of getComponents()) {
+      const mixins = getAllDeclarations().filter(
+        (d) => d.component === c.name && d.kind === 'mixin' && !d.name.startsWith('_')
+      );
+      const hay = `${c.name}\n${c.description}\n${mixins
+        .map((m) => `${m.name}\n${m.signature}\n${m.doc}\n${m.body}`)
+        .join('\n')}`.toLowerCase();
+      if (hay.includes(q)) {
+        matches.push({
+          name: c.name,
+          description: firstSentence(c.description),
+          mixinCount: c.mixinCount,
+          path: c.path,
+          snippet: snippet(`${c.description}\n${mixins.map((m) => m.doc).join('\n')}`, query),
+        });
+        if (matches.length >= limit) break;
+      }
+    }
+    return { total: matches.length, items: matches };
+  },
+
   // ─── Recipes ───────────────────────────────────────────────────────────
 
   list_recipes() {
@@ -1043,7 +1069,7 @@ const handlers = {
         }
         sub('Usage pattern');
         lines.push('```scss');
-        lines.push('@use \'css-is-awesome\' as cia;');
+        lines.push('@use \'css-is-awesome/api\' as cia;');
         lines.push('');
         lines.push(`.my-${c.name} { @include cia.${c.name}; }`);
         lines.push('```');
@@ -1170,11 +1196,11 @@ const handlers = {
       step,
       exact,
       rem: Number(remValue.toFixed(6)),
-      scssCall: exact ? `m.grid(${step})` : `m.px(${px})`,
-      alternative: exact ? null : `m.grid(${step})  // snaps to ${snappedPx}px (${Number(remValue.toFixed(4))}rem)`,
+      scssCall: exact ? `cia.grid(${step})` : `cia.px(${px})`,
+      alternative: exact ? null : `cia.grid(${step})  // snaps to ${snappedPx}px (${Number(remValue.toFixed(4))}rem)`,
       notes: exact
-        ? `${px}px is exactly on cia's 4px grid at step ${step}. Use m.grid(${step}) — emits ${Number(remValue.toFixed(4))}rem.`
-        : `${px}px is OFF cia's 4px grid (nearest step ${step} = ${snappedPx}px). Two options: (a) m.px(${px}) emits ${Number(rawRem.toFixed(4))}rem off-grid, or (b) m.grid(${step}) snaps to ${snappedPx}px which is ${Number(remValue.toFixed(4))}rem. Prefer (b) unless the design intent specifically requires the off-grid value.`,
+        ? `${px}px is exactly on cia's 4px grid at step ${step}. Use cia.grid(${step}) — emits ${Number(remValue.toFixed(4))}rem.`
+        : `${px}px is OFF cia's 4px grid (nearest step ${step} = ${snappedPx}px). Two options: (a) cia.px(${px}) emits ${Number(rawRem.toFixed(4))}rem off-grid, or (b) cia.grid(${step}) snaps to ${snappedPx}px which is ${Number(remValue.toFixed(4))}rem. Prefer (b) unless the design intent specifically requires the off-grid value.`,
     };
   },
 };
@@ -1316,6 +1342,14 @@ async function startServer() {
     inputSchema: { name: z.string().describe('Component name (e.g. "buttons", "overlay", "forms").') },
   }, async (a) => ok(handlers.get_component(a || {})));
 
+  server.registerTool('search_components', {
+    description: 'Substring search across component names, descriptions, and their mixin names/signatures/docs/bodies.',
+    inputSchema: {
+      query: z.string(),
+      limit: z.number().int().min(1).max(200).optional(),
+    },
+  }, async (a) => ok(handlers.search_components(a || {})));
+
   // Recipes
   server.registerTool('list_recipes', {
     description: 'List recipes from scss/recipes/. Two kinds: markdown pattern recipes (kind:"md" — dialog, combobox, print-to-pdf: a pattern to follow in any framework, with category + complexity) and opt-in SCSS recipes (kind:"scss" — e.g. bare-tags, consumed via @use).',
@@ -1379,7 +1413,7 @@ async function startServer() {
 
   // Size resolution — map design px values to cia's 4px geometric grid.
   server.registerTool('resolve_size', {
-    description: 'Snap a design px value to cia\'s 4px geometric grid. Returns the step number, the SCSS call to emit (m.grid(n) when exactly on grid; m.px(value) when off-grid), the equivalent rem, and a human-readable note. AI agents: call this whenever you get a px value from a design tool (Figma, mockup, screenshot) and need to express it in cia code. NEVER write raw rem/px literals when a cia function applies. See /docs/composition for the full decision tree.',
+    description: 'Snap a design px value to cia\'s 4px geometric grid. Returns the step number, the SCSS call to emit (cia.grid(n) when exactly on grid; cia.px(value) when off-grid), the equivalent rem, and a human-readable note. AI agents: call this whenever you get a px value from a design tool (Figma, mockup, screenshot) and need to express it in cia code. NEVER write raw rem/px literals when a cia function applies. See /docs/composition for the full decision tree.',
     inputSchema: {
       px: z.number().describe('The px value from the design (e.g. 24 for a 24px button height).'),
       base: z.number().optional().describe('Grid base in px (default 4, matching cia\'s 4px grid).'),

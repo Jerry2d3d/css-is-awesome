@@ -39,18 +39,18 @@ already loads both halves. Or load the new utilities file directly:
 
 ```scss
 // v0.8.0
-.my-track { @include m.progress-track; }
-.my-fill  { @include m.progress-fill; }
+.my-track { @include cia.progress-track; }
+.my-fill  { @include cia.progress-fill; }
 
 // v0.8.1
-.my-track { @include m.progress-track-base; }
-.my-fill  { @include m.progress-fill-base; }
+.my-track { @include cia.progress-track-base; }
+.my-fill  { @include cia.progress-fill-base; }
 
 // OR use the new composer:
-.my-progress { @include m.progress; }
+.my-progress { @include cia.progress; }
 ```
 
-The new `m.progress` composer reads `[data-slot="fill"]` markup — see the
+The new `cia.progress` composer reads `[data-slot="fill"]` markup — see the
 mixin docstring for the recipe.
 
 ### 3. `badge-base` / `badge` moved to `_data.scss`
@@ -63,7 +63,7 @@ If you had a path-specific import:
 .my-badge { @include f.badge-base; }
 
 // v0.8.1 — option A: use the cia barrel (recommended)
-@use 'css-is-awesome' as cia;
+@use 'css-is-awesome/api' as cia;
 .my-badge { @include cia.badge-base; }
 
 // v0.8.1 — option B: import from data
@@ -76,11 +76,11 @@ unsubscribes you from future location changes.
 
 ### New mixins (additive, no migration needed)
 
-- `m.wizard-shell` — 3-row layout with shared horizontal rhythm (stepper + body + controls)
-- `m.stepper`, `m.stepper-circle`, `m.stepper-connector` — status-driven progress indicator
-- `m.progress` — composed router (track + fill via `[data-slot]`)
-- `m.sidebar` — Every-Layout sidebar (fixed nav + flexible content, gracefully stacks)
-- `m.toolbar` — cluster with auto-margin `[data-slot="trailing"]`
+- `cia.wizard-shell` — 3-row layout with shared horizontal rhythm (stepper + body + controls)
+- `cia.stepper`, `cia.stepper-circle`, `cia.stepper-connector` — status-driven progress indicator
+- `cia.progress` — composed router (track + fill via `[data-slot]`)
+- `cia.sidebar` — Every-Layout sidebar (fixed nav + flexible content, gracefully stacks)
+- `cia.toolbar` — cluster with auto-margin `[data-slot="trailing"]`
 
 Plus bare-tags additions for `<dialog>` and `<progress>` (opt-in via the
 existing `bare-tags` recipe).
@@ -121,19 +121,19 @@ auto-swaps based on the user's OS `prefers-color-scheme`.
 
 | v0.7 | v0.8 |
 |---|---|
-| `@include m.bp(md) { … }` | `@include m.media(md) { … }` |
-| `@include m.bp-down(md) { … }` | `@include m.media-down(md) { … }` |
-| `@include m.bp-between(sm, lg)` | `@include m.media-between(sm, lg)` |
-| `@include m.cq(md) { … }` | `@include m.contain(md) { … }` |
-| `@include m.cq-down(md)` | `@include m.contain-down(md)` |
-| `m.color-raw(border-focus)` | `m.color-static(border-focus)` |
-| `@include m.inset(4)` | `@include m.pad(4)` |
-| `@include m.inset-x(4)` | `@include m.pad-x(4)` |
-| `@include m.inset-y(2)` | `@include m.pad-y(2)` |
-| `@include m.squish(2, 4)` | `@include m.pad-asym(2, 4)` |
-| `@include m.font-load('Inter', '/inter.woff2')` | `@include m.font-face('Inter', '/inter.woff2')` |
-| `@include m.font-load-local('Inter', '/inter.woff2')` | `@include m.font-face-local('Inter', '/inter.woff2')` |
-| Layout `@include m.container` | `@include m.wrap` |
+| `@include cia.bp(md) { … }` | `@include cia.media(md) { … }` |
+| `@include cia.bp-down(md) { … }` | `@include cia.media-down(md) { … }` |
+| `@include cia.bp-between(sm, lg)` | `@include cia.media-between(sm, lg)` |
+| `@include cia.cq(md) { … }` | `@include cia.contain(md) { … }` |
+| `@include cia.cq-down(md)` | `@include cia.contain-down(md)` |
+| `cia.color-raw(border-focus)` | `cia.color-static(border-focus)` |
+| `@include cia.inset(4)` | `@include cia.pad(4)` |
+| `@include cia.inset-x(4)` | `@include cia.pad-x(4)` |
+| `@include cia.inset-y(2)` | `@include cia.pad-y(2)` |
+| `@include cia.squish(2, 4)` | `@include cia.pad-asym(2, 4)` |
+| `@include cia.font-load('Inter', '/inter.woff2')` | `@include cia.font-face('Inter', '/inter.woff2')` |
+| `@include cia.font-load-local('Inter', '/inter.woff2')` | `@include cia.font-face-local('Inter', '/inter.woff2')` |
+| Layout `@include cia.container` | `@include cia.wrap` |
 
 No aliases. Use a regex search-replace on your codebase, or wait for a
 codemod (planned for the future `@cia/codemod` package, v1.x).
@@ -292,8 +292,8 @@ emit the suffixed IDs.
 #### Tier 3 — SCSS / mixins
 
 No SCSS API changed — the rename only affects the `data-theme` attribute
-values and the per-theme folder names. The mixin layer (`m.color`,
-`m.btn`, etc.) is untouched.
+values and the per-theme folder names. The mixin layer (`cia.color`,
+`cia.btn`, etc.) is untouched.
 
 ### Removal timeline
 
