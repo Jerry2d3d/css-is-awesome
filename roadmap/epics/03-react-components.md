@@ -1,5 +1,7 @@
 # Epic 3: Gremlin UI — Companion React Component Library
 
+> **STATUS — SUPERSEDED (audited 2026-07-16).** This epic describes a **separate React component library ("Gremlin UI" / `@gremlin/ui`) shipped as a sibling npm package** — a direction **abandoned at the 2026-05-23 v1.0 architecture lock**. cia ships **zero JS in its npm package** (`package.json#files` is `scss/`, `dist/`, `mcp/`, `bin/`, docs/assets — no React surface) and **no component package exists on npm**. The ~54 `.tsx` files in `src/components/` are the **docs-site's own reference components** (the "how to use it right" showcase), not a shipped product. The framework story is **recipes-first** (see [`v1-0/EPIC-01-recipes-book.md`](./v1-0/EPIC-01-recipes-book.md)); any `@cia/<framework>` pack ships via codegen if at all (see [`v1-1/EPIC-04-framework-pack-react.md`](./v1-1/EPIC-04-framework-pack-react.md)). **Do not treat any story in this file as shippable cia work.** Preserved for history only; every `- [ ]` below is moot.
+
 > **Name TBD.** Working candidates: "Gremlin UI", "Components are Awesome", "Gremlin Components". Final name is an open question — see bottom of file.
 
 ## Summary

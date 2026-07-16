@@ -1,8 +1,22 @@
 # EPIC 05 — Bug Fixes + MCP Polish
 
-**Status:** Planned (v1.0)
+**Status:** 🟡 PARTIAL — 5 of 7 stories shipped; MCP test coverage (F5.2) outstanding (audited 2026-07-16, main @ 97f6ae3)
 **Effort estimate:** ~3-4 working days
 **Stories:** 7
+
+## Audited status — 2026-07-16 (main @ 97f6ae3)
+
+All three audit fixes (F5.1) landed, and the MCP README trim + `/docs/mcp` page (F5.3) shipped. The one gap is **MCP server tests (F5.2)** — there is no `mcp/server.test.*` and no `test:mcp` script, so the 29-tool server still has zero automated coverage. (Note: the MCP server has since grown to **29 tools**, not the 27 referenced in this epic's original prose.)
+
+| Story | Status | Evidence |
+|-------|--------|----------|
+| US-05.1.1 Update `/docs/mixins` to v0.8 naming | ✅ DONE (minor residue) | `src/app/docs/mixins/page.tsx` code samples use `m.media`/`m.contain`/`m.wrap`/`m.font-face`; one stale `font-load` H3 heading/label remains (code below it already uses `m.font-face`) |
+| US-05.1.2 Update `/docs/install` to v0.8 CDN + theme attr | ✅ DONE | CDN URLs pinned to `@0.8`; no `data-theme="<name>-light"` residue in `src/app/docs/install/page.tsx` |
+| US-05.1.3 Fix `cia.btn($bg:)` state cascade | ✅ DONE | `scss/components/_buttons.scss` derives hover/active from `$bg` via `color-mix(in oklch, …, light-dark(black,white) 12%/20%)` with explicit `$bg-hover`/`$bg-active` overrides |
+| US-05.1.4 Ship `/docs/composition` page | ✅ DONE | `src/app/docs/composition/page.tsx` (commit 10aa065) |
+| US-05.2.1 Test list/get/search across all families | ⛔ NOT SHIPPED | No `mcp/server.test.*`; no `test:mcp` npm script |
+| US-05.2.2 Test assemble_prompt per intent | ⛔ NOT SHIPPED | Depends on 05.2.1; no MCP test suite exists |
+| US-05.3.1 Trim MCP README + `/docs/mcp` page | ✅ DONE | `src/app/docs/mcp/page.tsx` exists; README section trimmed (commit b4d87e1) |
 
 ## Mission
 
@@ -147,14 +161,14 @@ These items don't fit cleanly into another epic but block clean v1.0 sign-off. T
 
 ## Definition of done
 
-- [ ] All 7 stories accepted
-- [ ] /docs/mixins, /docs/install pass smoke tests against current cia source
-- [ ] cia.btn($bg:) state cascade fix verified across all 9 themes
-- [ ] /docs/composition page lives and is linked from main nav
-- [ ] MCP server has ≥80% line coverage via the new tests
-- [ ] `npm test` (or `npm run test:mcp`) runs MCP tests in CI
-- [ ] README.md MCP section is concise + /docs/mcp page absorbs the detail
-- [ ] No Round 8 audit findings remain open
+- [ ] All 7 stories accepted (5/7 done as of 2026-07-16)
+- [x] /docs/mixins, /docs/install pass smoke tests against current cia source (one stale `font-load` heading label on /docs/mixins)
+- [x] cia.btn($bg:) state cascade fix verified across all 9 themes
+- [x] /docs/composition page lives and is linked from main nav
+- [ ] MCP server has ≥80% line coverage via the new tests (**no MCP tests exist**)
+- [ ] `npm test` (or `npm run test:mcp`) runs MCP tests in CI (**not wired**)
+- [x] README.md MCP section is concise + /docs/mcp page absorbs the detail
+- [ ] No Round 8 audit findings remain open (audit fixes done; MCP test debt remains)
 
 ## Risks
 

@@ -1,5 +1,7 @@
 # Epic 1: Library Foundations
 
+> **STATUS — audited 2026-07-16 against `main` @ v0.8.2 (pre-1.0).** Foundations are **largely shipped**. In place and CI-gated: numbered sizing scale, the full token contract (`scripts/theme-contract.json`, ~123 tokens), the theme validator (`scripts/theme-validator.js`), the public-API validator (`scripts/validate-api.mjs`), the app-styles leak fix, and the pack/publish loop (the package is now at 0.8.2, well past the 0.6.1-specific Features 1.10–1.12). The SCSS↔TS token bridge (Feature 1.13) shipped as `scripts/generate-token-types.mjs` → `dist/tokens.d.ts` (exported at `./tokens`). **Not done:** the component depth audit (Feature 1.14) — `roadmap/component-audit.md` does not exist. The individual `- [ ]` acceptance boxes below are **stale** and were not flipped item-by-item; treat this banner as the source of truth.
+
 ## Summary
 This epic makes the SCSS library internally complete and theme-aware from end to end. It locks in a numbered sizing scale as the single source of truth, ensures every theme declares the full contract of tokens the library's mixins depend on, introduces a per-theme component-override map, adds auto-detected dark mode with manual override, and ships a token validator that prevents incomplete themes from ever reaching main. With this epic landed, any theme in the repo (or contributed downstream) is guaranteed to light up every component correctly, and the library stops silently falling back to defaults.
 

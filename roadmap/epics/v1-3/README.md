@@ -3,6 +3,8 @@
 **Target release:** v1.3.0 (~3-5 weeks after v1.2)
 **Theme:** Ecosystem hooks. Figma plugin (token sync), theme marketplace (community submissions), DTCG/Style Dictionary migration CLI, and `@cia/angular` (second framework recipe pack).
 
+> **Status: Not started (planned).** This is a post-v1.0 version — v1.0 has not shipped yet. No story in any epic below has begun; everything here is future work. Note: the DTCG bridge EPIC-03 surfaces (`scripts/dtcg-to-scss.mjs`) already exists internally, but the public `npx cia migrate dtcg` CLI has not been built. `@cia/angular` (EPIC-04) is additionally GATED on v1.1 EPIC-04 codegen proving out.
+
 ## Epics
 
 | # | Epic | Mission | Effort | Stories |

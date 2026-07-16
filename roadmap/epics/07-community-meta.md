@@ -1,5 +1,7 @@
 # Epic 7: Community & Project Meta
 
+> **STATUS — audited 2026-07-16 (v0.8.2). Mostly shipped.** Present at repo root / `.github/`: `CONTRIBUTING.md` (Feature 7.1), `CODE_OF_CONDUCT.md` (7.2), `SECURITY.md` (7.3), issue templates bug/feature/question/config + `theme_submission.yml` (7.4), `pull_request_template.md` (7.5), `VERSIONING.md` covering both SemVer and deprecation policy (7.7 / 7.8), and `CHANGELOG.md` (7.9). **Not shipped:** `.github/FUNDING.yml` (7.6), `MAINTAINERS.md` (7.13), a `brand/` assets folder (7.12), and an announcement kit under `roadmap/launch/` (7.11). GitHub Discussions enablement (7.10) and the Sponsor button can't be verified from the file tree. Per-criteria `- [ ]` boxes below are **stale**.
+
 ## Summary
 Make css-is-awesome feel like a welcoming, credible open-source project rather than one person's GitHub repo. Today the project ships LICENSE, ROADMAP, CHANGELOG, THEMING, and README and nothing else — no CONTRIBUTING, no Code of Conduct, no SECURITY contact, no issue or PR templates, no funding config, no versioning policy, no discussion channel. This epic writes the policies, templates, and community scaffolding that a would-be contributor, security researcher, sponsor, or evaluator expects to find on day one. The actual release automation lives in Epic 5; this epic is the documents and GitHub config those releases are governed by.
 

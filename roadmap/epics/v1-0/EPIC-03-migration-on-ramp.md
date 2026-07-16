@@ -1,8 +1,23 @@
 # EPIC 03 — Migration On-Ramp
 
-**Status:** Planned (v1.0)
+**Status:** ✅ SHIPPED — all 6 stories done (audited 2026-07-16, main @ 97f6ae3)
 **Effort estimate:** ~3-5 working days
 **Stories:** 6
+
+## Audited status — 2026-07-16 (main @ 97f6ae3)
+
+Both converters shipped and are wired into the `cia` bin. The `cia migrate tailwind|bootstrap` router lives at `bin/cia.cjs` (114 LOC); the two converters are `bin/migrate-tailwind.cjs` (832 LOC — parse + map + confidence report + `@include cia.theme()` writer) and `bin/migrate-bootstrap.cjs` (427 LOC). Docs pages exist at `/docs/migration-tailwind` and `/docs/migration-bootstrap`. Merged via PRs #6/#7/#8 (+ the scaffold merge).
+
+> Note: the header block comment at the top of `bin/migrate-tailwind.cjs` still says "PR 1 — parse + dump JSON to stdout"; that comment is stale — the mapping (US-03.1.3) and writer (US-03.1.4) code was added below it in later commits and is present in the file.
+
+| Story | Status | Evidence |
+|-------|--------|----------|
+| US-03.1.1 CLI scaffolding `cia migrate tailwind <path>` | ✅ DONE | `bin/cia.cjs` router + `bin` field `"cia": "bin/cia.cjs"`; auto-detects `tailwind.config.*` |
+| US-03.1.2 Parse Tailwind config + extract theme | ✅ DONE | `bin/migrate-tailwind.cjs` config load + extraction |
+| US-03.1.3 Map Tailwind tokens → cia contract | ✅ DONE | Mapping + HIGH/MEDIUM/LOW/UNMAPPED confidence report in `bin/migrate-tailwind.cjs` (PR #6, commit 18764ac) |
+| US-03.1.4 Output cia `theme.scss` | ✅ DONE | `@include cia.theme()` writer (PR #7, commit ed68c1f) |
+| US-03.2.1 CLI `cia migrate bootstrap <path>` | ✅ DONE | `bin/migrate-bootstrap.cjs` + router entry (PR #8) |
+| US-03.2.2 Map Bootstrap variables → cia tokens | ✅ DONE | Parse + map + write in `bin/migrate-bootstrap.cjs` (PR #8, commit 50d4042) |
 
 ## Mission
 
@@ -137,14 +152,14 @@ If this lands cleanly, every cia launch post can include "if you're already on T
 
 ## Definition of done
 
-- [ ] All 6 stories accepted
-- [ ] `npx cia migrate tailwind ./tailwind.config.js` produces a valid theme.scss
-- [ ] `npx cia migrate bootstrap ./_variables.scss` produces a valid theme.scss
-- [ ] Both pass `npm run validate-themes` (FAIL-by-default — if Tailwind/Bootstrap colors fail WCAG, output documents it)
-- [ ] Confidence report printed to stdout summarizes HIGH/MEDIUM/LOW/UNMAPPED counts
-- [ ] CLI documented in README.md + a new `/docs/migrate` page
-- [ ] At least 1 real Tailwind config (e.g. shadcn's default) and 1 Bootstrap variables file tested end-to-end
-- [ ] CLI script lives in `mcp/` or `bin/` per `files` manifest — does NOT violate "zero JS in npm package" (CLI binaries are explicitly allowed via `bin` field, like the MCP server)
+- [x] All 6 stories accepted
+- [x] `npx cia migrate tailwind ./tailwind.config.js` produces a valid theme.scss
+- [x] `npx cia migrate bootstrap ./_variables.scss` produces a valid theme.scss
+- [x] Both pass `npm run validate-themes` (FAIL-by-default — if Tailwind/Bootstrap colors fail WCAG, output documents it)
+- [x] Confidence report printed to stdout summarizes HIGH/MEDIUM/LOW/UNMAPPED counts
+- [x] CLI documented in README.md + docs pages (`/docs/migration-tailwind`, `/docs/migration-bootstrap`)
+- [x] At least 1 real Tailwind config (e.g. shadcn's default) and 1 Bootstrap variables file tested end-to-end
+- [x] CLI script lives in `mcp/` or `bin/` per `files` manifest — does NOT violate "zero JS in npm package" (CLI binaries are explicitly allowed via `bin` field, like the MCP server)
 
 ## Risks
 

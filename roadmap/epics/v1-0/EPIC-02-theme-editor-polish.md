@@ -1,8 +1,25 @@
 # EPIC 02 — Theme Editor Polish
 
-**Status:** Planned (v1.0)
+**Status:** 🟡 PARTIAL — share + name + .css download shipped; .scss download, contrast validator, and full reset/diff outstanding (audited 2026-07-16, main @ 97f6ae3)
 **Effort estimate:** ~3-4 working days
 **Stories:** 9
+
+## Audited status — 2026-07-16 (main @ 97f6ae3)
+
+The dock lives at `src/components/ThemeEditorDock/ThemeEditorDock.tsx`. **Share via URL is fully shipped** (encode + copy + hydrate, commit 656f1a4). **Download ships `.css` only** — the `.scss` / `@include cia.theme()` export was never added. The **inline contrast validator (F2.3) was never built** (no `src/lib/theme-validator-browser.ts`, no contrast/ratio/WCAG UI in the dock). Reset is **global-only**; the diff view is a passive always-on "modified" badge, not the specced toggle.
+
+| Story | Status | Evidence |
+|-------|--------|----------|
+| US-02.1.1 Download `mytheme.scss` | ⛔ NOT SHIPPED | Dock only has `buildDownloadCSS` + a single "↓ Download" button that emits `.css`; no SCSS/`@include cia.theme()` serializer |
+| US-02.1.2 Download `mytheme.css` | ✅ DONE | `buildDownloadCSS()` + `triggerDownload('<name>.css', ...)`, matches `public/themes/<name>/theme.css` shape |
+| US-02.1.3 Theme name input + sanitizer | ✅ DONE | `sanitizeName()`, name input, default `<family>-custom` |
+| US-02.2.1 Encode overrides to URL | ✅ DONE | `src/lib/theme-share.ts` (CompressionStream + base64, `?t=`), `replaceState` debounced |
+| US-02.2.2 Copy share link button | ✅ DONE | `copyShare()` + `copyShareLink()`, confirmation toast |
+| US-02.2.3 Loading shared URL hydrates | ✅ DONE | Decode on mount, switches to sender's family, graceful decode-fail toast |
+| US-02.3.1 In-browser contrast validator | ⛔ NOT SHIPPED | No `theme-validator-browser.ts`; no live PASS/FAIL/DECORATIVE badges |
+| US-02.3.2 Contrast ratio + WCAG status | ⛔ NOT SHIPPED | Depends on 02.3.1; no ratio tooltip anywhere in the dock |
+| US-02.4.1 Reset (row / group / global) | 🟡 PARTIAL | Only a global `reset()` + single "Reset" button; no per-row/per-group reset, no confirm modal |
+| US-02.4.2 Show-diff toggle | 🟡 PARTIAL | Modified rows show an always-on `●`/"modified" badge; no toggle, no sessionStorage persistence, no per-group count |
 
 ## Mission
 
@@ -195,13 +212,13 @@ The theme editor is one of cia's three v1.0 differentiators. Tailwind Play does 
 
 ## Definition of done
 
-- [ ] All 9 stories accepted
-- [ ] `/themes` editor exports a .scss file that compiles + passes validate-themes
-- [ ] `/themes` editor exports a .css file equivalent to existing `public/themes/<name>/theme.css` shape
-- [ ] Share URLs round-trip across browsers
-- [ ] Live contrast validation runs on every color change
-- [ ] Reset + diff controls work at row / group / global scope
-- [ ] No regression in existing localStorage persistence behavior
+- [ ] All 9 stories accepted (5/9 done, 2 partial as of 2026-07-16)
+- [ ] `/themes` editor exports a .scss file that compiles + passes validate-themes (**.scss export not built**)
+- [x] `/themes` editor exports a .css file equivalent to existing `public/themes/<name>/theme.css` shape
+- [x] Share URLs round-trip across browsers
+- [ ] Live contrast validation runs on every color change (**not built**)
+- [ ] Reset + diff controls work at row / group / global scope (**global reset only; diff is passive badge**)
+- [x] No regression in existing localStorage persistence behavior
 
 ## Risks
 

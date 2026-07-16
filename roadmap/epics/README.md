@@ -7,6 +7,8 @@
 
 Detailed breakdown of the work needed to take css-is-awesome from v1.0 to v2.0. Each epic is a thematic slice of the system. `ROADMAP.md` at the repo root is the phase/milestone view; these files are the work-item view.
 
+> **Audit note (2026-07-16).** Reconciled against `main` @ **v0.8.2 (pre-1.0)**. Legacy epics **01 / 02 / 04 / 06 / 07 are largely shipped**; **05 is partial** (Storybook killed; Jest, Lighthouse, and bundle-size gates not built); **03 is SUPERSEDED** (no React component package — cia ships zero JS; `src/components/` is the docs-site reference only). Each legacy epic file now carries a **STATUS banner** under its title with the per-feature detail; the individual `- [ ]` acceptance boxes inside those files are **stale** and were not flipped item-by-item. The active, accurate backlog is the **v1-0/ sprint folder** ([`v1-0/README.md`](./v1-0/README.md)).
+
 ## Versioned epic folders (current source of truth)
 
 | Release | Theme | Folder | Stories | Effort | Status |
@@ -114,12 +116,12 @@ One paragraph. What this epic delivers and why it matters.
 
 ## The original seven epics
 
-1. [Library Foundations](01-library-foundations.md) — token coverage, sizing scale, `$theme-components` map, theme validator, dark-mode auto-detect *(mostly shipped)*
-2. [Themes & Icons](02-themes-and-icons.md) — per-theme icon packs, preview thumbnails, authoring guide, community submission, contrast audit; add-ons feature *(mostly shipped; community submission now in [v1.3 EPIC-02 theme marketplace](./v1-3/EPIC-02-theme-marketplace.md))*
-3. [React Component Library](03-react-components.md) — companion React component library — Gremlin UI *(REVISED 2026-05-23: NO separate component library; boiler-project-ai is the showcase. See [v1.1 EPIC-04 @cia/react codegen](./v1-1/EPIC-04-framework-pack-react.md) for the new approach.)*
-4. [Documentation Site](04-documentation-site.md) — real `/docs` content + site UX *(shipped)*
-5. [Quality & Delivery](05-quality-delivery.md) — tests, a11y, visual regression, Lighthouse, bundle budget, CI, deploy, release automation, Storybook, starter templates *(mostly shipped; Storybook explicitly killed per memory)*
-6. [AI Integration](06-ai-integration.md) — MCP server, CLI, JSON tokens, AI prompt templates *(MCP shipped; CLI absorbed into [v1.0 EPIC-03 migration](./v1-0/EPIC-03-migration-on-ramp.md))*
-7. [Community & Project Meta](07-community-meta.md) — CONTRIBUTING, CoC, SECURITY, issue/PR templates, SemVer policy *(mostly shipped)*
+1. [Library Foundations](01-library-foundations.md) — token coverage, sizing scale, `$theme-components` map, theme validator, dark-mode auto-detect *(largely shipped; only the component-depth audit, `roadmap/component-audit.md`, is outstanding)*
+2. [Themes & Icons](02-themes-and-icons.md) — per-theme icon packs, preview thumbnails, authoring guide, community submission, contrast audit; add-ons feature *(largely shipped — 21 theme folders, light/dark pairing + naming migration, Lucide core pack, contrast + icon validators, `/themes` editor; outstanding: Phosphor/Heroicons packs, per-theme size CI, add-ons layer. Community submission also tracked in [v1.3 EPIC-02 theme marketplace](./v1-3/EPIC-02-theme-marketplace.md))*
+3. [React Component Library](03-react-components.md) — companion React component library — Gremlin UI *(**SUPERSEDED** 2026-05-23: NO separate component library ships; cia is zero-JS. `src/components/` is the docs-site reference. See the epic's STATUS banner and [v1.1 EPIC-04 @cia/react codegen](./v1-1/EPIC-04-framework-pack-react.md) for the codegen-if-at-all approach.)*
+4. [Documentation Site](04-documentation-site.md) — real `/docs` content + site UX *(content shipped; chrome gaps — no site search, no custom 404, no OG images)*
+5. [Quality & Delivery](05-quality-delivery.md) — tests, a11y, visual regression, Lighthouse, bundle budget, CI, deploy, release automation, Storybook, starter templates *(**partial**: CI + Playwright a11y/smoke/visual + release automation + Pages deploy shipped; Storybook explicitly killed; Jest unit harness, Lighthouse baseline, and bundle-size gates NOT built)*
+6. [AI Integration](06-ai-integration.md) — MCP server, CLI, JSON tokens, AI prompt templates *(**shipped**: MCP server, `cia` CLI (`bin/cia.cjs`), JSON tokens, `llm.txt`, AGENTS/CLAUDE/GEMINI files; outstanding: prompt-template folder, hosted bots, unified `/docs/ai` page)*
+7. [Community & Project Meta](07-community-meta.md) — CONTRIBUTING, CoC, SECURITY, issue/PR templates, SemVer policy *(mostly shipped; outstanding: FUNDING.yml, MAINTAINERS.md, brand assets, announcement kit)*
 
 See also: [`roadmap/product-architecture.md`](../product-architecture.md) for the (also revised) umbrella product split.

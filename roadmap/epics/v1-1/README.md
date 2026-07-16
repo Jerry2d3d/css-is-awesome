@@ -3,6 +3,8 @@
 **Target release:** v1.1.0 (~4-6 weeks after v1.0 ships)
 **Theme:** Capitalize on v1.0 recipes momentum. Expand the recipe catalog, ship the install wizard, scaffold the `@cia/a11y-recipes` add-on, and prove the recipes → framework-pack codegen pattern with `@cia/react` v0.1.
 
+> **Status: Not started (planned).** This is a post-v1.0 version — v1.0 has not shipped yet. No story in any epic below has begun; everything here is future work.
+
 ## Epics
 
 | # | Epic | Mission | Effort | Stories |

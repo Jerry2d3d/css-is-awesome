@@ -14,15 +14,24 @@ The v1.0 release reframes cia as **humans-first, AI-second** and ships the recip
 
 ## v1.0 epics
 
-| # | Epic | Mission | Effort | Stories |
-|---|---|---|---|---|
-| [01](./EPIC-01-recipes-book.md) | **Recipes Book** | Ship the recipe format + first 5 recipes (dialog, combobox, datepicker, data-table, command-palette). Expose via MCP. | ~5-7 days | 13 |
-| [02](./EPIC-02-theme-editor-polish.md) | **Theme Editor Polish** | Download `mytheme.scss`/`.css`, share URL, inline contrast validator, reset/diff view. | ~3-4 days | 9 |
-| [03](./EPIC-03-migration-on-ramp.md) | **Migration On-Ramp** | `npx cia migrate` converts Tailwind config + Bootstrap variables into a cia theme. | ~3-5 days | 6 |
-| [04](./EPIC-04-playground.md) | **Playground** | `/playground` page on the cia website — paste SCSS, see live rendered output, share via URL. | ~4-6 days | 7 |
-| [05](./EPIC-05-bug-fixes-mcp-polish.md) | **Bug Fixes + MCP Polish** | Round 8 audit cleanup, MCP server tests, /docs/composition page. | ~3-4 days | 7 |
+**Progress (audited 2026-07-16, main @ 97f6ae3): 24 of 42 stories shipped.** One epic done, three partial, one not started.
 
-**Total v1.0 effort:** ~18-26 focused working days. **Total stories:** 42.
+| # | Epic | Mission | Effort | Stories | Status (2026-07-16) |
+|---|---|---|---|---|---|
+| [01](./EPIC-01-recipes-book.md) | **Recipes Book** | Ship the recipe format + first 5 recipes (dialog, combobox, datepicker, data-table, command-palette). Expose via MCP. | ~5-7 days | 13 | 🟡 PARTIAL — 7/13 (schema, catalog, dynamic route, MCP done; only 2/5 recipes shipped + 1 bonus print-to-pdf; authoring page & validate-recipes not built) |
+| [02](./EPIC-02-theme-editor-polish.md) | **Theme Editor Polish** | Download `mytheme.scss`/`.css`, share URL, inline contrast validator, reset/diff view. | ~3-4 days | 9 | 🟡 PARTIAL — 5/9 (share URL + name + .css download done; .scss download, contrast validator not built; reset/diff partial) |
+| [03](./EPIC-03-migration-on-ramp.md) | **Migration On-Ramp** | `npx cia migrate` converts Tailwind config + Bootstrap variables into a cia theme. | ~3-5 days | 6 | ✅ DONE — 6/6 (both converters + docs pages shipped, PRs #6/#7/#8) |
+| [04](./EPIC-04-playground.md) | **Playground** | `/playground` page on the cia website — paste SCSS, see live rendered output, share via URL. | ~4-6 days | 7 | ⛔ NOT STARTED — 0/7 (no `/playground` route exists) |
+| [05](./EPIC-05-bug-fixes-mcp-polish.md) | **Bug Fixes + MCP Polish** | Round 8 audit cleanup, MCP server tests, /docs/composition page. | ~3-4 days | 7 | 🟡 PARTIAL — 5/7 (all audit fixes + /docs/composition + /docs/mcp done; MCP server tests not built) |
+
+**Total v1.0 effort:** ~18-26 focused working days. **Total stories:** 42 (**24 shipped, 18 remaining** as of 2026-07-16).
+
+### Remaining v1.0 work at a glance
+
+- **EPIC-04 Playground** — entire epic (7 stories), not started.
+- **EPIC-01** — datepicker, data-table, command-palette recipes; authoring guide page; `validate-recipes` lint script.
+- **EPIC-02** — `.scss` theme download; inline contrast validator (F2.3); per-row/per-group reset; diff toggle.
+- **EPIC-05** — MCP server test suite (F5.2).
 
 ## What's NOT in v1.0 (deferred — see [post-v1-ideas.md](./post-v1-ideas.md))
 
@@ -34,7 +43,7 @@ The v1.0 release reframes cia as **humans-first, AI-second** and ships the recip
 - Figma plugin
 - RTL audit
 - Theme marketplace
-- Print recipe
+- ~~Print recipe~~ — **pulled forward and shipped in v1.0** as `scss/recipes/print-to-pdf.md` (PR #10)
 - Form validation recipes
 - i18n recipe
 - Animation orchestration recipes

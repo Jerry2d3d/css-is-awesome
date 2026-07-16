@@ -1,8 +1,30 @@
 # EPIC 01 — Recipes Book
 
-**Status:** Planned (v1.0)
+**Status:** 🟡 PARTIAL — 7 of 13 stories shipped (audited 2026-07-16, main @ 97f6ae3)
 **Effort estimate:** ~5-7 working days
 **Stories:** 13
+
+## Audited status — 2026-07-16 (main @ 97f6ae3)
+
+The recipe format, catalog, dynamic route, and MCP exposure all shipped. Only **2 of the 5 planned recipes** landed (dialog, combobox); a bonus `print-to-pdf` recipe shipped instead of the other three. The authoring docs page and the `validate-recipes` lint script were never built.
+
+| Story | Status | Evidence |
+|-------|--------|----------|
+| US-01.1.1 Recipe markdown schema | ✅ DONE | `scss/recipes/README.md` documents frontmatter + required H2s; `scss/recipes/_recipe-template.md` present |
+| US-01.1.2 Authoring guide page | ⛔ NOT SHIPPED | No `src/app/docs/recipes/authoring/` route exists |
+| US-01.1.3 `validate-recipes` lint script | ⛔ NOT SHIPPED | No `scripts/recipe-validator.mjs`; no `validate-recipes` npm script (README still describes it as future work) |
+| US-01.2.1 Recipe: dialog | ✅ DONE | `scss/recipes/dialog.md` — all 4 framework examples (React/Vue/Svelte/Vanilla) + a11y checklist |
+| US-01.2.2 Recipe: combobox | ✅ DONE | `scss/recipes/combobox.md` (PR #9) — datalist + ARIA pattern, 4 framework examples |
+| US-01.2.3 Recipe: datepicker | ⛔ NOT SHIPPED | No `scss/recipes/datepicker.md` |
+| US-01.2.4 Recipe: data-table | ⛔ NOT SHIPPED | No `scss/recipes/data-table.md` (an inline data-table *example* exists in the catalog page, not a recipe file) |
+| US-01.2.5 Recipe: command-palette | ⛔ NOT SHIPPED | No `scss/recipes/command-palette.md` |
+| US-01.2.6 Each recipe ships 4 framework samples | 🟡 PARTIAL | Satisfied by the 2 shipped recipes; can't be "all 5" until 01.2.3–01.2.5 ship |
+| US-01.3.1 Recipe catalog page | ✅ DONE | `src/app/docs/recipes/page.tsx` + `RecipesGallery.tsx` list markdown recipes with category/complexity chips |
+| US-01.3.2 Individual recipe pages (dynamic route) | ✅ DONE | `src/app/docs/recipes/[slug]/page.tsx` (PR #11, commit 128bb7b) with copy buttons |
+| US-01.4.1 MCP list_recipes / get_recipe | ✅ DONE | `mcp/server.cjs` registers `list_recipes` + `get_recipe` |
+| US-01.4.2 assemble_prompt recipe intent | ✅ DONE | `mcp/server.cjs` `assemble_prompt` handles `recipe:<name>` intent |
+
+**Bonus (not in original plan):** `scss/recipes/print-to-pdf.md` shipped (PR #10). The `datepicker`, `data-table`, and `command-palette` recipes remain the outstanding v1.0 work for this epic.
 
 ## Mission
 
@@ -261,13 +283,13 @@ Recipes are also cia's structural answer to the shadcn-graduate problem: they gi
 
 ## Definition of done
 
-- [ ] All 13 stories accepted
-- [ ] Recipe schema documented + authoring guide live
-- [ ] 5 recipes shipped (dialog, combobox, datepicker, data-table, command-palette)
-- [ ] All 5 recipes include React + Vue + Svelte + vanilla examples
-- [ ] `npm run validate-recipes` passes in CI
-- [ ] `/docs/recipes` catalog page lives + linked from main nav
-- [ ] MCP server returns recipes via list/get/assemble_prompt
+- [ ] All 13 stories accepted (7/13 done as of 2026-07-16)
+- [ ] Recipe schema documented + authoring guide live (schema ✅; authoring page ⛔)
+- [ ] 5 recipes shipped (dialog, combobox, datepicker, data-table, command-palette) — **2/5 shipped** (dialog, combobox); +1 bonus (print-to-pdf)
+- [ ] All 5 recipes include React + Vue + Svelte + vanilla examples (true for the 2 shipped)
+- [ ] `npm run validate-recipes` passes in CI (script not built)
+- [x] `/docs/recipes` catalog page lives + linked from main nav
+- [x] MCP server returns recipes via list/get/assemble_prompt
 - [ ] At least 1 external AI agent (Claude Code) verified end-to-end fetching a recipe
 
 ## Risks

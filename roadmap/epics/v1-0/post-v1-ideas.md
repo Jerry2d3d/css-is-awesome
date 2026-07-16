@@ -155,9 +155,11 @@ cia animation mixins handle single-element animations well. Multi-element timeli
 
 **Effort:** ~3-5 days for 3 orchestration recipes.
 
-### Print stylesheet recipe
+### Print stylesheet recipe — ✅ SHIPPED IN v1.0
 
 Simple recipe: `@media print` + cia tokens for ink/paper. Single recipe, high perceived polish.
+
+**Status (2026-07-16):** Pulled forward and shipped in v1.0 as `scss/recipes/print-to-pdf.md` (PR #10) plus print mixins in the SCSS. No longer a post-v1.0 item.
 
 **Effort:** ~4 hours.
 

@@ -1,8 +1,14 @@
 # EPIC 04 — Playground
 
-**Status:** Planned (v1.0)
+**Status:** ⛔ NOT STARTED — 0 of 7 stories shipped (audited 2026-07-16, main @ 97f6ae3)
 **Effort estimate:** ~4-6 working days
 **Stories:** 7
+
+> ## ⛔ Status: NOT STARTED
+>
+> As of 2026-07-16 (main @ 97f6ae3) **no playground work exists**: there is no `/playground` route (no `src/app/**/playground/` directory), no in-browser Sass compiler wiring, no Monaco integration, and no playground share-URL code. This epic is entirely outstanding v1.0 scope. Every story below (US-04.1.1 through US-04.3.1) is unimplemented.
+>
+> This file is the authoritative spec for that remaining work — what the playground is, why it matters, and the acceptance criteria to build against.
 
 ## Mission
 
