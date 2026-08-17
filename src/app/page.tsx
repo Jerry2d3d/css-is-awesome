@@ -47,7 +47,7 @@ export default function Home() {
           <div className={styles.moatColumns}>
             <div className={styles.moatCol}>
               <header>
-                <strong>cia</strong> · 12 LOC · 0 KB JS
+                <strong>cia</strong> · 8 LOC · 0 KB JS
               </header>
               <pre><code>{`<details name="faq" class="cia-accordion">
   <summary>Question</summary>
@@ -62,16 +62,18 @@ export default function Home() {
               <header>
                 <strong>Tailwind + Headless UI</strong> · 70 LOC · 22 KB JS
               </header>
-              <pre><code>{`import { Disclosure } from '@headlessui/react'
+              <pre><code>{`import {
+  Disclosure, DisclosureButton, DisclosurePanel,
+} from '@headlessui/react'
 
 <div className="space-y-2">
   <Disclosure>
-    <Disclosure.Button className="…">
+    <DisclosureButton className="…">
       Question
-    </Disclosure.Button>
-    <Disclosure.Panel className="…">
+    </DisclosureButton>
+    <DisclosurePanel className="…">
       Answer
-    </Disclosure.Panel>
+    </DisclosurePanel>
   </Disclosure>
   {/* …another Disclosure, manual close-others state */}
 </div>`}</code></pre>
