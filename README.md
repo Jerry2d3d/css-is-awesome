@@ -48,8 +48,8 @@ Author your own class names; the mixin handles the styling. Mixins for buttons, 
 ### 2. Drop-in CSS (zero build)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/public/themes/boilerplate/theme.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/dist/css-is-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@1/public/themes/boilerplate/theme.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css">
 <html data-theme="boilerplate">
 ```
 
@@ -215,7 +215,7 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 | `npm run validate-api` | Assert the `css-is-awesome/api` barrel stays zero-emit |
 | `npm test` | Playwright suite — axe a11y checks + per-theme visual snapshots |
 
-## Size (v0.8 gzipped)
+## Size (gzipped)
 
 | Bundle | Size | Use case |
 |---|---|---|
@@ -227,7 +227,11 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 
 ## Status
 
-Pre-1.0. v0.8 is the mixin-first reframe — twelve mixin renames, theme system collapsed from 14 files to 9 single-file themes, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities. The npm package now ships ZERO JavaScript by hard rule. See [CHANGELOG.md](./CHANGELOG.md) for the breaking-change list and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 upgrade path.
+**1.0.0.** The mixin API, functions, token contract, and theme architecture are stable and under strict SemVer — breaking changes require a major bump. See [`VERSIONING.md`](./VERSIONING.md) for the policy.
+
+The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 30-tool MCP server. The npm package ships ZERO JavaScript by hard rule.
+
+See [CHANGELOG.md](./CHANGELOG.md) for the full history and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 upgrade path.
 
 For the deep authoring reference (tier decisions, mixin contracts, agent rules), read [`AGENTS.md`](./AGENTS.md).
 

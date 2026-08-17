@@ -11,6 +11,16 @@ automated releases.
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-08-17 — Mixin-first, stable
+
+First 1.0. The API surface (mixins, functions, token contract, theme
+architecture) is now under strict SemVer — breaking changes require a major
+bump. See [`VERSIONING.md`](./VERSIONING.md) for the policy.
+
+Nothing in the library changed in this release; 1.0.0 marks the point at which
+the 0.8 mixin-first surface is treated as stable. Everything below shipped
+during the 0.9/1.0 development window.
+
 ### Added
 
 - **`css-is-awesome/api` — zero-emit authoring barrel for per-component styles.**

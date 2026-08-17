@@ -2,7 +2,7 @@
 
 Thanks for helping keep **css-is-awesome** and its users safe. This document describes how to report vulnerabilities and what to expect in return.
 
-css-is-awesome is a pre-1.0 CSS / SCSS design system plus a Next.js docs site. The security surface is small: there is no authentication, no server-side data, and no user-input processing. The realistic concerns are:
+css-is-awesome is a CSS / SCSS design system plus a Next.js docs site. The security surface is small: there is no authentication, no server-side data, and no user-input processing. The realistic concerns are:
 
 - **XSS via user-contributed themes or icons.** Malicious CSS (`url(...)`, `content:`, animation-driven exfiltration) or crafted SVG (`<script>`, `on*` handlers, embedded foreignObject) shipped inside a theme file or icon set.
 - **Dependency vulnerabilities.** Issues in our direct or transitive npm dependencies.
@@ -11,13 +11,13 @@ css-is-awesome is a pre-1.0 CSS / SCSS design system plus a Next.js docs site. T
 
 ## Supported versions
 
-Security fixes land on `main` and the latest release line. We are pre-1.0, so older tagged releases are **not** backported.
+Security fixes land on `main` and the current 1.x release line. Pre-1.0 tags are **not** backported.
 
 | Version | Supported |
 |---------|-----------|
-| `main` (unreleased) | Yes |
-| Pre-1.0 tagged releases | Best-effort, no backports |
-| 1.0+ (when released) | Yes — details will be added to this policy |
+| `main` | Yes |
+| 1.x | Yes |
+| Pre-1.0 tags (0.x) | No — upgrade to 1.x |
 
 Once 1.0 ships, this table will be updated to describe the support window for each minor line.
 

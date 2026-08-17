@@ -49,9 +49,9 @@ export default function InstallPage() {
       <Example>
         <Example.Code><span className="tok-com">{"<!-- in your <head> -->"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span>
-{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/public/theme.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/public/theme.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span>
-{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/dist/css-is-awesome.min.css"</span><span className="tok-sel">{">"}</span></Example.Code>
+{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css"</span><span className="tok-sel">{">"}</span></Example.Code>
       </Example>
       <p>Verify by dropping a button into the body — if it renders with the theme&rsquo;s primary color, you&rsquo;re wired up.</p>
       <Example>
@@ -68,17 +68,17 @@ export default function InstallPage() {
       </p>
       <Example>
         <Example.Code><span className="tok-com">{"# fetch the sha384 for the version you're pinning"}</span>
-{"\n"}<span className="tok-sel">curl</span> <span className="tok-val">https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/dist/css-is-awesome.min.css.sha384</span>
-{"\n"}<span className="tok-sel">curl</span> <span className="tok-val">https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/public/theme.css.sha384</span></Example.Code>
+{"\n"}<span className="tok-sel">curl</span> <span className="tok-val">https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css.sha384</span>
+{"\n"}<span className="tok-sel">curl</span> <span className="tok-val">https://cdn.jsdelivr.net/npm/css-is-awesome@1/public/theme.css.sha384</span></Example.Code>
       </Example>
       <Example>
         <Example.Code><span className="tok-com">{"<!-- pinned <link> tags with integrity + crossorigin -->"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span>
-{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/public/theme.css"</span>
+{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/public/theme.css"</span>
 {"\n"}      <span className="tok-prop">integrity</span>=<span className="tok-val">"sha384-…paste from above…"</span>
 {"\n"}      <span className="tok-prop">crossorigin</span>=<span className="tok-val">"anonymous"</span><span className="tok-sel">{">"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span>
-{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@0.8/dist/css-is-awesome.min.css"</span>
+{"\n"}      <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css"</span>
 {"\n"}      <span className="tok-prop">integrity</span>=<span className="tok-val">"sha384-…paste from above…"</span>
 {"\n"}      <span className="tok-prop">crossorigin</span>=<span className="tok-val">"anonymous"</span><span className="tok-sel">{">"}</span></Example.Code>
       </Example>

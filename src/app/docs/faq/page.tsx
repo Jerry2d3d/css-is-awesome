@@ -195,10 +195,9 @@ export default function FaqPage() {
 
       <h2 id="upgrade-policy">How do you handle breaking changes?</h2>
       <p>
-        Pre-1.0 we reserve the right to make breaking changes in MINOR
-        releases — the API surface is still settling. Every breaking
-        change lands with a loud entry in <code>CHANGELOG.md</code> and,
-        where we can, a codemod.
+        As of 1.0 we follow SemVer strictly: breaking changes only ever
+        land in a MAJOR release. Every breaking change lands with a loud
+        entry in <code>CHANGELOG.md</code> and, where we can, a codemod.
       </p>
       <p>
         Post-1.0 we follow SemVer strictly. Breaking changes require a
