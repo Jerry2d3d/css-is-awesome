@@ -1,71 +1,32 @@
-import styles from "./page.module.scss";
+import type { Metadata } from "next";
+import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
-import Post from "@/components/Post";
-import type { PostProps } from "@/components/Post";
+import { getPostIndex } from "@/lib/blog";
+import styles from "./page.module.scss";
 
-const POSTS: PostProps[] = [
-  {
-    date: "2026 · Apr 14",
-    tag: "Theme",
-    title: "The Sketchbook theme is a second Zen.",
-    href: "#",
-    excerpt:
-      "The first Zen is a clean sheet of paper. The second is the same sheet after someone started drawing on it — construction lines visible, script captions in the margin, a draft stamp in the corner. Same tokens. More character.",
-  },
-  {
-    date: "2026 · Apr 02",
-    tag: "Themes",
-    title: "Five voices, one system.",
-    href: "#",
-    excerpt:
-      "Zen, Bricks, Brutalist, Terminal, Blueprint. Same HTML, five stylesheets, five very different products. Notes on how keeping the HTML still forces the system to prove itself.",
-  },
-  {
-    date: "2026 · Mar 21",
-    tag: "Color",
-    title: "Why the accent is indigo (藍), not blue.",
-    href: "#",
-    excerpt:
-      "Japanese indigo dye is cooler, deeper, and carries a history that \"blue\" in CSS land doesn't. A short post on picking an accent that doesn't look like every other design system on the internet.",
-  },
-  {
-    date: "2026 · Mar 09",
-    tag: "Experiments",
-    title: "Container queries are finally boring.",
-    href: "#",
-    excerpt:
-      "After years of waiting, container queries hit \"I don't think about them\" status. A quick look at where the system uses them and where it still prefers the media-query escape hatch.",
-  },
-  {
-    date: "2026 · Feb 26",
-    tag: "Meta",
-    title: "Why the overflow stays.",
-    href: "#",
-    excerpt:
-      "The CSS IS AWESOME meme works because it's honest. Most systems would patch the overflow away. This one keeps it — and I want to talk about why that matters more than it sounds.",
-  },
-  {
-    date: "2026 · Feb 12",
-    tag: "CLI",
-    title: "Planning a CLI and an MCP server.",
-    href: "#",
-    excerpt: (
-      <>
-        Agents are going to touch design systems next. Early sketch of a companion CLI (<code>cia</code>) and an MCP server that exposes tokens and mixins as tools — so ChatGPT, Claude, and Gemini can actually reason about this system, not just autocomplete around it.
-      </>
-    ),
-  },
-  {
-    date: "2026 · Jan 28",
-    tag: "Release",
-    title: "v0.1.0 — the first real draft.",
-    href: "#",
-    excerpt:
-      "Shipped the first npm release. Tokens, light/dark theming, a large mixin API, and Figma tokens that stay in sync. Here's what's inside, what almost made it, and what's next.",
-  },
-];
+export const metadata: Metadata = {
+  title: "Blog — css-is-awesome",
+  description:
+    "Notes from building a mixin-first SCSS design system — decisions, dead ends, and the occasional post-mortem.",
+};
+
+function formatDate(iso: string | null): string | null {
+  if (!iso) return null;
+  const d = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export default function BlogPage() {
+  // Read from src/content/blog at build time. Previously this array was seven
+  // hardcoded stubs with href="#" — every one of them a dead link.
+  const posts = getPostIndex();
+
   return (
     <>
       <SiteHeader current="blog" />
@@ -74,14 +35,46 @@ export default function BlogPage() {
         <section className={styles.hero}>
           <p className={styles.eyebrow}>the sketchbook</p>
           <h1>Notes from the margins.</h1>
-          <p>Updates, experiments, and small ideas from building the system. New posts when there's something worth saying.</p>
+          <p>
+            Decisions, dead ends, and the occasional post-mortem from building
+            the system. New posts when there&apos;s something worth saying.
+          </p>
         </section>
 
-        <section className={styles.postList}>
-          {POSTS.map((p) => (
-            <Post key={p.title as string} {...p} />
-          ))}
-        </section>
+        {posts.length === 0 ? (
+          <p className={styles.empty}>No posts yet.</p>
+        ) : (
+          <section className={styles.postList}>
+            {posts.map((p) => {
+              const published = formatDate(p.publishDate);
+              return (
+                <article key={p.slug} className={styles.card}>
+                  <p className={styles.cardMeta}>
+                    {p.category && <span className={styles.cat}>{p.category}</span>}
+                    {published && (
+                      <time dateTime={p.publishDate ?? undefined}>{published}</time>
+                    )}
+                    {p.readingTime && <span>{p.readingTime}</span>}
+                  </p>
+
+                  <h2 className={styles.cardTitle}>
+                    <Link href={`/blog/${p.slug}`}>{p.title}</Link>
+                  </h2>
+
+                  {p.excerpt && <p className={styles.cardExcerpt}>{p.excerpt}</p>}
+
+                  {p.tags.length > 0 && (
+                    <ul className={styles.tags}>
+                      {p.tags.map((t) => (
+                        <li key={t}>{t}</li>
+                      ))}
+                    </ul>
+                  )}
+                </article>
+              );
+            })}
+          </section>
+        )}
       </main>
     </>
   );
