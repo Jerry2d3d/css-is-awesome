@@ -1,0 +1,73 @@
+name: Update visual snapshots
+
+# Visual baselines are platform-specific (see snapshotPathTemplate in
+# playwright.config.ts — it carries {platform}). Baselines generated on a dev
+# machine are win32; CI runs linux and needs its own set. Generating them
+# locally would require Docker or WSL, so this job produces them on the exact
+# runner CI uses and commits them back.
+#
+# Run it manually from the Actions tab whenever a deliberate visual change
+# lands. It is never triggered automatically — auto-updating baselines would
+# defeat the point of visual regression testing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to regenerate baselines on
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  update-snapshots:
+    name: Regenerate linux baselines
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Build docs site (Next.js static export)
+        run: npm run build
+
+      # --update-snapshots rewrites any baseline that differs and creates any
+      # that are missing. Non-visual specs are unaffected by the flag.
+      - name: Regenerate snapshots
+        run: npm run test:update-snapshots
+
+      - name: Commit updated baselines
+        run: |
+          if git diff --quiet -- tests/__screenshots__; then
+            echo "No baseline changes — nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/__screenshots__
+          git commit -m "chore(test): regenerate linux visual baselines [skip ci]"
+          git push
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
