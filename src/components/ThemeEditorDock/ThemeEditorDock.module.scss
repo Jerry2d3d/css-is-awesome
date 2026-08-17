@@ -1,10 +1,13 @@
 /* Theme Editor Dock — bottom-right pill + right-edge slide-out panel.
    All visual tokens come from the active cia theme so the dock itself
    reskins along with the page it edits. */
+@use 'mixins' as m;
 
 $panel-width: 440px;
 
 .pill {
+  // Editor chrome — screen only.
+  @include m.print-hidden;
   position: fixed;
   right: 1rem;
   bottom: 1rem;
@@ -62,6 +65,7 @@ $panel-width: 440px;
 }
 
 .panel {
+  @include m.print-hidden;
   position: fixed;
   top: 0;
   right: 0;

@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import LaunchGate from "@/components/LaunchGate";
 import { asset } from "@/lib/asset";
 import "./globals.css";
+// Global print layer — emits cia's @page box + the --is-print control plane.
+// Must be a global stylesheet: print-base writes its own :root.
+import "./print.scss";
 
 export const metadata: Metadata = {
   title: "CSS is Awesome — a tiny design system",
