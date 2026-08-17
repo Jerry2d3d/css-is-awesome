@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Example from "@/components/Example";
 import Button from "@/components/Button";
 
@@ -160,7 +161,7 @@ export default function ThreeTiersPage() {
           <strong>Tier 4 — React.</strong> Components in <code>src/</code> wrap
           the same mixins through CSS Modules. Same output,
           framework-aware ergonomics. See the{" "}
-          <a href="/docs/recipes">recipes</a> page for live examples.
+          <Link href="/docs/recipes">recipes</Link> page for live examples.
         </li>
       </ul>
       <p>

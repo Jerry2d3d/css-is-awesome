@@ -7,11 +7,19 @@
   white-space: nowrap;
 }
 
+// `dot` marks the badge with a leading status dot — it must NOT resize the
+// badge itself. Sizing the ROOT to 0.5rem collapsed the pill to a 16px circle
+// and overflowed the label ("Beta" clipped to "Bet."). The dot is a marker, so
+// it belongs on ::before; the root keeps auto sizing from its text + padding.
 .dot {
-  padding: 0;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
+  &::before {
+    content: "";
+    flex: none;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
 }
 
 .info    { @include d.badge($status: info); }
