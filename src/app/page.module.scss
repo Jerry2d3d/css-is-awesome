@@ -157,6 +157,12 @@
   }
 }
 .moatCol {
+  // The two cards are grid items and stretch to equal height, but the code
+  // block inside doesn't — so the shorter sample left a strip of card
+  // background under its dark <pre>. Column flex + `flex: 1` on the <pre>
+  // lets the code block absorb the leftover height.
+  display: flex;
+  flex-direction: column;
   background: var(--surface-raised, var(--paper-raised, #fff));
   border: 1px solid var(--border-default, var(--hair, #ddd));
   border-radius: var(--radius-md, 6px);
@@ -177,6 +183,12 @@
   }
 
   pre {
+    display: flex;
+    flex: 1;
+    // Flex items default to min-width/min-height auto, which would let a long
+    // code line push the card wider instead of scrolling. Zero it so
+    // overflow-x still wins.
+    min-width: 0;
     margin: 0;
     padding: 0.875rem 1rem;
     background: var(--code-bg, #1a1a1a);
