@@ -112,6 +112,24 @@ function tokenizeFnArgs(inner) {
   return inner.split(/\s+/).filter(Boolean);
 }
 
+/* Comma-split that respects nesting, so light-dark(rgba(15,23,42,.04), #fff)
+   yields two args instead of five. tokenizeFnArgs above splits naively and is
+   only safe for the flat rgb()/hsl() arg lists it was written for. */
+function splitTopLevelArgs(inner) {
+  const out = [];
+  let depth = 0;
+  let cur = '';
+  for (let i = 0; i < inner.length; i++) {
+    const ch = inner.charAt(i);
+    if (ch === '(') depth++;
+    else if (ch === ')') depth--;
+    if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; continue; }
+    cur += ch;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+
 function stripValueComments(s) { return String(s).replace(/\/\*[\s\S]*?\*\//g, '').trim(); }
 
 function parseColor(rawValue) {
@@ -261,15 +279,92 @@ function resolveTokenValue(tokenName, values, globals) {
   }
 }
 
-function resolveColor(tokenName, values, globals) {
+/* Resolve a raw declaration value to RGBA for one colour scheme.
+   Handles the two wrappers parseColor() can't see through on its own:
+     light-dark(L, D) -> the branch for `scheme`
+     var(--x)         -> the referenced token (or its fallback)
+   Both can nest, hence the recursion + depth guard. */
+function parseColorValue(raw, values, globals, scheme, depth) {
+  const d = depth || 0;
+  if (d > 8) throw new InvalidColor(raw);
+  const s = stripValueComments(raw);
+
+  const ld = /^light-dark\(([\s\S]*)\)$/i.exec(s);
+  if (ld) {
+    const args = splitTopLevelArgs(ld[1]);
+    if (args.length !== 2) throw new InvalidColor(raw);
+    return parseColorValue(scheme === 'dark' ? args[1] : args[0], values, globals, scheme, d + 1);
+  }
+
+  const varOnly = /^var\(\s*(--[A-Za-z_][A-Za-z0-9_-]*)\s*(?:,([\s\S]*))?\)$/.exec(s);
+  if (varOnly) {
+    const refName = varOnly[1];
+    if ((values && values.has(refName)) || (globals && globals.has(refName))) {
+      const rr = resolveTokenValue(refName, values, globals);
+      if (!rr.value) throw new InvalidColor(s);
+      return parseColorValue(rr.value, values, globals, scheme, d + 1);
+    }
+    const fallback = (varOnly[2] || '').trim();
+    if (fallback) return parseColorValue(fallback, values, globals, scheme, d + 1);
+    throw new InvalidColor(s);
+  }
+
+  return parseColor(s);
+}
+
+function resolveColor(tokenName, values, globals, scheme) {
   const r = resolveTokenValue(tokenName, values, globals);
   if (!r.value) return { error: r.error, raw: null, chain: r.chain };
   try {
-    const rgba = parseColor(r.value);
+    const rgba = parseColorValue(r.value, values, globals, scheme || 'light');
     return { rgba: rgba, raw: r.value, chain: r.chain };
   } catch (err) {
     return { error: err.message, raw: r.value, chain: r.chain, errorKind: err.name };
   }
+}
+
+function evaluatePair(pair, env, scheme, warnMargin) {
+  const paperResolved = env.values.has('--paper')
+    ? resolveColor('--paper', env.values, env.globals, scheme)
+    : null;
+  const paperRgba = paperResolved && paperResolved.rgba
+    ? paperResolved.rgba
+    : { r: 255, g: 255, b: 255, a: 1 };
+
+  const fg = resolveColor(pair.fg, env.values, env.globals, scheme);
+  const bg = resolveColor(pair.bg, env.values, env.globals, scheme);
+
+  if (fg.errorKind === 'UnsupportedColor' || bg.errorKind === 'UnsupportedColor') {
+    return {
+      pair: pair, status: 'skip', scheme: scheme,
+      skipReason: 'unsupported color space (oklch/oklab/etc.)',
+      fgRaw: fg.raw, bgRaw: bg.raw,
+    };
+  }
+
+  if (fg.error || bg.error) {
+    return {
+      pair: pair, status: 'skip', scheme: scheme,
+      skipReason: fg.error ? (pair.fg + ': ' + fg.error) : (pair.bg + ': ' + bg.error),
+      fgRaw: fg.raw, bgRaw: bg.raw,
+    };
+  }
+
+  const bgOpaque = bg.rgba.a < 1 ? composite(bg.rgba, paperRgba) : bg.rgba;
+  const fgOpaque = fg.rgba.a < 1 ? composite(fg.rgba, bgOpaque) : fg.rgba;
+
+  const ratio = contrastRatio(fgOpaque, bgOpaque);
+  const required = pair.required;
+  let status;
+  if (ratio + 1e-6 < required) status = pair.decorative ? 'info' : 'fail';
+  else if (typeof pair.warnIfBelow === 'number' ? ratio + 1e-6 < pair.warnIfBelow : ratio < required + warnMargin) status = 'warn';
+  else status = 'pass';
+
+  return {
+    pair: pair, status: status, scheme: scheme, ratio: ratio, required: required,
+    kind: pair.kind, note: pair.note,
+    fgRaw: fg.raw, bgRaw: bg.raw, fgChain: fg.chain, bgChain: bg.chain,
+  };
 }
 
 function auditThemeTokens(env, options) {
@@ -277,49 +372,18 @@ function auditThemeTokens(env, options) {
   const warnMargin = typeof opts.warnMargin === 'number' ? opts.warnMargin : 0.5;
   const out = [];
 
-  const paperResolved = env.values.has('--paper')
-    ? resolveColor('--paper', env.values, env.globals)
-    : null;
-  const paperRgba = paperResolved && paperResolved.rgba
-    ? paperResolved.rgba
-    : { r: 255, g: 255, b: 255, a: 1 };
-
+  /* A light-dark() token is two colours wearing one name, so a single-scheme
+     audit can green-light a theme that's illegible in the other mode. Evaluate
+     both and keep the worse row — fail-by-default means worst case wins. */
   for (const pair of AUDIT_PAIRS) {
-    const fg = resolveColor(pair.fg, env.values, env.globals);
-    const bg = resolveColor(pair.bg, env.values, env.globals);
-
-    if (fg.errorKind === 'UnsupportedColor' || bg.errorKind === 'UnsupportedColor') {
-      out.push({
-        pair: pair, status: 'skip',
-        skipReason: 'unsupported color space (oklch/oklab/etc.)',
-        fgRaw: fg.raw, bgRaw: bg.raw,
-      });
-      continue;
-    }
-
-    if (fg.error || bg.error) {
-      out.push({
-        pair: pair, status: 'skip',
-        skipReason: fg.error ? (pair.fg + ': ' + fg.error) : (pair.bg + ': ' + bg.error),
-        fgRaw: fg.raw, bgRaw: bg.raw,
-      });
-      continue;
-    }
-
-    const bgOpaque = bg.rgba.a < 1 ? composite(bg.rgba, paperRgba) : bg.rgba;
-    const fgOpaque = fg.rgba.a < 1 ? composite(fg.rgba, bgOpaque) : fg.rgba;
-
-    const ratio = contrastRatio(fgOpaque, bgOpaque);
-    const required = pair.required;
-    let status;
-    if (ratio + 1e-6 < required) status = pair.decorative ? 'info' : 'fail';
-    else if (typeof pair.warnIfBelow === 'number' ? ratio + 1e-6 < pair.warnIfBelow : ratio < required + warnMargin) status = 'warn';
-    else status = 'pass';
-
-    out.push({
-      pair: pair, status: status, ratio: ratio, required: required, kind: pair.kind, note: pair.note,
-      fgRaw: fg.raw, bgRaw: bg.raw, fgChain: fg.chain, bgChain: bg.chain,
+    const rows = ['light', 'dark'].map(function (scheme) {
+      return evaluatePair(pair, env, scheme, warnMargin);
     });
+    const scored = rows.filter(function (r) { return r.status !== 'skip'; });
+    if (scored.length === 0) { out.push(rows[0]); continue; }
+    out.push(scored.reduce(function (worst, r) {
+      return r.ratio < worst.ratio ? r : worst;
+    }));
   }
   return out;
 }
