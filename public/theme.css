@@ -3029,7 +3029,7 @@
 [data-theme="boilerplate-light"] {
   /* Surfaces — off-white paper, light gray sunk */
   --paper:        #ffffff;
-  --paper-raised: #ffffff;
+  --paper-raised: #f2f2f2;
   --paper-sunk:   #f8fafc;
   --paper-glass:  rgba(255, 255, 255, 0.85);
 
