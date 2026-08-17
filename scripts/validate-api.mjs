@@ -4,12 +4,15 @@
 // ============================================================================
 // Guards the zero-emit authoring barrel `scss/api.scss`.
 //
-// Three assertions:
-//   1. `@use 'api'` and calling NOTHING emits zero CSS (no bytes, no `:root`).
-//      This is what makes it safe inside a `.module.scss` under Next.js CSS
-//      Modules "pure" mode.
-//   2. A representative function (`cia.color`) resolves through the barrel.
-//   3. A representative component mixin (`cia.btn`) resolves through the barrel.
+// Five assertions:
+//   1. `@use 'api'` and calling NOTHING emits zero CSS (no bytes).
+//   2. …and emits no `:root` block. Together with (1) this is what makes the
+//      barrel safe inside a `.module.scss` under Next.js CSS Modules "pure"
+//      mode, which forbids a top-level `:root`.
+//   3. A representative function (`cia.color`) resolves through the barrel.
+//   4. A representative component mixin (`cia.btn`) resolves through the barrel.
+//   5. `cia.spinner()` co-emits its keyframe AND the reference to it — zero-emit
+//      must not mean broken-emit when a mixin IS called.
 //
 // Usage: node scripts/validate-api.mjs   (exit 0 = pass, 1 = fail)
 // ============================================================================

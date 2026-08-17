@@ -223,7 +223,7 @@ Inside this package (all whitelisted in `files`):
 
 ## MCP server (SHIPPED — use it)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` v0.8.2, protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. **Prefer querying it over guessing** — it returns cia's real mixin signatures, tokens, themes, and recipes.
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` (version read from package.json), protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. **Prefer querying it over guessing** — it returns cia's real mixin signatures, tokens, themes, and recipes.
 
 Wire it into your MCP client's `.mcp.json`:
 

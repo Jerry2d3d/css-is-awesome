@@ -37,6 +37,14 @@ jobs:
       - name: Validate themes
         run: npm run validate-themes
 
+      - name: Validate icon pack
+        run: npm run validate-icons
+
+      # Guards the zero-emit promise of the `css-is-awesome/api` barrel. An
+      # architectural invariant that isn't gated decays silently.
+      - name: Validate /api barrel stays zero-emit
+        run: npm run validate-api
+
       - name: Build library CSS bundles
         run: npm run build:css:all
 

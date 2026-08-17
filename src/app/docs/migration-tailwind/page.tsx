@@ -38,10 +38,12 @@ export default function MigrationTailwindPage() {
           is valid CSS on delivery.
         </li>
         <li>
-          <strong>Zero JavaScript by default.</strong> Tailwind leans on
-          Headless UI, Radix, or Alpine for interactivity. cia ships its
-          own React components (Modal, Tabs, Dropdown) and they&apos;re
-          opt-in — plain HTML + CSS works on its own.
+          <strong>Zero JavaScript, period.</strong> Tailwind leans on
+          Headless UI, Radix, or Alpine for interactivity. The cia npm
+          package contains no <code>.js</code> at all — its six interactive
+          components are built on native primitives (<code>&lt;dialog&gt;</code>,{" "}
+          <code>&lt;details name&gt;</code>, <code>[popover]</code>, radio +{" "}
+          <code>:has()</code>), so the browser holds the state.
         </li>
       </ul>
 
