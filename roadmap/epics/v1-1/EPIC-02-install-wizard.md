@@ -78,7 +78,7 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** the consumer's `<html data-theme>` is set correctly without manual edit
 
 **Acceptance criteria:**
-- [ ] Lists all 9 themes with one-line description (read from theme metadata if available, else hard-coded)
+- [ ] Lists all 8 themes with one-line description (read from theme metadata if available, else hard-coded)
 - [ ] Defaults to `boilerplate` (neutral starter)
 - [ ] After selection, prints next steps: "Add `<html data-theme=\"<chosen>\">` to your root layout"
 

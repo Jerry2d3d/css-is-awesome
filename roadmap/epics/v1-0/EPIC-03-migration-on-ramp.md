@@ -25,7 +25,7 @@ Ship a `npx cia migrate` CLI that converts a Tailwind config file or a Bootstrap
 
 ## Why now
 
-The single biggest reason teams don't try a new design system is the migration cost. cia today says "here are 9 themes, here's the editor." That's still asking the team to abandon their existing brand work. `npx cia migrate tailwind ./tailwind.config.js` says "your brand work comes with you."
+The single biggest reason teams don't try a new design system is the migration cost. cia today says "here are 8 themes, here's the editor." That's still asking the team to abandon their existing brand work. `npx cia migrate tailwind ./tailwind.config.js` says "your brand work comes with you."
 
 If this lands cleanly, every cia launch post can include "if you're already on Tailwind or Bootstrap, here's the one-liner." That's the kind of headline that drives downloads.
 

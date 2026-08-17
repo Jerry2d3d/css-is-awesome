@@ -122,6 +122,43 @@ Full authoring walkthrough: [`/docs/authoring/themes`](./src/app/docs/authoring/
 
 Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else.
 
+## Recipes (build components without a component library)
+
+cia ships **no component library** — deliberately. Interactive patterns arrive as *recipes*: portable markdown files at [`scss/recipes/`](./scss/recipes/) that give you the correct HTML, the `cia.X` mixin calls to style it, and an a11y checklist graded against WCAG 2.2 AA. Copy the pattern into your own framework; you own the component, cia owns the styling and the accessibility homework.
+
+**Shipped:** `dialog`, `combobox`, `print-to-pdf`. Queued for 1.0.0: `datepicker`, `data-table`, `command-palette`.
+
+Humans read them at [`/docs/recipes`](./src/app/docs/recipes/page.tsx); AI agents pull them over MCP with `list_recipes` / `get_recipe`.
+
+## Migrating from Tailwind or Bootstrap
+
+The `cia` CLI converts another design system's config into a cia theme, so you start from your existing colors and spacing instead of a blank file:
+
+```bash
+npx cia migrate tailwind ./tailwind.config.js   # auto-detects tailwind.config.* if omitted
+npx cia migrate bootstrap ./scss/_variables.scss
+```
+
+Both accept `--help` for the full option list. Prose walkthroughs live at [`/docs/migration-tailwind`](./src/app/docs/migration-tailwind/page.tsx) and [`/docs/migration-bootstrap`](./src/app/docs/migration-bootstrap/page.tsx).
+
+## Print / PDF (zero JS)
+
+Print support is a pure-CSS layer — the browser's native **Print → Save as PDF** is the generator, and cia ships no JavaScript for it:
+
+```scss
+@use 'css-is-awesome/api' as cia;
+
+// Once, in a GLOBAL stylesheet — never inside a component module.
+// It emits its own :root block plus @page, so don't wrap it in a selector.
+@include cia.print-base;                   // optional: ($size, $margin, $freeze-animations)
+
+.site-nav   { @include cia.print-hidden; } // drop chrome on paper
+.print-note { @include cia.print-only; }   // reveal paper-only content
+.invoice    { @include cia.print { border: 1px solid; } } // bare @media print wrapper
+```
+
+`print-base` also freezes animations and forces `opacity: 1` on print, so a page snapshotted mid-entrance-fade doesn't print as invisible text. Read `--is-print` (`0` on screen, `1` on paper) for custom effects. Full walkthrough: the [`print-to-pdf`](./scss/recipes/print-to-pdf.md) recipe.
+
 ## MCP server (for AI agents)
 
 cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **29 tools** across 8 families (themes, mixins, functions, tokens · 123 of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
@@ -167,11 +204,16 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 | `npm run dev` | Next.js docs site on port 5173 |
 | `npm run build` | Static-exports docs site to `out/` |
 | `npm run build:css` | Compile library SCSS to `dist/css-is-awesome.css` |
-| `npm run build:css:all` | Compile all bundles (full + core + utilities + minified) |
+| `npm run build:css:all` | Compile all bundles (full + core + utilities + minified) + token types |
+| `npm run build:css:themes` | Rebuild the per-theme CSS files in `public/themes/` |
+| `npm run build:token-types` | Generate `dist/tokens.d.ts` from the contract |
+| `npm run dtcg-to-scss` | Convert DTCG-format design tokens into cia SCSS |
 | `npm run lint` | ESLint on the Next.js app |
 | `npm run lint:scss` | Stylelint on the SCSS library |
-| `npm run validate-themes` | Validate every theme against the 123-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7) |
+| `npm run validate-themes` | Validate every theme against the 123-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7; checks both `light-dark()` branches and reports the worse) |
 | `npm run validate-icons` | Validate the `core` icon pack against the 49-glyph contract |
+| `npm run validate-api` | Assert the `css-is-awesome/api` barrel stays zero-emit |
+| `npm test` | Playwright suite — axe a11y checks + per-theme visual snapshots |
 
 ## Size (v0.8 gzipped)
 

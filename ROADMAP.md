@@ -281,8 +281,8 @@ Decide:
   the npm publish is still gated (Phase 5). Update to reflect the
   actual release history once 0.7.0 publishes.
 - [ ] "**Five voices, one system**" + "Sketchbook arrives later in
-  the year" — there are now 9 themes (Sketchbook, Press, Graphite,
-  Glass, Cupertino, Terminal, Terminal-light, Boilerplate, Prism),
+  the year" — there are now 8 theme families (Sketchbook, Press,
+  Graphite, Glass, Cupertino, Terminal, Boilerplate, Prism),
   and Sketchbook shipped. Update theme count + remove the "later in
   the year" framing.
 - [ ] `<Seal>Approved · v0.1</Seal>` at the bottom — version drift
@@ -329,7 +329,7 @@ stale version copy:
   `List`, `MenuItem`, `Pagination`, `Popover`, `Radio`, `Select`,
   `Slider`, `Switch`, `Textarea`, `Tooltip` aren't shown on the
   site).
-- [ ] **Cross-theme spot-check** — every page in all 9 themes ×
+- [ ] **Cross-theme spot-check** — every page in all 8 themes ×
   light/dark. Catches hex fallbacks the static audit missed.
 - [ ] **Lighthouse + axe pass** — automated a11y + perf baseline,
   fix what surfaces.
@@ -429,7 +429,7 @@ Open list of ideas that could make cia better, captured in [`WISHLIST.md`](./WIS
 - All 5 epic DODs met (42 stories shipped or punted)
 - Tarball under 250 KB packed
 - Zero JS in npm `files` manifest (CLI in `bin/` allowed)
-- `validate-themes` passes FAIL-by-default across 9 themes
+- `validate-themes` passes FAIL-by-default across 8 themes
 - `validate-recipes` passes in CI
 - README, llm.txt, AGENTS.md, CHANGELOG, MIGRATION updated
 - semantic-release publishes `1.0.0` cleanly
@@ -461,7 +461,7 @@ The original Phase 6 ("Ecosystem v1.1+") below describes legacy items some of wh
 
 **Goal:** Solidify as a real project.
 
-- [x] **MCP server** (shipped 2026-05-22) — 27 tools across 8 resource families (themes / mixins / functions / tokens / animations / components / recipes / docs) + `assemble_prompt`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can discover the entire library surface without grep-walking. `mcp/server.cjs` + `bin: css-is-awesome-mcp`. See README "MCP server" section.
+- [x] **MCP server** (shipped 2026-05-22) — 30 tools across 8 resource families (themes / mixins / functions / tokens / animations / components / recipes / docs) + `assemble_prompt` + `resolve_size`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can discover the entire library surface without grep-walking. `mcp/server.cjs` + `bin: css-is-awesome-mcp`. See README "MCP server" section.
 - [x] GitHub Action: CI (build + lint), Release (semver + npm publish + changelog) — semantic-release wired up since v0.7.
 - [x] Badge suite in README (npm version, license, semantic-release) — shipped.
 - [x] Contribution guide + issue templates — `CONTRIBUTING.md` + `CONTRIBUTING-THEMES.md` shipped.

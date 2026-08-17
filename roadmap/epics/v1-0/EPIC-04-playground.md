@@ -155,7 +155,7 @@ Tailwind Play is one of the most-used pages on tailwindcss.com — it's where pe
 - [ ] All 7 stories accepted
 - [ ] `/playground` page lives, linked from main nav + every recipe page
 - [ ] In-browser SCSS compilation works against cia source
-- [ ] Theme picker switches preview across all 9 themes
+- [ ] Theme picker switches preview across all 8 themes
 - [ ] Errors display with clickable line jumps
 - [ ] Share URLs round-trip across browsers
 - [ ] Page passes Lighthouse perf budget (no jank on type, compile under 500 ms cold / 100 ms warm)

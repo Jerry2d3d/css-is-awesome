@@ -79,7 +79,7 @@ Each theme is a single CSS file declaring `:root[data-theme="<name>"]` with `lig
 
 ```html
 <link rel="stylesheet" href="node_modules/css-is-awesome/public/themes/boilerplate/theme.css">
-<html data-theme="boilerplate"> <!-- swap to any of 9 themes -->
+<html data-theme="boilerplate"> <!-- swap to any of 8 theme families -->
 ```
 
 ### Themes are open — edit or create your own
@@ -238,25 +238,29 @@ Wire it into your MCP client's `.mcp.json`:
 }
 ```
 
-The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in the client project to run it. It exposes **29 tools** across 8 families:
+The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in the client project to run it. It exposes **30 tools** across 8 families:
 
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
 - **Functions** — `list_functions`, `get_function`, `search_functions`
 - **Tokens** — `list_tokens`, `get_token`, `search_tokens` (123 contract tokens)
 - **Animations** — `list_animations`, `get_animation`
-- **Components** — `list_components`, `get_component`
+- **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`
-- **Doc readers** — `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme`
+- **Doc readers** — `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme`, `read_versioning`
 - **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value)
 
-## Other tooling (planned)
+## Other tooling (shipped)
 
-- **`cia` CLI** (post-1.0) — `cia init`, `cia add button`, `cia theme new`, `cia theme validate`.
-- **JSON token export** at a stable URL — DTCG-format token list.
-- **`llm.txt`** at the docs site root — single-fetch summary for any AI agent.
+- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. The migration
+  on-ramp is live: `npx cia migrate tailwind [path]` and `npx cia migrate bootstrap [path]`
+  parse another system's config and dump a cia theme. Run either with `--help` for
+  full options. (`cia init` / `cia add` remain post-1.0.)
+- **JSON token export** — DTCG-format token list in `figma-tokens/`.
+- **`llm.txt`** — at the repo root and served from the docs site; single-fetch
+  summary for any AI agent. Also readable over MCP via `read_llm_txt`.
 
-When those ship, this file will link them. Until then, the markdown files above (and the MCP server) are the source of truth.
+The markdown files above, the `cia` CLI, and the MCP server are the source of truth.
 
 ---
 

@@ -6,7 +6,7 @@
 
 ## Audited status — 2026-07-16 (main @ 97f6ae3)
 
-All three audit fixes (F5.1) landed, and the MCP README trim + `/docs/mcp` page (F5.3) shipped. The one gap is **MCP server tests (F5.2)** — there is no `mcp/server.test.*` and no `test:mcp` script, so the 29-tool server still has zero automated coverage. (Note: the MCP server has since grown to **29 tools**, not the 27 referenced in this epic's original prose.)
+All three audit fixes (F5.1) landed, and the MCP README trim + `/docs/mcp` page (F5.3) shipped. The one gap is **MCP server tests (F5.2)** — there is no `mcp/server.test.*` and no `test:mcp` script, so the 30-tool server still has zero automated coverage. (Note: the MCP server has since grown to **30 tools**, not the 27 referenced in this epic's original prose.)
 
 | Story | Status | Evidence |
 |-------|--------|----------|
@@ -79,7 +79,7 @@ These items don't fit cleanly into another epic but block clean v1.0 sign-off. T
 - [ ] Verify hover/active currently fall back to wrong palette
 - [ ] Fix in `scss/components/_buttons.scss` — propagate $bg through `m.states()` derivation
 - [ ] Test passes: hover state is `color-mix(in oklch, $bg, black 10%)` (or equivalent — match existing derivation rule)
-- [ ] No regression in default-color buttons across all 9 themes (smoke test)
+- [ ] No regression in default-color buttons across all 8 themes (smoke test)
 
 **Effort:** M (4-8 hrs)
 **Depends on:** none
@@ -103,7 +103,7 @@ These items don't fit cleanly into another epic but block clean v1.0 sign-off. T
 
 ### F5.2 — MCP server tests
 
-**Goal:** The 27-tool MCP server has no test coverage. Add tests so a 1.0 stamp is defensible.
+**Goal:** The 30-tool MCP server has no test coverage. Add tests so a 1.0 stamp is defensible.
 
 #### US-05.2.1 — Test list/get/search across all 8 families
 
@@ -163,7 +163,7 @@ These items don't fit cleanly into another epic but block clean v1.0 sign-off. T
 
 - [ ] All 7 stories accepted (5/7 done as of 2026-07-16)
 - [x] /docs/mixins, /docs/install pass smoke tests against current cia source (one stale `font-load` heading label on /docs/mixins)
-- [x] cia.btn($bg:) state cascade fix verified across all 9 themes
+- [x] cia.btn($bg:) state cascade fix verified across all 8 themes
 - [x] /docs/composition page lives and is linked from main nav
 - [ ] MCP server has ≥80% line coverage via the new tests (**no MCP tests exist**)
 - [ ] `npm test` (or `npm run test:mcp`) runs MCP tests in CI (**not wired**)
@@ -174,7 +174,7 @@ These items don't fit cleanly into another epic but block clean v1.0 sign-off. T
 
 - **MCP test client choice.** Programmatic MCP test client may not exist yet. Mitigation: spawn server as subprocess and write a minimal JSON-RPC client (small, fits in test file).
 - **/docs/composition scope creep.** Tempting to add 3 examples instead of 1. Mitigation: scope to ONE bespoke component done well. Additional examples can ship in v1.1.
-- **btn state-cascade fix could regress.** Mitigation: visual-regression smoke test in Playwright (already wired) across all 9 themes.
+- **btn state-cascade fix could regress.** Mitigation: visual-regression smoke test in Playwright (already wired) across all 8 themes.
 
 ## Related
 

@@ -426,6 +426,34 @@ See `/docs/authoring/themes` for the full guide.
 
 ---
 
+## Recipes — build a component without a component library
+
+cia ships **no component library on purpose**. When you need an interactive
+pattern (dialog, combobox, print-to-PDF), read the matching *recipe* instead of
+inventing markup or reaching for a dependency.
+
+A recipe is a markdown file at `scss/recipes/<name>.md` carrying:
+
+- the raw, correct HTML structure (native elements first)
+- the `cia.X` mixin calls that style it
+- an a11y checklist graded against WCAG 2.2 AA
+- framework-neutral notes so it ports to React / Vue / Svelte / vanilla
+
+**Shipped today:** `dialog`, `combobox`, `print-to-pdf`. Queued for 1.0.0:
+`datepicker`, `data-table`, `command-palette`.
+
+How to reach them:
+
+- **AI agents** — `list_recipes` / `get_recipe(name)` over MCP. Prefer this over
+  writing an interactive pattern from memory; the recipe encodes the a11y work.
+- **Humans** — `/docs/recipes`, or read the markdown directly.
+
+Note the two different things living in `scss/recipes/`: `<slug>.md` files are
+*pattern* recipes (read them, don't import them), while `_<slug>.scss` files —
+e.g. `_bare-tags.scss` — are real opt-in SCSS you `@use`.
+
+---
+
 ## Versioning & contributions
 
 - **SemVer** post-1.0 strictly. Breaking changes bump major. See `VERSIONING.md`.
