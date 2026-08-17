@@ -60,6 +60,13 @@ const THEMES: ThemeTileProps[] = [
     href: asset("/themes/terminal/theme.css"),
     swatches: { paper: "#0A0E0A", ink: "#4FE078", accent: "#7FDBFF", seal: "#FF5A5A" },
   },
+  {
+    id: "prism-light",
+    name: "Prism",
+    description: "Zinc neutral ramp, Inter + JetBrains Mono. The familiar modern-app look, contract-conformant.",
+    href: asset("/themes/prism-light/theme.css"),
+    swatches: { paper: "#FFFFFF", ink: "#09090B", accent: "#2563EB", seal: "#DC2626" },
+  },
 ];
 
 export default function ThemeGalleryPage() {
