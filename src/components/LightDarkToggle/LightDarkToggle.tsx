@@ -17,6 +17,7 @@ const ALIAS_TO_CANONICAL: Record<string, string> = {
   graphite: "graphite-dark",
   glass: "glass-light",
   cupertino: "cupertino-light",
+  prism: "prism-light",
   terminal: "terminal-dark",
 };
 

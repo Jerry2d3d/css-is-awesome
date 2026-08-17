@@ -61,7 +61,7 @@ function writeStore(store: OverridesStore): void {
 
 const ALIAS_MODE: Record<string, Mode> = {
   sketchbook: "light", press: "light", graphite: "dark",
-  glass: "light", cupertino: "light", terminal: "dark",
+  glass: "light", cupertino: "light", prism: "light", terminal: "dark",
 };
 
 function getFamily(theme: string): string {

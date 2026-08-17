@@ -17,6 +17,7 @@ const THEMES: Theme[] = [
   { id: "graphite-dark",     label: "Graphite" },
   { id: "glass-light",       label: "Glass" },
   { id: "cupertino-light",   label: "Cupertino" },
+  { id: "prism-light",       label: "Prism" },
   { id: "terminal-dark",     label: "Terminal" },
 ];
 
@@ -29,7 +30,7 @@ function family(theme: string): string {
 
 const ALIAS_MODE: Record<string, "light" | "dark"> = {
   boilerplate: "light", sketchbook: "light", press: "light", graphite: "dark",
-  glass: "light", cupertino: "light", terminal: "dark",
+  glass: "light", cupertino: "light", prism: "light", terminal: "dark",
 };
 
 function mode(theme: string): "light" | "dark" {

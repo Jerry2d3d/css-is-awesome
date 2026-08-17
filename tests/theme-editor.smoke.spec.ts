@@ -99,6 +99,29 @@ test.describe("theme editor (/themes)", () => {
     }
   });
 
+  // prism shipped but was missing from the gallery, the ThemePicker dock, the
+  // LightDarkToggle alias map and the editor dock's alias map — four separate
+  // hand-maintained lists that all had to be edited by hand. This asserts the
+  // user-facing pickers actually offer every family.
+  test("theme picker dock offers every shipped family", async ({ page }) => {
+    await page.goto("/blog");
+    for (const label of [
+      "Boilerplate",
+      "Sketchbook",
+      "Press",
+      "Graphite",
+      "Glass",
+      "Cupertino",
+      "Prism",
+      "Terminal",
+    ]) {
+      await expect(
+        page.getByRole("button", { name: label, exact: true }),
+        `ThemePicker should offer ${label}`,
+      ).toHaveCount(1);
+    }
+  });
+
   test("gallery lists every shipped theme family", async ({ page }) => {
     await page.goto("/themes/gallery");
     for (const name of [
