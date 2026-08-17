@@ -13,9 +13,9 @@ type Row = {
 const ROWS: Row[] = [
   { feature: "Installation",       cia: "1 <link> tag", tailwind: "Build step required", bootstrap: "1 <link> tag" },
   { feature: "JavaScript shipped in package", cia: "0 KB", tailwind: "0 KB (CSS-only)", bootstrap: "~25 KB (modals, dropdowns, tabs)", note: "cia npm package contains zero .js/.mjs files. JS-driven features ship as separate add-on packages." },
-  { feature: "Gzipped core (tokens + resets)",  cia: "2.7 KB",       tailwind: "~10 KB (utilities JIT)", bootstrap: "~25 KB" },
-  { feature: "Tokens-only bundle",  cia: "2.3 KB",     tailwind: "n/a",                     bootstrap: "n/a",                note: "scss/tokens.scss compiles to a 2.3 KB :root-vars-only file. Useful for consumers who want cia tokens with their own opinions about everything else." },
-  { feature: "Full bundle gzipped", cia: "8.2 KB",      tailwind: "varies (JIT)",            bootstrap: "~29 KB CSS + 25 KB JS" },
+  { feature: "Gzipped core (tokens + resets)",  cia: "2.4 KB",       tailwind: "~10 KB (utilities JIT)", bootstrap: "~25 KB" },
+  { feature: "Tokens-only bundle",  cia: "2.2 KB",     tailwind: "n/a",                     bootstrap: "n/a",                note: "scss/tokens.scss compiles to a 2.2 KB :root-vars-only file. Useful for consumers who want cia tokens with their own opinions about everything else." },
+  { feature: "Full bundle gzipped", cia: "7.3 KB",      tailwind: "varies (JIT)",            bootstrap: "~29 KB CSS + 25 KB JS" },
   { feature: "Mixin API",          cia: "primary API",  tailwind: false,                     bootstrap: "available",          note: "cia is mixin-first; classes are an opt-in convenience layer. Tailwind rejects mixins on philosophy." },
   { feature: "Utility classes",    cia: "opt-in",       tailwind: true,                      bootstrap: true,                note: "cia utilities default to off — Sass consumers add `@use ... with ($utilities: true)` to opt in. Pre-built dist file still ships every utility for CDN consumers." },
   { feature: "Zero-JS interactive components", cia: "6 (Accordion · Modal · Tooltip · Dropdown · Tabs · CopyButton)", tailwind: "0 (need Headless UI)", bootstrap: false, note: "cia ships native-primitive components — <details name>, <dialog>, [popover], radio+:has(). Browser handles state, no JS." },
@@ -30,9 +30,9 @@ const ROWS: Row[] = [
   { feature: "JavaScript dependency",            cia: false, tailwind: false, bootstrap: true, note: "Bootstrap's dropdowns, modals, tabs need bootstrap.js" },
   { feature: "Class names",     cia: "you pick",   tailwind: "compose utilities", bootstrap: "BEM-style", note: "cia is mixin-first — pick your own selector, @include the mixin. Bootstrap bakes in BEM. Tailwind stacks utilities in markup." },
   { feature: "Tree-shakeable",     cia: "opt-in core/utils bundles", tailwind: true, bootstrap: "sort of" },
-  { feature: "React components shipped (docs site)", cia: "47", tailwind: "0 (utility-only)", bootstrap: "~30" },
-  { feature: "Years of battle-testing", cia: "new", tailwind: "5+", bootstrap: "12+" },
-  { feature: "GitHub stars",       cia: "handful",     tailwind: "80k+",                    bootstrap: "170k+" },
+  { feature: "React components shipped (docs site)", cia: "50", tailwind: "0 (utility-only)", bootstrap: "~30" },
+  { feature: "Years of battle-testing", cia: "new", tailwind: "8+", bootstrap: "15+", note: "Tailwind's first commit landed Oct 2017; Bootstrap's July 2011. cia is new — that is a real disadvantage, not a rounding error." },
+  { feature: "GitHub stars",       cia: "handful",     tailwind: "97k+",                    bootstrap: "174k+" },
 ];
 
 type Tier = {
@@ -43,8 +43,8 @@ type Tier = {
 
 const BUNDLE_TIERS: Tier[] = [
   { name: "core",      size: "2.4 KB gzipped", contains: "Tokens (CSS custom properties) + resets. The minimum to use the system." },
-  { name: "utilities", size: "11.5 KB gzipped", contains: "All cia-* utility classes (spacing, typography, layout, color, etc.)." },
-  { name: "full",      size: "15.2 KB gzipped", contains: "Core + utilities + every component recipe in one file." },
+  { name: "utilities", size: "4.1 KB gzipped", contains: "All cia-* utility classes (spacing, typography, layout, color, etc.)." },
+  { name: "full",      size: "7.3 KB gzipped", contains: "Core + utilities + every component recipe in one file." },
 ];
 
 function Cell({ v }: { v: string | boolean }) {
@@ -64,6 +64,12 @@ export default function ComparePage() {
           <p className="lead">
             Three good tools. Different jobs. Here is where each one actually wins —
             and where cia is the only one that does the thing.
+          </p>
+          <p className={styles.basis}>
+            Compared against <strong>Tailwind CSS 4.3</strong> and{" "}
+            <strong>Bootstrap 5.3</strong>. cia sizes are measured from{" "}
+            <code>dist/</code>; star counts and project ages come from GitHub.
+            Figures verified 2026-08-17.
           </p>
         </section>
 

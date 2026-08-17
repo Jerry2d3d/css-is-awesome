@@ -4,9 +4,9 @@
 
 [![CI](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml/badge.svg)](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml) [![Node](https://img.shields.io/badge/node-%E2%89%A520-43853d?logo=node.js&logoColor=white)](./package.json) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![semantic-release](https://img.shields.io/badge/semantic--release-enabled-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-**Bring your own selectors. We bring the design system.** One CSS file per theme. Nine themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
+**Bring your own selectors. We bring the design system.** One CSS file per theme. Eight themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
 
-> **v1.0 preview — landing in 1.0.0:** a **recipes book** for building any component (dialog, combobox, datepicker, data-table, command-palette, print-to-pdf) in any framework using cia mixins. AI agents read recipes via MCP and generate components in your stack; humans read them at `/docs/recipes`. See [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/) for the full v1.0 plan.
+> **Shipped in 1.0.0:** a **recipes book** for building any component in any framework using cia mixins — `dialog`, `combobox` and `print-to-pdf` today, with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at `/docs/recipes`.
 
 ## Three ways to use it
 
@@ -53,7 +53,7 @@ Author your own class names; the mixin handles the styling. Mixins for buttons, 
 <html data-theme="boilerplate">
 ```
 
-Theme first (sets the tokens), library second. Bundle tiers — `dist/tokens.css` (2.3 KB gz, `:root` vars only), `dist/css-is-awesome.core.min.css` (2.7 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (8.2 KB gz, full).
+Theme first (sets the tokens), library second. Bundle tiers — `dist/tokens.css` (2.2 KB gz, `:root` vars only), `dist/css-is-awesome.core.min.css` (2.4 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (7.3 KB gz, full).
 
 ### 3. Bare tags (opt-in Pico-mode)
 
@@ -161,7 +161,7 @@ Print support is a pure-CSS layer — the browser's native **Print → Save as P
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **29 tools** across 8 families (themes, mixins, functions, tokens · 123 of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **30 tools** across 8 families (themes, mixins, functions, tokens · 123 of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
 
 **Setup is two steps — do both, or the server won't start.**
 
@@ -219,10 +219,11 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 
 | Bundle | Size | Use case |
 |---|---|---|
-| `dist/tokens.css` | 2.3 KB | Tokens only (`:root` CSS variables, no rules) — the purest mixin-first emit |
-| `dist/css-is-awesome.core.min.css` | 2.7 KB | Tokens + resets, no utilities or components |
-| `dist/css-is-awesome.min.css` | 8.2 KB | Full bundle (everything) |
-| Per-theme `themes/<name>.css` | ~1.5-2.3 KB | One file per theme, both modes via `light-dark()` |
+| `dist/tokens.css` | 2.2 KB | Tokens only (`:root` CSS variables, no rules) — the purest mixin-first emit |
+| `dist/css-is-awesome.core.min.css` | 2.4 KB | Tokens + resets, no utilities or components |
+| `dist/css-is-awesome.utilities.min.css` | 4.1 KB | Every `cia-*` utility class, nothing else |
+| `dist/css-is-awesome.min.css` | 7.3 KB | Full bundle (everything) |
+| Per-theme `themes/<name>.css` | 1.5–3.4 KB | One file per theme, both modes via `light-dark()` |
 | **JavaScript shipped in package** | **0 KB** | Zero. Period. JS-driven features ship as separate add-on packages. |
 
 ## Status

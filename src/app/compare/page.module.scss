@@ -22,6 +22,20 @@
   margin-left: auto;
   margin-right: auto;
 }
+// Provenance line — what the table was measured against, so the numbers can
+// be audited rather than taken on faith.
+.basis {
+  max-width: 62ch;
+  margin: 1rem auto 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text-tertiary, var(--muted, #777));
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.95em;
+  }
+}
 .tableWrap {
   overflow-x: auto;
   margin-bottom: 4rem;
