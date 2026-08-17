@@ -301,9 +301,12 @@ hr,
   border: 1px solid var(--hair);
   border-radius: 999px;
 }
-.recipe-chip[data-complexity="simple"]  { color: var(--code-green); }
-.recipe-chip[data-complexity="medium"]  { color: var(--code-accent); }
-.recipe-chip[data-complexity="complex"] { color: var(--code-blue); }
+/* Complexity chips ride the a11y contract pairs (--*-text on --*-subtle) rather
+   than the --code-* syntax palette, which is tuned for code blocks and fails
+   contrast at this size on --paper-sunk. */
+.recipe-chip[data-complexity="simple"]  { color: var(--success-text); background: var(--success-subtle); }
+.recipe-chip[data-complexity="medium"]  { color: var(--warning-text); background: var(--warning-subtle); }
+.recipe-chip[data-complexity="complex"] { color: var(--info-text);    background: var(--info-subtle); }
 .recipe-chip-version { font-variant-numeric: tabular-nums; }
 
 /* Recipe library card grid on /docs/recipes */

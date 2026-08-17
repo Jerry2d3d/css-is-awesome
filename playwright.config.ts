@@ -52,6 +52,9 @@ export default defineConfig({
   },
 
   // Snapshots live alongside the tests so they're easy to review on PR.
+  // {platform} is REQUIRED: font rasterisation differs between win32 and the
+  // linux CI runner, so a single shared baseline set can only ever be green on
+  // one of them. Without it, local runs and CI fight over the same PNGs.
   snapshotPathTemplate:
-    "{testDir}/__screenshots__/{testFilePath}/{arg}{-projectName}{ext}",
+    "{testDir}/__screenshots__/{testFilePath}/{arg}{-projectName}{-platform}{ext}",
 });

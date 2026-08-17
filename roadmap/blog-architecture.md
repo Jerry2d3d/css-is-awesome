@@ -249,7 +249,7 @@ Title, slug, category, tags (≥2), audience (≥1), length, priority, publishDa
 
 #### 9. "The MCP server — why a design system needs one in 2026"
 - **Category:** Architecture · **Audience:** AI dev, consumer · **Length:** medium · **Priority:** P1
-- **Summary:** Shipped 2026-05-22. 27 tools across 8 resource families. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini) can read tokens, mixins, recipes, themes, validate without grep-walking the source.
+- **Summary:** Shipped 2026-05-22. 30 tools across 8 resource families. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini) can read tokens, mixins, recipes, themes without grep-walking the source.
 - **Outline:**
   - The problem: AI agents reading docs by grep is lossy
   - What MCP is — [Anthropic's open spec for connecting LLMs to data and tools](https://www.anthropic.com/news/model-context-protocol) ([latest spec on modelcontextprotocol.io](https://modelcontextprotocol.io/))
@@ -300,7 +300,7 @@ Title, slug, category, tags (≥2), audience (≥1), length, priority, publishDa
 
 #### 22. "EPIC spotlight: the playground"  [NEW IN v2 — v1.0 epic 04]
 - **Category:** Field notes · **Audience:** consumer, AI dev · **Length:** short · **Priority:** P1 · **Tags:** `mixins`, `themes`, `v1.0`, `recipes`
-- **Summary:** dart-sass in the browser, all 9 themes selectable, URL-shareable demos. cia's answer to Tailwind Play.
+- **Summary:** dart-sass in the browser, all 8 themes selectable, URL-shareable demos. cia's answer to Tailwind Play.
 - **Outline:**
   - Why playground beats README screenshots ([EPIC-04](./epics/v1-0/EPIC-04-playground.md))
   - Browser-side dart-sass (the [`sass` npm package ships browser-compatible builds since 1.50](https://www.npmjs.com/package/sass))

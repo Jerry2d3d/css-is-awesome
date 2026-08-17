@@ -38,7 +38,7 @@ cia has used logical properties since v0.7 — but the source has been edited by
 **Acceptance criteria:**
 - [ ] Each violation from US-V12.01.1.1 either fixed or annotated `// cia-rtl-allow: <reason>` (e.g. a debug border explicitly on left)
 - [ ] All cia tests + Playwright still green
-- [ ] Visual diff in 9 themes: zero regressions in LTR layouts
+- [ ] Visual diff in 8 themes: zero regressions in LTR layouts
 
 **Effort:** M (4-8 hrs)
 

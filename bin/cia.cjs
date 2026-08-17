@@ -5,9 +5,9 @@
  * Subcommand router. Each subcommand lives in its own file under bin/ and
  * exposes a `run(args)` async function.
  *
- * Status (PR 1 — feature/v0.9.0-migrate-tailwind-scaffold):
- *   migrate tailwind  — parse tailwind.config.* + dump theme JSON (this PR)
- *   migrate bootstrap — planned (US-03.2.1)
+ * Status: both converters shipped (EPIC-03 migration on-ramp, 6/6).
+ *   migrate tailwind  — parse tailwind.config.* + dump theme JSON
+ *   migrate bootstrap — parse Bootstrap SCSS/CSS vars + dump theme JSON
  *
  * cia core ships ZERO JavaScript in the `files` manifest. The CLI lives in
  * `bin/` which is explicitly allowed per the architecture lock — same path

@@ -77,7 +77,7 @@ Effort scale:
 - [ ] All 42 stories shipped or explicitly punted to v1.1
 - [ ] Tarball still under 250 KB packed
 - [ ] No new JS in the npm package files manifest
-- [ ] `npm run validate-themes` passes FAIL-by-default across all 9 themes
+- [ ] `npm run validate-themes` passes FAIL-by-default across all 8 themes
 - [ ] `npm run lint:scss` clean
 - [ ] `npm run test` (Playwright + axe) passes
 - [ ] CHANGELOG.md `1.0.0` entry written

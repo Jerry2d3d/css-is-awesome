@@ -54,7 +54,7 @@ export default function ThemePairingPage() {
         <li><strong>Newspaper by day, hacker terminal by night</strong> — Sketchbook + Terminal</li>
         <li><strong>Editorial light, neon cyberpunk dark</strong> — Press + Glass</li>
         <li><strong>Corporate brand light, personal portfolio dark</strong> — Boilerplate + Sketchbook</li>
-        <li>...any of the 9 themes × 9 themes = 81 pairings (minus self-pairs)</li>
+        <li>...any of the 8 theme families × 8 = 64 combinations, or 56 once you drop the self-pairs</li>
       </ul>
 
       <h2 id="constraints">What you should know</h2>
@@ -87,7 +87,7 @@ export default function ThemePairingPage() {
 
       <h2 id="see-also">See also</h2>
       <ul>
-        <li><a href="/themes">Browse all 9 themes</a></li>
+        <li><a href="/themes">Browse all 8 themes</a></li>
         <li><a href="/docs/authoring/themes">Authoring your own theme</a></li>
       </ul>
     </>

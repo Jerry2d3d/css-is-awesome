@@ -17,8 +17,11 @@
  *   Recipes:       list_recipes,    get_recipe
  *   Docs:          read_llm_txt, read_changelog, read_migration,
  *                  read_theming, read_agents, read_contract,
- *                  read_three_tiers
+ *                  read_three_tiers, read_readme, read_versioning
+ *   Sizing:        resolve_size
  *   Prompt:        assemble_prompt(intent[, args])
+ *
+ * 30 tools total.
  *
  * Discovery model: filesystem scan, no database. Parses SCSS files with
  * focused regex (no full SCSS AST). Tokens come from the authoritative
@@ -53,7 +56,15 @@ const SCRIPTS_DIR = path.join(PROJECT_ROOT, 'scripts');
 const THEME_CONTRACT_PATH = path.join(SCRIPTS_DIR, 'theme-contract.json');
 
 const SERVER_NAME = 'css-is-awesome';
-const SERVER_VERSION = '0.8.2';
+// Read from package.json rather than hardcoding — a duplicated literal here
+// silently reports a stale version to every MCP client after a release bump.
+const SERVER_VERSION = (function () {
+  try {
+    return require(path.join(PROJECT_ROOT, 'package.json')).version;
+  } catch (err) {
+    return '0.0.0';
+  }
+})();
 
 // Files that contribute mixins/functions to the public surface.
 // Order matters only for tie-breaking; we tag every parsed entry with its
@@ -992,6 +1003,7 @@ const handlers = {
   read_contract()     { return readDocFile('CONTRACT.md'); },
   read_three_tiers()  { return readDocFile('THREE-TIERS.md'); },
   read_readme()       { return readDocFile('README.md'); },
+  read_versioning()   { return readDocFile('VERSIONING.md'); },
 
   // ─── Prompt assembly ───────────────────────────────────────────────────
 
@@ -1249,7 +1261,7 @@ async function startServer() {
 
   // Mixins
   server.registerTool('list_mixins', {
-    description: 'List every public @mixin (60+ in _mixins.scss + 19 in _layout.scss + per-component mixins). Filter by category (core/layout/animation/icons/generator/component) or component name.',
+    description: 'List every public @mixin (42 in _mixins.scss + 27 in _layout.scss + animation/icon/generator + per-component mixins). Filter by category (core/layout/animation/icons/generator/component) or component name.',
     inputSchema: {
       category: z.string().optional(),
       component: z.string().optional().describe('Restrict to one component (e.g. "buttons", "overlay", "forms").'),
@@ -1401,6 +1413,11 @@ async function startServer() {
     description: 'Return README.md — top-level install + usage.',
     inputSchema: {},
   }, async () => ok(handlers.read_readme()));
+
+  server.registerTool('read_versioning', {
+    description: 'Return VERSIONING.md — semver policy, deprecation lifecycle, and the Conventional Commits to changelog mapping.',
+    inputSchema: {},
+  }, async () => ok(handlers.read_versioning()));
 
   // Prompt assembly
   server.registerTool('assemble_prompt', {

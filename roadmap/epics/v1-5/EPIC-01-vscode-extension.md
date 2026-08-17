@@ -70,7 +70,7 @@ Jerry's 2026-05-23 explicit slot: v1.5. Rationale: playground (v1.0) covers "sho
 #### US-V15.01.2.2 — Hover over `m.color(primary)` shows token value across themes
 
 **Acceptance criteria:**
-- [ ] Hover shows: token name, current value in active theme, list of values across all 9 themes
+- [ ] Hover shows: token name, current value in active theme, list of values across all 8 themes
 - [ ] Color tokens render with a swatch in the tooltip
 - [ ] Click on a theme name → swap workspace theme to that one (advanced; can defer to v0.2)
 

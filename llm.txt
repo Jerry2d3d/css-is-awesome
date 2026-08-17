@@ -36,8 +36,8 @@ npm install -D sass
 
 ## What cia provides (one-line each)
 
-- **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.stepper`, `cia.progress`, `cia.wizard-shell`, `cia.sidebar`, `cia.toolbar`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more.
-- **9 themes** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal (dark), terminal-light. Each ships as one CSS file with both light + dark modes inside via `light-dark()`.
+- **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.stepper`, `cia.progress`, `cia.wizard-shell`, `cia.sidebar`, `cia.toolbar`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.print`, `cia.print-base`, `cia.print-hidden`, `cia.print-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more.
+- **8 theme families** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal. Each ships as one CSS file carrying both light + dark modes via `light-dark()`; most also ship explicit `-light` / `-dark` single-mode files for `<link media>` pairing (21 files total under `public/themes/`).
 - **6 zero-JS interactive components** — accordion (`<details name>`), modal (`<dialog>`), tooltip (`popover="hint"`), dropdown (`[popover]`), tabs (radio + `:has()`), copy-button (Clipboard API via consumer-wired JS).
 - **123 contract tokens** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
 
@@ -138,7 +138,7 @@ cia v1.0 ships a **recipes book**: portable patterns for building accessible com
 
 AI agents read recipes via MCP `list_recipes` / `get_recipe(name)` and generate consumer components in any framework. Humans read them at `/docs/recipes` and copy patterns directly.
 
-The first 5 recipes ship in v1.0: dialog, combobox, datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `roadmap/epics/v1-0/EPIC-01-recipes-book.md` for the schema + roadmap.
+**Shipped today: dialog, combobox, print-to-pdf.** Still queued for 1.0.0: datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `roadmap/epics/v1-0/EPIC-01-recipes-book.md` for the schema + roadmap.
 
 ## Priority ladder (the v1.0 pitch order)
 

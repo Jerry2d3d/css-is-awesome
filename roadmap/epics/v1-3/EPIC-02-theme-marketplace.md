@@ -10,7 +10,7 @@ Ship `/themes/community` — a gallery page of community-submitted themes. Submi
 
 ## Why now
 
-v1.0 ships 9 themes. The theme editor (v1.0) and Figma plugin (v1.3) make creating a new theme accessible. Without a marketplace, community themes sit in scattered GitHub repos. With a marketplace, they're a click away on the cia website.
+v1.0 ships 8 themes. The theme editor (v1.0) and Figma plugin (v1.3) make creating a new theme accessible. Without a marketplace, community themes sit in scattered GitHub repos. With a marketplace, they're a click away on the cia website.
 
 ## Out of scope
 

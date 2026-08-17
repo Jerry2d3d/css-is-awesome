@@ -1,5 +1,9 @@
 import styles from "./page.module.scss";
 import Link from "next/link";
+// Read the version from package.json rather than typing it here — a hardcoded
+// string drifts silently (this stamp still said v0.8 at 0.8.2) and it becomes
+// v1.0.0 on its own the day the package is bumped.
+import { version } from "../../package.json";
 import DraftStamp from "@/components/DraftStamp";
 import Logo from "@/components/Logo";
 import StatChip from "@/components/StatChip";
@@ -7,7 +11,7 @@ import StatChip from "@/components/StatChip";
 export default function Home() {
   return (
     <>
-      <DraftStamp>v0.8 · Mixin-first</DraftStamp>
+      <DraftStamp>v{version} · Mixin-first</DraftStamp>
 
       <main className={styles.landing}>
         <div className={styles.inner}>
@@ -32,7 +36,7 @@ export default function Home() {
 
           <div className={styles.stats}>
             <StatChip value="0 KB" label="runtime JS" />
-            <StatChip value="9" label="themes" />
+            <StatChip value="8" label="themes" />
             <StatChip value="6" label="zero-JS components" />
             <StatChip value="8 KB" label="full bundle (gz)" />
           </div>
