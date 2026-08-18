@@ -108,6 +108,7 @@
     "validate-themes": "node scripts/theme-validator.js --all",
     "validate-icons": "node scripts/icon-validator.js",
     "validate-api": "node scripts/validate-api.mjs",
+    "pack:consumer": "node scripts/pack-to-consumer.mjs",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
     "playwright:install": "playwright install chromium --with-deps",
