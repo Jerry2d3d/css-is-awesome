@@ -11,6 +11,35 @@ automated releases.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Both documented SCSS imports failed on a clean install.** `@use 'css-is-awesome'`
+  (the README's primary example) and `@use 'css-is-awesome/api'` (the two-import
+  model) both errored with *"Can't find stylesheet to import"* for anyone who
+  installed the package. Sass does not read `package.json` `"exports"` — it
+  resolves a bare specifier against a load path on disk, so `css-is-awesome/api`
+  looked for `node_modules/css-is-awesome/api.scss` while the real barrel sits at
+  `scss/api.scss`. The `"./api"` exports entry only ever served bundlers that
+  honour exports.
+
+  Fixed by shipping two forwarding shims at the package root: `api.scss`
+  (zero-emit) and `_index.scss` (kitchen sink). Only the deep paths
+  (`css-is-awesome/scss/api`) worked before, which is why in-repo checks and the
+  Boiler showcase both stayed green.
+
+### Added
+
+- **`npm run validate-package`** — packs, installs into a temp project, and
+  compiles all ten documented `@use` specifiers, asserting the `/api` forms stay
+  zero-emit. `validate-api` only ever compiled the barrel from inside this repo
+  with `scss/` on the load path, so it could not see the packaging break. Wired
+  into CI.
+- **`npm run pack:consumer`** — packs and installs the current build into a local
+  consumer project in one step, replacing a three-step manual dance whose middle
+  step (hand-editing the versioned tarball filename) failed silently when skipped.
+- CI now also gates `validate-icons` and `validate-api`, which existed but were
+  never executed by the workflow.
+
 ## [1.0.0] — 2026-08-17 — Mixin-first, stable
 
 First 1.0. The API surface (mixins, functions, token contract, theme

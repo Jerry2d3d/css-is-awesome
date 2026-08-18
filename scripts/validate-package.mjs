@@ -43,6 +43,18 @@ const FORMS = [
   { spec: "css-is-awesome/scss/mixins", emits: false },
 ];
 
+// Other specifiers the docs hand out. These are compile-only checks — they do
+// not all expose `color()`, so a probe rule would be a false failure. Proving
+// they RESOLVE is the point; the zero-emit contract is asserted above.
+const RESOLVES = [
+  "css-is-awesome/scss/main",
+  "css-is-awesome/scss/components",
+  "css-is-awesome/scss/components/buttons",
+  "css-is-awesome/scss/icons",
+  "css-is-awesome/scss/layout",
+  "css-is-awesome/scss/recipes/bare-tags",
+];
+
 const PROBE = ".cia-probe { color: cia.color(text-primary); }";
 
 let tmp;
@@ -93,6 +105,17 @@ try {
     }
 
     console.log(`  ✓ @use '${spec}'${emits ? "" : " (zero-emit)"}`);
+  }
+
+  for (const spec of RESOLVES) {
+    writeFileSync(path.join(tmp, "probe.scss"), `@use '${spec}';\n`);
+    try {
+      run("npx", ["sass", "--no-source-map", "--load-path=node_modules", "probe.scss"], tmp);
+      console.log(`  ✓ @use '${spec}' (resolves)`);
+    } catch (err) {
+      console.log(`  ✗ @use '${spec}' — ${String(err.stderr || err.message).split("\n")[0]}`);
+      failures++;
+    }
   }
 } finally {
   if (tmp) rmSync(tmp, { recursive: true, force: true });

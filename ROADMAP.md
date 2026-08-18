@@ -339,6 +339,24 @@ docs-site quality only.
 
 ---
 
+## Phase 5.95 — Post-1.0 hardening (2026-08-17 → 08-18)
+
+**v1.0.0 was cut 2026-08-17** (`253610a`, tagged) at 24 of 42 stories, deliberately: no external users yet, so the SemVer commitment cost nothing. **Not published to npm** — the `@1` CDN URLs will 404 until it is.
+
+What the cut surfaced, in the order it hurt:
+
+- [x] **Packaging break — both documented SCSS imports failed on a clean install.** `@use 'css-is-awesome'` and `@use 'css-is-awesome/api'` errored for anyone installing the package; Sass does not read `package.json` `"exports"`. Fixed with root-level forwarding shims (`api.scss`, `_index.scss`). Only the deep paths ever worked, which is why every in-repo check and the Boiler showcase stayed green.
+- [x] **Nothing tested the published artifact.** Added `validate-package` (packs → installs → compiles all ten documented specifiers) and wired it into CI, alongside `validate-icons` and `validate-api`, which existed but had never been executed by the workflow.
+- [x] **A11y validator was blind to `light-dark()`** — 7 themes scored 0/17 pairs, 119 silent skips, green checkmark. Now evaluates both schemes and keeps the worse row.
+- [x] **`prism` shipped but was missing from every theme picker** (4 hand-maintained lists). Added, plus a test asserting all 8 families are offered.
+- [x] **Blog was 7 dead stubs.** Replaced with a real markdown-driven `/blog` + `/blog/[slug]` and 7 posts written from the commit history.
+- [x] **Visual baselines stale since 2026-05-03**, keeping CI red. Keyed by `{platform}`, win32 set regenerated. **Linux set still needs one manual run of the "Update visual snapshots" workflow.**
+- [x] Release friction: `pack:consumer` collapses the three-step pack → re-pin → install dance into one command.
+
+**Still open:** publish to npm; run the snapshot workflow once to green CI; the 18 remaining v1.0 stories (Playground is 0/7).
+
+---
+
 ## Phase 5.9 — v1.0 Lockdown (recipes-first)
 
 **Locked 2026-05-23** after long architecture synthesis (panel review + Gemini external read + Jerry instinct refinement).

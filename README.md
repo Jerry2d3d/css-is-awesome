@@ -213,6 +213,8 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 | `npm run validate-themes` | Validate every theme against the 123-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7; checks both `light-dark()` branches and reports the worse) |
 | `npm run validate-icons` | Validate the `core` icon pack against the 49-glyph contract |
 | `npm run validate-api` | Assert the `css-is-awesome/api` barrel stays zero-emit |
+| `npm run validate-package` | Pack + install into a temp project and compile every documented `@use` form — catches breakage that in-repo checks can't see |
+| `npm run pack:consumer` | Pack and install this build into a local consumer (defaults to `../boiler-project-ai`); `--dry-run` supported |
 | `npm test` | Playwright suite — axe a11y checks + per-theme visual snapshots |
 
 ## Size (gzipped)
