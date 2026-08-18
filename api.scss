@@ -1,0 +1,16 @@
+// ============================================================================
+// Package-root shim for `@use 'css-is-awesome/api'`
+// ============================================================================
+// Sass does NOT read package.json "exports". It resolves a bare specifier by
+// looking for a file on disk relative to a load path — for
+// `css-is-awesome/api` that means `node_modules/css-is-awesome/api.scss`.
+// The real barrel lives at `scss/api.scss`, so without this shim the import
+// documented in the README and AGENTS.md fails on a clean install with
+// "Can't find stylesheet to import."
+//
+// This file exists purely so the documented specifier resolves. It forwards
+// and emits nothing, so `css-is-awesome/api` stays zero-emit.
+//
+// Keep in sync with the "./api" entry in package.json "exports" — that entry
+// serves bundlers that DO honour exports; this file serves Sass itself.
+@forward './scss/api';

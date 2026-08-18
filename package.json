@@ -63,6 +63,8 @@
   },
   "files": [
     "scss",
+    "api.scss",
+    "_index.scss",
     "dist",
     "figma-tokens",
     "mcp",
@@ -108,6 +110,7 @@
     "validate-themes": "node scripts/theme-validator.js --all",
     "validate-icons": "node scripts/icon-validator.js",
     "validate-api": "node scripts/validate-api.mjs",
+    "validate-package": "node scripts/validate-package.mjs",
     "pack:consumer": "node scripts/pack-to-consumer.mjs",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",

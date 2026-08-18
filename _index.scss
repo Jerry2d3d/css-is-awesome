@@ -1,0 +1,17 @@
+// ============================================================================
+// Package-root shim for `@use 'css-is-awesome'`
+// ============================================================================
+// The README's primary example is:
+//
+//   @use 'css-is-awesome' as cia;
+//
+// Sass resolves that bare specifier by looking for
+// `node_modules/css-is-awesome/_index.scss`. The real kitchen-sink barrel is
+// at `scss/_index.scss`, so without this shim the headline install example
+// fails on a clean install.
+//
+// Unlike `api.scss`, this one DOES emit CSS — it forwards the kitchen-sink
+// barrel (api + the global `.cia-anim-*` utilities), which is correct for a
+// root/global stylesheet. Component stylesheets should use
+// `css-is-awesome/api` instead, which stays zero-emit.
+@forward './scss/index';

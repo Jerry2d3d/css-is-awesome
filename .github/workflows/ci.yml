@@ -45,6 +45,13 @@ jobs:
       - name: Validate /api barrel stays zero-emit
         run: npm run validate-api
 
+      # Packs, installs into a temp dir, and compiles every import form the
+      # docs tell consumers to write. validate-api only proves the barrel works
+      # from INSIDE this repo — it stayed green while both README imports were
+      # broken on a real install.
+      - name: Validate the published package's documented imports
+        run: npm run validate-package
+
       - name: Build library CSS bundles
         run: npm run build:css:all
 
