@@ -273,6 +273,29 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 | `npm run pack:consumer` | Pack and install this build into a local consumer (defaults to `../boiler-project-ai`); `--dry-run` supported |
 | `npm test` | Playwright suite — axe a11y checks + per-theme visual snapshots |
 
+## Testing
+
+Nine checks, all gated in CI on every PR. Each one exists because the failure it catches actually happened.
+
+| Check | What it proves |
+|---|---|
+| `lint` / `lint:scss` | ESLint on the site, stylelint on the library |
+| `validate-themes` | every theme declares all 123 contract tokens and meets WCAG 2.2 AA — evaluating **both** `light-dark()` branches and keeping the worse result. Fails the build by default |
+| `validate-icons` | the 49-glyph core pack is intact (extras allowed) |
+| `validate-api` | the `/api` barrel still emits zero CSS until a mixin is called |
+| `validate-package` | packs → installs into a temp project → compiles all **10** documented `@use` specifiers |
+| `coverage:api` | calls **174/174** public mixins + functions and asserts the output |
+| `coverage:mcp` | calls **30/30** MCP tools over stdio |
+| `test` | Playwright — 50 tests: route smoke, axe a11y, per-theme visual snapshots, theme-editor behaviour |
+
+**Call-and-assert coverage.** SCSS has no line-coverage tooling, so cia measures whether every part of the public API is actually callable: parse every public `@mixin`/`@function`, generate a fixture that calls it, compile, and assert it works — no `null` leaking into CSS, functions return a value, mixins emit. **174/174 SCSS units and 30/30 MCP tools**, with CI failing below 98%. A unit with no fixture counts as uncovered, so skipping a test lowers the number rather than hiding.
+
+**What 100% means here:** every public mixin and function is invoked and produces sane output. It catches renames, broken signatures and undefined variables — it found one on its first run, an undefined `$icon-size` that broke four icon mixins. It does **not** prove the CSS is visually correct; that's a deliberate trade against golden-file snapshots, which would churn dozens of files on any token change. Page-level visual correctness is covered by the Playwright snapshots instead.
+
+**Known gaps**, stated plainly: **chromium only** (cia leans on `light-dark()`, `:has()`, `[popover]`, `mask` — cross-engine is the most valuable thing missing); **no size budget** (the sizes above are measured, not gated); **a11y runs on routes, not component states**.
+
+Full detail: [`/docs/testing`](./src/app/docs/testing/page.tsx).
+
 ## Size (gzipped)
 
 | Bundle | Size | Use case |

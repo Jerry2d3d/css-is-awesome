@@ -8,8 +8,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  /* Square, sized from the shared header-control token so it always matches
+     the theme dropdown next to it. */
+  width: var(--control-h, 2.25rem);
+  height: var(--control-h, 2.25rem);
   padding: 0;
   border: 1px solid var(--hair);
   border-radius: var(--r-md, 6px);

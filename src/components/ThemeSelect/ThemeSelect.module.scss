@@ -10,7 +10,12 @@
   color: var(--ink);
   border: 1px solid var(--hair);
   border-radius: var(--r-md, 6px);
-  padding: 0.45rem 1.75rem 0.45rem 0.7rem;
+  /* Height comes from the shared control token, not from padding — otherwise
+     it drifts out of line with the light/dark toggle beside it. Padding is
+     horizontal only; the native select centres its label vertically. */
+  height: var(--control-h, 2.25rem);
+  padding-block: 0;
+  padding-inline: 0.7rem 1.75rem;
   font-family: var(--font-sans);
   font-size: 0.875rem;
   line-height: 1;

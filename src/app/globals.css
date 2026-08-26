@@ -14,6 +14,11 @@
    page, block, element) by re-declaring the variable there. */
 :root {
   --font-meme: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Shared height for the small header controls (theme dropdown, light/dark
+     toggle). One value so they can't drift apart — they were 30.4px and 36px
+     because one was sized by padding and the other by a fixed square. */
+  --control-h: 2.25rem;
 }
 
 * { box-sizing: border-box; }
