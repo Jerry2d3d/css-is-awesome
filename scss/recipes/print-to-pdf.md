@@ -99,6 +99,25 @@ Because the *value* is a variable, a per-element exception needs no new rule —
 
 That is the whole reason this recipe needs no JavaScript and no headless-browser service: the media query plus a few variables **are** the engine.
 
+### Why these mixins use `!important`
+
+You will see `!important` in the compiled output. cia avoids it everywhere else; the print layer is a deliberate exception.
+
+`@media` contributes **no specificity**. `print-hidden` is included inside *your* selector, so its rule carries exactly your selector's specificity — and a later declaration at equal specificity wins, in print too:
+
+```scss
+.site-nav {
+  @include cia.print-hidden;   // @media print { display: none }
+  display: flex;               // equal specificity, later — would win without !important
+}
+```
+
+The competing rule is usually not even yours: a utility class, or a component library cia cannot see. Without `!important`, "hidden on paper" silently isn't — and it only shows up in a print preview.
+
+**`@layer` does not solve this.** Layered CSS always loses to unlayered CSS, so a layered print rule would lose to any consumer stylesheet that isn't layered — which is most of them. (`!important` also inverts layer order, so combining them misleads.) cia ships unlayered by design; see `.agent/decisions/decided/04-at-layer-decision.md`.
+
+The scope is small and the escape hatch is open: 8 declarations, all inside `@media print`, and every value stays variable-driven. Override `--print-hide` / `--print-show` to change *what* happens; you never have to fight the rule to win.
+
 ## Interactivity
 
 **Zero JS.** The browser runs no script and needs no server — it reads your `@media print` rules and renders. The user presses `Ctrl/Cmd+P` (or File → Print) and picks the built-in "Save as PDF" destination. That is the entire mechanism.

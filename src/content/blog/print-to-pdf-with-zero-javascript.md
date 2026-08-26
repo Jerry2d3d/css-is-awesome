@@ -137,9 +137,37 @@ The tempting alternative is one unconditional `display: var(--print-display)` pe
 
 `print-hidden` and `print-only` both use it, and it is not a shortcut.
 
-These mixins exist to beat a component's own `display` rule. `.site-nav { display: flex }` and `@media print { .site-nav { display: none } }` have equal specificity, so the winner is source order — which, once your build concatenates modules, is not something the mixin author controls. Sass module order, CSS Modules hashing, and a bundler's chunk order all get a vote.
+The root of it: **`@media` contributes no specificity.** `print-hidden` is included *inside* your selector, so the rule it generates carries exactly that selector's specificity — no more. `.site-nav { display: flex }` and `@media print { .site-nav { display: none } }` are a tie, and ties are settled by source order, which the mixin author does not control once Sass module order, CSS Modules hashing and a bundler's chunk order have all had a vote.
 
-An `!important` on four declarations, scoped to `@media print`, makes "hidden on paper" mean hidden on paper. `print-only` carries a matching `@media screen { display: none !important }` for the same reason in reverse. The value stays a variable, so overriding is still a one-line job — you change what it hides *to*, not whether the rule wins.
+We measured it rather than argued about it, in a browser under print emulation:
+
+| rule | result in print |
+|---|---|
+| `display: var(--print-hide) !important` | `none` — hides |
+| the same rule without `!important` | `flex` — prints anyway |
+
+The competing `display` is usually not even yours. It is a utility class or a component library the design system can never see. Without `!important` the mixin fails *silently, on paper only* — the worst place to find out.
+
+### Why not `@layer`?
+
+This is the obvious modern answer, and for this problem it is worse.
+
+**Layered CSS always loses to unlayered CSS**, regardless of specificity. That is the entire point of the feature. So a print rule inside `@layer` would lose to any consumer stylesheet that isn't layered — which is most of them:
+
+```css
+@layer cia { @media print { .site-nav { display: none } } }
+.site-nav { display: flex }        /* unlayered — wins */
+```
+
+The nav prints. A design system cannot require its consumers to adopt layers just so its print rules work; that tax is exactly why cia ships unlayered in the first place.
+
+There is a second trap: `!important` **inverts** layer order. An important declaration in an *earlier* layer beats a normal one in a later layer. The two features do not compose the way intuition suggests, so reaching for both is how you end up debugging a cascade you can't see.
+
+### Keeping the blast radius small
+
+Eight `!important` declarations, all inside `@media print`, each doing one of two jobs: beat a `display` rule, or beat an author `animation` shorthand. `print-only` carries a matching `@media screen { display: none !important }` for the same reason in reverse.
+
+The values stay variable-driven — `--print-hide`, `--print-show`. You override what it hides *to*, not whether the rule wins. That is the compromise: the mixin is unconditional about winning and completely open about the outcome.
 
 ## What CSS still can't do
 

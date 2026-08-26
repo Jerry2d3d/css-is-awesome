@@ -45,7 +45,7 @@ npm install -D sass
 ## Hard rules (do not violate)
 
 1. **No JavaScript in the cia npm package.** Zero `.js`/`.mjs` files ship. JS-augmented features (CopyButton handler, future force-mode) ship as separate add-on packages. **This binds the package, not the consumer:** apps built ON cia should write JS/framework components freely (React, SVG charts, interactivity) and use cia only for styling — mixins + tokens. Don't over-apply "zero-JS" to your own app code.
-2. **No `@layer`.** Tier 3 bare-tags use `:where()` (specificity 0,0,0). Cascade pollution kills the consumer experience.
+2. **No `@layer`.** Tier 3 bare-tags use `:where()` (specificity 0,0,0). Cascade pollution kills the consumer experience. Corollary: **the `!important` in the print mixins is load-bearing — do not remove it.** `@media` contributes no specificity, so `print-hidden` only carries the specificity of the selector it is included in, and a later equal-specificity `display` wins in print. `@layer` would make this worse, not better: layered CSS always loses to unlayered CSS, so a layered print rule loses to any unlayered consumer stylesheet. Scope is 8 declarations, all inside `@media print`, all variable-driven (`--print-hide` / `--print-show`).
 3. **No BEM.** No `__element` / `--modifier` chains in cia source. Consumers pick their own selector names — cia has no opinion.
 4. **No Storybook.** Docs site + the `css-is-awesome-mcp` server cover both human and AI audiences.
 5. **One theme = one file.** Both light + dark inside via `light-dark()`.

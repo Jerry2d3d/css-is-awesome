@@ -198,6 +198,23 @@ Print support is a pure-CSS layer — the browser's native **Print → Save as P
 
 `print-base` also collapses animations to zero duration and pins them to their final frame, so a page snapshotted mid-entrance-fade doesn't print as invisible text. It deliberately does **not** force `opacity: 1` or `transform: none` — that would fix the fade while flattening every intentional use of the same properties (a 0.15 watermark, a 0.4 disabled control, a stamp rotated `-4deg`). Elements that were never animating are left untouched. Read `--is-print` (`0` on screen, `1` on paper) for custom effects. Full walkthrough: the [`print-to-pdf`](./scss/recipes/print-to-pdf.md) recipe.
 
+### Why the print mixins use `!important`
+
+cia avoids `!important` everywhere else. The print layer is the exception, and it's deliberate.
+
+**`@media` contributes no specificity.** `print-hidden` is included *inside* your selector, so the rule it generates has exactly that selector's specificity — and any later declaration at equal specificity wins, including in print. Measured in a browser:
+
+| | result in print |
+|---|---|
+| `display: var(--print-hide) !important` | `none` ✓ hides |
+| same rule without `!important` | `flex` ✗ prints anyway |
+
+The competing `display` usually isn't yours — it's a utility class or a component library cia can never see. Without `!important` the mixin fails *silently, on paper only*, which is the worst place to discover it.
+
+**`@layer` would be worse, not better.** Layered CSS always loses to unlayered CSS. If cia's print rules lived in a layer and your own CSS is unlayered (the normal case), your `display: flex` would win and the nav would print. cia can't require consumers to adopt layers — see [`.agent/decisions/decided/04-at-layer-decision.md`](./.agent/decisions/decided/04-at-layer-decision.md). `!important` also *inverts* layer order, so the two don't compose the way you'd expect.
+
+The scope is kept narrow: 8 `!important` declarations, all inside `@media print`, all doing one of two jobs — beating a `display` rule, or beating an author `animation` shorthand. The values stay variable-driven (`--print-hide`, `--print-show`), so you can still override behaviour without fighting the mixin.
+
 ## MCP server (for AI agents)
 
 cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **30 tools** across 8 families (themes, mixins, functions, tokens · 123 of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).

@@ -400,6 +400,28 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">.url-foot</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print-only</span>; {"}"}
 {"\n"}<span className="tok-sel">.subtitle</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print</span> {"{"} <span className="tok-prop">color</span>: <span className="tok-val">m.color(text-secondary)</span>; {"}"} {"}"}</Example.Code>
       </Example>
+      <p>
+        <strong>Why these emit <code>!important</code>.</strong> cia avoids it
+        everywhere else — the print layer is a deliberate exception.{" "}
+        <code>@media</code> contributes <em>no specificity</em>, so{" "}
+        <code>print-hidden</code> produces a rule with exactly the specificity
+        of the selector you included it in. A later declaration at equal
+        specificity wins, in print too — and it is usually not even yours, but
+        a utility class or a component library cia cannot see. Measured in a
+        browser: with <code>!important</code> the element hides; without it, it
+        prints anyway. The failure is silent and paper-only.
+      </p>
+      <p>
+        <strong><code>@layer</code> would be worse here.</strong> Layered CSS
+        always loses to unlayered CSS, so a layered print rule would lose to
+        any consumer stylesheet that isn&rsquo;t layered — which is most of
+        them. (<code>!important</code> also inverts layer order, so the two
+        don&rsquo;t compose as you&rsquo;d expect.) cia ships unlayered by
+        design. The blast radius stays small: 8 declarations, all inside{" "}
+        <code>@media print</code>, all variable-driven — override{" "}
+        <code>--print-hide</code> / <code>--print-show</code> to change what
+        happens, rather than fighting the rule to win.
+      </p>
 
       <h3 id="print-vars">The variable filter system</h3>
       <p>
