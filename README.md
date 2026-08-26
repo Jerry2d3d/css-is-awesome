@@ -196,7 +196,7 @@ Print support is a pure-CSS layer — the browser's native **Print → Save as P
 .invoice    { @include cia.print { border: 1px solid; } } // bare @media print wrapper
 ```
 
-`print-base` also freezes animations and forces `opacity: 1` on print, so a page snapshotted mid-entrance-fade doesn't print as invisible text. Read `--is-print` (`0` on screen, `1` on paper) for custom effects. Full walkthrough: the [`print-to-pdf`](./scss/recipes/print-to-pdf.md) recipe.
+`print-base` also collapses animations to zero duration and pins them to their final frame, so a page snapshotted mid-entrance-fade doesn't print as invisible text. It deliberately does **not** force `opacity: 1` or `transform: none` — that would fix the fade while flattening every intentional use of the same properties (a 0.15 watermark, a 0.4 disabled control, a stamp rotated `-4deg`). Elements that were never animating are left untouched. Read `--is-print` (`0` on screen, `1` on paper) for custom effects. Full walkthrough: the [`print-to-pdf`](./scss/recipes/print-to-pdf.md) recipe.
 
 ## MCP server (for AI agents)
 

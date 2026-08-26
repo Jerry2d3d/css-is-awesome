@@ -69,23 +69,44 @@ Entrance animations usually start invisible. A fade-in is `opacity: 0` until it 
 
 Print snapshots the page in whatever state it is in. Hit Ctrl+P while an entrance animation has not run — which is exactly what happens on a fresh load, or on any element below the fold whose IntersectionObserver never fired — and you get a PDF with correct layout, correct page breaks, and **no text**. The content is there. It has `opacity: 0`.
 
-`print-base` freezes it by default:
+The obvious fix is to force everything visible:
+
+```scss
+* {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+```
+
+That is what `print-base` shipped first, and it is wrong. It fixes the fade by destroying every *deliberate* use of the same properties. We measured it in a browser under print emulation:
+
+| element | forced-visible freeze |
+|---|---|
+| entrance fade | `1` — fixed |
+| watermark at `opacity: 0.15` | `1` — **destroyed** |
+| disabled control at `0.4` | `1` — **destroyed** |
+| stamp at `rotate(-4deg)` | flattened |
+
+That last row was our own homepage. The version stamp is rotated four degrees; the freeze ironed it flat on paper.
+
+The distinction that matters: the problem is not that things are transparent, it is that animations *have not finished*. So finish them.
 
 ```scss
 @if $freeze-animations {
-  * {
-    animation: none !important;
-    transition: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    scale: none !important;
+  *, *::before, *::after {
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+    animation-fill-mode: forwards !important;
+    transition-delay: 0s !important;
+    transition-duration: 0s !important;
   }
 }
 ```
 
-`transform` and `scale` come along because a reveal that also translates would otherwise print offset, and a `scale(0)` entrance prints nothing at all.
+Zero duration plus `forwards` makes every animation land on its final frame instantly. A fade-in ends at `opacity: 1`. A slide-in ends at `translateY(0)`. And an element that was never animating is not touched at all — the watermark stays at `0.15`, the stamp keeps its four degrees.
 
-The cost is real and worth naming: on paper you lose deliberate opacity. A watermark at `opacity: 0.1` prints solid. If you want that, `@include cia.print-base($freeze-animations: false)` turns the whole block off — and then invisible text is back on your list of things to check. Most pages want the freeze; documents that lean on translucency should opt out and audit their own animations.
+`!important` stays, and it is load-bearing: `@media` contributes no specificity, so an author's `animation:` shorthand at equal specificity would otherwise win and put the trap right back.
 
 ## Three variables are the control plane
 

@@ -385,7 +385,7 @@ export default function DocsMixinsPage() {
       </p>
 
       <h3 id="m-print-base"><code>print-base</code></h3>
-      <p>Page-level defaults, on by default. Include <strong>once at the stylesheet root</strong> (it emits <code>@page</code>, which is invalid nested in a selector). Sets the page box, freezes animations so nothing prints invisible, and emits the print variable control plane.</p>
+      <p>Page-level defaults, on by default. Include <strong>once at the stylesheet root</strong> (it emits <code>@page</code>, which is invalid nested in a selector). Sets the page box, collapses animations to their final frame so nothing prints invisible, and emits the print variable control plane. It does not force <code>opacity: 1</code> / <code>transform: none</code> — deliberate translucency and rotation survive.</p>
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">print-base</span>(<span className="tok-val">$freeze-animations: true, $size: letter, $margin: 0.5in</span>);
 {"\n"}

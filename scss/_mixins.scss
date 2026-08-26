@@ -585,15 +585,30 @@ $_type-scale: (
     @page { size: $size; margin: $margin; }
 
     @if $freeze-animations {
-      // The opacity:0 entrance-fade trap: a PDF snapshotted mid-animation
-      // prints invisible text. Freeze everything and force it visible.
-      /* stylelint-disable declaration-no-important -- !important is the canonical pattern for the print freeze: it must override any animation/transition/opacity declared anywhere in the document so no content prints invisible. */
-      * {
-        animation: none !important;
-        transition: none !important;
-        opacity: 1 !important;
-        transform: none !important;
-        scale: none !important;
+      // The opacity:0 entrance-fade trap: a page snapshotted mid-animation
+      // prints invisible text.
+      //
+      // We do NOT solve this by forcing `opacity: 1` and `transform: none`.
+      // That fixes the fade but destroys every DELIBERATE use of the same
+      // properties — a 0.15 watermark, a 0.4 disabled control, a stamp rotated
+      // -4deg all get flattened on paper.
+      //
+      // Instead, collapse animations to zero duration and pin them to their
+      // final frame. An entrance fade lands on its end state (visible), while
+      // an element that was never animating is left completely alone.
+      //
+      // `!important` stays, and is load-bearing: @media adds no specificity, so
+      // any author `animation:` shorthand of equal-or-higher specificity would
+      // otherwise win and re-introduce the trap.
+      /* stylelint-disable declaration-no-important -- must beat author animation/transition declarations; @media contributes no specificity of its own. */
+      *,
+      *::before,
+      *::after {
+        animation-delay: 0s !important;
+        animation-duration: 0s !important;
+        animation-fill-mode: forwards !important;
+        transition-delay: 0s !important;
+        transition-duration: 0s !important;
       }
       /* stylelint-enable declaration-no-important */
     }
