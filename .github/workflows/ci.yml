@@ -52,6 +52,15 @@ jobs:
       - name: Validate the published package's documented imports
         run: npm run validate-package
 
+      # Call-and-assert coverage. Every public mixin/function is invoked and
+      # its output checked; every MCP tool is called over stdio. Both fail the
+      # build below 98%, so adding API surface without a test is visible.
+      - name: SCSS API coverage (>= 98%)
+        run: npm run coverage:api
+
+      - name: MCP tool coverage (>= 98%)
+        run: npm run coverage:mcp
+
       - name: Build library CSS bundles
         run: npm run build:css:all
 

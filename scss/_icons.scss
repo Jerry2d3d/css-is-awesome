@@ -175,14 +175,14 @@
 //
 // Params:
 //   $name  — icon name (matches `<name>.svg` in $theme-icon-path)
-//   $size  — icon width/height (default: t.$icon-size)
+//   $size  — icon width/height (default: t.$theme-icon-size)
 //
 // Example:
 //   .logo { @include m.svg-bg(brand-mark, 48px); }
 // ----------------------------------------------------------------------------
 @mixin svg-bg(
   $name,
-  $size: t.$icon-size
+  $size: t.$theme-icon-size
 ) {
   $url: _svg-url($name);
 
@@ -454,13 +454,13 @@ $_fa-styles: _fa-styles(t.$theme-fa-pro);
 //
 // Params:
 //   $name   — icon name (typically `spinner` or `refresh`)
-//   $size   — icon dimension (default: t.$icon-size)
+//   $size   — icon dimension (default: t.$theme-icon-size)
 //   $style  — FA family (default: t.$theme-fa-style)
 //
 // Example:
 //   .loader { @include m.fa-spin(spinner); }
 // ----------------------------------------------------------------------------
-@mixin fa-spin($name, $size: t.$icon-size, $style: t.$theme-fa-style) {
+@mixin fa-spin($name, $size: t.$theme-icon-size, $style: t.$theme-fa-style) {
   @include fa-icon($name, $size, $style);
 
   &::before {
