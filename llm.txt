@@ -40,6 +40,7 @@ npm install -D sass
 - **8 theme families** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal. Each ships as one CSS file carrying both light + dark modes via `light-dark()`; most also ship explicit `-light` / `-dark` single-mode files for `<link media>` pairing (21 files total under `public/themes/`).
 - **6 zero-JS interactive components** — accordion (`<details name>`), modal (`<dialog>`), tooltip (`popover="hint"`), dropdown (`[popover]`), tabs (radio + `:has()`), copy-button (Clipboard API via consumer-wired JS).
 - **123 contract tokens** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
+- **Icons — two systems.** `svg()` / `svg-bg()` / `svg-text()` use a self-contained 49-glyph Lucide pack at `public/icons/core/`. Adding a glyph is drop-in: put `star.svg` in the folder and `cia.icon-svg(star)` works, no registration. Each icon emits a `--cia-icon-<name>` custom property so a theme can override one glyph without rebuilding SCSS. **`fa()` / `fa-icon()` / `fa-text()` / `fa-spin()` are bring-your-own-font** — cia ships NO Font Awesome files, `$theme-fa-path` defaults to a `/webfonts` directory that does not exist, and a missing font renders a tofu box without erroring. Default to `svg()` unless the user says they use Font Awesome.
 
 ## Hard rules (do not violate)
 

@@ -199,6 +199,27 @@ the full spec, the canonical 49-glyph list, naming conventions, and
 when to bump the contract. Validate the contract pack with
 `npm run validate-icons`.
 
+### ⚠️ `fa-*` is bring-your-own-font — prefer the SVG pack
+
+`fa`, `fa-icon`, `fa-text` and `fa-spin` exist for teams already on Font
+Awesome. They map a name through `$icon-fa-map` (55 entries) to a
+codepoint and set the FA font family — nothing more:
+
+```css
+.a { font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f00c"; }
+```
+
+**cia ships no Font Awesome files** (its licence is not ours to vendor).
+`$theme-fa-path` defaults to `/webfonts`, a directory that does **not**
+exist in the package, and `fa-load` is never called by cia. So `fa-*`
+compiles to valid CSS and renders as a **tofu box** until the consumer
+supplies the woff2 files, points `$theme-fa-path` at them, and calls
+`@include i.fa-load;` once at the root.
+
+Missing font files do not error. **Default to `svg()` unless the user has
+explicitly told you they use Font Awesome** — the SVG pack is
+self-contained and needs no setup.
+
 ## Where to read deeper
 
 Inside this package (all whitelisted in `files`):

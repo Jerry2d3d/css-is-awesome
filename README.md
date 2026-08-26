@@ -122,6 +122,45 @@ Full authoring walkthrough: [`/docs/authoring/themes`](./src/app/docs/authoring/
 
 Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else.
 
+## Icons (two systems, very different setup costs)
+
+**SVG pack — self-contained, drop-in.** 49 glyphs vendored from Lucide ship at `public/icons/core/<name>.svg`. Nothing to install.
+
+```scss
+@use 'css-is-awesome/api' as cia;
+
+.save-btn { @include cia.icon-svg(check); }         // tinted via currentColor
+.next     { @include cia.icon-svg-text(arrow-right, $position: after); }
+```
+
+**Adding your own glyph is genuinely drop-in — no registration step.** Put `star.svg` in `public/icons/core/` and `cia.icon-svg(star)` works immediately; the name resolves straight to a filename. `npm run validate-icons` checks the 49 contract glyphs are present and does not object to extras.
+
+Every icon emits a per-glyph custom property, so a theme can swap one without touching SCSS:
+
+```css
+mask: var(--cia-icon-check, url('/icons/core/check.svg')) center / contain no-repeat;
+```
+
+```scss
+:root[data-theme='terminal'] { --cia-icon-check: url('/themes/terminal/icons/check.svg'); }
+```
+
+Resolution order is **per-theme override → core pack → 404**.
+
+**Font Awesome — bring your own fonts.** `cia.icon-fa()`, `icon-fa-icon()`, `icon-fa-text()` and `icon-fa-spin()` exist for teams already on FA. They map a name through `$icon-fa-map` (55 entries) to a codepoint and set the FA font family:
+
+```css
+.a { font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f00c"; }
+```
+
+⚠️ **cia ships no Font Awesome files** — FA has its own licence, so vendoring it would be wrong. The `fa-*` mixins compile to valid CSS but render as tofu until you:
+
+1. supply the `.woff2` files yourself,
+2. put them where `$theme-fa-path` points (default `/webfonts` — this directory does **not** exist in the package),
+3. call `@include cia.icon-fa-load;` once at your root.
+
+Missing font files don't error, so a silent tofu box is the failure mode. If you only want icons that work out of the box, use the SVG pack.
+
 ## Recipes (build components without a component library)
 
 cia ships **no component library** — deliberately. Interactive patterns arrive as *recipes*: portable markdown files at [`scss/recipes/`](./scss/recipes/) that give you the correct HTML, the `cia.X` mixin calls to style it, and an a11y checklist graded against WCAG 2.2 AA. Copy the pattern into your own framework; you own the component, cia owns the styling and the accessibility homework.

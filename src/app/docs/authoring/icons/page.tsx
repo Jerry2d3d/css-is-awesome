@@ -255,9 +255,24 @@ export default function DocsAuthoringIconsPage() {
       </Example>
       <p>
         Drop the woff2 files for the weights you ship at{" "}
-        <code>$theme-fa-path</code> (default <code>/webfonts</code>). Missing
-        files don&rsquo;t error — they just don&rsquo;t render until you add
-        them, so you can ramp up to the full Pro set incrementally.
+        <code>$theme-fa-path</code> (default <code>/webfonts</code>). You can
+        ramp up to the full Pro set incrementally — the weights you haven&rsquo;t
+        added yet simply aren&rsquo;t used.
+      </p>
+      <p>
+        <strong>cia ships no Font Awesome files.</strong> FA&rsquo;s licence
+        isn&rsquo;t ours to vendor, so <code>/webfonts</code> does not exist in
+        the package and <code>fa-load</code> is never called for you. The{" "}
+        <code>fa-*</code> mixins compile to valid CSS either way — they set a
+        font family and a codepoint, nothing more — so a missing font
+        doesn&rsquo;t error. It renders a <strong>tofu box</strong>, which is a
+        quiet failure worth knowing about before you ship.
+      </p>
+      <p>
+        The practical split: the <strong>SVG pack is self-contained</strong> —
+        49 glyphs, drop-in, zero setup. The <strong>FA family is
+        bring-your-own-font</strong>. Reach for it when you are already on
+        Font Awesome; otherwise use <code>svg()</code>.
       </p>
 
       <h2 id="further-reading">Further reading</h2>
