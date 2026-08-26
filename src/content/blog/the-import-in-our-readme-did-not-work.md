@@ -8,7 +8,6 @@ excerpt: Sass does not read package.json exports. Both documented imports failed
 author: Jerry Hansen
 publishDate: 2026-08-18
 updatedDate: 2026-08-18
-readingTime: 5 min
 ---
 
 We cut 1.0.0 on 2026-08-17. The next day, while checking something unrelated, we

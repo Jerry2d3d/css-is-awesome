@@ -8,7 +8,6 @@ excerpt: Next.js CSS Modules reject a top-level :root, so cia's authoring entry 
 author: Jerry Hansen
 publishDate: 2026-08-17
 updatedDate: 2026-08-17
-readingTime: 5 min
 ---
 
 The constraint came first, and it was not negotiable.
@@ -110,7 +109,9 @@ Concretely: compile `@use 'api' as cia;` and require the trimmed result to be th
 
 The last two are the ones that keep the invariant honest. Deleting every `@forward` from `api.scss` would pass checks 1 and 2 perfectly. Checks 3 through 5 are what stop "emits nothing" from degrading into "does nothing."
 
-Honest gap, as of this writing: `validate-api` is an npm script, not yet a CI step. `.github/workflows/ci.yml` runs `lint`, `lint:scss`, `validate-themes`, the CSS bundle build, the Next.js build, and Playwright. The api check is not in that list. A test you have to remember to run is a weaker promise than a gate — that is a fix, not a footnote.
+When this post was first published there was an honest gap: `validate-api` was an npm script and *not* a CI step, so the invariant depended on someone remembering to run it. A test you have to remember to run is a weaker promise than a gate.
+
+That was closed in `dfb6f20`. `.github/workflows/ci.yml` now runs `validate-api` on every pull request, alongside `validate-icons` and `validate-package` — the last of which packs the tarball, installs it into a temp project, and compiles every documented `@use` specifier. Which turned out to matter more than expected; see [The import in our README did not work](/blog/the-import-in-our-readme-did-not-work).
 
 ## The limitation: Turbopack cannot consume it
 

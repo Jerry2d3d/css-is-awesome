@@ -8,7 +8,6 @@ excerpt: We cut 1.0 on 2026-08-17 with 24 of 42 planned stories done and an enti
 author: Jerry Hansen
 publishDate: 2026-08-17
 updatedDate: 2026-08-17
-readingTime: 6 min
 ---
 
 The v1.0.0 commit changed seven files. None of them were library code.
@@ -190,7 +189,17 @@ core. Six components that need no JavaScript — accordion, modal, tooltip,
 dropdown, tabs, copy button — built on `<details name>`, `<dialog>`, `popover`,
 and `:has()`.
 
-What 1.0 does not include: a playground, three of five planned recipes, an MCP
-test suite, and a published npm package. Those are 1.1 problems. The number on
-the box means one thing only — if a mixin signature changes, the first digit
+What 1.0 did not include: a playground, three of five planned recipes, an MCP
+test suite, and a published npm package.
+
+One of those closed quickly. `8aab2e7` shipped call-and-assert coverage for
+both surfaces — 174 of 174 public mixins and functions, 30 of 30 MCP tools,
+CI-gated at 98%. It found a real bug on its first proper run: `scss/_icons.scss`
+referenced a `$icon-size` the theme barrel never re-exported, which broke
+`svg()`, `svg-bg()`, `fa-icon()` and `fa-spin()` whenever they were called
+without an explicit size. Compiled clean, reported success, and was wrong —
+the same genre of failure as the a11y validator above.
+
+The playground, the three recipes and the npm publish are still open. The number
+on the box means one thing only — if a mixin signature changes, the first digit
 changes with it.

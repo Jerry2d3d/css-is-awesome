@@ -8,7 +8,6 @@ excerpt: npx cia migrate reads your Tailwind config or Bootstrap variables and w
 author: Jerry Hansen
 publishDate: 2026-08-17
 updatedDate: 2026-08-17
-readingTime: 5 min
 ---
 
 The most common reason a team doesn't try a new styling system isn't the API. It's this:
@@ -31,7 +30,7 @@ No path? It walks up from the current directory looking for `tailwind.config.ts`
 npx cia migrate tailwind --json | jq '.cia.report'
 ```
 
-Flags are the same on both tools: `--name` (default `migrated`), `--out` (default `./cia-themes/<name>.scss`), `--json`, `--help`. That's the whole surface — see [`bin/cia.cjs`](../../bin/cia.cjs).
+Flags are the same on both tools: `--name` (default `migrated`), `--out` (default `./cia-themes/<name>.scss`), `--json`, `--help`. That's the whole surface — see [`bin/cia.cjs`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/bin/cia.cjs).
 
 Here's a real run against a config with a `primary` palette, a couple of status palettes, five spacing steps, four font sizes, two families, five radii, and one house color called `cocoa`:
 
@@ -78,7 +77,7 @@ Those `m.states()` calls are the part that saves the most hand-work. You gave th
 
 Any converter can produce a file. The question is whether you can trust it, and the honest answer is: not uniformly. Some mappings are certain and some are a guess, and the useful thing is to say which is which.
 
-So every token carries a rating, and anything below HIGH is tagged inline in the output. The rules are plain arithmetic ([`bin/migrate-tailwind.cjs`](../../bin/migrate-tailwind.cjs), commit `18764ac`):
+So every token carries a rating, and anything below HIGH is tagged inline in the output. The rules are plain arithmetic ([`bin/migrate-tailwind.cjs`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/bin/migrate-tailwind.cjs), commit `18764ac`):
 
 - **HIGH** — exact. A rem value that lands dead on a cia slot, or a palette literally named `primary` / `brand` / `accent`.
 - **MEDIUM** — within 0.125rem (2px), or a status color inferred from a palette name. `red` probably means error. Probably.
@@ -110,7 +109,7 @@ That's a real limit, stated plainly rather than guessed around. Bootstrap variab
 
 It maps **tokens**. Color, spacing, type scale, radii, families. That's it.
 
-It does not convert components, behavior, or markup. Nothing here turns `class="flex items-center gap-2 rounded-lg"` into a mixin call, and no flag ports an app. Component-level migration is what the recipes and the [Tailwind](/docs/migration-tailwind) / [Bootstrap](/docs/migration-bootstrap) migration guides are for — that part is human work, and the epic ([`roadmap/epics/v1-0/EPIC-03-migration-on-ramp.md`](../../roadmap/epics/v1-0/EPIC-03-migration-on-ramp.md)) puts class migration out of scope permanently.
+It does not convert components, behavior, or markup. Nothing here turns `class="flex items-center gap-2 rounded-lg"` into a mixin call, and no flag ports an app. Component-level migration is what the recipes and the [Tailwind](/docs/migration-tailwind) / [Bootstrap](/docs/migration-bootstrap) migration guides are for — that part is human work, and the epic ([`roadmap/epics/v1-0/EPIC-03-migration-on-ramp.md`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/roadmap/epics/v1-0/EPIC-03-migration-on-ramp.md)) puts class migration out of scope permanently.
 
 One more gap worth naming: the Tailwind converter reads a JavaScript or TypeScript config file. Tailwind 4 moved to CSS-first configuration with `@theme` ([theme docs](https://tailwindcss.com/docs/theme)) — a JS config still loads via the `@config` directive, and if you have one, this works. If your theme lives only in CSS, the converter has nothing to open yet. That's on the list, not in the box.
 

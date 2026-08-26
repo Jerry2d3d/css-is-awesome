@@ -8,7 +8,6 @@ excerpt: Agents guess at mixin signatures because prose docs give them nothing t
 author: Jerry Hansen
 publishDate: 2026-08-17
 updatedDate: 2026-08-17
-readingTime: 6 min
 ---
 
 An agent asked to style a button in this system will write something like this:
@@ -73,7 +72,9 @@ Which your MCP client will almost certainly show you as "failed to connect." The
 
 The lesson is narrow and useful: a server that passes locally proves nothing about the published tarball. Everything the server reads at runtime is a packaging dependency, and the repo checkout hides that.
 
-**`search_components` didn't exist.** Every other family shipped `list_*` / `get_*` / `search_*`. Components shipped two of three, so `search_components` returned `-32602` method-not-found. Agents infer the pattern from the other seven families and call the tool that *should* be there. Added in `1ee5cee` (28 → 29 tools). Uniform family shape isn't tidiness; it's the difference between an agent guessing right and an agent hitting an error it can't route around.
+**`search_components` didn't exist.** It shipped `list_*` and `get_*` but not `search_*`, so `search_components` returned `-32602` method-not-found. Agents infer the pattern from the families that *do* carry all three and call the tool that should be there. Added in `1ee5cee` (28 → 29 tools).
+
+Worth being precise, because the tidy version of this story is wrong: components were not the only gap, and the shape still isn't uniform. Five of the eight families carry the full triad today — themes, mixins, functions, tokens, components. Animations and recipes still have no `search_*`, and the doc readers aren't a triad at all. The lesson isn't "we achieved parity", it's that *partial* parity is the trap: an agent that has seen `search_mixins` and `search_tokens` work has no way to know `search_recipes` is the one that will fail.
 
 Both were reported by the Boiler project — a separate repo that consumes cia. Neither would have surfaced from inside this one.
 
@@ -93,7 +94,7 @@ const SERVER_VERSION = (function () {
 
 Changed in `8b54516` on 2026-08-17. It matters more than a normal duplicated constant because `serverInfo.version` is metadata a client logs, caches, and may condition behavior on — and nothing fails when it's wrong. A stale version number reports success while telling every connected agent something false. Today the server reports `1.0.0` with no code change; before that commit it would still be claiming `0.8.2`.
 
-Same commit fixed a `list_mixins` description that claimed "60+ in `_mixins.scss` + 19 in `_layout.scss`" when the real counts were 42 and 27. Hand-maintained numbers in tool descriptions rot the same way hand-maintained numbers in docs do. There are 30 `registerTool` calls in the file right now; the README still says 29 in one paragraph and 30 in another. Count it yourself — that's the honest advice.
+Same commit fixed a `list_mixins` description that claimed "60+ in `_mixins.scss` + 19 in `_layout.scss`" when the real counts were 42 and 27. Hand-maintained numbers in tool descriptions rot the same way hand-maintained numbers in docs do. There are 30 `registerTool` calls in the file right now. When this post was written the README disagreed with itself — 29 in one paragraph, 30 in another — which was reconciled in `6646365`. Count it yourself anyway; that's the honest advice, and it's the whole reason the version string now reads from `package.json` instead of being typed.
 
 ## resolve_size, or: a design decision as a tool
 

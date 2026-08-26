@@ -8,7 +8,6 @@ excerpt: Seven themes scored 0 of 17 contrast pairs and the validator still prin
 author: Jerry Hansen
 publishDate: 2026-08-17
 updatedDate: 2026-08-17
-readingTime: 6 min
 ---
 
 The recipe index at `/docs/recipes` puts a complexity chip on every card — `simple`, `medium`, `complex`. Pill shape, mono, `0.75rem`. They looked fine. They were not.

@@ -65,7 +65,23 @@ function toList(value: string | undefined): string[] {
     .filter(Boolean);
 }
 
-function toFrontmatter(data: Record<string, string>, slug: string): PostFrontmatter {
+/**
+ * Reading time is COMPUTED from the body, never read from frontmatter.
+ * Hand-typed values go stale the moment a post is edited — six of eight were
+ * wrong by a minute or more after two rounds of revisions. Same reasoning as
+ * deriving the version from package.json: if a number can be calculated, a
+ * human should not be maintaining it.
+ */
+function readingTimeFor(body: string): string {
+  const words = body.trim().split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.ceil(words / 200))} min`;
+}
+
+function toFrontmatter(
+  data: Record<string, string>,
+  slug: string,
+  body: string,
+): PostFrontmatter {
   return {
     title: data.title || slug,
     category: data.category || null,
@@ -75,7 +91,8 @@ function toFrontmatter(data: Record<string, string>, slug: string): PostFrontmat
     author: data.author || "Jerry Hansen",
     publishDate: data.publishDate || null,
     updatedDate: data.updatedDate || null,
-    readingTime: data.readingTime || null,
+    // Computed, not read from `data` — see readingTimeFor().
+    readingTime: readingTimeFor(body),
   };
 }
 
@@ -123,8 +140,8 @@ export function getPostIndex(): PostMeta[] {
   return getPostSlugs()
     .map((slug) => {
       const raw = fs.readFileSync(path.join(BLOG_DIR, `${slug}.md`), "utf8");
-      const { data } = parseFrontmatter(raw);
-      return { slug, ...toFrontmatter(data, slug) };
+      const { data, body } = parseFrontmatter(raw);
+      return { slug, ...toFrontmatter(data, slug, body) };
     })
     .sort((a, b) => (b.publishDate || "").localeCompare(a.publishDate || ""));
 }
@@ -138,7 +155,7 @@ export function getPost(slug: string): Post | null {
   const raw = fs.readFileSync(file, "utf8");
   const { data, body } = parseFrontmatter(raw);
   const html = marked.parse(body) as string;
-  return { slug, ...toFrontmatter(data, slug), html };
+  return { slug, ...toFrontmatter(data, slug, body), html };
 }
 
 /** Every distinct category across posts, for the index filter chips. */

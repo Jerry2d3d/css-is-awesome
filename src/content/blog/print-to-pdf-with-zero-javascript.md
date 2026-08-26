@@ -7,8 +7,7 @@ audience: front-end developers
 excerpt: The browser already ships a PDF generator. cia's print layer is four mixins, three CSS variables, and no JavaScript at all.
 author: Jerry Hansen
 publishDate: 2026-08-17
-updatedDate: 2026-08-17
-readingTime: 5 min
+updatedDate: 2026-08-26
 ---
 
 Someone asks for "download as PDF" and the usual answers all cost the same thing: a second renderer.
@@ -165,7 +164,7 @@ There is a second trap: `!important` **inverts** layer order. An important decla
 
 ### Keeping the blast radius small
 
-Eight `!important` declarations, all inside `@media print`, each doing one of two jobs: beat a `display` rule, or beat an author `animation` shorthand. `print-only` carries a matching `@media screen { display: none !important }` for the same reason in reverse.
+Eight `!important` declarations total — seven inside `@media print`, plus one in the matching `@media screen { display: none !important }` that `print-only` uses to stay hidden on screen. Each does one of two jobs: beat a `display` rule, or beat an author `animation` shorthand.
 
 The values stay variable-driven — `--print-hide`, `--print-show`. You override what it hides *to*, not whether the rule wins. That is the compromise: the mixin is unconditional about winning and completely open about the outcome.
 

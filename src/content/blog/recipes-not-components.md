@@ -8,7 +8,6 @@ excerpt: cia ships markdown patterns instead of a component library. Here is wha
 author: Jerry Hansen
 publishDate: 2026-08-17
 updatedDate: 2026-08-17
-readingTime: 6 min
 ---
 
 The obvious version of css-is-awesome was a component library. Ship `<Dialog>`, ship `<Combobox>`, ship a `<DataTable>`, publish to npm, and let people install their way to an accessible UI.
