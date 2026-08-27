@@ -25,7 +25,7 @@
 // ============================================================================
 
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -130,6 +130,53 @@ try {
       console.log(`  ✗ @use '${spec}' — ${String(err.stderr || err.message).split("\n")[0]}`);
       failures++;
     }
+  }
+
+  // ─── Load-path immunity of our internal relative forwards ────────────────
+  // Boiler hit `Two forwarded modules both define a mixin named stack` with its
+  // own styles dir on loadPaths, and that was blamed on the barrel. This checks
+  // whether standard Sass is even capable of that failure.
+  //
+  // It is not. cia writes `@forward './mixins'` with an explicit `./`, and Sass
+  // resolves relative loads against the IMPORTING FILE without consulting load
+  // paths — so a consumer partial of the same name cannot displace ours. The
+  // assertion below pins that guarantee: the barrel must compile even with a
+  // hostile `styles/_mixins.scss` ahead of node_modules on the load path.
+  //
+  // If this ever starts failing, cia has grown a non-relative internal import
+  // and consumers become shadowable. That is the regression worth catching.
+  //
+  // Corollary for the docs: the shadowing hazard is a reported Turbopack /
+  // sass-loader deviation from Sass semantics, NOT something reproducible with
+  // dart-sass, and it should be described that way rather than as a Sass rule.
+  console.log(`\n  load-path immunity (internal forwards are ./-relative):`);
+
+  mkdirSync(path.join(tmp, "styles"), { recursive: true });
+  writeFileSync(
+    path.join(tmp, "styles", "_mixins.scss"),
+    "// A consumer partial whose name collides with cia's internal module.\n@mixin stack { display: flex; }\n",
+  );
+  writeFileSync(path.join(tmp, "hazard.scss"), `@use 'css-is-awesome/scss/api' as cia;\n.x { color: cia.color(text-primary); }\n`);
+
+  try {
+    run("npx", ["sass", "--no-source-map", "--load-path=node_modules", "hazard.scss"], tmp);
+    console.log(`    ✓ barrel compiles with node_modules on the load path`);
+  } catch (err) {
+    console.log(`    ✗ barrel FAILED with only node_modules on the load path — ${String(err.stderr || err.message).split("\n")[0]}`);
+    failures++;
+  }
+
+  try {
+    run(
+      "npx",
+      ["sass", "--no-source-map", "--load-path=styles", "--load-path=node_modules", "hazard.scss"],
+      tmp,
+    );
+    console.log(`    ✓ survives a hostile styles/_mixins.scss ahead of node_modules`);
+  } catch (err) {
+    console.log(`    ✗ a consumer load path SHADOWED an internal forward — ${String(err.stderr || err.message).split("\n")[0]}`);
+    console.log(`      cia has grown a non-relative internal import; consumers are now shadowable.`);
+    failures++;
   }
 } finally {
   if (tmp) rmSync(tmp, { recursive: true, force: true });

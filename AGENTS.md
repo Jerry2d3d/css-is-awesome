@@ -76,7 +76,7 @@ The cia barrel re-exports every mixin: layout, typography, color, motion, helper
 Two real setup notes:
 
 1. Sass doesn't read package.json `exports`, so add `node_modules` to `sassOptions.loadPaths`.
-2. **Don't put your own styles directory on `loadPaths`.** A consumer load path can shadow cia's internal relative `@forward './mixins'`, resolving it to the consumer's own `_mixins.scss`. It surfaces as `Two forwarded modules both define a mixin named stack` — a loadPaths collision, not a barrel problem.
+2. **If you hit `Two forwarded modules both define a mixin named stack`, drop your own styles directory from `loadPaths`.** Provenance matters here: that was reported by one consumer, and it is **not** reproducible in standard Sass. cia's internal forwards are all `./`-relative, which Sass resolves against the importing file without consulting load paths — `validate-package` asserts the barrel compiles even with a hostile `styles/_mixins.scss` ahead of `node_modules`. Treat it as a bundler-resolver deviation, not a Sass rule, and don't repeat it as one.
 
 The two-import split (tokens at root, mixins per component) applies on every toolchain.
 

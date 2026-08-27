@@ -43,7 +43,11 @@ Author your own class names; the mixin handles the styling. Mixins for buttons, 
 .product-card { @include cia.card-base($shadow: 2); }
 ```
 
-> **Next.js / Turbopack.** The barrel works under Turbopack — the showcase app runs Next 16 on Turbopack for both `dev` and `build` and imports `css-is-awesome/scss/api` in every stylesheet. Two setup notes: Sass doesn't read package.json `exports`, so add `node_modules` to `sassOptions.loadPaths`; and **don't put your own styles directory on `loadPaths`** — a load path can shadow cia's internal relative `@forward './mixins'` and surface as `Two forwarded modules both define a mixin named stack`.
+> **Next.js / Turbopack.** The barrel works under Turbopack — the showcase app runs Next 16 on Turbopack for both `dev` and `build` and imports `css-is-awesome/scss/api` in every stylesheet.
+>
+> Sass doesn't read package.json `exports`, so add `node_modules` to `sassOptions.loadPaths`.
+>
+> One reported hazard, stated with its provenance: a consumer whose own styles directory was on `loadPaths` hit `Two forwarded modules both define a mixin named stack`. cia's internal forwards are all `./`-relative, and standard Sass resolves those against the importing file **without** consulting load paths — `validate-package` asserts the barrel survives a hostile `styles/_mixins.scss` ahead of `node_modules`, and it does. So this appears to be a bundler-resolver deviation rather than Sass behaviour. If you hit it, drop your styles directory from `loadPaths`.
 
 ### 2. Drop-in CSS (zero build)
 
