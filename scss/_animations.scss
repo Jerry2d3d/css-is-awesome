@@ -19,6 +19,7 @@
 // ============================================================================
 @use 'sass:map';
 @use 'sass:list';
+@use 'sass:meta';
 
 // ----------------------------------------------------------------------------
 // ANIMATION VOCABULARY
@@ -167,13 +168,21 @@ $_emitted: ();
   $timing: var(--ease, cubic-bezier(0.33, 0.66, 0.33, 1))
 ) {
   $keyframe: map.get($_anims, $name);
+
+  // A raw duration (`1s`, `750ms`) passes through. Only an unrecognised
+  // *keyword* is an error — rejecting raw values forced consumers to hand-roll
+  // the entire animation just to keep a duration the scale doesn't carry, which
+  // is exactly what Boiler's spinners did.
   $duration: map.get($_speeds, $speed);
+  @if not $duration and meta.type-of($speed) == 'number' {
+    $duration: $speed;
+  }
 
   @if not $keyframe {
     @error "animate(): unknown animation '#{$name}'. Known: #{map.keys($_anims)}";
   }
   @if not $duration {
-    @error "animate(): unknown speed '#{$speed}'. Known: fast, normal, slow";
+    @error "animate(): unknown speed '#{$speed}'. Known: fast, normal, slow, or a duration like 1s";
   }
 
   // Co-emit the keyframe this rule references. Without it, `animate()` on the

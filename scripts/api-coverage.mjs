@@ -122,6 +122,7 @@ const FN_FIXTURES = {
   "line-height-raw": "3",
   "font-weight": "reg",
   "font-weight-raw": "reg",
+  "letter-spacing": "wide",
   "radius-raw": "md",
   "shadow-raw": "2",
   "z-raw": "modal",
