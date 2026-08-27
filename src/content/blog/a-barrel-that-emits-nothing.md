@@ -113,13 +113,24 @@ When this post was first published there was an honest gap: `validate-api` was a
 
 That was closed in `dfb6f20`. `.github/workflows/ci.yml` now runs `validate-api` on every pull request, alongside `validate-icons` and `validate-package` — the last of which packs the tarball, installs it into a temp project, and compiles every documented `@use` specifier. Which turned out to matter more than expected; see [The import in our README did not work](/blog/the-import-in-our-readme-did-not-work).
 
-## The limitation: Turbopack cannot consume it
+## The limitation we blamed on Turbopack, and were wrong about
 
-A forwarding barrel is not free. Boiler — the showcase app, Next 16.1.1 on Turbopack for both `dev` and `build` — **cannot use `/api` at all**, and cannot use any other cia forwarding barrel either.
+For four months this section said something different: that Turbopack collapses the Sass module graph, cannot consume *any* cia forwarding barrel, and that Turbopack consumers must import the leaf module `css-is-awesome/scss/mixins` instead. That went into the README, `AGENTS.md`, `llm.txt`, the recipe schema and this post.
 
-Turbopack's Sass integration collapses the module graph. Because `_layout.scss` and every `components/*` file internally `@use './mixins'`, forwarding `./mixins` + `./layout` + `./components` from one place makes Turbopack merge them and raise cascading `Two forwarded modules both define a mixin named X` errors. Stock Dart Sass — sync, async, package importer — compiles the same file without complaint. Namespace prefixes would fix it only by destroying the flat `cia.color` / `cia.btn` surface that is the point.
+It was wrong, and it is worth showing the shape of the error rather than quietly deleting it.
 
-So Boiler imports the **leaf**: `@use 'css-is-awesome/scss/mixins' as cia;`. Leaf modules contain no `@forward`, so Turbopack handles them. The call sites are byte-identical; only the specifier changes, and component mixins outside `_mixins.scss` need their own leaf import. Decision, 2026-07-04: document the workaround, don't chase a Turbopack fix. The two-import split still holds either way — tokens at the root, mixins per component.
+Boiler — the showcase app, Next 16.1.1, Turbopack for both `dev` and `build` — imports `css-is-awesome/scss/api` in **all 116** of its stylesheets today, and compiles. That is a forwarding barrel, eight `@forward` lines deep, including `./mixins`, `./layout` and `./components`. The thing the docs said was impossible is what the showcase has been doing since 2026-08-18.
+
+The two failures that produced the claim were real, but neither was a barrel problem:
+
+1. **`Can't find stylesheet to import`** (2026-05-03) — cia's internal `@use './brand'` didn't resolve. Cause: no `node_modules` on `sassOptions.loadPaths`. Fixed by adding it.
+2. **`Two forwarded modules both define a mixin named stack`** — the error this section quoted as its mechanism. Cause: Boiler had its own `src/styles` on `loadPaths`, and that path **shadowed cia's relative `@forward './mixins'`**, resolving it to Boiler's local `_mixins.scss`, whose `stack` collided with cia's. Fixed by removing the load path and deleting the local fork.
+
+Both were consumer configuration. We diagnosed a bundler defect from two config bugs, wrote it into five files, and prescribed a workaround that was actively harmful — the leaf module exposes only the ~42 core mixins, with no `btn`, `card-base`, `stack`, `grid` or `animate`. Boiler carried 137 hand-inlined `// was m.<name>` blocks because of that advice, all since deleted.
+
+The real gotcha, stated correctly: **a consumer load path can shadow a package's own relative `@forward`.** That is worth knowing, and it is not what we wrote down.
+
+The lesson is uncomfortably close to this post's own thesis. An untested claim decays exactly like an untested invariant — and "Turbopack can't do this" was never tested, because cia's own site runs webpack and has never exercised Turbopack in-repo.
 
 ## The trade-off
 

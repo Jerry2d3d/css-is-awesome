@@ -544,8 +544,8 @@ $_type-scale: (
 // ============================================================================
 // PRINT
 // ============================================================================
-// Print/PDF control. A browser already has a world-class PDF engine — the page
-// IS the PDF source. These own the `@media print` layer: `print-base` ships
+// Print/PDF control. Every browser already ships a layout engine and a PDF
+// writer wired together behind Ctrl+P — the page IS the PDF source. These own the `@media print` layer: `print-base` ships
 // sensible page-level defaults ON; the rest are per-element toggles. Nothing
 // emits until called, and nothing here needs a button or a server — Ctrl+P
 // (or the print dialog's "Save as PDF") drives it all.

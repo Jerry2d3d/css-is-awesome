@@ -1,17 +1,34 @@
 // ============================================================================
 // Package-root shim for `@use 'css-is-awesome'`
 // ============================================================================
-// The README's primary example is:
+// Sass does NOT read package.json "exports". It resolves a bare specifier by
+// looking for a file on disk relative to a load path — for `css-is-awesome`
+// that means `node_modules/css-is-awesome/_index.scss`. Without this file the
+// README's headline example fails on a clean install.
 //
-//   @use 'css-is-awesome' as cia;
+// This file must behave the way `exports["."].sass` does, or Sass users and
+// bundler users get different results from the same import. It forwards BOTH
+// halves deliberately:
 //
-// Sass resolves that bare specifier by looking for
-// `node_modules/css-is-awesome/_index.scss`. The real kitchen-sink barrel is
-// at `scss/_index.scss`, so without this shim the headline install example
-// fails on a clean install.
+//   @forward './scss/index'  — the authoring API (mixins, functions, token
+//                              maps) plus the global .cia-anim-* utilities.
+//                              Without this, `@use 'css-is-awesome' as cia;`
+//                              exports no members and `cia.btn()` fails to
+//                              resolve: scss/main.scss uses `@use`, not
+//                              `@forward`, so it re-exports nothing.
 //
-// Unlike `api.scss`, this one DOES emit CSS — it forwards the kitchen-sink
-// barrel (api + the global `.cia-anim-*` utilities), which is correct for a
-// root/global stylesheet. Component stylesheets should use
-// `css-is-awesome/api` instead, which stays zero-emit.
+//   @use './scss/main'       — emits the tokens, resets and base rules.
+//                              Without this the import prints no `:root` block
+//                              at all, contradicting the documented "emit the
+//                              tokens once at your root" model. That exact
+//                              regression shipped briefly and is now asserted
+//                              by validate-package.
+//
+// Sass evaluates each module once, so modules shared by the two halves
+// (animations-utilities in particular) are not emitted twice — verified.
+//
+// This is the GLOBAL entry point: it emits ~72 KB and belongs in a root
+// stylesheet, included once. Component stylesheets want `css-is-awesome/api`,
+// which is zero-emit and safe under Next.js CSS Modules pure mode.
 @forward './scss/index';
+@use './scss/main';

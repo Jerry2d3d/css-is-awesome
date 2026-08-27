@@ -45,7 +45,9 @@ JSON-RPC over stdio, protocol `2024-11-05`, exposed as the `css-is-awesome-mcp` 
 
 Thirty tools across eight families — themes, mixins, functions, tokens, animations, components, recipes, doc readers — plus two that don't fit a family: `assemble_prompt` and `resolve_size`. List and search tools return a `{ total, items }` envelope; `get_*` returns the full record. `get_mixin("btn")` answers with the signature above plus its params, doc comment, source path, and body. That's the whole point: the signature comes out of the file, not out of a paraphrase of the file that someone forgot to update.
 
-Live totals as of this post: 150 mixins, 24 functions, 153 contract tokens, 9 themes, 10 components, 4 recipes.
+Live totals as of this post: 150 mixins, 24 functions, 153 contract tokens (123 required + 30 optional), 9 themes, 10 components, 4 recipes.
+
+Two of those numbers deserve a footnote, because they are the ones people query and then find don't match the docs. **153 tokens** is required plus optional; the docs quote **123** because that is the required contract a theme must satisfy. **9 themes** is the count of `scss/themes/*.scss` sources, which form **8 families** — `terminal` is authored as two single-mode files while the other seven carry both modes in one. The server reports what it counts; neither number is wrong, and a tool that returns totals should say which population it counted.
 
 ## The trade-off: regex, not an AST
 

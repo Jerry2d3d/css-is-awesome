@@ -71,11 +71,22 @@ The cia barrel re-exports every mixin: layout, typography, color, motion, helper
 - **Root / global** (once) — emit the tokens: `<link>` a theme CSS file, or `@use 'css-is-awesome';` in your global stylesheet. This prints `:root { --… }`.
 - **Each component** (`Card.module.scss`) — `@use 'css-is-awesome/api' as cia;` and only call mixins. **Never** `@use 'css-is-awesome'` (the bundle) from a component file — it re-emits `:root`, which CSS Modules pure mode rejects.
 
-**⚠️ Turbopack caveat (Next.js).** Turbopack collapses the Sass module graph and errors on **any** cia forwarding barrel — both `css-is-awesome/api` and `css-is-awesome/scss/components`. Under Turbopack, import the **leaf** module instead: `@use 'css-is-awesome/scss/mixins' as cia;` (this is how the Boiler showcase consumes cia). Every non-Turbopack Sass toolchain (Vite, webpack, the `sass` CLI) can use `/api`. The two-import split (tokens at root, mixins per component) still applies either way — only the module specifier changes.
+**Next.js / Turbopack.** The forwarding barrel **works** under Turbopack. The Boiler showcase runs Next 16.1.1 on Turbopack for both `dev` and `build` and imports `css-is-awesome/scss/api` in all 116 of its stylesheets. Do **not** steer consumers to the leaf module — `scss/mixins` exposes only the ~42 core mixins and none of `btn`, `card-base`, `stack`, `grid` or `animate`, so it forces hand-inlined CSS.
+
+Two real setup notes:
+
+1. Sass doesn't read package.json `exports`, so add `node_modules` to `sassOptions.loadPaths`.
+2. **Don't put your own styles directory on `loadPaths`.** A consumer load path can shadow cia's internal relative `@forward './mixins'`, resolving it to the consumer's own `_mixins.scss`. It surfaces as `Two forwarded modules both define a mixin named stack` — a loadPaths collision, not a barrel problem.
+
+The two-import split (tokens at root, mixins per component) applies on every toolchain.
 
 ## Theme system (1 file per theme, both modes inside)
 
-Each theme is a single CSS file declaring `:root[data-theme="<name>"]` with `light-dark()` for color tokens — the browser auto-swaps based on OS `prefers-color-scheme`. **Nine themes shipped:** boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal (dark-only sacred), terminal-light (light-only daylight editor). All pass the WCAG 2.2 AA contrast audit by default.
+Each theme is a single CSS file declaring `:root[data-theme="<name>"]` with `light-dark()` for color tokens — the browser auto-swaps based on OS `prefers-color-scheme`.
+
+**8 theme families, 9 source files.** Both numbers are correct and it is worth knowing why. Seven families ship one file carrying both modes via `light-dark()`: boilerplate, sketchbook, press, prism, cupertino, glass, graphite. **`terminal` is the exception** — it is authored as two single-mode files, `terminal` (dark-only, sacred) and `terminal-light` (light-only daylight editor), because the two are different brands rather than two modes of one.
+
+So: `scss/themes/` has **9** `.scss` sources, `public/themes/` builds **21** files, the theme picker offers **8** families, and MCP `list_themes` reports **9** because it counts sources. When you need one number, say **8 theme families**. All pass the WCAG 2.2 AA contrast audit by default.
 
 ```html
 <link rel="stylesheet" href="node_modules/css-is-awesome/public/themes/boilerplate/theme.css">

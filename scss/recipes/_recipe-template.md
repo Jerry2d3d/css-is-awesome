@@ -36,7 +36,8 @@ the consumer adapts to JSX / template / Svelte syntax.
 ## Styling (cia mixins)
 
 ```scss
-@use 'css-is-awesome' as cia;
+// MyThing.module.scss — component stylesheet, so import the zero-emit barrel.
+@use 'css-is-awesome/api' as cia;
 
 .my-thing {
   @include cia.some-mixin(variant);
@@ -48,6 +49,15 @@ the consumer adapts to JSX / template / Svelte syntax.
 
 Show the minimum to make it work. Cross-link to mixin docs for parameter
 detail. Use consumer-chosen class names (`my-thing`), never `cia-*`.
+
+**Two imports, two jobs.** Component stylesheets always `@use
+'css-is-awesome/api'` — it is zero-emit, so it is safe inside a
+`.module.scss` under Next.js CSS Modules pure mode. The emitting bundle
+(`@use 'css-is-awesome'`) belongs in the app's root/global stylesheet, where
+it prints the `:root` tokens exactly once. If a recipe needs a mixin that
+emits at the root itself (e.g. `cia.print-base`, which emits `:root` +
+`@page`), say so in prose and show it in a global stylesheet — `/api` still
+forwards it.
 
 ## Interactivity
 

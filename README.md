@@ -43,7 +43,7 @@ Author your own class names; the mixin handles the styling. Mixins for buttons, 
 .product-card { @include cia.card-base($shadow: 2); }
 ```
 
-> **Turbopack caveat.** Turbopack (Next.js) collapses the Sass module graph and errors on **any** forwarding barrel — including `css-is-awesome/api` and `css-is-awesome/scss/components`. Turbopack consumers must import the **leaf** module instead: `@use 'css-is-awesome/scss/mixins' as cia;`. Every other Sass toolchain (Vite, webpack, the `sass` CLI) can use `/api`.
+> **Next.js / Turbopack.** The barrel works under Turbopack — the showcase app runs Next 16 on Turbopack for both `dev` and `build` and imports `css-is-awesome/scss/api` in every stylesheet. Two setup notes: Sass doesn't read package.json `exports`, so add `node_modules` to `sassOptions.loadPaths`; and **don't put your own styles directory on `loadPaths`** — a load path can shadow cia's internal relative `@forward './mixins'` and surface as `Two forwarded modules both define a mixin named stack`.
 
 ### 2. Drop-in CSS (zero build)
 

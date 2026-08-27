@@ -103,6 +103,20 @@ try {
       failures++;
       continue;
     }
+    // A byte-count floor is not enough. The root import silently stopped
+    // emitting `:root` tokens once — 24 KB of keyframes cleared the size check
+    // while the documented "emit the tokens once at your root" contract was
+    // broken. Assert the tokens specifically.
+    if (emits && !/:root\b/.test(out)) {
+      console.log(`  ✗ @use '${spec}' — emitted ${out.length} bytes but no :root token block`);
+      failures++;
+      continue;
+    }
+    if (emits && !/--[a-z-]+:/.test(out)) {
+      console.log(`  ✗ @use '${spec}' — :root present but declares no custom properties`);
+      failures++;
+      continue;
+    }
 
     console.log(`  ✓ @use '${spec}'${emits ? "" : " (zero-emit)"}`);
   }
