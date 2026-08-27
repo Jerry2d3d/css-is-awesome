@@ -91,7 +91,8 @@
     "MIGRATION.md",
     "CONTRACT.md",
     "ROADMAP.md",
-    "VERSIONING.md"
+    "VERSIONING.md",
+    "scripts/prepare-dist.mjs"
   ],
   "scripts": {
     "dev": "next dev -p 5173",
@@ -122,6 +123,7 @@
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
     "playwright:install": "playwright install chromium --with-deps",
+    "prepare": "node scripts/prepare-dist.mjs",
     "prepublishOnly": "npm run build:css:all"
   },
   "keywords": [
