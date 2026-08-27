@@ -30,56 +30,12 @@
 // ----------------------------------------------------------------------------
 // KEYFRAME LIBRARY
 // ----------------------------------------------------------------------------
-
-@keyframes cia-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes cia-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
-@keyframes cia-slide-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes cia-slide-down {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes cia-slide-left {
-  from { opacity: 0; transform: translateX(8px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes cia-slide-right {
-  from { opacity: 0; transform: translateX(-8px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes cia-scale-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes cia-pop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.06); }
-  100% { transform: scale(1); }
-}
-@keyframes cia-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.55; }
-}
-@keyframes cia-shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-@keyframes cia-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes cia-wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(-2deg); }
-  75%      { transform: rotate(2deg); }
+// The definitions themselves live in `_animations.scss` (`keyframes-for()`),
+// next to the `animate()` mixin that has to be able to emit them on its own.
+// This module just asks for all of them, so the global bundle keeps shipping
+// the full set while there is only ONE copy of each definition to maintain.
+@each $name in a.animation-names() {
+  @include a.keyframes-for($name);
 }
 
 // ----------------------------------------------------------------------------

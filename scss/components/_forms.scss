@@ -219,11 +219,16 @@
 // ----------------------------------------------------------------------------
 // LABEL
 // ----------------------------------------------------------------------------
-@mixin label-base($size: 2, $weight: medium, $color: text-primary) {
+// `$margin-bottom: null` emits no margin at all — the right default for a
+// `gap`-driven form layout, where a baked margin fights the container and has
+// to be overridden. Pass a scale step (or a raw length) to opt back in.
+@mixin label-base($size: 2, $weight: medium, $color: text-primary, $margin-bottom: null) {
   display: block;
   @include m.font($weight, $size);
   color: m.color($color);
-  margin-bottom: m.space(1);
+  @if $margin-bottom {
+    margin-bottom: m.space($margin-bottom);
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -254,10 +259,12 @@
 // ----------------------------------------------------------------------------
 // HELPER TEXT
 // ----------------------------------------------------------------------------
-@mixin form-help($color: text-muted) {
+@mixin form-help($color: text-muted, $margin-top: null) {
   @include m.font(reg, 1);
   color: m.color($color);
-  margin-top: m.space(2xs);
+  @if $margin-top {
+    margin-top: m.space($margin-top);
+  }
 }
 
 @mixin form-error {

@@ -42,11 +42,11 @@ $_container-widths: (
   }
 
   $pad: $px or 4;
-  $pad-val: map.get(t.$space, $pad) or $pad;
+  $pad-val: m.space($pad);
   padding-inline: $pad-val;
 
   @media screen and (min-width: map.get(s.$breakpoints, md)) {
-    $pad-up: if(sass($px): $pad-val; else: map.get(t.$space, 5));
+    $pad-up: if(sass($px): $pad-val; else: m.space(5));
     padding-inline: $pad-up;
   }
 }
@@ -63,7 +63,7 @@ $_container-widths: (
 
 @mixin grid($cols: 1, $gap: 4, $bp: md, $min: null) {
   display: grid;
-  gap: map.get(t.$space, $gap) or $gap;
+  gap: m.space($gap);
 
   @if $cols == auto {
     $min-val: $min or 16rem;
@@ -286,11 +286,11 @@ $_layouts: (
 //   section { @include section($py: 9); }
 
 @mixin section($py: 8, $px: null) {
-  $py-val: map.get(t.$space, $py) or $py;
+  $py-val: m.space($py);
   padding-block: $py-val;
 
   @if $px {
-    $px-val: map.get(t.$space, $px) or $px;
+    $px-val: m.space($px);
     padding-inline: $px-val;
   }
 }
@@ -300,14 +300,14 @@ $_layouts: (
 // ============================================================================
 
 @mixin divider($color: border-default, $spacing: 4) {
-  $space-val: map.get(t.$space, $spacing) or $spacing;
+  $space-val: m.space($spacing);
   border: none;
   border-block-start: 1px solid var(--#{$color});
   margin-block: $space-val;
 }
 
 @mixin divider-vertical($color: border-default, $spacing: 4) {
-  $space-val: map.get(t.$space, $spacing) or $spacing;
+  $space-val: m.space($spacing);
   border: none;
   border-inline-start: 1px solid var(--#{$color});
   margin-inline: $space-val;
@@ -325,7 +325,7 @@ $_layouts: (
 @mixin stack($gap: 4) {
   display: flex;
   flex-direction: column;
-  gap: map.get(t.$space, $gap) or $gap;
+  gap: m.space($gap);
 }
 
 // CLUSTER — wrapping inline group (pills, tags, button rows).
@@ -335,7 +335,7 @@ $_layouts: (
 @mixin cluster($gap: 2, $align: center, $justify: start) {
   display: flex;
   flex-wrap: wrap;
-  gap: map.get(t.$space, $gap) or $gap;
+  gap: m.space($gap);
   align-items: $align;
   justify-content: $justify;
 }
@@ -348,7 +348,7 @@ $_layouts: (
 @mixin switcher($threshold: 30rem, $gap: 4, $limit: 4) {
   display: flex;
   flex-wrap: wrap;
-  gap: map.get(t.$space, $gap) or $gap;
+  gap: m.space($gap);
 
   > * {
     flex-grow: 1;
@@ -375,7 +375,7 @@ $_layouts: (
   display: flex;
   flex-direction: column;
   min-block-size: $min-height;
-  padding: map.get(t.$space, $padding) or $padding;
+  padding: m.space($padding);
 
   > * { margin-block: 1rem; }
   > :first-child:not(#{$center-selector}) { margin-block-start: 0; }

@@ -90,6 +90,50 @@ try {
   fail(`cia.spinner() failed through the api barrel: ${e.message}`);
 }
 
+// 6. EVERY animate() name co-emits its keyframe through the api barrel.
+//    This is the check that was missing. The @keyframes library lived only in
+//    `animations-utilities`, which /api deliberately does NOT forward (it
+//    emits). So `@include cia.animate(fade-in)` produced
+//    `animation-name: cia-fade-in` pointing at nothing — valid CSS, no error,
+//    no animation. A consumer following the documented per-component model got
+//    silence. Assert every registered name, not just one, so adding an
+//    animation without a keyframe fails here instead of in someone's browser.
+try {
+  const names = [
+    'fade-in', 'fade-out', 'slide-up', 'slide-down', 'slide-left', 'slide-right',
+    'scale-in', 'pop', 'pulse', 'shimmer', 'spin', 'wiggle',
+  ];
+  const broken = [];
+  for (const name of names) {
+    const css = compile(`@use 'api' as cia;\n.x { @include cia.animate(${name}); }`);
+    const kf = new RegExp(`@keyframes cia-${name}\\b`).test(css);
+    const ref = new RegExp(`animation-name: cia-${name}\\b`).test(css);
+    if (!kf || !ref) broken.push(`${name}(keyframe:${kf} ref:${ref})`);
+  }
+  if (broken.length === 0) {
+    pass(`all ${names.length} animate() names co-emit their keyframe through /api`);
+  } else {
+    fail(`animate() emits a dangling reference for: ${broken.join(', ')}`);
+  }
+} catch (e) {
+  fail(`animate() keyframe co-emission check failed: ${e.message}`);
+}
+
+// 7. The utilities bundle must not duplicate keyframes. Co-emission means every
+//    .cia-anim-* class asks for one; without per-compilation dedup the bundle
+//    ballooned from 12 blocks to 42.
+try {
+  const css = compile(`@use 'animations-utilities';`);
+  const count = (css.match(/@keyframes cia-/g) || []).length;
+  if (count === 12) {
+    pass('utilities bundle emits each keyframe exactly once (12)');
+  } else {
+    fail(`utilities bundle emitted ${count} keyframe blocks, expected 12 (dedup broken)`);
+  }
+} catch (e) {
+  fail(`keyframe dedup check failed: ${e.message}`);
+}
+
 if (failures > 0) {
   console.error(`\napi barrel validation FAILED (${failures} problem(s)).`);
   process.exit(1);

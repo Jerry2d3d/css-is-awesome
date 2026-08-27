@@ -83,7 +83,14 @@
 
 @function space($key) {
   $fallback: map.get(t.$space, $key);
-  @return var(--space-#{$key}, #{$fallback or 1rem});
+  // Not a scale key — a raw length like `12px` or `2rem`. Pass it through
+  // instead of inventing `var(--space-12px, 1rem)`, which silently resolved to
+  // the fallback and threw the caller's value away. This is what lets the
+  // layout mixins accept either a scale step or a literal.
+  @if not $fallback {
+    @return $key;
+  }
+  @return var(--space-#{$key}, #{$fallback});
 }
 
 @function space-raw($key) {
@@ -170,6 +177,18 @@
   @return var(--font-#{$type}, sans-serif);
 }
 
+/// Letter-spacing from the tracking scale: tighter | tight | normal | wide |
+/// wider | widest. Emits a custom property with the scale value as fallback,
+/// so a theme can retune tracking without a rebuild — the same contract as
+/// `space()` and `font-size()`. A raw value (`0.03em`) passes straight through.
+@function letter-spacing($key) {
+  $fallback: map.get(s.$letter-spacings, $key);
+  @if not $fallback {
+    @return $key;
+  }
+  @return var(--letter-spacing-#{$key}, #{$fallback});
+}
+
 @function font-size($size) {
   $fallback: map.get(s.$font-sizes, $size) or 1rem;
   @return var(--font-size-#{$size}, #{$fallback});
@@ -248,28 +267,30 @@ $_font-types: (
     }
   }
 
+  // Route scale keys through font-size()/line-height() so they emit
+  // `var(--font-size-N)` rather than a baked literal — otherwise a consumer
+  // overriding the token at runtime silently has no effect here, while the
+  // same override works on mixins that use the functions. Raw values
+  // (`0.8rem`, `1.4`) still pass straight through.
   @if $size {
-    $size-val: map.get(s.$font-sizes, $size);
-    @if $size-val {
-      font-size: $size-val;
+    @if map.get(s.$font-sizes, $size) {
+      font-size: font-size($size);
     } @else {
       font-size: $size;
     }
   }
 
   @if $lh {
-    $lh-val: map.get(s.$line-heights, $lh);
-    @if $lh-val {
-      line-height: $lh-val;
+    @if map.get(s.$line-heights, $lh) {
+      line-height: line-height($lh);
     } @else {
       line-height: $lh;
     }
   }
 
   @if $ls {
-    $ls-val: map.get(s.$letter-spacings, $ls);
-    @if $ls-val {
-      letter-spacing: $ls-val;
+    @if map.get(s.$letter-spacings, $ls) {
+      letter-spacing: letter-spacing($ls);
     } @else {
       letter-spacing: $ls;
     }
@@ -708,20 +729,40 @@ $_easings: (
   smooth: cubic-bezier(0.4, 0, 0.2, 1),
 );
 
+// Speed and easing can be given two ways:
+//   positionally  @include transition(color, slow, bounce)
+//   by name       @include transition(color, $duration: slow, $easing: bounce)
+//
+// The named form exists because the positional one is undiscoverable — the
+// signature is `$props...`, so nothing tells you a speed keyword is even
+// accepted, and an unrecognised word silently becomes a transitioned property.
+// A raw duration (`220ms`) is passed through as-is.
 @mixin transition($props...) {
-  $speed: fast;
-  $easing: smooth;
+  $kw: meta.keywords($props);
+  $speed: map.get($kw, duration) or fast;
+  $easing: map.get($kw, easing) or smooth;
   $result: ();
-  
+
+  // Pass 1 — pick up positional speed/easing keywords wherever they appear.
+  // Previously this happened in the same loop that built the list, so
+  // `transition(color, slow)` silently used the default speed: `color` was
+  // appended before `slow` had been seen. Only `transition(slow, color)` worked.
   @each $prop in $props {
     @if map.has-key($_speeds, $prop) {
       $speed: $prop;
     } @else if map.has-key($_easings, $prop) {
       $easing: $prop;
-    } @else {
+    }
+  }
+
+  // Pass 2 — build the list, now that speed and easing are settled.
+  // `or $speed` / `or $easing` lets a raw value through — `220ms` or a literal
+  // cubic-bezier() — instead of resolving to null and emitting `color  ;`.
+  @each $prop in $props {
+    @if not map.has-key($_speeds, $prop) and not map.has-key($_easings, $prop) {
       $result: list.append(
         $result,
-        $prop map.get($_speeds, $speed) map.get($_easings, $easing),
+        $prop (map.get($_speeds, $speed) or $speed) (map.get($_easings, $easing) or $easing),
         comma
       );
     }
