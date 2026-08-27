@@ -164,12 +164,18 @@ every PR since roughly May. Root cause was a missing `{platform}` key in
 `snapshotPathTemplate`, so a linux CI runner and a win32 dev machine shared one
 baseline set — only one of them could ever be green.
 
-**"9 themes" was a legacy count** (`6646365`, `dcff8d8`). It counted `terminal`
-and `terminal-light` separately, from when terminal was the only split family.
-Every family ships both modes now, so that method would give 21. The canonical
-number is 8 families / 21 files. The gallery page, separately, was missing
-`prism` entirely — it had been shipping and validating clean while listed
-nowhere.
+**The theme count was inconsistent** (`6646365`, `dcff8d8`) — different pages
+said 8 and 9 with nothing explaining the gap. It turns out both are right.
+`scss/themes/` holds **9** sources but they form **8 families**, because
+`terminal` is authored as two single-mode files — `terminal` dark-only and
+`terminal-light` light-only — while the other seven each carry both modes in
+one file via `light-dark()`. Terminal is two brands, not two modes.
+
+So the picker offers 8, `public/themes/` builds 21 files, and MCP `list_themes`
+reports 9 because it counts sources. The docs now say **8 theme families** and
+explain the exception rather than pretending one of the numbers is wrong. The
+gallery page, separately, was missing `prism` entirely — it had been shipping
+and validating clean while listed nowhere.
 
 ## Where 1.0 actually stands
 

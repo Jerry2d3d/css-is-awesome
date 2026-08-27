@@ -67,7 +67,8 @@ Notes on the markup:
 ## Styling (cia mixins)
 
 ```scss
-@use 'css-is-awesome' as cia;
+// MyCombobox.module.scss — component stylesheet, so import the zero-emit barrel.
+@use 'css-is-awesome/api' as cia;
 
 .my-combobox {
   position: relative;

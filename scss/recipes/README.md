@@ -46,7 +46,7 @@ Each section's purpose:
 
 - **Use this when** — 1-3 sentences describing the consumer scenario. If the reader's situation doesn't match, they should bail and look elsewhere.
 - **Structure (raw HTML)** — the markup with `data-cia-recipe` / `data-slot` attributes. Framework-agnostic; consumer adapts to JSX / template / Svelte syntax.
-- **Styling (cia mixins)** — SCSS using `cia.X` mixin calls against consumer-chosen class names. Show the minimum to make it work; cross-link to mixin docs for parameter detail.
+- **Styling (cia mixins)** — SCSS using `cia.X` mixin calls against consumer-chosen class names, opened with `@use 'css-is-awesome/api' as cia;` (see [Import convention](#import-convention)). Show the minimum to make it work; cross-link to mixin docs for parameter detail.
 - **Interactivity** — native browser behavior first (`<dialog>.showModal()`, popover API, etc.). JS only where the native primitive can't do the job.
 - **A11y checklist** — concrete, testable items. Each item references the WCAG SC or ARIA pattern it satisfies.
 - **Framework examples** — minimum **4 subsections**: React, Vue, Svelte, vanilla (Web Component preferred for vanilla). Each is runnable code, not pseudocode.
@@ -57,15 +57,32 @@ Each section's purpose:
 - **Pitfalls** — known gotchas (SSR, browser compat, focus management edge cases). One bullet per pitfall.
 - **Related recipes** — cross-link to other recipes in the catalog.
 
+## Import convention
+
+**Two imports, two jobs.** A recipe's `scss` blocks are component-level styling, so they open with the **zero-emit authoring barrel**:
+
+```scss
+@use 'css-is-awesome/api' as cia;
+```
+
+`/api` forwards the entire mixin + function API and emits **zero CSS** until a mixin is called, which makes it safe inside a `.module.scss` under Next.js CSS Modules pure mode.
+
+- ❌ **Never** `@use 'css-is-awesome'` in a component styling block. That is the emitting bundle — it prints `:root` tokens, resets and base rules, and a top-level `:root` is a hard build error in CSS Modules pure mode.
+- ✅ `@use 'css-is-awesome'` is only correct in a **root/global** stylesheet, where the tokens are emitted exactly once. If a recipe demonstrates a global stylesheet, label the block with a filename comment (`// app/globals.scss`) so the reader can tell which half of the model they're looking at.
+- Some mixins emit at the root themselves — `cia.print-base` emits a `:root` block plus `@page`. They are still imported from `/api`; what changes is *placement*. Say in prose that they belong at the top level of a global stylesheet, never in a component module. See [`print-to-pdf.md`](./print-to-pdf.md) for the worked example.
+- Recipes stay on `/api` on every toolchain, Turbopack included — the barrel works there. Setup notes for Next.js live in the root [`README.md`](../../README.md).
+
 ## Code-block standards
 
 - Fenced blocks with language tag — `html`, `scss`, `tsx`, `vue`, `svelte`, `js`
+- Component styling blocks open with `@use 'css-is-awesome/api' as cia;` — see [Import convention](#import-convention)
 - Use the cia mixin API verbatim — never inline raw token values
 - Class names in examples use the convention `my-<thing>` (signals "your selector here") — never `cia-<thing>` (that prefix is library-owned)
 - Each framework example targets a single component, not a full app
 
 ## Forbidden in recipes
 
+- ❌ `@use 'css-is-awesome'` (the emitting bundle) in a component styling block — use `css-is-awesome/api`, see [Import convention](#import-convention)
 - ❌ `cia-` class names (that prefix belongs to the library, not consumer code)
 - ❌ BEM (`__element` / `--modifier`) — see [`feedback_no_bem.md`](../../README.md) project rule
 - ❌ Hard-coded `#hex`, `1rem`, `8px` — use `m.color()`, `m.space()`, `m.radius()`

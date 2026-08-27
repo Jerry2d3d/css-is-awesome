@@ -8,7 +8,7 @@ cia-version: ">=1.0.0"
 
 ## Use this when
 
-You want users to save a page as a faithful PDF — résumés, invoices, receipts, reports, tickets, order confirmations — and you'd rather not pay for a PDF service (DocRaptor, Prince, PDFShift) or pull in a rendering library. A browser already has a world-class layout + PDF engine built in; you just describe the page *on paper* with `@media print`, and the user saves it from the print dialog. **The page itself is the PDF source — there's no second template to keep in sync.** If your "PDF" is really a fixed artifact unrelated to the page (a generated certificate, a pre-printed form to fill), this isn't it — use a real PDF library. If you need PDFs generated with no human present (emailing invoices, batch export), the *same stylesheet* still drives it — see the automation note under Interactivity.
+You want users to save a page as a faithful PDF — résumés, invoices, receipts, reports, tickets, order confirmations — and you'd rather not pay for a PDF service (DocRaptor, Prince, PDFShift) or pull in a rendering library. A browser already has a layout engine and a PDF writer wired together; you just describe the page *on paper* with `@media print`, and the user saves it from the print dialog. **The page itself is the PDF source — there's no second template to keep in sync.** If your "PDF" is really a fixed artifact unrelated to the page (a generated certificate, a pre-printed form to fill), this isn't it — use a real PDF library. If you need PDFs generated with no human present (emailing invoices, batch export), the *same stylesheet* still drives it — see the automation note under Interactivity.
 
 ## Structure (raw HTML)
 
@@ -41,12 +41,17 @@ Notes on the markup:
 
 cia owns the `@media print` layer through four mixins. `print-base` ships the page-level defaults **on**; the rest are per-element.
 
-```scss
-@use 'css-is-awesome' as cia;
+This recipe is the one case that spans **both** halves of cia's two-import model, so the code below is split accordingly. Both files import the same zero-emit authoring barrel, `css-is-awesome/api` — what differs is *where* the rules land.
 
-// 1. Page-level defaults — include ONCE at the ROOT (not inside a selector;
-//    it emits @page). Sets the @page box and freezes animations so nothing
-//    prints invisible. Defaults are on; toggle via args.
+**1. In your GLOBAL stylesheet** — `print-base` emits its own `:root` block plus `@page`, so it must sit at the top level of a global/root stylesheet. Never put it inside a component module: a top-level `:root` is a hard build error under Next.js CSS Modules pure mode.
+
+```scss
+// app/globals.scss (or your single root stylesheet) — included ONCE.
+@use 'css-is-awesome/api' as cia;
+
+// Page-level defaults — at the ROOT, never inside a selector (it emits @page).
+// Sets the @page box and freezes animations so nothing prints invisible.
+// Defaults are on; toggle via args.
 @include cia.print-base;                            // size: letter, margin: 0.5in, freeze on
 // @include cia.print-base($size: A4, $margin: 0.75in);   // override the paper
 // @include cia.print-base($freeze-animations: false);    // opt out of the freeze
@@ -57,15 +62,24 @@ cia owns the `@media print` layer through four mixins. `print-base` ships the pa
   @include cia.print { color-scheme: light; }
 }
 
-// 2. Hide site chrome on paper — the "hide the nav" case.
+// Hide site chrome on paper — the "hide the nav" case. Site chrome is global,
+// so these usually live here too; move them into the component that owns the
+// element if you'd rather keep the rule next to its markup.
 .site-nav,
 .site-footer,
 .no-print {
   @include cia.print-hidden;
 }
+```
 
-// 3. Co-locate per-element print overrides RIGHT NEXT TO the screen rule
-//    they change, so the reason is visible where you read the original.
+**2. In each COMPONENT stylesheet** — everything else is per-element and emits nothing until you call a mixin, so it is safe in a `.module.scss`.
+
+```scss
+// Doc.module.scss — component stylesheet, so import the zero-emit barrel.
+@use 'css-is-awesome/api' as cia;
+
+// Co-locate per-element print overrides RIGHT NEXT TO the screen rule
+// they change, so the reason is visible where you read the original.
 .doc {
   background: cia.color(surface-default);
   color: cia.color(text-primary);
@@ -198,10 +212,11 @@ customElements.define("print-button", PrintButton);
 
 ### International paper (A4) / landscape
 
-Pass the size through `print-base` (at the root), and set orientation on `@page`:
+Pass the size through `print-base` (in the global stylesheet, at the root), and set orientation on `@page`:
 
 ```scss
-@include cia.print-base($size: A4, $margin: 0.75in);   // at root, not inside a selector
+// app/globals.scss — top level, not inside a selector, not in a component module
+@include cia.print-base($size: A4, $margin: 0.75in);
 
 @include cia.print {
   @page { size: A4 landscape; }

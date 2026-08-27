@@ -37,7 +37,8 @@ Notes on the markup:
 ## Styling (cia mixins)
 
 ```scss
-@use 'css-is-awesome' as cia;
+// MyDialog.module.scss — component stylesheet, so import the zero-emit barrel.
+@use 'css-is-awesome/api' as cia;
 
 .my-dialog {
   @include cia.modal;
@@ -233,14 +234,22 @@ Drop the `[data-slot="close"]` button from the header. Esc still closes; the can
 Override `.my-dialog` with `inset-inline-end: 0; margin-inline: auto 0; block-size: 100dvh; max-block-size: none;` to anchor right edge, full height. Add a slide animation:
 
 ```scss
+// Duration + easing come from the theme, so the drawer inherits each theme's
+// feel (Terminal snappy, Glass floaty) with no code change.
 .my-dialog[open] {
-  animation: slide-in cia.duration(normal) cia.ease(out) both;
+  animation: slide-in var(--duration-normal, 240ms) var(--ease, ease) both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 0.01ms;
+  }
 }
 @keyframes slide-in {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }
 }
 ```
+
+cia's built-in keyframes are small entrance nudges, so a full-width drawer needs its own `@keyframes`. If an 8px slide is enough, skip the custom keyframe and use `@include cia.animate(slide-left);` — it reads the same duration/easing tokens and handles `prefers-reduced-motion` for you.
 
 ## Pitfalls
 
