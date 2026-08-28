@@ -53,6 +53,36 @@ css-is-awesome ships three authoring surfaces for the same components. Pick the 
 **Audience:** product teams that want their own domain vocabulary in markup (`hero-cta`, `product-card`) without giving up a design system.
 **Rules:** author your own class names. Variant is an argument to the mixin, not a class modifier. Every parameter overridable.
 
+### The rule that makes Tier 2 work: change the input, not the output
+
+Your class name, cia's mixin inside it, and **every customization goes through the mixin's arguments**. The mixin is a knob-board — each look-and-feel dimension is an input, so restyling never means writing the CSS the mixin already controls.
+
+```scss
+// ✅ change the knob
+.filter-bar { @include cia.flex($direction: column, $align: start, $gap: 2); }
+
+// ❌ call the mixin, then fight it
+.filter-bar {
+  @include cia.flex($justify: between);
+  align-items: flex-start;   // $align: start already does this
+  flex-direction: column;    // $direction: column already does this
+}
+```
+
+Both compile. The second is worse in a way that compounds: those two hand-written lines are now invisible to the design system. They don't follow a token, they don't respond to a theme swap, and the next person can't tell whether they were a deliberate exception or a missing argument.
+
+**If a visual dimension can only be reached by overriding in CSS, that is a missing input — add it to the mixin.** That's the rule cia holds itself to, and it's why `space()`, `transition()` and `animate()` all accept raw values as well as scale keys: a consumer should never have to abandon a mixin to keep one specific number.
+
+### Where raw CSS *is* correct
+
+Not everything is cia's job, and pretending otherwise produces worse code than writing plain CSS. Write ordinary CSS when the thing you are styling is genuinely yours:
+
+- **Bespoke identity** — a rotated stamp, a brand illustration, a logo's overflow trick. Preserve the exact values; don't token-swap something whose specific-ness is the point.
+- **One-off geometry** — a `clip-path`, a `grid-template-areas` for a layout only this page has, an animation of your own product's mascot.
+- **Anything cia has no mixin for.** Reach for a mixin first, check `get_mixin` over MCP if unsure, and write CSS when the answer is genuinely "there isn't one."
+
+The split to hold in your head: **cia owns the system values — colour, spacing, type, radius, motion, elevation. You own the composition and the things that make your product look like itself.** Mixing the two is fine. Re-implementing the first half by hand is the mistake.
+
 ---
 
 ## Tier 3 — Bare tags (opt-in Pico-mode)
