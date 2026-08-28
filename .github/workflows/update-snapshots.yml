@@ -47,10 +47,17 @@ jobs:
       - name: Build docs site (Next.js static export)
         run: npm run build
 
-      # --update-snapshots rewrites any baseline that differs and creates any
-      # that are missing. Non-visual specs are unaffected by the flag.
-      - name: Regenerate snapshots
-        run: npm run test:update-snapshots
+      # Scoped deliberately to visual.spec.ts on chromium — the only spec that
+      # owns baselines, and the only project that runs it (firefox/webkit
+      # `testIgnore` it, because Desktop Safari's deviceScaleFactor: 2 would
+      # make its PNGs a structurally different artifact).
+      #
+      # Do NOT use `npm run test:update-snapshots` here: that is
+      # `playwright test --update-snapshots`, which spans all three projects.
+      # This job installs chromium only, so firefox and webkit fail to launch
+      # and the run exits 1 having regenerated nothing.
+      - name: Regenerate visual baselines
+        run: npx playwright test tests/visual.spec.ts --project=chromium --update-snapshots
 
       - name: Commit updated baselines
         run: |
