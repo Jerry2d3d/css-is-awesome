@@ -21,8 +21,50 @@ const TOP_LEVEL_ROUTES = ["/", "/examples", "/themes"] as const;
 
 const DOCS_ROUTES = flatNav().map((item) => item.href);
 
-// Dedupe and preserve order (top-level first, then docs).
-const ROUTES = Array.from(new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES]));
+/**
+ * Routes that exist in the static export but are NOT in `flatNav` — the nav
+ * config only describes the docs sidebar, so component pages, recipe pages,
+ * blog posts and the marketing routes were previously never smoke-tested on
+ * any engine.
+ *
+ * These matter disproportionately: `/docs/components/*` and `/docs/recipes/*`
+ * are the pages documenting cia's `[popover]`, `<details name>`, `:has()` and
+ * anchor-positioning stories. Keep this list in sync when adding a route
+ * outside the docs sidebar.
+ */
+const UNLISTED_ROUTES = [
+  "/about",
+  "/compare",
+  "/showcase",
+  "/themes/gallery",
+  "/docs/themes/pairing",
+  "/docs/components/accordion",
+  "/docs/components/copy-button",
+  "/docs/components/dropdown",
+  "/docs/components/modal",
+  "/docs/components/tabs",
+  "/docs/components/tooltip",
+  "/docs/recipes/anchor-positioning",
+  "/docs/recipes/combobox",
+  "/docs/recipes/copy-button",
+  "/docs/recipes/dialog",
+  "/docs/recipes/print-to-pdf",
+  "/docs/recipes/tabs-aria",
+  "/blog",
+  "/blog/a-barrel-that-emits-nothing",
+  "/blog/an-mcp-server-for-a-css-library",
+  "/blog/from-0-8-to-1-0",
+  "/blog/print-to-pdf-with-zero-javascript",
+  "/blog/recipes-not-components",
+  "/blog/the-import-in-our-readme-did-not-work",
+  "/blog/the-validator-that-wasnt-looking",
+  "/blog/your-brand-comes-with-you",
+] as const;
+
+// Dedupe and preserve order (top-level first, then docs, then the rest).
+const ROUTES = Array.from(
+  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES]),
+);
 
 /**
  * Some third-party or framework errors are out of our control and would

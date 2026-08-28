@@ -125,7 +125,7 @@
     "pack:consumer": "node scripts/pack-to-consumer.mjs",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
-    "playwright:install": "playwright install chromium --with-deps",
+    "playwright:install": "playwright install --with-deps",
     "prepare": "node scripts/prepare-dist.mjs",
     "prepublishOnly": "npm run build:css:all"
   },

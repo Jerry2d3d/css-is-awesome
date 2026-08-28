@@ -89,7 +89,7 @@ jobs:
           retention-days: 7
 
   playwright:
-    name: Playwright (smoke + a11y + visual)
+    name: Playwright (3 engines — smoke, a11y, platform, visual)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # Runs in parallel with build-and-validate to keep total wall time low.
@@ -109,7 +109,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install chromium --with-deps
+        run: npx playwright install --with-deps
 
       - name: Build docs site (Next.js static export)
         run: npm run build
