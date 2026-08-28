@@ -78,6 +78,15 @@ export default function TestingPage() {
               </td>
             </tr>
             <tr>
+              <td><code>size-budget</code></td>
+              <td>
+                Fails when a gzipped bundle outgrows its budget, and names the
+                docs that quote the number. Raising a budget is a deliberate
+                edit in the same commit as the growth — the figures had drifted
+                to be overstated by up to 2&times; while nothing measured them.
+              </td>
+            </tr>
+            <tr>
               <td><code>test</code></td>
               <td>
                 Playwright — 50 tests: route smoke, axe accessibility, per-theme
@@ -131,11 +140,6 @@ export default function TestingPage() {
           <code>[popover]</code>, <code>&lt;details name&gt;</code> and{" "}
           <code>mask</code> — cross-engine coverage is the most valuable thing
           missing.
-        </li>
-        <li>
-          <strong>No size budget.</strong> The bundle sizes quoted in the docs
-          are measured by hand, not gated. A change that doubles the CSS passes
-          CI today.
         </li>
         <li>
           <strong>Accessibility runs on routes, not components.</strong> axe

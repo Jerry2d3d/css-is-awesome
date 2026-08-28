@@ -64,6 +64,13 @@ jobs:
       - name: Build library CSS bundles
         run: npm run build:css:all
 
+      # cia argues on size — the README, /compare and the homepage stat chip
+      # all quote gzipped figures. Those numbers had drifted to be overstated
+      # by up to 2x because nothing measured them. Now a bundle that outgrows
+      # its budget fails here, and raising a budget is a deliberate edit.
+      - name: Size budget (gzipped)
+        run: npm run size-budget
+
       - name: Build docs site (Next.js static export)
         run: npm run build
 

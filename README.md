@@ -279,7 +279,7 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 
 ## Testing
 
-Nine checks, all gated in CI on every PR. Each one exists because the failure it catches actually happened.
+Ten checks, all gated in CI on every PR. Each one exists because the failure it catches actually happened.
 
 | Check | What it proves |
 |---|---|
@@ -296,7 +296,9 @@ Nine checks, all gated in CI on every PR. Each one exists because the failure it
 
 **What 100% means here:** every public mixin and function is invoked and produces sane output. It catches renames, broken signatures and undefined variables — it found one on its first run, an undefined `$icon-size` that broke four icon mixins. It does **not** prove the CSS is visually correct; that's a deliberate trade against golden-file snapshots, which would churn dozens of files on any token change. Page-level visual correctness is covered by the Playwright snapshots instead.
 
-**Known gaps**, stated plainly: **chromium only** (cia leans on `light-dark()`, `:has()`, `[popover]`, `mask` — cross-engine is the most valuable thing missing); **no size budget** (the sizes above are measured, not gated); **a11y runs on routes, not component states**.
+**Size is gated, not just claimed.** `npm run size-budget` fails CI when any bundle outgrows its budget, and names the docs that quote the number. Raising a budget is a deliberate edit in `scripts/size-budget.mjs`, in the same commit as the growth — the point isn't that the number never moves, it's that it never moves silently. (These figures had drifted to be overstated by up to 2× while nothing measured them.)
+
+**Known gaps**, stated plainly: **chromium only** (cia leans on `light-dark()`, `:has()`, `[popover]`, `mask` — cross-engine is the most valuable thing missing); **a11y runs on routes, not component states**.
 
 Full detail: [`/docs/testing`](./src/app/docs/testing/page.tsx).
 
