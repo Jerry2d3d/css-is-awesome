@@ -54,14 +54,28 @@ jobs:
 
       - name: Commit updated baselines
         run: |
-          if git diff --quiet -- tests/__screenshots__; then
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Stage FIRST, then test the staged diff. `git diff --quiet` alone
+          # only sees tracked files, so brand-new baselines — the entire point
+          # of this job — registered as "no changes" and were silently
+          # discarded while the job exited 0. It reported success and did
+          # nothing.
+          git add -A tests/__screenshots__
+          if git diff --cached --quiet -- tests/__screenshots__; then
             echo "No baseline changes — nothing to commit."
             exit 0
           fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tests/__screenshots__
-          git commit -m "chore(test): regenerate linux visual baselines [skip ci]"
+
+          echo "Baselines changed:"
+          git diff --cached --name-status -- tests/__screenshots__
+
+          # No [skip ci]: CI must run on this commit, because release.yml is
+          # gated on a successful CI run. Skipping CI here stalls the release
+          # chain. There is no loop risk — this workflow is workflow_dispatch
+          # only and is never triggered by CI.
+          git commit -m "chore(test): regenerate linux visual baselines"
           git push
 
       - name: Upload report on failure
