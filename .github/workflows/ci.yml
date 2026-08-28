@@ -71,6 +71,13 @@ jobs:
       - name: Size budget (gzipped)
         run: npm run size-budget
 
+      # Recipes are a v1.0 deliverable that nothing checked. This compiles
+      # every SCSS block and asserts every cia.* symbol still exists, so a
+      # mixin rename fails here rather than in a consumer's editor — a recipe
+      # that teaches a call which no longer exists is worse than no recipe.
+      - name: Validate recipes
+        run: npm run validate-recipes
+
       - name: Build docs site (Next.js static export)
         run: npm run build
 

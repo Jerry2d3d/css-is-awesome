@@ -116,6 +116,7 @@
     "validate-icons": "node scripts/icon-validator.js",
     "validate-api": "node scripts/validate-api.mjs",
     "validate-package": "node scripts/validate-package.mjs",
+    "validate-recipes": "node scripts/validate-recipes.mjs",
     "size-budget": "node scripts/size-budget.mjs",
     "size-report": "node scripts/size-budget.mjs --report",
     "coverage:api": "node scripts/api-coverage.mjs",
