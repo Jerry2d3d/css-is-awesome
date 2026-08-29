@@ -550,7 +550,7 @@
   /* Code surface — Xcode deep */
   --code-bg:     #0D0D0F;
   --code-ink:    #E8E8ED;
-  --code-muted:  #6C6C71;
+  --code-muted:  #828287;
   --code-accent: #FFB86C;
   --code-green:  #A8E6A1;
   --code-blue:   #9AD4F7;
@@ -759,7 +759,7 @@
   /* Code surface */
   --code-bg:     rgba(29, 29, 31, 0.82);
   --code-ink:    #F5F5F7;
-  --code-muted:  #9A9AA0;
+  --code-muted:  #BABABE;
   --code-accent: #FFD60A;
   --code-green:  #30D158;
   --code-blue:   #64D2FF;
@@ -1461,7 +1461,7 @@
   --code-ink:    #18181b;
   --code-muted:  #71717a;
   --code-accent: #c2410c;
-  --code-green:  #16a34a;
+  --code-green:  #117C38;
   --code-blue:   #2563eb;
 
   /* Typography */
@@ -1653,7 +1653,7 @@
   /* Code — dark syntax surface */
   --code-bg:     #0a0a0a;
   --code-ink:    #e4e4e7;
-  --code-muted:  #71717a;
+  --code-muted:  #808089;
   --code-accent: #fb923c;
   --code-green:  #4ade80;
   --code-blue:   #60a5fa;
@@ -1848,8 +1848,8 @@
   --code-bg:     #F7F3EA;
   --code-ink:    #2B2420;
   --code-muted:  #6B5E50;
-  --code-accent: #A37B30;
-  --code-green:  #5A7A3A;
+  --code-accent: #826226;
+  --code-green:  #537035;
   --code-blue:   #1F3A5F;
 
   /* Typography — match Sketchbook */
@@ -2245,8 +2245,8 @@
   /* Code surface — light Xcode */
   --code-bg:     #F6F7F9;
   --code-ink:    #1A1F26;
-  --code-muted:  #6E747C;
-  --code-accent: #B5873A;
+  --code-muted:  #656A72;
+  --code-accent: #86642B;
   --code-green:  #3F7A48;
   --code-blue:   #4A6585;
 
@@ -2865,9 +2865,9 @@
   /* Code surface — slightly darker than paper for contrast */
   --code-bg:     #DDDDDD;
   --code-ink:    #1A1A1A;
-  --code-muted:  #707070;
-  --code-accent: #B45309;  /* numbers / literals — orange */
-  --code-green:  #008833;  /* strings — green */
+  --code-muted:  #5A5A5A;
+  --code-accent: #924407;  /* numbers / literals — orange */
+  --code-green:  #006928;  /* strings — green */
   --code-blue:   #0451A5;  /* keywords — blue */
 
   /* Typography — mono everywhere, like Terminal Dark */
@@ -3248,7 +3248,7 @@
   /* Code — neutral dark syntax surface */
   --code-bg:     #020617;
   --code-ink:    #e2e8f0;
-  --code-muted:  #64748b;
+  --code-muted:  #708198;
   --code-accent: #fb923c;
   --code-green:  #4ade80;
   --code-blue:   #60a5fa;

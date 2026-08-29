@@ -230,6 +230,13 @@ function extractRootBlock(cssText) {
 // multiple data-theme selectors (rare, but supported) — in
 // that case the tokens are counted toward each named theme.
 // -----------------------------------------------------------
+// Matches `[data-theme="dark"]`, `[data-theme='dark']` and `[data-theme=dark]`.
+// Group 1 is the quoted value, group 2 the unquoted one — read `m[1] || m[2]`.
+// Deliberately NOT global: it is used with .test(), and a /g regex makes .test()
+// stateful via lastIndex, so alternating calls would return alternating answers.
+// Callers that need to iterate build their own /g copy from .source.
+const DATA_THEME_RE = /\[data-theme\s*=\s*(?:["']([^"']+)["']|([^\]\s"']+))\s*\]/;
+
 function extractDataThemeBlocks(cssText) {
   const stripped = stripBlockComments(cssText);
   const blocks = [];
@@ -263,13 +270,14 @@ function extractDataThemeBlocks(cssText) {
     const block = readBracedBlock(stripped, braceIdx);
     if (!block) break;
 
-    // Find every [data-theme="<name>"] occurrence in this rule's
+    // Find every [data-theme=<name>] occurrence in this rule's
     // selector list. A rule can have multiple (e.g. grouped).
-    const nameRe = /\[data-theme\s*=\s*["']([^"']+)["']\s*\]/g;
+    // Quoted and unquoted values both match — see DATA_THEME_RE.
+    const nameRe = new RegExp(DATA_THEME_RE.source, 'g');
     const names = [];
     let nm;
     while ((nm = nameRe.exec(selector)) !== null) {
-      names.push(nm[1]);
+      names.push(nm[1] || nm[2]);
     }
 
     if (names.length > 0) {
@@ -306,9 +314,16 @@ function extractDataThemeBlocks(cssText) {
 // Any occurrence of `[data-theme=` in the (comment-stripped)
 // source is enough to switch modes.
 // -----------------------------------------------------------
+// Quotes around an attribute value are OPTIONAL in CSS: `[data-theme=dark]`
+// is as valid as `[data-theme="dark"]`. This test used to require them, so an
+// unquoted theme fell through to the legacy `:root` path below — where every
+// [data-theme] block is invisible. The validator then audited `:root` alone,
+// found it fine, and exited 0 while a theme block carried near-black text on
+// near-black paper. It reported "1 theme block(s)" and passed a failing theme.
+// Reported by a consumer 2026-08-29; see DATA_THEME_RE for the matching parser.
 function isConsolidated(cssText) {
   const stripped = stripBlockComments(cssText);
-  return /\[data-theme\s*=\s*["']/.test(stripped);
+  return DATA_THEME_RE.test(stripped);
 }
 
 // -----------------------------------------------------------
@@ -375,6 +390,19 @@ function validateFile(filePath, contract, options) {
   }
 
   // Legacy per-file mode - union of all :root { ... } blocks.
+  //
+  // Belt-and-braces: if the file mentions data-theme anywhere but no block
+  // parsed, we are about to audit `:root` alone and silently ignore every
+  // theme block in the file. That is the exact shape of the bug fixed above —
+  // a pass that means nothing. Refuse to grade rather than grade wrongly.
+  if (/data-theme/.test(stripBlockComments(text))) {
+    result.error =
+      'file contains "data-theme" but no theme block could be parsed. Refusing to ' +
+      'fall back to :root-only mode, which would ignore every theme block and ' +
+      'report a pass. Expected a selector like [data-theme=dark] or [data-theme="dark"].';
+    return result;
+  }
+
   const root = extractRootBlock(text);
   const v = validateTokenSet(root.tokens, contract);
   result.declaredCount = v.declaredCount;

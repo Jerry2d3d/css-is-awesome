@@ -31,9 +31,9 @@
   /* Code surface */
   --code-bg: light-dark(#F6F7F9, #0D0D0F);
   --code-ink: light-dark(#1A1F26, #E8E8ED);
-  --code-muted: light-dark(#6E747C, #6C6C71);
-  --code-accent: light-dark(#B5873A, #FFB86C);
-  --code-green: light-dark(#3F7A48, #A8E6A1);
+  --code-muted: light-dark(#666B73, #818186);
+  --code-accent: light-dark(#87652B, #FFB86C);
+  --code-green: light-dark(#3D7746, #A8E6A1);
   --code-blue: light-dark(#4A6585, #9AD4F7);
   /* Typography — SF stack, identical */
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;

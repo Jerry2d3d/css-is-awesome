@@ -31,9 +31,9 @@
   /* Code surface */
   --code-bg: #DDD;
   --code-ink: #1A1A1A;
-  --code-muted: #707070;
-  --code-accent: #B45309;
-  --code-green: #083;
+  --code-muted: #5B5B5B;
+  --code-accent: #934407;
+  --code-green: #006A28;
   --code-blue: #0451A5;
   /* Typography — mono everywhere */
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;

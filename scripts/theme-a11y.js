@@ -19,6 +19,18 @@ const AUDIT_PAIRS = [
   { fg: '--border-default', bg: '--paper',                    required: 3.0, kind: 'non-text',   decorative: true, note: 'default border against the page background - decorative; WCAG 2.2 SC 1.4.11 applies only to graphical objects essential for understanding content' },
   { fg: '--border-focus',   bg: '--paper',                    required: 3.0, kind: 'non-text',   note: 'focus ring against the page background' },
   { fg: '--shu',            bg: '--paper',                    required: 3.0, kind: 'non-text',   note: 'seal accent - must read as a UI mark on paper' },
+
+  // Code palette. Every one of these six tokens exists to put coloured text on
+  // --code-bg, which makes them the most obviously gradeable pairs in the
+  // contract — and they were ungraded until 2026-08-29. Syntax highlighting is
+  // body text: someone reads it, so 4.5:1 applies. A code block whose comments
+  // or string literals sit at 3.6:1 is a real legibility failure, and it hid
+  // here precisely because nobody thought of a token named "green" as text.
+  { fg: '--code-ink',       bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'default code text on the code surface' },
+  { fg: '--code-muted',     bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'code comments on the code surface - read as prose, so full text contrast' },
+  { fg: '--code-accent',    bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'keyword / accent token on the code surface' },
+  { fg: '--code-blue',      bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'blue syntax token on the code surface' },
+  { fg: '--code-green',     bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'green syntax token (strings) on the code surface' },
 ];
 
 const NAMED_COLORS = Object.freeze({

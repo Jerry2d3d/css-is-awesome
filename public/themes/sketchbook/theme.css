@@ -32,8 +32,8 @@
   --code-bg: light-dark(#2B2420, #F7F3EA);
   --code-ink: light-dark(#F7F3EA, #2B2420);
   --code-muted: light-dark(#A39787, #6B5E50);
-  --code-accent: light-dark(#E5B660, #A37B30);
-  --code-green: light-dark(#A8B86C, #5A7A3A);
+  --code-accent: light-dark(#E5B660, #836327);
+  --code-green: light-dark(#A8B86C, #537136);
   --code-blue: light-dark(#94AFC9, #1F3A5F);
   /* Typography — identical across modes */
   --font-display: 'DM Serif Display', 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
