@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap';
-:root[data-theme=cupertino] {
+:root, :root[data-theme=cupertino] {
   color-scheme: light dark;
   /* Surfaces — AppKit panels */
   --paper: light-dark(#F5F5F7, #1E1E1E);

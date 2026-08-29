@@ -1,5 +1,5 @@
 @charset "UTF-8";
-:root[data-theme=boilerplate] {
+:root, :root[data-theme=boilerplate] {
   color-scheme: light dark;
   /* Surfaces */
   --paper: light-dark(#fff, #0f172a);

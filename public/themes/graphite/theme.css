@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
-:root[data-theme=graphite] {
+:root, :root[data-theme=graphite] {
   color-scheme: light dark;
   /* Surfaces — silver (light) / dark aluminum (dark) */
   --paper: light-dark(#F2F4F6, #1A1A1C);

@@ -1,0 +1,216 @@
+/* ============================================================
+   THEME — Sketchbook Dark
+   -----------------------------------------------------------
+   Dark companion to Sketchbook (the css-is-awesome default,
+   warm-paper editorial light). Same hand-sketched personality:
+   serif display, Caveat script accents, soft warm hairlines,
+   slow ink-bleed motion. Only the COLOR palette inverts —
+   radius / fonts / shadows / motion all match the partner.
+
+   Mood: charcoal-paper editorial dark — late-night studio,
+   pencil-on-toned-paper, warm grays instead of cold blacks.
+   --paper is a warm charcoal; --ink is a warm cream. The
+   indigo accent (--ai) brightens for dark surfaces; the
+   vermilion seal (--shu) stays warm; ochre (--ochre) stays
+   gold; the code panel inverts to a warm cream slab.
+
+   Opt-in via `<html data-theme="sketchbook-dark">`. Pair with
+   the default Sketchbook (which lives in the consolidated
+   bundle / public/theme.css) to ship a project with a default
+   light mode and an opt-in dark mode.
+   ============================================================ */
+
+@use '../mixins' as m;
+
+@import 'https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap';
+
+@include m.theme('sketchbook-dark', dark) {
+    /* Surfaces — warm charcoal paper */
+    --paper:        #1A1815;
+    --paper-raised: #2A2520;
+    --paper-sunk:   #11100E;
+    --paper-glass:  rgba(42, 37, 32, 0.78);
+
+    /* Ink — warm cream pencil */
+    --ink:        #F4EFE2;
+    --ink-soft:   #D8D0BE;
+    --ink-faint:  #A89E89;
+    --graphite:   #E8E0CE;
+    --muted:      #7A715F;
+
+    /* Construction lines — warm dark hairlines */
+    --guide:      #4A4239;
+    --guide-soft: #382F27;
+    --hair:       #3F362C;
+    --hair-soft:  #2A241E;
+
+    /* Primary accent — lifted indigo for dark paper */
+    --ai:         #6E8FBF;
+    --ai-ink:     #8DA8D1;
+    --ai-wash:    #1F2B3F;
+
+    /* Seal — vermilion (stays warm, brightened slightly) */
+    --shu:        #E36148;
+    --shu-wash:   #3A1A14;
+
+    /* Draft / marginalia — warm gold */
+    --ochre:      #D4A04B;
+    --ochre-wash: #382B14;
+
+    /* Code surface — invert: warm cream slab */
+    --code-bg:     #F7F3EA;
+    --code-ink:    #2B2420;
+    --code-muted:  #6B5E50;
+    --code-accent: #826226;
+    --code-green:  #537035;
+    --code-blue:   #1F3A5F;
+
+    /* Typography — match Sketchbook */
+    --font-display: 'DM Serif Display', 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    --font-script:  'Caveat', 'Shadows Into Light', cursive;
+    --font-serif:   'Noto Serif JP', 'Cormorant Garamond', Georgia, serif;
+    --font-sans:    'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono:    'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace;
+
+    /* Radius — match Sketchbook */
+    --r-sm: 2px;
+    --r-md: 3px;
+    --r-lg: 6px;
+
+    /* Shadows — heavier on dark, ink bleeding behind paper */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+    --shadow-md: 0 4px 18px rgba(0, 0, 0, .45);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, .55);
+    --shadow-xl: 0 20px 50px rgba(0, 0, 0, .65);
+    --shadow-2xl: 0 28px 70px rgba(0, 0, 0, .75);
+
+    /* Blur — paper themes don't use it; declared so swap stays lossless */
+    --blur-sm: none;
+    --blur-md: none;
+    --blur-lg: none;
+
+    /* Glow — faint warm rim (charcoal paper, not phosphor) */
+    --glow-sm: 0 0 0 transparent;
+    --glow-md: 0 0 0 transparent;
+    --glow-lg: 0 0 0 transparent;
+
+    /* Motion — match Sketchbook (editorial pace) */
+    --duration-fast:   180ms;
+    --duration-normal: 240ms;
+    --duration-slow:   380ms;
+    --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+    /* ----------------------------------------------------------
+       SEMANTIC ALIASES
+       ---------------------------------------------------------- */
+
+    /* Backgrounds (page-level) */
+    --background-default: var(--paper);
+    --background-subtle:  var(--paper-sunk);
+    --background-navbar:  var(--paper-raised);
+
+    /* Surfaces */
+    --surface-default:   var(--paper);
+    --surface-raised:    var(--paper-raised);
+    --surface-sunk:      var(--paper-sunk);
+    --surface-muted:     var(--paper-sunk);
+    --surface-subtle:    var(--paper-raised);
+    --surface-emphasis:  var(--ink);
+    --surface-glass:     var(--paper-glass);
+
+    /* Text */
+    --text-primary:      var(--ink);
+    --text-secondary:    var(--ink-soft);
+    --text-muted:        var(--ink-faint);
+    --text-tertiary:     var(--muted);
+    --text-inverse:      var(--paper);
+    --text-link:         var(--ai);
+    --text-link-hover:   var(--ai-ink);
+
+    /* Borders */
+    --border-default:    var(--hair);
+    --border-subtle:     var(--hair-soft);
+    --border-emphasis:   var(--guide);
+    --border-focus:      var(--ai);
+
+    /* Interactive (hover / active wash layers) — warm cream on charcoal */
+    --interactive-hover:  rgba(244, 239, 226, 0.06);
+    --interactive-active: rgba(244, 239, 226, 0.12);
+
+    /* Brand */
+    --brand-primary:        var(--ai);
+    --brand-primary-hover:  var(--ai-ink);
+
+    /* Action triplets */
+    --action-primary-default:   var(--ai);
+    --action-primary-hover:     var(--ai-ink);
+    --action-primary-active:    var(--ai-ink);
+    --action-primary-wash:      var(--ai-wash);
+    --action-secondary-default: var(--shu);
+    --action-secondary-hover:   var(--shu);
+    --action-secondary-active:  var(--shu);
+    --action-secondary-wash:    var(--shu-wash);
+    --action-tertiary-default:  var(--ochre);
+    --action-tertiary-hover:    var(--ochre);
+    --action-tertiary-active:   var(--ochre);
+    --action-tertiary-wash:     var(--ochre-wash);
+
+    /* Feedback */
+    --feedback-info:     var(--ai);
+    --feedback-success:  var(--code-green);
+    --feedback-warning:  var(--ochre);
+    --feedback-error:    var(--shu);
+
+    /* Status — info */
+    --info-default: var(--ai);
+    --info-subtle:  var(--ai-wash);
+    --info-text:    var(--ai-ink);
+
+    /* Status — success (lifted moss-green for dark paper) */
+    --success-default: #8DA86A;
+    --success-subtle:  #1F2B14;
+    --success-text:    #B8CC8E;
+
+    /* Status — warning */
+    --warning-default: var(--ochre);
+    --warning-subtle:  var(--ochre-wash);
+    --warning-text:    #E8BF6E;
+
+    /* Status — error */
+    --error-default: var(--shu);
+    --error-subtle:  var(--shu-wash);
+    --error-text:    #F08A72;
+
+    /* ----------------------------------------------------------
+       LIBRARY SCALES
+       ---------------------------------------------------------- */
+
+    /* Space scale */
+    --space-2xs: 0.25rem;
+    --space-xs:  0.5rem;
+    --space-sm:  0.75rem;
+    --space-md:  1rem;
+    --space-lg:  1.5rem;
+    --space-xl:  2rem;
+
+    /* Radius alias */
+    --radius-sm:   var(--r-sm);
+    --radius-md:   var(--r-md);
+    --radius-lg:   var(--r-lg);
+    --radius-xl:   0.75rem;
+    --radius-full: 9999px;
+
+    /* Typography */
+    --font-primary:       var(--font-sans);
+    --font-size-base:     1rem;
+    --line-height-normal: 1.5;
+    --font-weight-medium: 500;
+
+    /* Z-index layers */
+    --z-sticky:   1020;
+    --z-dropdown: 1030;
+    --z-backdrop: 1040;
+    --z-modal:    1050;
+    --z-popover:  1060;
+    --z-tooltip:  1070;
+}

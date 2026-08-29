@@ -1,0 +1,206 @@
+/* ============================================================
+   THEME — Prism Dark
+   -----------------------------------------------------------
+   Dark companion to Prism Light. Same Vercel/Linear/Radix UI
+   philosophy: neutral grays, refined blue accent (brighter
+   for dark surfaces), border-driven, tight radii.
+
+   Opt-in via `<html data-theme="prism-dark">`. Does not match
+   `:root` — pair with prism-light's theme.css to get a default
+   light mode and an opt-in dark mode in the same project.
+   ============================================================ */
+
+@use '../mixins' as m;
+
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap';
+
+@include m.theme('prism-dark', dark) {
+    /* Surfaces — Zinc dark ramp */
+    --paper:        #09090b;
+    --paper-raised: #18181b;
+    --paper-sunk:   #27272a;
+    --paper-glass:  rgba(24, 24, 27, 0.80);
+
+    /* Ink — inverted neutrals */
+    --ink:        #fafafa;
+    --ink-soft:   #e4e4e7;
+    --ink-faint:  #a1a1aa;
+    --graphite:   #f4f4f5;
+    --muted:      #71717a;
+
+    /* Lines — dark borders */
+    --guide:      #3f3f46;
+    --guide-soft: #27272a;
+    --hair:       #27272a;
+    --hair-soft:  #18181b;
+
+    /* Primary accent — brighter blue for dark surfaces */
+    --ai:         #3b82f6;
+    --ai-ink:     #60a5fa;
+    --ai-wash:    #1e3a8a;
+
+    /* Seal — red */
+    --shu:        #ef4444;
+    --shu-wash:   #450a0a;
+
+    /* Tertiary — amber */
+    --ochre:      #eab308;
+    --ochre-wash: #422006;
+
+    /* Code — dark syntax surface */
+    --code-bg:     #0a0a0a;
+    --code-ink:    #e4e4e7;
+    --code-muted:  #808089;
+    --code-accent: #fb923c;
+    --code-green:  #4ade80;
+    --code-blue:   #60a5fa;
+
+    /* Typography */
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-script:  'Inter', cursive;
+    --font-serif:   Georgia, 'Times New Roman', Times, serif;
+    --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono:    'JetBrains Mono', 'SF Mono', 'Roboto Mono', Consolas, Menlo, monospace;
+
+    /* Radius */
+    --r-sm: 4px;
+    --r-md: 6px;
+    --r-lg: 8px;
+
+    /* Shadow — heavier for dark backgrounds */
+    --shadow-sm:  0 1px 1px rgba(0, 0, 0, .3);
+    --shadow-md:  0 1px 2px rgba(0, 0, 0, .4);
+    --shadow-lg:  0 4px 12px -4px rgba(0, 0, 0, .6);
+    --shadow-xl:  0 16px 32px -16px rgba(0, 0, 0, .7);
+    --shadow-2xl: 0 0 0 1px #27272a, 0 8px 24px -8px rgba(0, 0, 0, .6);
+
+    /* Blur */
+    --blur-sm: none;
+    --blur-md: none;
+    --blur-lg: none;
+
+    /* Glow */
+    --glow-sm: 0 0 0 transparent;
+    --glow-md: 0 0 0 transparent;
+    --glow-lg: 0 0 0 transparent;
+
+    /* Motion */
+    --duration-fast:   100ms;
+    --duration-normal: 150ms;
+    --duration-slow:   250ms;
+    --ease:            cubic-bezier(.32, .72, 0, 1);
+
+    /* Backgrounds */
+    --background-default: var(--paper);
+    --background-subtle:  var(--paper-sunk);
+    --background-navbar:  var(--paper-raised);
+
+    /* Surfaces (semantic) */
+    --surface-default:   var(--paper);
+    --surface-raised:    var(--paper-raised);
+    --surface-sunk:      var(--paper-sunk);
+    --surface-muted:     var(--paper-sunk);
+    --surface-subtle:    var(--paper-raised);
+    --surface-emphasis:  var(--ink);
+    --surface-glass:     var(--paper-glass);
+
+    /* Text */
+    --text-primary:      var(--ink);
+    --text-secondary:    var(--ink-soft);
+    --text-muted:        var(--ink-faint);
+    --text-tertiary:     var(--muted);
+    --text-inverse:      var(--paper);
+    --text-link:         var(--ai);
+    --text-link-hover:   var(--ai-ink);
+
+    /* Borders */
+    --border-default:    var(--hair);
+    --border-subtle:     var(--hair-soft);
+    --border-emphasis:   var(--guide);
+    --border-focus:      var(--ai);
+
+    /* Interactive overlays — light wash on dark */
+    --interactive-hover:  rgba(255, 255, 255, 0.05);
+    --interactive-active: rgba(255, 255, 255, 0.10);
+
+    /* Brand */
+    --brand-primary:        var(--ai);
+    --brand-primary-hover:  var(--ai-ink);
+
+    /* Action triplets */
+    --action-primary-default:   var(--ai);
+    --action-primary-hover:     var(--ai-ink);
+    --action-primary-active:    var(--ai-ink);
+    --action-primary-wash:      var(--ai-wash);
+    --action-secondary-default: var(--shu);
+    --action-secondary-hover:   var(--shu);
+    --action-secondary-active:  var(--shu);
+    --action-secondary-wash:    var(--shu-wash);
+    --action-tertiary-default:  var(--ochre);
+    --action-tertiary-hover:    var(--ochre);
+    --action-tertiary-active:   var(--ochre);
+    --action-tertiary-wash:     var(--ochre-wash);
+
+    /* Feedback */
+    --feedback-info:     var(--ai);
+    --feedback-success:  #22c55e;
+    --feedback-warning:  var(--ochre);
+    --feedback-error:    var(--shu);
+
+    /* Status — info */
+    --info-default: var(--ai);
+    --info-subtle:  var(--ai-wash);
+    --info-text:    #85BFFF;
+
+    /* Status — success */
+    --success-default: #22c55e;
+    --success-subtle:  #14532d;
+    --success-text:    #4ade80;
+
+    /* Status — warning */
+    --warning-default: #eab308;
+    --warning-subtle:  #422006;
+    --warning-text:    #fde047;
+
+    /* Status — error */
+    --error-default: #ef4444;
+    --error-subtle:  #450a0a;
+    --error-text:    #fca5a5;
+
+    /* Space scale */
+    --space-2xs: 0.25rem;
+    --space-xs:  0.5rem;
+    --space-sm:  0.75rem;
+    --space-md:  1rem;
+    --space-lg:  1.5rem;
+    --space-xl:  2rem;
+
+    /* Radius alias */
+    --radius-sm:   var(--r-sm);
+    --radius-md:   var(--r-md);
+    --radius-lg:   var(--r-lg);
+    --radius-xl:   12px;
+    --radius-full: 9999px;
+
+    /* Typography */
+    --font-primary:       var(--font-sans);
+    --font-size-base:     1rem;
+    --line-height-normal: 1.5;
+    --font-weight-medium: 500;
+
+    /* Z-index layers */
+    --z-sticky:   1020;
+    --z-dropdown: 1030;
+    --z-backdrop: 1040;
+    --z-modal:    1050;
+    --z-popover:  1060;
+    --z-tooltip:  1070;
+
+    /* Component overrides */
+    --btn-radius:    var(--r-md);
+    --card-radius:   var(--r-md);
+    --card-shadow:   var(--shadow-sm);
+    --card-border:   1px solid var(--hair);
+    --input-radius:  var(--r-md);
+    --modal-radius:  var(--r-lg);
+}

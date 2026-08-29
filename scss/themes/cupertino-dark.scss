@@ -1,0 +1,223 @@
+/* ============================================================
+   THEME — Cupertino Dark
+   -----------------------------------------------------------
+   Dark companion to Cupertino (macOS native light). Same
+   AppKit design language: SF system stack, soft AppKit radii
+   (8/10/14), vibrancy blurs, lifted (not glowing) shadows.
+   Only the COLOR palette inverts.
+
+   Mood: macOS Dark Mode. SF-symbol-adjacent, system-blue
+   accent brightened for dark surfaces (Apple's #0A84FF dark
+   variant), warm ink-black panels (never purple, never pure
+   black). Trivial inversion — most macOS Dark conventions
+   are well-established.
+
+   Opt-in via `<html data-theme="cupertino-dark">`. Pair with
+   cupertino/theme.css to ship a project with a default light
+   AppKit mode and an opt-in dark AppKit mode.
+   ============================================================ */
+
+@use '../mixins' as m;
+
+@import 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap';
+
+@include m.theme('cupertino-dark', dark) {
+    /* Surfaces — AppKit dark panels */
+    --paper:        #1E1E1E;
+    --paper-raised: #2A2A2A;
+    --paper-sunk:   #141414;
+    --paper-glass:  rgba(42, 42, 42, 0.72);
+
+    /* Ink — warm white, never pure */
+    --ink:        #F5F5F7;
+    --ink-soft:   #C7C7CC;
+    --ink-faint:  #98989D;
+    --graphite:   #AEAEB2;
+    --muted:      #6E6E73;
+
+    /* Hairlines / guides — translucent white */
+    --guide:      rgba(255, 255, 255, 0.16);
+    --guide-soft: rgba(255, 255, 255, 0.08);
+    --hair:       rgba(255, 255, 255, 0.12);
+    --hair-soft:  rgba(255, 255, 255, 0.06);
+
+    /* Primary accent — Apple system blue (dark variant) */
+    --ai:         #0A84FF;
+    --ai-ink:     #409CFF;
+    --ai-wash:    rgba(10, 132, 255, 0.16);
+
+    /* Seal — Apple system red (dark variant) */
+    --shu:        #FF453A;
+    --shu-wash:   rgba(255, 69, 58, 0.16);
+
+    /* Accent — Apple system orange (dark variant) */
+    --ochre:      #FF9F0A;
+    --ochre-wash: rgba(255, 159, 10, 0.16);
+
+    /* Code surface — AppKit dark code panel */
+    --code-bg:     #0F0F0F;
+    --code-ink:    #F2F2F7;
+    --code-muted:  #8E8E93;
+    --code-accent: #FF9F0A;
+    --code-green:  #30D158;
+    --code-blue:   #64D2FF;
+
+    /* Typography — match Cupertino (SF system stack) */
+    --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-script:  'Caveat', 'Shadows Into Light', cursive;
+    --font-serif:   ui-serif, 'New York', 'Iowan Old Style', 'Palatino', Georgia, serif;
+    --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', 'Menlo', Consolas, monospace;
+
+    /* Radius — match Cupertino (AppKit corners) */
+    --r-sm: 8px;
+    --r-md: 10px;
+    --r-lg: 14px;
+
+    /* Shadows — small, diffuse, lifted (deeper for dark) */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 0.5px rgba(0, 0, 0, 0.30);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.40), 0 1px 3px rgba(0, 0, 0, 0.30);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.50), 0 2px 6px rgba(0, 0, 0, 0.30);
+    --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.60), 0 4px 10px rgba(0, 0, 0, 0.32);
+    --shadow-2xl: 0 28px 70px rgba(0, 0, 0, 0.72), 0 6px 14px rgba(0, 0, 0, 0.36);
+
+    /* Blur — vibrancy (Cupertino's signature, match light) */
+    --blur-sm: blur(20px) saturate(180%);
+    --blur-md: blur(30px) saturate(180%);
+    --blur-lg: blur(40px) saturate(180%);
+
+    /* Glow — Cupertino doesn't glow, it lifts */
+    --glow-sm: 0 0 0 transparent;
+    --glow-md: 0 0 0 transparent;
+    --glow-lg: 0 0 0 transparent;
+
+    /* Motion — Apple-snappy, match Cupertino */
+    --duration-fast:   160ms;
+    --duration-normal: 220ms;
+    --duration-slow:   320ms;
+    --ease:            cubic-bezier(0.25, 0.1, 0.25, 1);
+
+    /* ----------------------------------------------------------
+       SEMANTIC ALIASES
+       ---------------------------------------------------------- */
+
+    /* Backgrounds */
+    --background-default: var(--paper);
+    --background-subtle:  var(--paper-sunk);
+    --background-navbar:  var(--paper-raised);
+
+    /* Surfaces */
+    --surface-default:   var(--paper);
+    --surface-raised:    var(--paper-raised);
+    --surface-sunk:      var(--paper-sunk);
+    --surface-muted:     var(--paper-sunk);
+    --surface-subtle:    var(--paper-raised);
+    --surface-emphasis:  var(--ink);
+    --surface-glass:     var(--paper-glass);
+
+    /* Text */
+    --text-primary:      var(--ink);
+    --text-secondary:    var(--ink-soft);
+    --text-muted:        var(--ink-faint);
+    --text-tertiary:     var(--muted);
+    --text-inverse:      var(--paper);
+    --text-link:         var(--ai);
+    --text-link-hover:   var(--ai-ink);
+
+    /* Borders */
+    --border-default:    var(--hair);
+    --border-subtle:     var(--hair-soft);
+    --border-emphasis:   var(--ink);
+    --border-focus:      var(--ai);
+
+    /* Interactive — translucent white on dark (macOS Dark convention) */
+    --interactive-hover:  rgba(255, 255, 255, 0.06);
+    --interactive-active: rgba(255, 255, 255, 0.10);
+
+    /* Brand */
+    --brand-primary:        var(--ai);
+    --brand-primary-hover:  var(--ai-ink);
+
+    /* Action triplets */
+    --action-primary-default:   var(--ai);
+    --action-primary-hover:     var(--ai-ink);
+    --action-primary-active:    var(--ai-ink);
+    --action-primary-wash:      var(--ai-wash);
+    --action-secondary-default: var(--shu);
+    --action-secondary-hover:   var(--shu);
+    --action-secondary-active:  var(--shu);
+    --action-secondary-wash:    var(--shu-wash);
+    --action-tertiary-default:  var(--ochre);
+    --action-tertiary-hover:    var(--ochre);
+    --action-tertiary-active:   var(--ochre);
+    --action-tertiary-wash:     var(--ochre-wash);
+
+    /* Feedback */
+    --feedback-info:     var(--ai);
+    --feedback-success:  var(--code-green);
+    --feedback-warning:  var(--ochre);
+    --feedback-error:    var(--shu);
+
+    /* Status — info */
+    --info-default: var(--ai);
+    --info-subtle:  var(--ai-wash);
+    --info-text:    var(--ai-ink);
+
+    /* Status — success (macOS dark green) */
+    --success-default: #30D158;
+    --success-subtle:  rgba(48, 209, 88, 0.16);
+    --success-text:    #5FE37F;
+
+    /* Status — warning (macOS dark orange) */
+    --warning-default: var(--ochre);
+    --warning-subtle:  var(--ochre-wash);
+    --warning-text:    #FFB340;
+
+    /* Status — error (macOS dark red) */
+    --error-default: var(--shu);
+    --error-subtle:  var(--shu-wash);
+    --error-text:    #FF6961;
+
+    /* ----------------------------------------------------------
+       LIBRARY SCALES
+       ---------------------------------------------------------- */
+
+    /* Space scale */
+    --space-2xs: 0.25rem;
+    --space-xs:  0.5rem;
+    --space-sm:  0.75rem;
+    --space-md:  1rem;
+    --space-lg:  1.5rem;
+    --space-xl:  2rem;
+
+    /* Radius alias */
+    --radius-sm:   var(--r-sm);
+    --radius-md:   var(--r-md);
+    --radius-lg:   var(--r-lg);
+    --radius-xl:   0.75rem;
+    --radius-full: 9999px;
+
+    /* Typography */
+    --font-primary:       var(--font-sans);
+    --font-size-base:     1rem;
+    --line-height-normal: 1.5;
+    --font-weight-medium: 500;
+
+    /* Z-index */
+    --z-sticky:   1020;
+    --z-dropdown: 1030;
+    --z-backdrop: 1040;
+    --z-modal:    1050;
+    --z-popover:  1060;
+    --z-tooltip:  1070;
+
+    /* ----------------------------------------------------------
+       OPTIONAL COMPONENT OVERRIDES — match Cupertino
+       ---------------------------------------------------------- */
+    --btn-radius:    var(--r-md);            /* 10px — AppKit control */
+    --card-radius:   var(--r-lg);            /* 14px — panel corner */
+    --card-shadow:   var(--shadow-sm);       /* diffuse, lifted */
+    --input-radius:  var(--r-sm);            /* 8px — text field */
+    --modal-radius:  var(--r-lg);            /* matches panel */
+    --tooltip-radius: var(--r-sm);           /* bezel tooltip */
+}

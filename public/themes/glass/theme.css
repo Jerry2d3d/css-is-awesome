@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
-:root[data-theme=glass] {
+:root, :root[data-theme=glass] {
   color-scheme: light dark;
   /* Surfaces — frosted translucent / blue-black void */
   --paper: light-dark(#F4EEFF, #0A0F1A);
@@ -81,7 +81,7 @@
   /* stylelint-disable no-invalid-position-declaration -- see comment above */
 }
 @media (prefers-color-scheme: dark) {
-  :root[data-theme=glass] {
+  :root, :root[data-theme=glass] {
     --blur-sm: blur(12px) saturate(160%);
     --blur-md: blur(18px) saturate(180%);
     --blur-lg: blur(20px) saturate(200%);
@@ -99,7 +99,7 @@
       inset 0 0 40px rgba(111, 169, 255, 0.08);
   }
 }
-:root[data-theme=glass] {
+:root, :root[data-theme=glass] {
   /* stylelint-enable no-invalid-position-declaration */
   /* Semantic aliases */
   --background-default: var(--paper);
