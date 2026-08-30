@@ -1,3 +1,29 @@
+# [1.1.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.0.0...v1.1.0) (2026-08-30)
+
+
+### Bug Fixes
+
+* **a11y:** copy button used code-surface ink on a page-surface background ([bf84bf4](https://github.com/Jerry2d3d/css-is-awesome/commit/bf84bf4d6c23e3ebafdb5dc98a303d9961d68714))
+* **a11y:** validator ignored unquoted [data-theme]; grade the code palette ([2437f41](https://github.com/Jerry2d3d/css-is-awesome/commit/2437f4182ddccc01b372d9aacd898b6222fcabd3)), closes [#fafafa](https://github.com/Jerry2d3d/css-is-awesome/issues/fafafa) [#0a0a0a](https://github.com/Jerry2d3d/css-is-awesome/issues/0a0a0a)
+* **ci:** snapshot job installed chromium but ran all three engines ([f7b7fc9](https://github.com/Jerry2d3d/css-is-awesome/commit/f7b7fc9e29883863c6a525f44391e6eb4b4b9662))
+* **ci:** snapshot workflow silently discarded the baselines it created ([3358cac](https://github.com/Jerry2d3d/css-is-awesome/commit/3358cacb6fbf88d9dcf0109597bed301efeda483))
+* **compare:** correct every measurable claim on the comparison page ([3d1b602](https://github.com/Jerry2d3d/css-is-awesome/commit/3d1b602ff6074712a2e2d0aea5a1ad27128d2d70))
+* **pkg:** build dist/ on git installs via a prepare hook ([1a0deb1](https://github.com/Jerry2d3d/css-is-awesome/commit/1a0deb19e4fc6de15b7b3530847779920d01d784))
+* **print:** stop the freeze from flattening deliberate opacity and transform ([1af51d2](https://github.com/Jerry2d3d/css-is-awesome/commit/1af51d2e3a08cd61e51ac3b857eeaa261afd044e))
+* root barrel emitted no tokens; retract the false Turbopack claim ([d7f71e3](https://github.com/Jerry2d3d/css-is-awesome/commit/d7f71e366a1ef4b918cfcfd6dafcba8d352afcb5))
+* **site:** moat card uses grid; Tailwind sample updated to Headless UI v2 ([cb39e44](https://github.com/Jerry2d3d/css-is-awesome/commit/cb39e44b4eb8d7ab1a86377c1d828b1cde3ed58b))
+* **site:** moat code blocks now fill their card ([8e53d35](https://github.com/Jerry2d3d/css-is-awesome/commit/8e53d355b0f9279125b9dfd6f913851cf2ebcdc3))
+* six upstream bugs from the Boiler audit (BUG-1..7) ([84f4c4f](https://github.com/Jerry2d3d/css-is-awesome/commit/84f4c4fc6f6259bf74541a833fe0ad343821ab12))
+* **themes:** prism was missing from every theme picker ([4ce4f5f](https://github.com/Jerry2d3d/css-is-awesome/commit/4ce4f5f8a696728b513aa1adc148b33c5808e26e))
+
+
+### Features
+
+* **animate:** accept a raw duration; add letter-spacing() coverage fixture ([25b7cd6](https://github.com/Jerry2d3d/css-is-awesome/commit/25b7cd6cbc09d76b51c9dd0b74077ec1af78c327))
+* **blog:** real posts from real commits, replacing seven dead stubs ([f37c5be](https://github.com/Jerry2d3d/css-is-awesome/commit/f37c5be94cd64f99548a6a119820325d559e6920))
+* **site:** print the story, not the chrome — dogfoods cia's print mixins ([ece519c](https://github.com/Jerry2d3d/css-is-awesome/commit/ece519c43f62230e1b3392538dae5148fc31ddf6))
+* **themes:** themes own the spacing rhythm, not just the palette ([4bc1e24](https://github.com/Jerry2d3d/css-is-awesome/commit/4bc1e24f1b64f33cacd35f3bab12327019634fea))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
