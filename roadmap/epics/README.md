@@ -13,17 +13,24 @@ Detailed breakdown of the work needed to take css-is-awesome from v1.0 to v2.0. 
 
 ## Versioned epic folders (current source of truth)
 
-| Release | Theme | Folder | Stories | Effort | Status |
-|---|---|---|---|---|---|
-| [v1.0](./v1-0/README.md) | **Recipes-first reframe** — recipes book, theme editor polish, migration on-ramp, playground, bug-fix patch | v1-0/ | 42 | ~18-26 days | Planned (next ship) |
-| [v1.1](./v1-1/README.md) | **Recipes momentum** — 7 more recipes, install wizard, @cia/a11y-recipes, @cia/react codegen POC | v1-1/ | 43 | ~25-35 days | Planned |
-| [v1.2](./v1-2/README.md) | **Coverage** — RTL audit, form validation, i18n, print, MUI/Chakra migration | v1-2/ | 32 | ~16-22 days | Planned |
-| [v1.3](./v1-3/README.md) | **Ecosystem** — Figma plugin, theme marketplace, DTCG migration, @cia/angular | v1-3/ | 34 | ~28-35 days | Planned |
-| v1.4 | *Reserved — scoped from v1.1-v1.3 feedback* | — | — | — | Not scoped |
-| [v1.5](./v1-5/README.md) | **IDE integration** — VS Code extension | v1-5/ | 15 | ~10 days | Planned |
-| [v2.0](./v2-0/README.md) | **Visual builder** — Recipes Maker | v2-0/ | 18 | ~15-20 days | Planned — may never ship |
+| Release | Theme | Folder | Stories | Status |
+|---|---|---|---|---|
+| [v1.0](./v1-0/README.md) | **Recipes-first reframe** — recipes book, theme editor polish, migration on-ramp, playground, bug-fix patch | v1-0/ | 42 | Shipped — tagged v1.0.0 |
+| [v1.1](./v1-1/README.md) | **Recipes momentum** — 7 more recipes, install wizard, @cia/a11y-recipes, @cia/react codegen POC | v1-1/ | 43 | Planned |
+| [v1.2](./v1-2/README.md) | **Coverage** — RTL audit, form validation, i18n, print, MUI/Chakra migration | v1-2/ | 32 | Planned |
+| [v1.3](./v1-3/README.md) | **Ecosystem** — Figma plugin, theme marketplace, DTCG migration, @cia/angular | v1-3/ | 34 | Planned |
+| v1.4 | *Reserved — scoped from v1.1-v1.3 feedback* | — | — | Not scoped |
+| [v1.5](./v1-5/README.md) | **IDE integration** — VS Code extension | v1-5/ | 15 | Planned |
+| [v2.0](./v2-0/README.md) | **Visual builder** — Recipes Maker | v2-0/ | 18 | Planned — may never ship |
 
-**Total planned stories across all versions:** 184. **Total estimated effort:** ~112-148 working days.
+**Total planned stories across all versions:** 184.
+
+> **On effort estimates.** Per-story day estimates live inside the individual
+> epic files as planning aids. They are deliberately NOT summarised here or on
+> the public roadmap page: a day count on a public list reads as a delivery
+> date, and then work gets shipped to the date instead of to the standard.
+> The public view is [`/docs/roadmap`](../../src/app/docs/roadmap/page.tsx),
+> which states direction and ordering with no dates at all.
 
 ## Versioned epic format
 

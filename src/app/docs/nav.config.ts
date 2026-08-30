@@ -47,6 +47,7 @@ export const docsNav: DocsNavSection[] = [
     title: "Help",
     items: [
       { label: "FAQ", href: "/docs/faq" },
+      { label: "Roadmap", href: "/docs/roadmap" },
     ],
   },
 ];
