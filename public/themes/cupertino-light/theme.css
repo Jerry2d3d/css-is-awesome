@@ -172,12 +172,22 @@
      Themes declare the slots so those mixins always resolve.
      ---------------------------------------------------------- */
   /* Space scale (rem for accessibility) */
-  --space-2xs: 0.25rem;
-  --space-xs: 0.5rem;
-  --space-sm: 0.75rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
+  /* Spacing rhythm — THE knob for how dense or airy this theme feels.
+     The numbered scale is the source of truth: every component reads
+     var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
+     are emitted by the library as references to these, so they follow
+     automatically. Change a value here and the whole page re-proportions.
+     Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
+  --space-0: 0; /* flush            */
+  --space-1: 0.5rem; /* tight inner gap  */
+  --space-2: 0.75rem; /* control padding  */
+  --space-3: 0.875rem; /* (no t-shirt)     */
+  --space-4: 1rem; /* default rhythm   */
+  --space-5: 1.5rem; /* section gap      */
+  --space-6: 2rem; /* block gap        */
+  --space-7: 3rem; /* major gap        */
+  --space-8: 4rem; /* page section     */
+  --space-9: 6rem; /* hero rhythm      */
   /* Radius alias — mirrors --r-* with standard names so
      `m.radius(size)` in the library finds --radius-<size>. */
   --radius-sm: var(--r-sm);
