@@ -29,3 +29,22 @@ next-env.d.ts
 playwright-report/
 test-results/
 /playwright/.cache/
+
+# ---------------------------------------------------------------------------
+# Internal planning — kept on disk, never published.
+#
+# These are working notes, not documentation. They carry unresolved decisions,
+# commercial thinking, direct quotes pending sign-off, and citations into
+# memory/ and .agent/ paths that do not exist in this repo (so every one of
+# those links would 404 for a reader).
+#
+# The public roadmap lives in roadmap/epics/ and ROADMAP.md. That stays.
+# ---------------------------------------------------------------------------
+roadmap/blog-architecture.md
+roadmap/SESSION-NOTES-*.md
+roadmap/boiler-showcase-plan.md
+
+# Local scratch: agent working dirs, already untracked but make it explicit
+# so a stray `git add -A` can never sweep them in.
+.agent/
+memory/
