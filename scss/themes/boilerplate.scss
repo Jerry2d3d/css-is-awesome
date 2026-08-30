@@ -10,7 +10,7 @@
 //   - Subtle shadows. Standard radii (4 / 6 / 8 px).
 //   - No glass, no glow, no decorative texture.
 //
-// Selector: :root[data-theme="boilerplate"]
+// Selector: :root, :root[data-theme="boilerplate"]
 // Replaces: [data-theme="boilerplate-light"] + [data-theme="boilerplate-dark"]
 // ============================================================================
 @use '../mixins' as m;

@@ -8,7 +8,7 @@
 // Pattern A: explicit color-scheme: light. A separate identity from Terminal,
 // not a "light variant" of it — different selector, different consumer choice.
 //
-// Selector: :root[data-theme="terminal-light"]
+// Selector: :root, :root[data-theme="terminal-light"]
 // ============================================================================
 @use '../mixins' as m;
 

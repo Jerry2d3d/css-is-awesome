@@ -78,7 +78,12 @@
 // Usage:
 //   padding: space(4);    // Returns var(--space-4, 1rem)
 //   padding: space(md);   // Returns var(--space-md, 1rem)  (alias)
-// Both styles continue to work — themes declare both sets of custom props.
+// Both styles continue to work, but they are no longer independent: themes
+// declare only the NUMBERED set, and the library emits each t-shirt name as a
+// reference to it (--space-md: var(--space-4)). Previously both sets were
+// emitted as separate literals holding equal values, so a theme could set
+// --space-md while every component read var(--space-4) and nothing moved.
+// Theme the numbered step; the alias follows.
 // ============================================================================
 
 @function space($key) {

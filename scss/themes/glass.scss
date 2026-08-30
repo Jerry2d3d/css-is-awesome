@@ -9,7 +9,7 @@
 //
 // Light: frosted over lavender-tint base. Dark: glassy over blue-black void.
 //
-// Selector: :root[data-theme="glass"]
+// Selector: :root, :root[data-theme="glass"]
 // Replaces: [data-theme="glass-light"] + [data-theme="glass-dark"]
 // ============================================================================
 @use '../mixins' as m;

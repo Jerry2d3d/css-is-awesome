@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml/badge.svg)](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml) [![Node](https://img.shields.io/badge/node-%E2%89%A520-43853d?logo=node.js&logoColor=white)](./package.json) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![semantic-release](https://img.shields.io/badge/semantic--release-enabled-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-**Bring your own selectors. We bring the design system.** One CSS file per theme. Eight themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
+**Bring your own selectors. We bring the design system.** One CSS file per theme — drop it in and the page restyles, no markup change. 24 themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
 
 > **Shipped in 1.0.0:** a **recipes book** for building any component in any framework using cia mixins — `dialog`, `combobox` and `print-to-pdf` today, with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at `/docs/recipes`.
 
@@ -28,8 +28,8 @@ npm install -D sass
 ```
 
 ```html
-<link rel="stylesheet" href="/cia/themes/boilerplate.css">
-<html data-theme="boilerplate">
+<!-- One theme file: no data-theme attribute required -->
+<link rel="stylesheet" href="/cia/themes/boilerplate/theme.css">
 ```
 
 Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button` — plus print-to-PDF via a pure-CSS `@media print` layer. Full reference at [`/docs/mixins`](https://github.com/Jerry2d3d/css-is-awesome/blob/main/src/app/docs/mixins/page.tsx).
@@ -54,10 +54,9 @@ Author your own class names; the mixin handles the styling. Mixins for buttons, 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@1/public/themes/boilerplate/theme.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css">
-<html data-theme="boilerplate">
 ```
 
-Theme first (sets the tokens), library second. Bundle tiers — `dist/tokens.css` (2.2 KB gz, `:root` vars only), `dist/css-is-awesome.core.min.css` (2.4 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (7.3 KB gz, full).
+Theme first (sets the tokens), library second. **No `data-theme` attribute needed** — a single theme file styles the page on its own. Swap the URL to swap the theme; the HTML never changes. Bundle tiers — `dist/tokens.css` (2.2 KB gz, `:where(:root)` vars only), `dist/css-is-awesome.core.min.css` (2.4 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (7.3 KB gz, full).
 
 ### 3. Bare tags (opt-in Pico-mode)
 
@@ -75,7 +74,9 @@ One line styles the whole site. Zero classes. Wrapped in `:where()` (specificity
 
 ## Themes
 
-**One file per theme since v0.8.** Each theme contains both light + dark modes via native `light-dark()`. Set `<html data-theme="...">` and the browser handles the rest.
+**One file per theme since v0.8.** Each theme file emits `:root, :root[data-theme="<name>"]`, so **dropping one in restyles the page with no markup change** — the `data-theme` attribute is optional for the single-file case. Set `<html data-theme="...">` only when you load the all-in-one bundle (`public/theme.css`), where every theme shares one file and the attribute is the only thing telling them apart.
+
+**8 families, 24 files.** Each family ships a dual-mode base (`<name>`, both light + dark via native `light-dark()`) plus single-mode `<name>-light` and `<name>-dark` variants for pairing.
 
 | Theme         | Mood                                                          | Modes |
 |---------------|---------------------------------------------------------------|-------|
@@ -86,18 +87,19 @@ One line styles the whole site. Zero classes. Wrapped in `:where()` (specificity
 | cupertino     | macOS AppKit, SF Pro, system blue, vibrancy blurs             | both |
 | glass         | visionOS glassmorphism, iOS indigo, blur asymmetric per mode  | both (Pattern C) |
 | graphite      | Brushed silver / machined dark aluminum, SF system stack      | both |
-| terminal      | VT100 phosphor green, zero radii, CRT glow                    | dark-only |
-| terminal-light | Daylight editor companion to terminal                        | light-only |
+| terminal      | VT100 phosphor green, zero radii, CRT glow                    | dark-only base (`terminal-light` is the daylight companion) |
 
 **Pair two themes per mode** with native `<link media>`:
 ```html
-<link rel="stylesheet" href="/themes/sketchbook.css" media="(prefers-color-scheme: light)">
-<link rel="stylesheet" href="/themes/terminal.css"   media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="/themes/sketchbook-light/theme.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="/themes/terminal-dark/theme.css"    media="(prefers-color-scheme: dark)">
 ```
 
 Newspaper by day, hacker terminal by night. No JS, no mixin — pure browser behavior. Most design systems give you dark mode; cia lets you ship a second brand at night. See [`/docs/themes/pairing`](./src/app/docs/themes/pairing/page.tsx).
 
 Each theme is one file of CSS custom properties. Tokens only — no component rules. See `public/themes/<name>/theme.css` for the compiled output and `scss/themes/<name>.scss` for the sources. Full contract documented in [THEMING.md](./THEMING.md).
+
+The library's own default tokens emit under `:where(:root)` (specificity `0,0,0`), so any theme declaration outranks them regardless of load order. That's `:where()`, not `@layer` — see the print section below for why cia refuses layers.
 
 ### Edit a theme or make your own
 
@@ -110,21 +112,25 @@ cp scss/themes/boilerplate.scss scss/themes/midnight.scss
 # 2. Edit tokens (see scss/themes/*.scss for the pattern + light-dark() usage)
 #    Wrap in @include cia.theme('midnight') { ... }
 
-# 3. Build to public/themes/midnight/theme.css
+# 3. Build to public/themes/midnight/theme.css (also regenerates public/theme.css)
 npm run build:css:themes
 
 # 4. Validate against the token contract + a11y audit
 node scripts/theme-validator.js public/themes/midnight/theme.css
 
-# 5. Use it
-#    <html data-theme="midnight">
+# 5. Use it — just link the file. No data-theme attribute needed.
+#    <link rel="stylesheet" href="/themes/midnight/theme.css">
 ```
 
-Full authoring walkthrough: [`/docs/authoring/themes`](./src/app/docs/authoring/themes/page.tsx). The contract (123 tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
+Full authoring walkthrough: [`/docs/authoring/themes`](./src/app/docs/authoring/themes/page.tsx). The contract (127 required + 36 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
 
 ## Token contract
 
-Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else.
+Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · space · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else. 127 required, 36 optional.
+
+**Themes own the spacing scale.** A theme declares the numbered scale `--space-0` … `--space-9` (contract-required), which is exactly what `cia.space(4)` compiles to — so a theme can ship tighter or airier rhythm without touching a component. The six t-shirt names (`--space-2xs/xs/sm/md/lg/xl`) are optional; the library emits them as references (`--space-md: var(--space-4)`), so they track the numbered scale automatically.
+
+Component-shape tokens (`--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius`) are optional too, and cascade from the generic radii by default — `--btn-radius: var(--radius-md, 0.25rem)`. Set the generic `--radius-*` scale to move everything; set a component token to make one thing an exception.
 
 ## Icons (two systems, very different setup costs)
 
@@ -221,7 +227,7 @@ The scope is kept narrow: 8 `!important` declarations, all inside `@media print`
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **30 tools** across 8 families (themes, mixins, functions, tokens · 123 of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **30 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
 
 **Setup is two steps — do both, or the server won't start.**
 
@@ -264,13 +270,14 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 | `npm run dev` | Next.js docs site on port 5173 |
 | `npm run build` | Static-exports docs site to `out/` |
 | `npm run build:css` | Compile library SCSS to `dist/css-is-awesome.css` |
-| `npm run build:css:all` | Compile all bundles (full + core + utilities + minified) + token types |
-| `npm run build:css:themes` | Rebuild the per-theme CSS files in `public/themes/` |
+| `npm run build:css:all` | Compile all bundles (full + core + utilities + minified) + themes + token types |
+| `npm run build:css:themes` | Rebuild the 24 per-theme CSS files in `public/themes/` **and** regenerate the all-in-one `public/theme.css` bundle |
+| `npm run check:theme-drift` | Rebuild the themes into a scratch copy and fail if the committed artifacts don't match their SCSS sources |
 | `npm run build:token-types` | Generate `dist/tokens.d.ts` from the contract |
 | `npm run dtcg-to-scss` | Convert DTCG-format design tokens into cia SCSS |
 | `npm run lint` | ESLint on the Next.js app |
 | `npm run lint:scss` | Stylelint on the SCSS library |
-| `npm run validate-themes` | Validate every theme against the 123-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7; checks both `light-dark()` branches and reports the worse) |
+| `npm run validate-themes` | Validate every theme against the 127-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7; checks both `light-dark()` branches and reports the worse) |
 | `npm run validate-icons` | Validate the `core` icon pack against the 49-glyph contract |
 | `npm run validate-api` | Assert the `css-is-awesome/api` barrel stays zero-emit |
 | `npm run validate-package` | Pack + install into a temp project and compile every documented `@use` form — catches breakage that in-repo checks can't see |
@@ -279,12 +286,13 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 
 ## Testing
 
-Ten checks, all gated in CI on every PR. Each one exists because the failure it catches actually happened.
+Eleven checks, all gated in CI on every PR. Each one exists because the failure it catches actually happened.
 
 | Check | What it proves |
 |---|---|
 | `lint` / `lint:scss` | ESLint on the site, stylelint on the library |
-| `validate-themes` | every theme declares all 123 contract tokens and meets WCAG 2.2 AA — evaluating **both** `light-dark()` branches and keeping the worse result. Fails the build by default |
+| `validate-themes` | every theme declares all 127 required contract tokens and meets WCAG 2.2 AA on 22 audited pairs — evaluating **both** `light-dark()` branches and keeping the worse result. Fails the build by default |
+| `check:theme-drift` | the committed `public/themes/**` and `public/theme.css` artifacts still match their SCSS sources |
 | `validate-icons` | the 49-glyph core pack is intact (extras allowed) |
 | `validate-api` | the `/api` barrel still emits zero CSS until a mixin is called |
 | `validate-package` | packs → installs into a temp project → compiles all **10** documented `@use` specifiers |
@@ -298,7 +306,7 @@ Ten checks, all gated in CI on every PR. Each one exists because the failure it 
 
 **Size is gated, not just claimed.** `npm run size-budget` fails CI when any bundle outgrows its budget, and names the docs that quote the number. Raising a budget is a deliberate edit in `scripts/size-budget.mjs`, in the same commit as the growth — the point isn't that the number never moves, it's that it never moves silently. (These figures had drifted to be overstated by up to 2× while nothing measured them.)
 
-**Known gaps**, stated plainly: **chromium only** (cia leans on `light-dark()`, `:has()`, `[popover]`, `mask` — cross-engine is the most valuable thing missing); **a11y runs on routes, not component states**.
+**Known gaps**, stated plainly: **a11y runs on routes, not component states** — axe checks a set of pages; individual component states are not swept. (Cross-engine coverage used to be the gap here; the suite now runs chromium, firefox and webkit, which matters because cia leans on `light-dark()`, `:has()`, `[popover]` and `mask`.)
 
 Full detail: [`/docs/testing`](./src/app/docs/testing/page.tsx).
 
@@ -306,11 +314,11 @@ Full detail: [`/docs/testing`](./src/app/docs/testing/page.tsx).
 
 | Bundle | Size | Use case |
 |---|---|---|
-| `dist/tokens.css` | 2.2 KB | Tokens only (`:root` CSS variables, no rules) — the purest mixin-first emit |
+| `dist/tokens.css` | 2.2 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
 | `dist/css-is-awesome.core.min.css` | 2.4 KB | Tokens + resets, no utilities or components |
 | `dist/css-is-awesome.utilities.min.css` | 4.1 KB | Every `cia-*` utility class, nothing else |
 | `dist/css-is-awesome.min.css` | 7.3 KB | Full bundle (everything) |
-| Per-theme `themes/<name>.css` | 1.5–3.4 KB | One file per theme, both modes via `light-dark()` |
+| Per-theme `themes/<name>/theme.css` | 1.5–3.4 KB | One file per theme, both modes via `light-dark()`, drop-in with no markup change |
 | **JavaScript shipped in package** | **0 KB** | Zero. Period. JS-driven features ship as separate add-on packages. |
 
 ## Status

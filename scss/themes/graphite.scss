@@ -6,7 +6,7 @@
 //
 // Light: brushed silver chassis. Dark: space-gray machined aluminum.
 //
-// Selector: :root[data-theme="graphite"]
+// Selector: :root, :root[data-theme="graphite"]
 // Replaces: [data-theme="graphite-light"] + [data-theme="graphite-dark"]
 // ============================================================================
 @use '../mixins' as m;

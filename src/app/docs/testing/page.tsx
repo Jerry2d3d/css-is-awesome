@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Testing — css-is-awesome",
   description:
-    "How cia is tested: nine checks covering lint, token contracts, published-package resolution, and 100% call coverage of the SCSS API and MCP tools.",
+    "How cia is tested: twelve checks covering lint, theme-artifact drift, token contracts, published-package resolution, and 100% call coverage of the SCSS API and MCP tools.",
 };
 
 export default function TestingPage() {
@@ -14,7 +14,7 @@ export default function TestingPage() {
       <p className="lead">
         A design system fails in ways a unit test rarely sees: a renamed mixin,
         a theme missing a token, an import that works in the repo and breaks on
-        install. cia runs nine checks, and every one of them exists because
+        install. cia runs twelve checks, and every one of them exists because
         something in that list actually happened.
       </p>
 
@@ -37,13 +37,26 @@ export default function TestingPage() {
               <td>stylelint across the SCSS library</td>
             </tr>
             <tr>
+              <td><code>check:theme-drift</code></td>
+              <td>
+                Theme artifacts match their SCSS sources.{" "}
+                <code>validate-themes</code> reads the <strong>committed CSS</strong>,
+                not the SCSS sources, and theme building was in no CI step — so a
+                fix could land in <code>scss/themes/*.scss</code>, never be
+                rebuilt, and CI would validate the stale output and report
+                success. The drift gate rebuilds into a scratch copy and diffs,
+                so source and artifacts cannot silently diverge. Runs before
+                every check that reads the artifacts.
+              </td>
+            </tr>
+            <tr>
               <td><code>validate-themes</code></td>
               <td>
-                Every theme declares all 123 contract tokens, and every contract
-                pair meets WCAG 2.2 AA contrast. Checks <strong>both</strong>{" "}
-                <code>light-dark()</code> branches and keeps the worse result —
-                a token that is two colours cannot pass by being legible in only
-                one mode. Fails the build by default.
+                Every theme declares all 127 required contract tokens, and every
+                one of the 22 audited pairs meets WCAG 2.2 AA contrast. Checks{" "}
+                <strong>both</strong> <code>light-dark()</code> branches and
+                keeps the worse result — a token that is two colours cannot pass
+                by being legible in only one mode. Fails the build by default.
               </td>
             </tr>
             <tr>
@@ -87,16 +100,28 @@ export default function TestingPage() {
               </td>
             </tr>
             <tr>
+              <td><code>validate-recipes</code></td>
+              <td>
+                Compiles every SCSS block in the recipes and asserts every{" "}
+                <code>cia.*</code> symbol still exists, so a mixin rename fails
+                here rather than in a consumer&rsquo;s editor — a recipe that
+                teaches a call which no longer exists is worse than no recipe.
+              </td>
+            </tr>
+            <tr>
               <td><code>test</code></td>
               <td>
-                Playwright — 50 tests: route smoke, axe accessibility, per-theme
-                visual snapshots, theme-editor behaviour
+                Playwright — 240 tests across three engines: route smoke, axe
+                accessibility, per-theme visual snapshots, theme-editor
+                behaviour. 74 functional tests run in Chromium, Firefox and
+                WebKit; the 18 visual-snapshot tests are Chromium-only by
+                design.
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p>All nine run in CI on every pull request.</p>
+      <p>All twelve run in CI on every pull request.</p>
 
       <h2 id="coverage">Call-and-assert coverage</h2>
       <p>
@@ -135,20 +160,29 @@ export default function TestingPage() {
       <p>Stated plainly, because a test suite that hides its blind spots is worse than a small one:</p>
       <ul>
         <li>
-          <strong>Chromium only.</strong> The visual and a11y suites run in one
-          engine. cia leans on <code>light-dark()</code>, <code>:has()</code>,{" "}
-          <code>[popover]</code>, <code>&lt;details name&gt;</code> and{" "}
-          <code>mask</code> — cross-engine coverage is the most valuable thing
-          missing.
-        </li>
-        <li>
           <strong>Accessibility runs on routes, not components.</strong> axe
           checks a set of pages; individual component states are not swept.
         </li>
       </ul>
+      <p>
+        Cross-engine coverage used to head this list. It no longer does: the
+        functional, smoke and a11y specs run in Chromium, Firefox and WebKit.
+        That mattered because cia leans on <code>light-dark()</code>,{" "}
+        <code>:has()</code>, <code>[popover]</code>,{" "}
+        <code>&lt;details name&gt;</code> and <code>mask</code> — exactly the
+        surface where engines diverge, and exactly why it was worth closing.
+      </p>
+      <p>
+        <code>visual.spec.ts</code> is the deliberate exception. It owns the PNG
+        baselines and Firefox and WebKit <code>testIgnore</code> it, because
+        Desktop Safari&rsquo;s <code>deviceScaleFactor: 2</code> would make its
+        screenshots a structurally different artifact rather than a comparable
+        one. That is a decision about what a baseline is, not a gap in coverage.
+      </p>
 
       <h2 id="running">Running it locally</h2>
       <pre><code>{`npm run lint && npm run lint:scss
+npm run check:theme-drift # artifacts vs sources
 npm run validate-themes
 npm run validate-package
 npm run coverage          # api + mcp
@@ -157,7 +191,16 @@ npm test                  # Playwright (needs \`npm run build\` first)`}</code><
         Visual snapshots are keyed by platform, so a local run generates its own
         baselines rather than fighting CI&rsquo;s. See{" "}
         <Link href="/docs/a11y">Accessibility</Link> for the contrast contract
-        that <code>validate-themes</code> enforces.
+        that <code>validate-themes</code> enforces — 22 foreground/background
+        pairs per theme, up from 17 once the five <code>--code-*</code> pairs
+        were added. Those five surfaced 33 real failures across nine themes, all
+        since fixed.
+      </p>
+      <p>
+        The contrast validator itself had the same shape of bug the gates exist
+        to catch: it ignored unquoted{" "}
+        <code>[data-theme=dark]</code> selectors and silently audited only{" "}
+        <code>:root</code>, so a failing theme reported a pass. Fixed.
       </p>
     </>
   );

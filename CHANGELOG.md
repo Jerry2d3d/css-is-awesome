@@ -11,6 +11,10 @@ automated releases.
 
 ## [Unreleased]
 
+> Ships as **1.1.0** — the first release actually published to npm. `1.0.0` was
+> tagged but never published. The number is computed by `semantic-release` from
+> the Conventional Commit history; nothing here hand-edits `package.json`.
+
 ### Fixed
 
 - **Both documented SCSS imports failed on a clean install.** `@use 'css-is-awesome'`
@@ -39,6 +43,110 @@ automated releases.
   step (hand-editing the versioned tarball filename) failed silently when skipped.
 - CI now also gates `validate-icons` and `validate-api`, which existed but were
   never executed by the workflow.
+
+### Changed — themes own the spacing rhythm (**action required for custom themes**)
+
+- **`--space-0` … `--space-9` are now contract-required; the six t-shirt names
+  are now optional.** Components call `space(4)`, which reads `var(--space-4)` —
+  but a theme could only declare the six t-shirt names, and those were emitted
+  as *independent literals* that happened to hold the same values. The token a
+  theme set and the token a component read were different variables, so spacing
+  was untouchable from a theme. The proof shipped in the box: all 21 themes
+  carried byte-identical spacing under a comment reading "Library scales —
+  identical". The t-shirt aliases now emit as `var()` **references**
+  (`--space-md: var(--space-4)`), so retuning a numbered step moves both.
+
+  **If you maintain a custom theme, `npm run validate-themes` will now fail it
+  until you declare `--space-0` through `--space-9`.** The six t-shirt names
+  (`--space-2xs`, `--space-xs`, `--space-sm`, `--space-md`, `--space-lg`,
+  `--space-xl`) moved to optional, so keeping or dropping them is your call.
+  Contract totals: **123 required + 30 optional → 127 required + 36 optional.**
+
+- **Library defaults now emit under `:where(:root)` instead of `:root`.**
+  Required by the change above: a dropped-in theme file emits a bare `:root`
+  block, which **tied** the library's own `:root` at (0,1,0) — and the
+  documented load order is theme first, library second, so the *library* won
+  every tie. `:where()` drops the library block to (0,0,0), so a theme's plain
+  `:root` always wins. Specificity only *decreases* here, so nothing that used
+  to win can start losing. `:where()`, not `@layer` — cia does not use cascade
+  layers.
+
+- **`theme()` now emits `:root, :root[data-theme="<name>"]`, so a drop-in theme
+  file needs no markup change.** Shipped themes disagreed three ways about
+  their own selector: 9 emitted `:root[data-theme="x"]`, 7 emitted
+  `[data-theme="x"]`, and 5 emitted a bare `:root`. Only that last group worked
+  when dropped into a page on its own — the other 16 silently rendered an
+  untokenised page unless the consumer *also* set `<html data-theme>` to a value
+  matching the file. Both halves now ship, so a single-file drop-in themes the
+  page immediately and `data-theme` switching still works. New `$standalone`
+  parameter (default `true`) suppresses the bare `:root` half; the multi-theme
+  bundle sets it to `false` so 24 blocks don't all claim `:root`.
+
+### Added — theme build + drift gates
+
+- **`npm run check:theme-drift`** (`scripts/check-theme-drift.mjs`) — rebuilds
+  every theme into a scratch copy and diffs the result against the committed CSS
+  declaration by declaration, then restores (the check is read-only).
+  `validate-themes` reads the **committed** CSS under `public/`, not the SCSS
+  sources, and theme building was in no CI step at all — so a fix could land in
+  `scss/themes/*.scss`, never be rebuilt, and CI would happily validate the
+  stale artifact and report success. Now wired into CI ahead of
+  `validate-themes`.
+- **`scripts/build-theme-bundle.mjs`** — regenerates the whole of
+  `public/theme.css` on every build.
+- `build:css:themes` now builds the bundle as well as the per-theme files, and
+  is finally part of `build:css:all` (it never was).
+- The a11y audit gained five `--code-*` pairs (`--code-ink`, `--code-muted`,
+  `--code-accent`, `--code-blue`, `--code-green`, each against `--code-bg`),
+  taking it from **17 to 22 audited pairs per theme**.
+
+### Fixed — a11y validator, theme sources, theme bundle
+
+- **The contrast validator silently passed themes it had never read.** Its
+  block-matching regex required quotes, so `[data-theme=dark]` — valid CSS —
+  matched nothing. The file then fell through to a legacy `:root`-only path in
+  which every theme block is invisible, audited `:root` alone, found it fine and
+  exited 0, reporting "1 theme block(s)" while passing a theme with near-black
+  text on near-black paper. Reproduced both ways: the quoted form failed with 9
+  bad pairs, the unquoted form passed. Both now fail. A guard was added on top:
+  if a file mentions `data-theme` but no block parses, the validator **refuses to
+  grade** rather than fall back and report a meaningless pass.
+- **33 real contrast failures across 9 themes**, worst 3.02:1, surfaced by the
+  newly-audited `--code-*` pairs and all fixed by holding hue and saturation and
+  moving only lightness. Prism's `--code-muted` needed a structural fix: it was a
+  single value sitting against a `light-dark(#fafafa, #0a0a0a)` surface, and no
+  single grey clears even 4.5:1 on both (it would need L ≤ 0.174 *and* L ≥ 0.189
+  — disjoint). It is now `light-dark()` too.
+- **13 `-light` / `-dark` theme files were hand-authored CSS with no SCSS
+  source.** Nothing could rebuild them and they had drifted **31 declarations**
+  from their namesakes. They were **ported, not derived** — checked first: 3 were
+  exact derivations, 9 were not. `glass-light` carries `blur(30px)` where its
+  parent has `blur(20px)`, and a `.70` white glow where the parent has `.16` —
+  deliberate tuning that deriving would have silently restyled away. Values were
+  copied byte-for-byte; 2,647 declarations across 21 files verified with zero
+  value differences.
+- **Three themes existed only inside `public/theme.css`** — `sketchbook-light`
+  (the docs site's *default* theme), `boilerplate-light` and `boilerplate-dark`
+  were blocks with no SCSS source and no theme directory, invisible to the
+  contract gate and unrebuildable. All three were promoted to real sources with
+  values copied verbatim (checked first: two are exact derivations,
+  `boilerplate-dark` is not — its `--shadow-md/lg/xl` are two-part shadows where
+  the parent's dark branch is single-part). **24 themes now ship, all passing the
+  contract check and the a11y audit.**
+
+### Removed
+
+- **Six dead contract tokens:** `--radius-button`, `--radius-card`,
+  `--radius-input`, `--radius-modal`, `--radius-badge`, `--radius-avatar`. They
+  were required of every theme and had **zero consumers** anywhere in the
+  library. The live knobs are `--btn-radius`, `--card-radius`, `--input-radius`,
+  `--modal-radius`, `--badge-radius` and `--tag-radius`, which already cascade
+  from the generic `--radius-*` scale; those six are now listed in the contract
+  as **optional**, so overriding one is documented rather than folklore.
+- **`scripts/bundle-companion-themes.mjs`** — a one-shot appender that only
+  added a theme to `public/theme.css` if its block was *missing*, and never
+  updated an existing one, so the bundle silently fell 8 commits behind.
+  Replaced by `scripts/build-theme-bundle.mjs`, which regenerates the file.
 
 ## [1.0.0] — 2026-08-17 — Mixin-first, stable
 

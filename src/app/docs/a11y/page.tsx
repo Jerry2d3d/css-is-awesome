@@ -57,12 +57,15 @@ export default function DocsA11yPage() {
       <p>
         Status tokens — <code>--success-default</code>,{" "}
         <code>--warning-default</code>, <code>--error-default</code>,{" "}
-        <code>--info-default</code> — are defined in every one of the six
+        <code>--info-default</code> — are defined in every one of the 24
         shipped themes and are tuned so that text set in the token reaches
         WCAG AA (4.5:1 for body copy, 3:1 for large text) against its intended
         surface. The same holds for <code>--text-default</code> against{" "}
         <code>--surface-default</code> and <code>--border-focus</code> against
-        whatever component it wraps. See{" "}
+        whatever component it wraps. The build audits{" "}
+        <strong>22 foreground/background pairs per theme</strong> — including
+        the five <code>--code-*</code> tokens against <code>--code-bg</code> —
+        in both <code>light-dark()</code> branches, and fails on any miss. See{" "}
         <Link href="/docs/tokens#palette">/docs/tokens#palette</Link> for the
         full token gallery per theme.
       </p>

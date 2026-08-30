@@ -40,7 +40,7 @@ export default function McpPage() {
         <Example.Code>{`npm install -D @modelcontextprotocol/sdk zod`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 29 total: 27 across 8 families + 2 specialty tools</h2>
+      <h2 id="tools">Tools — 30 total: 28 across 8 families + 2 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -62,7 +62,10 @@ export default function McpPage() {
               <code>list_themes</code>, <code>get_theme</code>,{" "}
               <code>search_themes</code>
             </td>
-            <td>All 9 shipped themes with full token assignments + raw SCSS</td>
+            <td>
+              All 24 shipped themes (eight families &times; auto / light / dark)
+              with full token assignments + raw SCSS
+            </td>
           </tr>
           <tr>
             <td>Mixins</td>
@@ -93,7 +96,7 @@ export default function McpPage() {
               <code>search_tokens</code>
             </td>
             <td>
-              123 required + 30 optional contract tokens. <code>get_token</code>{" "}
+              127 required + 36 optional contract tokens. <code>get_token</code>{" "}
               returns sample values across themes plus the list of
               mixins/functions that reference it
             </td>
@@ -137,7 +140,8 @@ export default function McpPage() {
               <code>read_llm_txt</code>, <code>read_changelog</code>,{" "}
               <code>read_migration</code>, <code>read_theming</code>,{" "}
               <code>read_agents</code>, <code>read_contract</code>,{" "}
-              <code>read_three_tiers</code>, <code>read_readme</code>
+              <code>read_three_tiers</code>, <code>read_readme</code>,{" "}
+              <code>read_versioning</code>
             </td>
             <td>Full markdown bodies of every top-level doc</td>
           </tr>

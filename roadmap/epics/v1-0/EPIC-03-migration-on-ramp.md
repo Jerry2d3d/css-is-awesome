@@ -76,7 +76,7 @@ If this lands cleanly, every cia launch post can include "if you're already on T
 #### US-03.1.3 — Map Tailwind tokens to cia contract tokens
 
 **As** the migrate CLI
-**I want** to map Tailwind's tokens to cia's 123-token contract with best-effort heuristics
+**I want** to map Tailwind's tokens to cia's token contract (127 required as of 2026-08-30) with best-effort heuristics
 **So that** the output theme is functional out of the box
 
 **Acceptance criteria:**

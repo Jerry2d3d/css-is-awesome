@@ -174,17 +174,26 @@ function buildDownloadCSS(
 ): string {
   const { tokenLines, darkOverrideLines } = emitTokenLines(defaults, overrides);
   const stamp = new Date().toISOString().slice(0, 10);
+  // Emit `:root, :root[data-theme="<name>"]` — the same selector every shipped
+  // theme uses. The bare :root is what makes a drop-in work with NO markup
+  // change; the attribute form keeps it switchable alongside other themes.
+  // Emitting only the attribute form (as this did) produced a file that
+  // rendered nothing unless the user also hand-edited <html data-theme>.
+  const selector = `:root, :root[data-theme="${name}"]`;
   const header =
     `/*\n` +
     ` * ${name} — generated ${stamp} via the css-is-awesome theme editor\n` +
-    ` * Forked from "${family}". Drop in as theme.css and use:\n` +
+    ` * Forked from "${family}".\n` +
+    ` *\n` +
+    ` * Drop in as theme.css — no markup change needed.\n` +
+    ` * To switch between several themes, load them together and set\n` +
     ` *   <html data-theme="${name}">\n` +
     ` */\n\n`;
   let body =
-    `:root[data-theme="${name}"] {\n  color-scheme: light dark;\n${tokenLines.join("\n")}\n}\n`;
+    `${selector} {\n  color-scheme: light dark;\n${tokenLines.join("\n")}\n}\n`;
   if (darkOverrideLines.length) {
     body +=
-      `\n@media (prefers-color-scheme: dark) {\n  :root[data-theme="${name}"] {\n${darkOverrideLines.join("\n")}\n  }\n}\n`;
+      `\n@media (prefers-color-scheme: dark) {\n  ${selector} {\n${darkOverrideLines.join("\n")}\n  }\n}\n`;
   }
   return header + body;
 }

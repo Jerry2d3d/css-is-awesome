@@ -7,7 +7,7 @@ export default function MigrationTailwindPage() {
       <p className="lead">
         Tailwind gives you atomic utilities; css-is-awesome gives you
         mixin-first composition and token-driven themes — fewer classes in
-        your markup, one data-theme swap for the whole app.
+        your markup, one file swap for the whole app.
       </p>
 
       <h2 id="why-migrate">Why migrate</h2>
@@ -20,8 +20,9 @@ export default function MigrationTailwindPage() {
       </p>
       <ul>
         <li>
-          <strong>Token-driven theming.</strong> One{" "}
-          <code>data-theme</code> flip reskins everything — no rebuild,
+          <strong>Token-driven theming.</strong> Swapping one CSS file — or
+          flipping one <code>data-theme</code> attribute if you loaded the
+          bundle — reskins everything, including the spacing scale. No rebuild,
           no JIT pass, no PostCSS. Tailwind&apos;s equivalent is editing{" "}
           <code>tailwind.config.js</code> and recompiling the entire
           stylesheet.
@@ -67,7 +68,8 @@ export default function MigrationTailwindPage() {
               <code>tailwind.config.js</code> + rebuild
             </td>
             <td>
-              <code>data-theme</code> attribute + CSS custom properties
+              Swap one CSS file, or flip a <code>data-theme</code> attribute —
+              CSS custom properties either way
             </td>
           </tr>
           <tr>
@@ -373,10 +375,14 @@ export default function MigrationTailwindPage() {
           <a href="/docs/install">/docs/install</a>.
         </li>
         <li>
-          <strong>Pick a theme file.</strong>{" "}
-          <code>&lt;html data-theme=&quot;press-light&quot;&gt;</code> reskins
-          the whole app without a rebuild. Preview themes before
-          committing — see <a href="/docs/tokens">/docs/tokens</a>.
+          <strong>Pick a theme file.</strong> Link{" "}
+          <code>themes/press-light/theme.css</code> and you&apos;re done — each
+          theme emits a bare <code>:root</code>, so it reskins the whole app
+          without a rebuild and without touching your markup. Use{" "}
+          <code>&lt;html data-theme=&quot;press-light&quot;&gt;</code> only if
+          you loaded the 24-theme bundle and need to choose between them.
+          Preview themes before committing — see{" "}
+          <a href="/docs/tokens">/docs/tokens</a>.
         </li>
         <li>
           <strong>Convert one component type at a time.</strong> Start

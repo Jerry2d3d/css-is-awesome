@@ -36,7 +36,10 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: SET_THEME_SCRIPT }} />
         {/* React 19 hoists <link rel="stylesheet"> with precedence into <head>
             for us — no raw <head> children, no hydration mismatch.
-            theme.css holds all six themes as [data-theme="..."] blocks. */}
+            theme.css is the bundle: all 24 themes as :root[data-theme="..."]
+            blocks. Standalone theme files also emit a bare :root so they work
+            with no attribute, but the bundle has that stripped — otherwise
+            every theme would match :root at once and the last would win. */}
         <link rel="stylesheet" precedence="default" href={asset("/theme.css")} />
         <LaunchGate>{children}</LaunchGate>
       </body>

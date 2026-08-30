@@ -8,7 +8,7 @@
 // Fonts, radii, motion identical across modes. Only colors and shadow alphas
 // differ — handled with light-dark().
 //
-// Selector: :root[data-theme="prism"]
+// Selector: :root, :root[data-theme="prism"]
 // Replaces: [data-theme="prism-light"] + [data-theme="prism-dark"]
 // ============================================================================
 @use '../mixins' as m;

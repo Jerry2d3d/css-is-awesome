@@ -8,7 +8,7 @@
 // Fonts, radii, motion, spacing, z-index are IDENTICAL across modes.
 // Only colors and shadow alphas differ — handled with light-dark().
 //
-// Selector: :root[data-theme="press"]
+// Selector: :root, :root[data-theme="press"]
 // Modes:    light + dark via prefers-color-scheme (browser auto-switches).
 //
 // Replaces the old split files (press-light + press-dark). Consumers using

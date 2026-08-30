@@ -7,7 +7,7 @@
 // Pattern A: explicit color-scheme: dark (no light variant exists for this
 // theme — pair with `terminal-light` if you want a daylight companion).
 //
-// Selector: :root[data-theme="terminal"]
+// Selector: :root, :root[data-theme="terminal"]
 // ============================================================================
 @use '../mixins' as m;
 

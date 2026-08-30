@@ -8,7 +8,7 @@ The v1.0 release reframes cia as **humans-first, AI-second** and ships the recip
 
 1. **Users first** — easy to learn, no framework lock-in, no maintenance treadmill
 2. **Tokens** — one source of truth, swap one value = whole app shifts
-3. **Theme editor on the website** — visual customization for all 123 tokens
+3. **Theme editor on the website** — visual customization for all 127 required contract tokens
 4. **Mixin-first speed** — `@include cia.btn(primary)` on any selector
 5. **AI second (huge bonus)** — recipes book + MCP server make cia uniquely AI-composable
 
@@ -25,6 +25,8 @@ The v1.0 release reframes cia as **humans-first, AI-second** and ships the recip
 | [05](./EPIC-05-bug-fixes-mcp-polish.md) | **Bug Fixes + MCP Polish** | Round 8 audit cleanup, MCP server tests, /docs/composition page. | ~3-4 days | 7 | 🟡 PARTIAL — 5/7 (all audit fixes + /docs/composition + /docs/mcp done; MCP server tests not built) |
 
 **Total v1.0 effort:** ~18-26 focused working days. **Total stories:** 42 (**24 shipped, 18 remaining** as of 2026-07-16).
+
+> **Out-of-backlog work landed 2026-08-30** (`fix/theme-single-source`) — not a v1.0 story, but it moves numbers this backlog quotes. The theme system is now single-sourced (24 themes, one SCSS source each), the contrast validator no longer passes files it never parsed (17 → 22 pairs), themes own `--space-0..9`, and `check:theme-drift` gates the committed artifacts against their sources. Contract: **123 required + 30 optional → 127 + 36**. EPIC-02's story text and the DoD below were updated to match. Full detail in the `Unreleased` section of [`CHANGELOG.md`](../../../CHANGELOG.md).
 
 ### Remaining v1.0 work at a glance
 
@@ -77,7 +79,8 @@ Effort scale:
 - [ ] All 42 stories shipped or explicitly punted to v1.1
 - [ ] Tarball still under 250 KB packed
 - [ ] No new JS in the npm package files manifest
-- [ ] `npm run validate-themes` passes FAIL-by-default across all 8 themes
+- [x] `npm run validate-themes` passes FAIL-by-default across all 24 themes — *and actually parses them; the contrast audit's block regex required quotes, so unquoted `[data-theme=…]` themes were exiting 0 ungraded (fixed 2026-08-30, 22 pairs per theme)*
+- [x] `npm run check:theme-drift` passes — committed `public/theme*.css` matches what `scss/themes/*.scss` builds
 - [ ] `npm run lint:scss` clean
 - [ ] `npm run test` (Playwright + axe) passes
 - [ ] CHANGELOG.md `1.0.0` entry written

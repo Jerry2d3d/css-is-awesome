@@ -6,10 +6,10 @@ import type { ThemeTileProps } from "@/components/ThemeTile";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 
-// Theme IDs use the v0.7 `-light`/`-dark` suffix convention. The
-// unsuffixed v0.6 names continue to resolve via alias selectors in
-// public/theme.css through 0.7.x; new code should use the suffixed
-// IDs below.
+// One tile per theme family. The IDs below pin a mode with the `-light` /
+// `-dark` suffix so each tile always previews the intended look; the
+// unsuffixed name is a real theme too, and auto-switches via light-dark().
+// All three are built from their own SCSS source under scss/themes/.
 const THEMES: ThemeTileProps[] = [
   {
     id: "boilerplate-light",
@@ -75,11 +75,14 @@ export default function ThemeGalleryPage() {
       <SiteHeader current="themes" />
       <main className={styles.shell}>
         <section className={styles.hero}>
-          <p className={styles.eyebrow}>seven voices, one contract</p>
+          <p className={styles.eyebrow}>eight voices, one contract</p>
           <h1>Theme gallery</h1>
           <p className="lead">
-            Every theme is a single <code>theme.css</code> declaring the same set of
-            CSS custom properties. Preview, download, or open one in the editor.
+            Every theme is a single <code>theme.css</code> declaring the same 127
+            required CSS custom properties. Eight families, 24 files — each
+            family ships an auto (<code>light-dark()</code>) build plus pinned{" "}
+            <code>-light</code> and <code>-dark</code> variants. Preview,
+            download, or open one in the editor.
           </p>
         </section>
 

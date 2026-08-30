@@ -5,7 +5,7 @@
 // vibrancy blurs, lifted (not glowing) shadows.
 // Light: AppKit panels on warm off-white. Dark: macOS Dark Mode warm ink-black.
 //
-// Selector: :root[data-theme="cupertino"]
+// Selector: :root, :root[data-theme="cupertino"]
 // Replaces: [data-theme="cupertino-light"] + [data-theme="cupertino-dark"]
 // ============================================================================
 @use '../mixins' as m;

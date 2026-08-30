@@ -8,7 +8,7 @@
 // Fonts, radii, motion are identical across modes — only colors and shadow
 // alphas differ. Pattern B.
 //
-// Selector: :root[data-theme="sketchbook"]
+// Selector: :root, :root[data-theme="sketchbook"]
 // Replaces: [data-theme="sketchbook-light"] + [data-theme="sketchbook-dark"]
 // ============================================================================
 @use '../mixins' as m;

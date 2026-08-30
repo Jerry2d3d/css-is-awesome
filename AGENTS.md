@@ -80,17 +80,34 @@ Two real setup notes:
 
 The two-import split (tokens at root, mixins per component) applies on every toolchain.
 
-## Theme system (1 file per theme, both modes inside)
+## Theme system (1 file per theme, drop-in by default)
 
-Each theme is a single CSS file declaring `:root[data-theme="<name>"]` with `light-dark()` for color tokens — the browser auto-swaps based on OS `prefers-color-scheme`.
+Every theme emits **two selectors at once**:
 
-**8 theme families, 9 source files.** Both numbers are correct and it is worth knowing why. Seven families ship one file carrying both modes via `light-dark()`: boilerplate, sketchbook, press, prism, cupertino, glass, graphite. **`terminal` is the exception** — it is authored as two single-mode files, `terminal` (dark-only, sacred) and `terminal-light` (light-only daylight editor), because the two are different brands rather than two modes of one.
+```css
+:root, :root[data-theme="<name>"] { … }
+```
 
-So: `scss/themes/` has **9** `.scss` sources, `public/themes/` builds **21** files, the theme picker offers **8** families, and MCP `list_themes` reports **9** because it counts sources. When you need one number, say **8 theme families**. All pass the WCAG 2.2 AA contrast audit by default.
+The bare `:root` is the product promise: drop one theme file in as your `theme.css` and the page restyles with **no markup change**. The `[data-theme]` half is what lets several themes coexist in one document. Which half you rely on depends on how you ship:
+
+- **One theme file on its own** — `<html data-theme="…">` is **optional**. Link the file and you're done. (Setting it anyway is harmless and still correct.)
+- **The multi-theme bundle** `public/theme.css` (all 24 blocks in one file) — `<html data-theme="…">` is **required**. Every block would collide on a shared `:root`, so the bundle is built with `$standalone: false`, which drops the bare `:root` and leaves only the attribute selector.
+
+This is a fixed rule now because it used to be three rules: the shipped themes disagreed three ways — 9 emitted `:root[data-theme=x]`, 7 emitted `[data-theme=x]`, and 5 emitted a bare `:root`. Only the last group actually worked when dropped in alone. **Never hand-write a theme's selector — call `cia.theme()` and let it emit both halves.**
+
+Library defaults (spacing scale, z-layers, font sizes) are emitted under **`:where(:root)`**, specificity (0,0,0), so any theme declaration outranks them regardless of load order. Deliberately `:where()` and **not** `@layer` — cia is unlayered by decision and that rule stands.
+
+**24 themes, 8 families.** Each family ships three files: the family name itself (e.g. `sketchbook`), plus explicit `-light` and `-dark` siblings. The unsuffixed parent carries **both** modes in one file via `light-dark()`, so the browser auto-swaps on OS `prefers-color-scheme`; the suffixed siblings pin one mode with `color-scheme: light` / `dark` for consumers who want a fixed brand. The eight families are boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal. **`terminal` is the one asymmetry** — its unsuffixed file is dark-only (sacred VT100 phosphor), so `terminal` and `terminal-light` are different brands rather than two modes of one.
+
+So: `scss/themes/` has **24** `.scss` sources, `public/themes/` builds **24** directories each holding a `theme.css`, and MCP `list_themes` reports **24**. When you need one number, say **24 themes across 8 families**. All pass the WCAG 2.2 AA contrast audit by default.
 
 ```html
+<!-- Single file: data-theme is OPTIONAL -->
 <link rel="stylesheet" href="node_modules/css-is-awesome/public/themes/boilerplate/theme.css">
-<html data-theme="boilerplate"> <!-- swap to any of 8 theme families -->
+
+<!-- The all-in-one bundle: data-theme is REQUIRED -->
+<link rel="stylesheet" href="node_modules/css-is-awesome/public/theme.css">
+<html data-theme="boilerplate"> <!-- any of the 24 theme names -->
 ```
 
 ### Themes are open — edit or create your own
@@ -98,24 +115,43 @@ So: `scss/themes/` has **9** `.scss` sources, `public/themes/` builds **21** fil
 **Consumers can edit any shipped theme and make brand-new themes.** Themes are data, not internal magic. Three ways:
 
 1. **Edit a shipped theme in place** — open `scss/themes/<name>.scss`, change tokens, run `npm run build:css:themes`.
-2. **Copy + rename** — `cp scss/themes/boilerplate.scss scss/themes/mybrand.scss`, edit, build, validate, ship. Set `<html data-theme="mybrand">`.
+2. **Copy + rename** — `cp scss/themes/boilerplate.scss scss/themes/mybrand.scss`, edit, build, validate, ship. Set `<html data-theme="mybrand">` (or just serve the file as your `theme.css` and skip the attribute).
 3. **Override at consumer level** — `:root[data-theme="boilerplate"] { --action-primary-default: #ff0066; }` in your own SCSS. No fork needed.
+
+> **`public/themes/**/theme.css` and `public/theme.css` are GENERATED. Never hand-edit them.** `npm run build:css:themes` builds every theme *and* regenerates the bundle, and it is part of `npm run build:css:all`. `npm run check:theme-drift` rebuilds into a scratch copy and fails if the committed artifacts don't match the SCSS sources — CI runs it *before* `validate-themes`, because `validate-themes` reads the committed CSS and would otherwise happily green-light a stale artifact. Edit `scss/themes/<name>.scss`, then rebuild.
 
 Authoring template (in your own project — a theme file is a global stylesheet, so it may emit `:root`):
 ```scss
 // your-project/themes/midnight.scss
 @use 'css-is-awesome/api' as cia;
 
+// @mixin theme($name, $scheme: light dark, $standalone: true)
 @include cia.theme('midnight') {
   --background-default: light-dark(#f5f5f7, #0a0a0e);
   --text-primary:       light-dark(#0a0a0e, #f5f5f7);
   --action-primary-default: light-dark(#3A5FCD, #60a5fa);
   @include cia.states(action-primary);  // derives hover/active
-  /* ... 120 more tokens — see scripts/theme-contract.json for the full slot list */
+
+  /* Spacing is themeable — declare the NUMBERED scale, it is contract-required */
+  --space-0: 0; --space-1: 0.25rem; --space-2: 0.5rem; /* … through --space-9 */
+
+  /* ... ~120 more tokens — see scripts/theme-contract.json for the full slot list */
 }
 ```
 
-The validator (`node scripts/theme-validator.js`) enforces the 123-token contract + WCAG 2.2 AA contrast. Themes that miss tokens or fail contrast cannot ship without `--allow-a11y-fail`.
+`$standalone` defaults to `true` (emit `:root, :root[data-theme="<name>"]`). Pass `$standalone: false` only when your block is going into a multi-theme bundle where the bare `:root` would collide.
+
+The validator (`node scripts/theme-validator.js`) enforces the token contract — **127 required + 36 optional = 163 slots** — plus WCAG 2.2 AA contrast (**22 audited pairs per theme**, including five `--code-*` pairs). Themes that miss required tokens or fail contrast cannot ship without `--allow-a11y-fail`.
+
+### Theming spacing (new — read this before you set a size token)
+
+A theme must declare the **numbered** scale `--space-0` … `--space-9`. Those ten are contract-required. The six t-shirt names (`--space-2xs/xs/sm/md/lg/xl`) are **optional**, and the library emits them as `var()` references — `--space-md: var(--space-4)` — so setting a numbered step moves its alias with it.
+
+Why it matters: components call `cia.space(4)`, which resolves to `var(--space-4)`. The t-shirt names used to emit as *independent literals*, so a theme that only set `--space-md` changed a variable nothing read. Swapping a theme repainted colors but never re-proportioned the page. **Set the numbered step; don't set only an alias.**
+
+### Radius tokens: use the per-component knobs
+
+`--radius-avatar`, `--radius-badge`, `--radius-button`, `--radius-card`, `--radius-input` and `--radius-modal` were removed from the contract — nothing ever read them, so any advice to "set `--radius-button`" was advice that could not work. The knobs that *do* work are `--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius` (all optional), and they cascade from the generic radii: `--btn-radius: var(--radius-md, 0.25rem)`. Set `--radius-md` to move everything; set `--btn-radius` to move just buttons.
 
 **Paired themes (two brands by mode)** — no JS, no mixin:
 ```html
@@ -123,9 +159,13 @@ The validator (`node scripts/theme-validator.js`) enforces the 123-token contrac
 <link rel="stylesheet" href="/themes/terminal.css"   media="(prefers-color-scheme: dark)">
 ```
 
-Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every contract token (123 slots in v1; missing tokens always fail). The audit also runs a WCAG 2.2 AA contrast check; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
+Two `<link media>` themes still work under the new selector model: a stylesheet whose `media` doesn't match is loaded but never applied, so only the matching file's `:root` block lands.
+
+Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every required contract token (127 required in v1; missing tokens always fail). The audit also runs a WCAG 2.2 AA contrast check over 22 pairs; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
 
 ### Theme init (Next.js / SSR consumers)
+
+This section only applies when you ship **more than one theme** (the bundle, or a runtime theme switcher). If you ship a single theme file, its bare `:root` already styles the first paint and there is nothing to set — skip the snippet.
 
 Setting `data-theme` in a `useEffect` causes a flash-of-default-theme before hydration. The fix is an inline `<script>` in `<head>` that runs synchronously before paint and sets the attribute from storage or system preference. css-is-awesome is a styling-only package, so there is no helper to import — paste the snippet directly into your layout:
 
@@ -246,6 +286,9 @@ Inside this package (all whitelisted in `files`):
 
 - **Don't write BEM.** No `cia-card__title--large`. The library is anti-BEM by design.
 - **Don't hardcode breakpoints.** Use `cia.media(md)` (or `cia.media-down`, `cia.media-between`). Numbers come from the contract.
+- **Don't hand-edit `public/themes/**/theme.css` or `public/theme.css`.** They are build artifacts of `scss/themes/*.scss`. Edit the SCSS, run `npm run build:css:themes`, and `npm run check:theme-drift` to prove source and artifact agree.
+- **Don't hand-write a theme's selector.** `@include cia.theme(name)` emits `:root, :root[data-theme="name"]` — both halves, on purpose. Writing `[data-theme=x]` yourself breaks the single-file drop-in; writing a bare `:root` yourself breaks the bundle.
+- **Theme the numbered spacing scale, not the t-shirt aliases.** `--space-0`…`--space-9` are contract-required; `--space-md` and friends are optional `var()` aliases that follow them.
 - **Print/PDF is a pure-CSS layer.** Include `cia.print-base` once at the stylesheet ROOT (it emits `@page`), then `cia.print-hidden` to drop chrome and `cia.print-only` to reveal paper-only content. Read `--is-print` (`0` screen / `1` paper) for custom effects. cia ships **zero JS** for it — the browser's native Print → Save as PDF is the generator.
 - **Do NOT "clean up" the `!important` in the print mixins.** It is load-bearing and deliberate. `@media` contributes no specificity, so `print-hidden` carries only the specificity of the selector it is included in; a later equal-specificity `display` (usually a utility class or a component library) wins in print. Verified in a browser: with `!important` the element hides, without it it prints anyway — a silent, paper-only failure. **`@layer` does not fix this** — layered CSS always loses to unlayered CSS, so a layered print rule loses to any unlayered consumer stylesheet, and `!important` inverts layer order on top of that. cia is unlayered by decision (`.agent/decisions/decided/04-at-layer-decision.md`). Scope is 8 declarations, all inside `@media print`, all variable-driven via `--print-hide` / `--print-show`.
 - **Don't ship JavaScript.** The npm package has zero `.js`/`.mjs` files. JS-dependent features ship as separate add-on packages.
@@ -276,7 +319,7 @@ The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zo
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
 - **Functions** — `list_functions`, `get_function`, `search_functions`
-- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (123 contract tokens)
+- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (127 required + 36 optional contract tokens)
 - **Animations** — `list_animations`, `get_animation`
 - **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`
