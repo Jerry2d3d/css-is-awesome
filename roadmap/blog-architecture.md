@@ -278,10 +278,10 @@ Title, slug, category, tags (≥2), audience (≥1), length, priority, publishDa
 - **Category:** Field notes · **Audience:** theme-author, consumer · **Length:** short · **Priority:** P1 · **Tags:** `themes`, `for-theme-authors`, `v1.0`, `a11y`
 - **Summary:** Editor ships today, persists to localStorage. v1.0 adds download, URL-share, live contrast validation.
 - **Outline:**
-  - State today (~1,200 LOC, 123 tokens) ([memory/project_theme_editor_state.md](../memory/project_theme_editor_state.md))
+  - State today (~1,200 LOC, 127 required contract tokens) ([memory/project_theme_editor_state.md](../memory/project_theme_editor_state.md))
   - Download gap — without `mytheme.scss` / `mytheme.css` the editor is a demo ([EPIC-02](./epics/v1-0/EPIC-02-theme-editor-polish.md))
   - URL-as-share-artifact via [CompressionStream](https://developer.mozilla.org/en-US/docs/Web/API/CompressionStream) where available
-  - Live validator — every color edit re-checks all 17 pairs ([W3C 1.4.11](https://www.w3.org/WAI/WCAG21/Understanding/non-text-contrast.html))
+  - Live validator — every color edit re-checks all 22 pairs ([W3C 1.4.11](https://www.w3.org/WAI/WCAG21/Understanding/non-text-contrast.html))
   - Why this beats Tailwind Play (utility-soup) and Material Theme Builder (colors-only)
 - **Publish:** launch +2 weeks
 - **Citations:** external: [MDN CompressionStream](https://developer.mozilla.org/en-US/docs/Web/API/CompressionStream) · [W3C 1.4.11](https://www.w3.org/WAI/WCAG21/Understanding/non-text-contrast.html) · internal: `roadmap/epics/v1-0/EPIC-02-theme-editor-polish.md` · `memory/project_theme_editor_state.md`

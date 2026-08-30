@@ -1,0 +1,237 @@
+/* ============================================================
+   THEME — Press Dark
+   -----------------------------------------------------------
+   Dark companion to Press (newsprint editorial light). Same
+   editorial voice: dramatic Playfair display, classical
+   measure, very square radii, slow editorial motion. Only
+   the COLOR palette inverts.
+
+   Mood: night-newsroom / Stripe Press dark / editorial-after-
+   dark. Background is near-ink with warmer-than-pure-black
+   surfaces — the paper went black, not the press red. Press
+   red stays the single hot accent. Serifs stay.
+
+   Opt-in via `<html data-theme="press-dark">`. Pair with
+   press/theme.css to ship a project with a default light
+   editorial mode and an opt-in dark editorial mode.
+   ============================================================ */
+
+@use '../mixins' as m;
+
+@import 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@400;500;600;700&display=swap';
+
+@include m.theme('press-dark', dark) {
+    /* Surfaces — near-ink newsroom */
+    --paper:        #0E0E0E;
+    --paper-raised: #1A1A1A;
+    --paper-sunk:   #060606;
+    --paper-glass:  rgba(26, 26, 26, 0.82);
+
+    /* Ink — warm off-white headline */
+    --ink:        #FAFAF7;
+    --ink-soft:   #C8C6C0;
+    --ink-faint:  #8A8A86;
+    --graphite:   #ECEAE4;
+    --muted:      #6B6963;
+
+    /* Rules / hairlines — thin editorial rules on dark */
+    --guide:      #ECEAE4;
+    --guide-soft: #2A2A2A;
+    --hair:       #2A2A2A;
+    --hair-soft:  #1A1A1A;
+
+    /* Primary accent — cool ink, near-mono editorial link */
+    --ai:         #A8A8A8;
+    --ai-ink:     #ECEAE4;
+    --ai-wash:    #1F1F1F;
+
+    /* Seal — press red (kept hot) */
+    --shu:        #FF4538;
+    --shu-wash:   rgba(255, 69, 56, 0.14);
+
+    /* Pull-quote / marginalia — warm gold */
+    --ochre:      #E8B96E;
+    --ochre-wash: rgba(232, 185, 110, 0.12);
+
+    /* Code surface — keep ink-slab, lifted slightly above paper */
+    --code-bg:     #060606;
+    --code-ink:    #FAFAF7;
+    --code-muted:  #8A8A86;
+    --code-accent: #E8B96E;
+    --code-green:  #B8C57A;
+    --code-blue:   #94AFC9;
+
+    /* Typography — match Press */
+    --font-display: 'Playfair Display', 'Tiempos', 'Fraunces', Georgia, serif;
+    --font-script:  'Caveat', 'Shadows Into Light', cursive;
+    --font-serif:   'Playfair Display', 'Tiempos', 'Cormorant Garamond', Georgia, serif;
+    --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+
+    /* Radius — match Press, very square */
+    --r-sm: 2px;
+    --r-md: 3px;
+    --r-lg: 4px;
+
+    /* Shadows — minimal, deeper for dark */
+    --shadow-sm:  0 1px 2px rgba(0, 0, 0, .35);
+    --shadow-md:  0 6px 24px rgba(0, 0, 0, .45);
+    --shadow-lg:  0 18px 48px rgba(0, 0, 0, .55);
+    --shadow-xl:  0 28px 64px rgba(0, 0, 0, .65);
+    --shadow-2xl: 0 40px 96px rgba(0, 0, 0, .75);
+
+    /* Blur — editorial doesn't use it */
+    --blur-sm: none;
+    --blur-md: none;
+    --blur-lg: none;
+
+    /* Glow — editorial doesn't use it */
+    --glow-sm: 0 0 0 transparent;
+    --glow-md: 0 0 0 transparent;
+    --glow-lg: 0 0 0 transparent;
+
+    /* Motion — editorial pace, match Press */
+    --duration-fast:   200ms;
+    --duration-normal: 280ms;
+    --duration-slow:   420ms;
+    --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+    /* ----------------------------------------------------------
+       SEMANTIC ALIASES
+       ---------------------------------------------------------- */
+
+    /* Backgrounds */
+    --background-default: var(--paper);
+    --background-subtle:  var(--paper-sunk);
+    --background-navbar:  var(--paper-raised);
+
+    /* Surfaces */
+    --surface-default:   var(--paper);
+    --surface-raised:    var(--paper-raised);
+    --surface-sunk:      var(--paper-sunk);
+    --surface-muted:     var(--paper-sunk);
+    --surface-subtle:    var(--paper-raised);
+    --surface-emphasis:  var(--ink);
+    --surface-glass:     var(--paper-glass);
+
+    /* Text */
+    --text-primary:      var(--ink);
+    --text-secondary:    var(--ink-soft);
+    --text-muted:        var(--ink-faint);
+    --text-tertiary:     var(--muted);
+    --text-inverse:      var(--paper);
+    --text-link:         var(--ink);
+    --text-link-hover:   var(--shu);
+
+    /* Borders */
+    --border-default:    var(--hair);
+    --border-subtle:     var(--hair-soft);
+    --border-emphasis:   var(--ink);
+    --border-focus:      var(--shu);
+
+    /* Interactive (hover / active wash) — light wash on dark */
+    --interactive-hover:  rgba(250, 250, 247, 0.05);
+    --interactive-active: rgba(250, 250, 247, 0.10);
+
+    /* Brand */
+    --brand-primary:        var(--ink);
+    --brand-primary-hover:  var(--shu);
+
+    /* Action triplets */
+    --action-primary-default:   var(--ink);
+    --action-primary-hover:     var(--ai-ink);
+    --action-primary-active:    var(--ai-ink);
+    --action-primary-wash:      var(--ai-wash);
+    --action-secondary-default: var(--shu);
+    --action-secondary-hover:   var(--shu);
+    --action-secondary-active:  var(--shu);
+    --action-secondary-wash:    var(--shu-wash);
+    --action-tertiary-default:  var(--ochre);
+    --action-tertiary-hover:    var(--ochre);
+    --action-tertiary-active:   var(--ochre);
+    --action-tertiary-wash:     var(--ochre-wash);
+
+    /* Feedback */
+    --feedback-info:     var(--ai);
+    --feedback-success:  var(--code-green);
+    --feedback-warning:  var(--ochre);
+    --feedback-error:    var(--shu);
+
+    /* Status — info (near-mono editorial) */
+    --info-default: var(--ai);
+    --info-subtle:  var(--ai-wash);
+    --info-text:    var(--ai-ink);
+
+    /* Status — success (restrained editorial green, lifted) */
+    --success-default: #6FA85A;
+    --success-subtle:  rgba(111, 168, 90, 0.14);
+    --success-text:    #95C97F;
+
+    /* Status — warning (warm editorial ochre) */
+    --warning-default: var(--ochre);
+    --warning-subtle:  var(--ochre-wash);
+    --warning-text:    #F0CC8E;
+
+    /* Status — error — press red IS the error color */
+    --error-default: var(--shu);
+    --error-subtle:  var(--shu-wash);
+    --error-text:    #FF7A70;
+
+    /* ----------------------------------------------------------
+       LIBRARY SCALES
+       ---------------------------------------------------------- */
+
+    /* Space scale */
+
+  /* Spacing rhythm — THE knob for how dense or airy this theme feels.
+     The numbered scale is the source of truth: every component reads
+     var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
+     are emitted by the library as references to these, so they follow
+     automatically. Change a value here and the whole page re-proportions.
+     Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
+  --space-0: 0;          /* flush            */
+  --space-1: 0.5rem;     /* tight inner gap  */
+  --space-2: 0.75rem;    /* control padding  */
+  --space-3: 0.875rem;   /* (no t-shirt)     */
+  --space-4: 1rem;       /* default rhythm   */
+  --space-5: 1.5rem;     /* section gap      */
+  --space-6: 2rem;       /* block gap        */
+  --space-7: 3rem;       /* major gap        */
+  --space-8: 4rem;       /* page section     */
+  --space-9: 6rem;       /* hero rhythm      */
+
+
+
+
+
+    /* Radius alias — Press is editorial, xl stays tight (6px) */
+    --radius-sm:   var(--r-sm);
+    --radius-md:   var(--r-md);
+    --radius-lg:   var(--r-lg);
+    --radius-xl:   6px;
+    --radius-full: 9999px;
+
+    /* Typography */
+    --font-primary:       var(--font-sans);
+    --font-size-base:     1rem;
+    --line-height-normal: 1.5;
+    --font-weight-medium: 500;
+
+    /* Z-index */
+    --z-sticky:   1020;
+    --z-dropdown: 1030;
+    --z-backdrop: 1040;
+    --z-modal:    1050;
+    --z-popover:  1060;
+    --z-tooltip:  1070;
+
+    /* ----------------------------------------------------------
+       OPTIONAL COMPONENT OVERRIDES — match Press exactly
+       ---------------------------------------------------------- */
+    --btn-radius:    var(--r-sm);            /* 2px — near-square */
+    --card-radius:   var(--r-sm);            /* 2px — boxed */
+    --card-shadow:   none;                   /* editorial is flat */
+    --card-border:   1px solid var(--hair);  /* thin rule instead */
+    --input-radius:  var(--r-sm);            /* 2px */
+    --modal-radius:  var(--r-md);            /* 3px */
+}

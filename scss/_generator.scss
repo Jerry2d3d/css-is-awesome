@@ -70,7 +70,27 @@ $_required-light-keys: (
   }
 
   // Spacing scale (from system)
-  @include _vars(s.$spacing, 'space');
+  //
+  // The numbered scale is the source of truth (locked decision); the t-shirt
+  // names are aliases. They now emit as var() REFERENCES to the numbered
+  // token rather than as duplicate literals, so a theme that sets --space-4
+  // moves --space-md with it.
+  //
+  // Previously both emitted as independent literals that happened to hold the
+  // same value. A theme could only declare the six t-shirt names, while
+  // components overwhelmingly call space(4)/space(1) -> var(--space-4). So
+  // themes could not change spacing at all: the token they set and the token
+  // components read were different variables. That is why swapping a theme
+  // repainted colours but never re-proportioned the page.
+  @each $key, $value in s.$spacing-scale {
+    --space-#{$key}: #{$value};
+  }
+  @each $key in (0, none, 2xs) {
+    --space-#{$key}: #{map.get(s.$spacing, $key)};
+  }
+  @each $alias, $num in s.$spacing-aliases {
+    --space-#{$alias}: var(--space-#{$num});
+  }
 
   // Z-index (from system)
   @include _vars(s.$z-layers, 'z');
@@ -109,7 +129,21 @@ $_required-light-keys: (
 @mixin generate-theme {
   @include _validate-theme;
 
-  :root {
+  // :where() drops these library defaults to zero specificity so ANY theme
+  // declaration outruns them regardless of load order.
+  //
+  // Without it, a theme file dropped in as theme.css (which emits a bare
+  // `:root` so it works with no markup change) ties this block at (0,1,0) —
+  // and the documented load order is theme first, library second, so the
+  // LIBRARY won. Colours were unaffected because only themes declare them,
+  // but every token the library also emits — the spacing scale, z-layers,
+  // font sizes — silently ignored the theme.
+  //
+  // Specificity only ever decreases here, so nothing that used to win can
+  // start losing. Consumers overriding tokens from their own `:root` now win
+  // outright instead of depending on source order. Deliberately :where() and
+  // not @layer — see the project rule against layered CSS.
+  :where(:root) {
     @include generate-light;
   }
 

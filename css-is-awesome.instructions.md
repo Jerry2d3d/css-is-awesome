@@ -8,17 +8,19 @@ Authoring rules for css-is-awesome itself AND for consumer apps that use it. Dro
 
 ## TL;DR — three consumer tiers, pick the lowest one that works for you
 
-1. **Drop-in (HTML, no build).** Link `dist/css-is-awesome.css` and a theme file. Use `.cia-*` utility classes in markup. Themes swap via `<html data-theme="press-light">`.
-2. **React.** Import a shipped component (`<Button variant="primary">`). Components are token-driven and theme-swap-safe out of the box.
-3. **Power user (SCSS).** `@use 'css-is-awesome/api' as cia;` and `@include cia.btn(primary, $px: 6) { … }` to deviate from defaults.
+1. **Tier 2 — mixins (the primary path).** `@use 'css-is-awesome/api' as cia;` then `.your-class { @include cia.btn(primary, $px: 6); }`. You name the selector; cia supplies the look. Needs a Sass build.
+2. **Tier 1 — drop-in CSS (no build).** Link `dist/css-is-awesome.css` and a theme file, then use `.cia-*` utility classes in markup.
+3. **Tier 3 — bare tags (Pico-mode).** `@use 'css-is-awesome/scss/recipes/bare-tags';` styles every common HTML element, wrapped in `:where()` so your own styles always win.
 
-You only write per-component SCSS when you're deviating from a base mixin. If you're applying the default look, use Tier 1 or Tier 2.
+**cia ships zero JavaScript and no component library.** There is no `<Button>` to import from this package. If you want React components, you write them in your app and style them with cia mixins; for interactive patterns read the *recipes* (see below) rather than inventing markup.
+
+You only write per-component SCSS when you're deviating from a base mixin's defaults — and even then, deviate through the mixin's **arguments**, not hand-written CSS.
 
 ---
 
 ## File structure (React components)
 
-Each component lives in its own folder under `src/components/`:
+Convention for **your** app's components (and cia's own docs site) — the npm package itself ships no React. Each component lives in its own folder under `src/components/`:
 
 ```
 src/components/Button/
@@ -39,7 +41,7 @@ src/components/Button/
 
 ### Don't write SCSS when
 
-You're applying the default mixin output. Use `<Button variant="primary">` in React, or `class="cia-btn cia-btn-primary"` in HTML (when component utilities are available — see Tier 1).
+You're applying the default look and Tier 1 utilities are enabled — put `class="cia-btn cia-btn-primary"` straight in the markup, no stylesheet needed.
 
 ### Do write SCSS when
 
@@ -70,7 +72,9 @@ color: #2A241E;
 border-radius: 4px;
 ```
 
-Tokens come from the theme contract (`scripts/theme-contract.json` — 123 required slots). Themes swap via `<html data-theme="press-light">` and every token resolves to the active theme's value.
+Tokens come from the theme contract (`scripts/theme-contract.json` — **127 required + 36 optional = 163 slots**). A single theme file styles the page on its own (it emits a bare `:root`); when several themes are loaded together they swap via `<html data-theme="press-light">`. Either way every token resolves to the active theme's value.
+
+Spacing is a token too. `cia.space(4)` resolves to `var(--space-4)`, and the numbered scale `--space-0`…`--space-9` is contract-required, so a theme can re-proportion the page and not just recolor it.
 
 ### Flex via `cia.flex`
 
@@ -232,8 +236,8 @@ Enforced by `eslint-plugin-jsx-a11y` (already in `next/core-web-vitals`).
   <input type="email" />
 </label>
 
-// or use the FormField component
-<FormField label="Email"><Input type="email" /></FormField>
+// or your own field wrapper, styled with cia.form-group / cia.label-base / cia.input-base
+<FormField label="Email"><input type="email" /></FormField>
 ```
 
 ### Element hierarchy guidance
@@ -350,18 +354,52 @@ return (
 
 ### One file = one theme
 
-Each theme is a `[data-theme="<name>"] { ... }` block declaring all 123 contract tokens. `public/theme.css` ships every theme consolidated; per-theme files at `public/themes/<name>/theme.css` are also published for download. All shipped blocks pass the WCAG 2.2 AA contrast audit out of the box.
+Each theme is a single file declaring all **127 required** contract tokens (plus any of the 36 optional ones it wants). It emits **two selectors at once**:
 
-Theme names carry a mode suffix (`-light` / `-dark`) since v0.7. Shipped families (each with a light and dark variant): `sketchbook` (default — `sketchbook-light`), `press`, `graphite`, `glass`, `cupertino`, `terminal`, `prism`, and the unbranded `boilerplate` starter. That's 8 families / 16 blocks. The unsuffixed v0.6 names (`sketchbook`, `press`, `graphite`, `glass`, `cupertino`, `terminal`) are kept as backward-compat aliases through 0.7.x and will be removed in v0.8 — see `MIGRATION.md`.
+```css
+:root, :root[data-theme="<name>"] { … }
+```
+
+- The bare `:root` makes a theme **drop-in**: serve one theme file as your `theme.css` and the page restyles with **no markup change**. `data-theme` is optional in that case.
+- The `[data-theme]` half is what lets several themes coexist. `public/theme.css` ships all 24 themes consolidated; there, `<html data-theme="<name>">` is **required**, and the bundle is built with `$standalone: false` so the bare `:root` is dropped and the blocks can't collide.
+
+Per-theme files at `public/themes/<name>/theme.css` are also published for download. All shipped blocks pass the WCAG 2.2 AA contrast audit (22 pairs per theme) out of the box.
+
+**24 themes across 8 families.** Every family ships three files: the unsuffixed parent (both modes in one file via `light-dark()`) plus explicit `-light` and `-dark` siblings that pin a single `color-scheme`. Families: `sketchbook` (default), `press`, `graphite`, `glass`, `cupertino`, `terminal`, `prism`, and the unbranded `boilerplate` starter. The unsuffixed names are **first-class themes, not backward-compat aliases** — `sketchbook` is the auto-switching one, `sketchbook-light` / `sketchbook-dark` are the pinned ones. `terminal` is the one asymmetry: its unsuffixed file is dark-only (sacred), so `terminal-light` is a separate brand rather than its light mode.
+
+Library defaults emit under **`:where(:root)`** (specificity 0,0,0), so any theme declaration outranks them regardless of load order. This is `:where()` and deliberately **not** `@layer` — cia is unlayered by decision.
 
 ### Add a theme
 
-1. Read `scripts/theme-contract.json` — declare every token (123 required slots in v1).
-2. Run `npm run validate-themes` to confirm the contract. The validator also runs a WCAG 2.2 AA contrast audit; a11y FAILs are fatal by default. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning while you iterate (the older `--strict` flag is accepted as a no-op alias).
-3. Add the theme name to `ThemePicker`'s `THEMES` array and the layout's `VALID_THEMES` set.
-4. Optionally add a `[data-theme="<name>"]` block to the consolidated `public/theme.css`.
+1. Read `scripts/theme-contract.json` — declare every required token (127 required slots in v1; 36 more are optional). That includes the numbered spacing scale `--space-0` … `--space-9`.
+2. Author it through the mixin, never a hand-written selector:
+   ```scss
+   // @mixin theme($name, $scheme: light dark, $standalone: true)
+   @include m.theme('mybrand') { --paper: light-dark(#fff, #0b0b0f); /* … */ }
+   ```
+   Pass `$standalone: false` only for a block destined for a multi-theme bundle.
+3. Run `npm run build:css:themes` — it builds every theme **and** regenerates `public/theme.css`. It is part of `npm run build:css:all`.
+4. Run `npm run validate-themes` to confirm the contract. The validator also runs a WCAG 2.2 AA contrast audit; a11y FAILs are fatal by default. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning while you iterate (the older `--strict` flag is accepted as a no-op alias).
+5. Run `npm run check:theme-drift` to prove the committed CSS matches the SCSS source. CI runs this **before** `validate-themes`, because `validate-themes` reads the committed CSS and would otherwise pass on a stale artifact.
+6. Add the theme name to `ThemePicker`'s `THEMES` array and the layout's `VALID_THEMES` set.
+
+**Never hand-edit `public/theme.css` or `public/themes/**/theme.css`.** They are generated from `scss/themes/*.scss` and gated by `check:theme-drift`.
 
 See `/docs/authoring/themes` for the full guide.
+
+### Spacing is themeable — set the numbered step
+
+The numbered scale (`--space-0` … `--space-9`) is the source of truth and is contract-required. The six t-shirt names (`--space-2xs`, `--space-xs`, `--space-sm`, `--space-md`, `--space-lg`, `--space-xl`) are **optional**, and the library emits them as `var()` references:
+
+```css
+--space-md: var(--space-4);   /* alias follows the step */
+```
+
+Components call `cia.space(4)` → `var(--space-4)`. The t-shirt names previously emitted as independent literals, so a theme that set only `--space-md` moved a variable nothing read — which is why theme swaps used to recolor the page but never re-proportion it. **Set the numbered step.**
+
+### Radius: the per-component knobs
+
+`--radius-avatar` / `--radius-badge` / `--radius-button` / `--radius-card` / `--radius-input` / `--radius-modal` were removed from the contract because nothing read them. Use the knobs that are actually wired: `--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius` (all optional). Each cascades from a generic radius — `--btn-radius: var(--radius-md, 0.25rem)` — so set `--radius-md` to move everything, or the component knob to move one thing.
 
 ### Adding fonts — two lines
 
@@ -465,20 +503,21 @@ e.g. `_bare-tags.scss` — are real opt-in SCSS you `@use`.
 
 ## Decision tree — which tier should I use?
 
-**Q: Are you in a React app?**
+**Q1: Do you have a Sass build?**
 
-- **No** → Tier 1 (drop-in CSS). Link `dist/css-is-awesome.css` + a theme. Use `.cia-*` utilities.
+- **No** → Tier 1 (drop-in CSS). Link `dist/css-is-awesome.css` + a theme file. Use `.cia-*` utilities in markup.
 - **Yes** → Q2.
 
-**Q2: Are you building UI from our shipped components (`<Button>`, `<Card>`, `<Input>`, etc.)?**
+**Q2: Do you want to style plain HTML elements wholesale (`<h1>`, `<button>`, `<table>`) without adding classes?**
 
-- **Yes** → Tier 2 (React components). Use the components as-is. No SCSS file in your project.
-- **No, I'm building a new component** → Q3.
+- **Yes** → Tier 3 (Pico-mode). `@use 'css-is-awesome/scss/recipes/bare-tags';` once. It's `:where()`-wrapped, so anything you write later wins.
+- **No, I'm styling my own components** → Q3.
 
-**Q3: Does your new component just need the library's default look applied?**
+**Q3: Is there a cia mixin for what you're building?**
 
-- **Yes** → Compose `.cia-*` utility classes in `className`, OR use our React components as primitives. **No SCSS file needed.**
-- **No, I need to deviate** → Tier 3 (SCSS). Write `Component.module.scss`, `@use 'css-is-awesome/api' as cia;`, `@include cia.btn(primary, $px: 6) { /* deviations */ }`.
+- **Yes** → Tier 2 (the primary path). `Component.module.scss`, `@use 'css-is-awesome/api' as cia;`, `.myCta { @include cia.btn(primary, $px: 6); }`. Reach every variation through the mixin's **arguments**.
+- **No mixin fits, and it's an interactive pattern (dialog, combobox, …)** → read the matching **recipe** (`get_recipe` over MCP, or `scss/recipes/<name>.md`). Don't invent the markup.
+- **No mixin fits, and it's novel** → compose the primitives (`cia.flex`, `cia.stack`, `cia.pad`, `cia.font`, `cia.color`, `cia.space`). If a visual dimension is only reachable by hand-written CSS, that's a **missing mixin input** — add it.
 
 ---
 

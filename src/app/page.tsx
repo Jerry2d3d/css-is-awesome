@@ -36,7 +36,7 @@ export default function Home() {
 
           <div className={styles.stats}>
             <StatChip value="0 KB" label="runtime JS" />
-            <StatChip value="8" label="themes" />
+            <StatChip value="24" label="themes" />
             <StatChip value="6" label="zero-JS components" />
             <StatChip value="8 KB" label="full bundle (gz)" />
           </div>

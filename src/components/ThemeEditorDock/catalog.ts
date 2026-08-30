@@ -189,12 +189,23 @@ export const CATALOG: TokenSpec[] = [
   length("--r-lg", "r-lg (legacy)", G.rLegacy, 32),
 
   // ===== Spacing (shared) =====
-  length("--space-2xs", "Space 2xs", G.space, 16),
-  length("--space-xs",  "Space xs",  G.space, 16),
-  length("--space-sm",  "Space sm",  G.space, 24),
-  length("--space-md",  "Space md",  G.space, 32),
-  length("--space-lg",  "Space lg",  G.space, 64),
-  length("--space-xl",  "Space xl",  G.space, 128),
+  //
+  // The NUMBERED scale, not the t-shirt names. Components call space(4), which
+  // compiles to var(--space-4); the t-shirt names are library-emitted aliases
+  // (--space-md: var(--space-4)) and are contract-OPTIONAL. Editing a t-shirt
+  // name here used to produce a theme that changed nothing, because the token
+  // being set and the token components read were different variables — and a
+  // downloaded theme would now fail validate-themes, which requires these ten.
+  length("--space-0", "Space 0 (flush)",     G.space, 16),
+  length("--space-1", "Space 1 (tight)",     G.space, 16),
+  length("--space-2", "Space 2 (control)",   G.space, 24),
+  length("--space-3", "Space 3",             G.space, 24),
+  length("--space-4", "Space 4 (default)",   G.space, 32),
+  length("--space-5", "Space 5 (section)",   G.space, 64),
+  length("--space-6", "Space 6 (block)",     G.space, 64),
+  length("--space-7", "Space 7 (major)",     G.space, 96),
+  length("--space-8", "Space 8 (page)",      G.space, 128),
+  length("--space-9", "Space 9 (hero)",      G.space, 160),
 
   // ===== Blur (shared) =====
   length("--blur-sm", "Blur sm", G.blur, 24),

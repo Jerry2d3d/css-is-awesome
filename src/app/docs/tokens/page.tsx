@@ -62,7 +62,23 @@ const surfaces: Swatch[] = [
   { token: "--surface-glass" },
 ];
 
+// The numbered scale is the contract-required source of truth; themes declare
+// --space-0..--space-9. The t-shirt names are optional aliases the library
+// emits as var() references, so they follow whatever the theme sets.
 const spacingTokens = [
+  { token: "--space-0", label: "0" },
+  { token: "--space-1", label: "1" },
+  { token: "--space-2", label: "2" },
+  { token: "--space-3", label: "3" },
+  { token: "--space-4", label: "4" },
+  { token: "--space-5", label: "5" },
+  { token: "--space-6", label: "6" },
+  { token: "--space-7", label: "7" },
+  { token: "--space-8", label: "8" },
+  { token: "--space-9", label: "9" },
+];
+
+const spacingAliases = [
   { token: "--space-2xs", label: "2xs" },
   { token: "--space-xs", label: "xs" },
   { token: "--space-sm", label: "sm" },
@@ -106,6 +122,15 @@ export default function TokensPage() {
         Components read them with <code>var(--token)</code>, so a single
         stylesheet swap cascades everywhere. No build step is required to
         consume them — drop the file in, and the browser does the rest.
+      </p>
+      <p>
+        Each shipped theme emits{" "}
+        <code>:root, :root[data-theme=&quot;name&quot;]</code>, so a single file
+        dropped in as your <code>theme.css</code> applies with no markup change.
+        The library&apos;s own defaults are emitted under{" "}
+        <code>:where(:root)</code> at zero specificity, so any theme — or any
+        token you set from your own <code>:root</code> — outranks them
+        regardless of load order.
       </p>
       <Example>
         <Example.Code><span className="tok-com">{"/* theme.css — the one file you swap */"}</span>
@@ -255,9 +280,11 @@ export default function TokensPage() {
 
       <h2 id="spacing">Spacing</h2>
       <p>
-        A six-step t-shirt scale drives every gap, padding, and margin in the
-        system. Values are declared in <code>rem</code> so they honor the user&apos;s
-        root font size.
+        Spacing is a theme concern like every other token. The numbered scale{" "}
+        <code>--space-0</code> through <code>--space-9</code> is the source of
+        truth and is <strong>contract-required</strong> — a theme declares it,
+        and re-proportions the whole page. Values are declared in{" "}
+        <code>rem</code> so they honor the user&apos;s root font size.
       </p>
       <Example>
         <Example.Preview>
@@ -274,9 +301,46 @@ export default function TokensPage() {
           </div>
         </Example.Preview>
         <Example.Code><span className="tok-sel">.stack &gt; * + *</span> {"{"}
-{"\n"}  <span className="tok-prop">margin-top</span>: <span className="tok-val">var(--space-md)</span>;
+{"\n"}  <span className="tok-prop">margin-top</span>: <span className="tok-val">var(--space-4)</span>;
 {"\n"}{"}"}
-{"\n"}<span className="tok-sel">.card</span> {"{ "}<span className="tok-prop">padding</span>: <span className="tok-val">var(--space-lg)</span>; {"}"}</Example.Code>
+{"\n"}<span className="tok-sel">.card</span> {"{ "}<span className="tok-prop">padding</span>: <span className="tok-val">var(--space-5)</span>; {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="spacing-aliases">The t-shirt aliases</h3>
+      <p>
+        The six t-shirt names are <strong>optional</strong>. The library emits
+        them as <code>var()</code> references into the numbered scale — {" "}
+        <code>--space-md: var(--space-4)</code> — so they follow whatever the
+        theme sets, automatically. A theme never has to declare them.
+      </p>
+      <p>
+        They used to be emitted as <em>independent literals</em>: components call{" "}
+        <code>space(4)</code> &rarr; <code>var(--space-4)</code>, but a theme
+        could only set the t-shirt names, so the token the theme set and the
+        token the component read were different variables. That is why every
+        shipped theme used to have byte-identical spacing no matter what it
+        declared.
+      </p>
+      <Example>
+        <Example.Preview>
+          <div className={styles.spacingStack}>
+            {spacingAliases.map((s) => (
+              <div key={s.token} className={styles.spacingRow}>
+                <span>{s.token}</span>
+                <span
+                  className={styles.spacingBar}
+                  style={{ width: `var(${s.token})` }}
+                />
+              </div>
+            ))}
+          </div>
+        </Example.Preview>
+        <Example.Code><span className="tok-com">{"/* emitted by the library, not by the theme */"}</span>
+{"\n"}<span className="tok-prop">--space-xs</span>: <span className="tok-val">var(--space-1)</span>;
+{"\n"}<span className="tok-prop">--space-sm</span>: <span className="tok-val">var(--space-2)</span>;
+{"\n"}<span className="tok-prop">--space-md</span>: <span className="tok-val">var(--space-4)</span>;
+{"\n"}<span className="tok-prop">--space-lg</span>: <span className="tok-val">var(--space-5)</span>;
+{"\n"}<span className="tok-prop">--space-xl</span>: <span className="tok-val">var(--space-6)</span>;</Example.Code>
       </Example>
 
       <h2 id="radii">Radii</h2>
@@ -362,11 +426,20 @@ export default function TokensPage() {
       <h2 id="the-contract">The contract</h2>
       <p>
         Every theme file must declare the full set of{" "}
-        <strong>123 required tokens</strong> — even if a given theme sets some
+        <strong>127 required tokens</strong> — even if a given theme sets some
         of them to neutral values (e.g. <code>--blur-md: none;</code>). That&apos;s
         what guarantees the one-file swap stays lossless: no matter which theme
         you drop in, the base stylesheet and components always find the slots
         they read.
+      </p>
+      <p>
+        A further <strong>36 optional tokens</strong> (163 in total) are
+        recognised but not demanded. These are the per-component radius
+        overrides (<code>--btn-radius</code>, <code>--card-radius</code>,{" "}
+        <code>--input-radius</code>, <code>--modal-radius</code>,{" "}
+        <code>--badge-radius</code>, <code>--tag-radius</code>), the named
+        shadow slots, the logo hooks, and the t-shirt spacing aliases. Leave
+        them out and each one cascades from the generic scale it belongs to.
       </p>
       <p>
         The authoritative contract lives in two places: <code>CONTRACT.md</code>{" "}

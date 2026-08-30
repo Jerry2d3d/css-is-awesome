@@ -245,7 +245,7 @@ export default function ThemesPage() {
         </div>
 
         <p className={styles.galleryLink}>
-          Want to see all six themes side by side?{" "}
+          Want to see all eight theme families side by side?{" "}
           <Link href="/themes/gallery">Open the theme gallery →</Link>
         </p>
       </main>

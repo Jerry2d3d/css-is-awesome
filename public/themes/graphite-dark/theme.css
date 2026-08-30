@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* ============================================================
    THEME — Graphite (dark)
    -----------------------------------------------------------
@@ -38,85 +39,71 @@
    warm-white. The semantic is "background / foreground,"
    not "light / dark" — nothing is renamed.
    ============================================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
-
-:root {
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
+:root, :root[data-theme=graphite-dark] {
+  color-scheme: dark;
   /* Surfaces — milled aluminum chassis (dark) */
-  --paper:        #1A1A1C;
+  --paper: #1A1A1C;
   --paper-raised: #242426;
-  --paper-sunk:   #141416;
-  --paper-glass:  rgba(36, 36, 38, 0.72);
-
+  --paper-sunk: #141416;
+  --paper-glass: rgba(36, 36, 38, 0.72);
   /* Ink — warm whites on dark */
-  --ink:        #F5F5F7;
-  --ink-soft:   #C7C7CC;
-  --ink-faint:  #98989D;
-  --graphite:   #AEAEB2;
-  --muted:      #6A6A6E;
-
+  --ink: #F5F5F7;
+  --ink-soft: #C7C7CC;
+  --ink-faint: #98989D;
+  --graphite: #AEAEB2;
+  --muted: #6A6A6E;
   /* Construction lines — translucent white hairlines */
-  --guide:      rgba(255, 255, 255, 0.16);
+  --guide: rgba(255, 255, 255, 0.16);
   --guide-soft: rgba(255, 255, 255, 0.08);
-  --hair:       rgba(255, 255, 255, 0.12);
-  --hair-soft:  rgba(255, 255, 255, 0.06);
-
+  --hair: rgba(255, 255, 255, 0.12);
+  --hair-soft: rgba(255, 255, 255, 0.06);
   /* Primary accent — Apple dark-mode system blue */
-  --ai:         #0A84FF;
-  --ai-ink:     #409CFF;
-  --ai-wash:    rgba(10, 132, 255, 0.14);
-
+  --ai: #0A84FF;
+  --ai-ink: #409CFF;
+  --ai-wash: rgba(10, 132, 255, 0.14);
   /* Seal — Apple dark-mode red (reserve for emphasis) */
-  --shu:        #FF453A;
-  --shu-wash:   rgba(255, 69, 58, 0.14);
-
+  --shu: #FF453A;
+  --shu-wash: rgba(255, 69, 58, 0.14);
   /* Draft / marginalia — Apple amber */
-  --ochre:      #FF9F0A;
+  --ochre: #FF9F0A;
   --ochre-wash: rgba(255, 159, 10, 0.12);
-
   /* Code surface — Xcode deep */
-  --code-bg:     #0D0D0F;
-  --code-ink:    #E8E8ED;
-  --code-muted:  #828287;
+  --code-bg: #0D0D0F;
+  --code-ink: #E8E8ED;
+  --code-muted: #828287;
   --code-accent: #FFB86C;
-  --code-green:  #A8E6A1;
-  --code-blue:   #9AD4F7;
-
+  --code-green: #A8E6A1;
+  --code-blue: #9AD4F7;
   /* Typography — SF system stack */
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
-  --font-script:  'Caveat', 'Shadows Into Light', cursive;
-  --font-serif:   'New York', 'Iowan Old Style', 'Cormorant Garamond', Georgia, serif;
-  --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
-  --font-mono:    'JetBrains Mono', 'SF Mono', 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
-
+  --font-script: 'Caveat', 'Shadows Into Light', cursive;
+  --font-serif: 'New York', 'Iowan Old Style', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
   /* Radius — Apple UI standard */
   --r-sm: 6px;
   --r-md: 10px;
   --r-lg: 14px;
-
   /* Shadows — deep drop on black */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 4px 18px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.55);
   --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.65);
   --shadow-2xl: 0 28px 70px rgba(0, 0, 0, 0.75);
-
   /* Blur — graphite doesn't use it; declared so swap stays lossless */
   --blur-sm: none;
   --blur-md: none;
   --blur-lg: none;
-
   /* Glow — inset rim-highlight that sells milled aluminum */
   --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   --glow-md: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 3px rgba(0, 0, 0, 0.35);
   --glow-lg: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 12px 40px rgba(0, 0, 0, 0.55);
-
   /* Motion — Apple-snappy */
-  --duration-fast:   160ms;
+  --duration-fast: 160ms;
   --duration-normal: 220ms;
-  --duration-slow:   340ms;
-  --ease:            cubic-bezier(0.25, 0.1, 0.25, 1);
-
+  --duration-slow: 340ms;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   /* ----------------------------------------------------------
      SEMANTIC ALIASES
      -----------------------------------------------------------
@@ -125,84 +112,71 @@
      or var(--surface-default) and reskin with the theme
      automatically.
      ---------------------------------------------------------- */
-
   /* Backgrounds (page-level) */
   --background-default: var(--paper);
-  --background-subtle:  var(--paper-sunk);
-  --background-navbar:  var(--paper-raised);
-
+  --background-subtle: var(--paper-sunk);
+  --background-navbar: var(--paper-raised);
   /* Surfaces */
-  --surface-default:   var(--paper);
-  --surface-raised:    var(--paper-raised);
-  --surface-sunk:      var(--paper-sunk);
-  --surface-muted:     var(--paper-sunk);
-  --surface-subtle:    var(--paper-raised);
-  --surface-emphasis:  var(--ink);
-  --surface-glass:     var(--paper-glass);
-
+  --surface-default: var(--paper);
+  --surface-raised: var(--paper-raised);
+  --surface-sunk: var(--paper-sunk);
+  --surface-muted: var(--paper-sunk);
+  --surface-subtle: var(--paper-raised);
+  --surface-emphasis: var(--ink);
+  --surface-glass: var(--paper-glass);
   /* Text */
-  --text-primary:      var(--ink);
-  --text-secondary:    var(--ink-soft);
-  --text-muted:        var(--ink-faint);
-  --text-tertiary:     var(--muted);
-  --text-inverse:      var(--paper);
-  --text-link:         var(--ai);
-  --text-link-hover:   var(--ai-ink);
-
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted: var(--ink-faint);
+  --text-tertiary: var(--muted);
+  --text-inverse: var(--paper);
+  --text-link: var(--ai);
+  --text-link-hover: var(--ai-ink);
   /* Borders */
-  --border-default:    var(--hair);
-  --border-subtle:     var(--hair-soft);
-  --border-emphasis:   var(--ink);
-  --border-focus:      var(--ai);
-
+  --border-default: var(--hair);
+  --border-subtle: var(--hair-soft);
+  --border-emphasis: var(--ink);
+  --border-focus: var(--ai);
   /* Interactive (hover / active wash layers) — translucent WHITE on dark */
-  --interactive-hover:  rgba(255, 255, 255, 0.06);
+  --interactive-hover: rgba(255, 255, 255, 0.06);
   --interactive-active: rgba(255, 255, 255, 0.10);
-
   /* Brand (identity — action-primary usually references these) */
-  --brand-primary:        var(--ai);
-  --brand-primary-hover:  var(--ai-ink);
-
+  --brand-primary: var(--ai);
+  --brand-primary-hover: var(--ai-ink);
   /* Action (primary / secondary / tertiary) */
-  --action-primary-default:   var(--ai);
-  --action-primary-hover:     var(--ai-ink);
-  --action-primary-active:    var(--ai-ink);
-  --action-primary-wash:      var(--ai-wash);
+  --action-primary-default: var(--ai);
+  --action-primary-hover: var(--ai-ink);
+  --action-primary-active: var(--ai-ink);
+  --action-primary-wash: var(--ai-wash);
   --action-secondary-default: var(--shu);
-  --action-secondary-hover:   var(--shu);
-  --action-secondary-active:  var(--shu);
-  --action-secondary-wash:    var(--shu-wash);
-  --action-tertiary-default:  var(--ochre);
-  --action-tertiary-hover:    var(--ochre);
-  --action-tertiary-active:   var(--ochre);
-  --action-tertiary-wash:     var(--ochre-wash);
-
+  --action-secondary-hover: var(--shu);
+  --action-secondary-active: var(--shu);
+  --action-secondary-wash: var(--shu-wash);
+  --action-tertiary-default: var(--ochre);
+  --action-tertiary-hover: var(--ochre);
+  --action-tertiary-active: var(--ochre);
+  --action-tertiary-wash: var(--ochre-wash);
   /* Feedback / status (high-level semantic) */
-  --feedback-info:     var(--ai);
-  --feedback-success:  var(--code-green);
-  --feedback-warning:  var(--ochre);
-  --feedback-error:    var(--shu);
-
+  --feedback-info: var(--ai);
+  --feedback-success: var(--code-green);
+  --feedback-warning: var(--ochre);
+  --feedback-error: var(--shu);
   /* Status — info (three-part: default / subtle / text) */
   --info-default: var(--ai);
-  --info-subtle:  rgba(10, 132, 255, 0.14);
-  --info-text:    #409CFF;
-
+  --info-subtle: rgba(10, 132, 255, 0.14);
+  --info-text: #409CFF;
   /* Status — success (Apple dark-mode green) */
   --success-default: #30D158;
-  --success-subtle:  rgba(48, 209, 88, 0.14);
-  --success-text:    #5FE37F;
-
+  --success-subtle: rgba(48, 209, 88, 0.14);
+  --success-text: #5FE37F;
   /* Status — warning */
   --warning-default: var(--ochre);
-  --warning-subtle:  rgba(255, 159, 10, 0.14);
-  --warning-text:    #FFB340;
-
+  --warning-subtle: rgba(255, 159, 10, 0.14);
+  --warning-text: #FFB340;
   /* Status — error */
   --error-default: var(--shu);
-  --error-subtle:  rgba(255, 69, 58, 0.14);
-  --error-text:    #FF6961;
-
+  --error-subtle: rgba(255, 69, 58, 0.14);
+  --error-text: #FF6961;
   /* ----------------------------------------------------------
      LIBRARY SCALES (space / radius / type / motion / z)
      -----------------------------------------------------------
@@ -210,34 +184,40 @@
      var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
      Themes declare the slots so those mixins always resolve.
      ---------------------------------------------------------- */
-
   /* Space scale (rem for accessibility) */
-  --space-2xs: 0.25rem;
-  --space-xs:  0.5rem;
-  --space-sm:  0.75rem;
-  --space-md:  1rem;
-  --space-lg:  1.5rem;
-  --space-xl:  2rem;
-
+  /* Spacing rhythm — THE knob for how dense or airy this theme feels.
+     The numbered scale is the source of truth: every component reads
+     var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
+     are emitted by the library as references to these, so they follow
+     automatically. Change a value here and the whole page re-proportions.
+     Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
+  --space-0: 0; /* flush            */
+  --space-1: 0.5rem; /* tight inner gap  */
+  --space-2: 0.75rem; /* control padding  */
+  --space-3: 0.875rem; /* (no t-shirt)     */
+  --space-4: 1rem; /* default rhythm   */
+  --space-5: 1.5rem; /* section gap      */
+  --space-6: 2rem; /* block gap        */
+  --space-7: 3rem; /* major gap        */
+  --space-8: 4rem; /* page section     */
+  --space-9: 6rem; /* hero rhythm      */
   /* Radius alias — mirrors --r-* with standard names so
      `m.radius(size)` in the library finds --radius-<size>. */
-  --radius-sm:   var(--r-sm);
-  --radius-md:   var(--r-md);
-  --radius-lg:   var(--r-lg);
-  --radius-xl:   0.75rem;
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: 0.75rem;
   --radius-full: 9999px;
-
   /* Typography — base body font + key scale slots */
   --font-primary: var(--font-sans);
   --font-size-base: 1rem;
   --line-height-normal: 1.5;
   --font-weight-medium: 500;
-
   /* Z-index layers */
-  --z-sticky:   1020;
+  --z-sticky: 1020;
   --z-dropdown: 1030;
   --z-backdrop: 1040;
-  --z-modal:    1050;
-  --z-popover:  1060;
-  --z-tooltip:  1070;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
 }

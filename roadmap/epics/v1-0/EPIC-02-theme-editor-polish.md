@@ -1,6 +1,6 @@
 # EPIC 02 — Theme Editor Polish
 
-**Status:** 🟡 PARTIAL — share + name + .css download shipped; .scss download, contrast validator, and full reset/diff outstanding (audited 2026-07-16, main @ 97f6ae3)
+**Status:** 🟡 PARTIAL — share + name + .css download shipped; .scss download, contrast validator, and full reset/diff outstanding (audited 2026-07-16, main @ 97f6ae3). **US-02.1.2 re-opened 2026-08-30** — the theme-system pass changed the selector shape and the contract the download has to satisfy (see note under the table)
 **Effort estimate:** ~3-4 working days
 **Stories:** 9
 
@@ -21,13 +21,21 @@ The dock lives at `src/components/ThemeEditorDock/ThemeEditorDock.tsx`. **Share 
 | US-02.4.1 Reset (row / group / global) | 🟡 PARTIAL | Only a global `reset()` + single "Reset" button; no per-row/per-group reset, no confirm modal |
 | US-02.4.2 Show-diff toggle | 🟡 PARTIAL | Modified rows show an always-on `●`/"modified" badge; no toggle, no sessionStorage persistence, no per-group count |
 
+> **Re-opened 2026-08-30 — US-02.1.2 needs a follow-up.** The theme-system pass changed both the target shape and the contract the dock is validating against, so "matches `public/themes/<name>/theme.css`" no longer means what it meant when this row was ticked:
+>
+> - Shipped themes now emit `:root, :root[data-theme="<name>"]` so a drop-in file themes the page with no `<html data-theme>` edit. A download that emits only `[data-theme="<name>"]` produces a file that renders nothing when dropped in alone.
+> - `--space-0` … `--space-9` are contract-required (the t-shirt names are now `var()` aliases and optional), so a downloaded theme omitting them fails `validate-themes`. Spacing is also now genuinely themeable, which means the dock has nine real controls it isn't exposing.
+> - Six dead `--radius-*` tokens left the contract; `--btn-radius` and friends are the live knobs.
+>
+> US-02.3.1's pair count moved 17 → 22 as well (see below).
+
 ## Mission
 
 Take the existing `/themes` editor (~1,200 LOC, ships today, persists overrides to localStorage) from "works" to "ship-ready." Add download, share via URL, and inline WCAG contrast validation so users can author and distribute custom themes without leaving the browser.
 
 ## Why now
 
-The theme editor is one of cia's three v1.0 differentiators. Tailwind Play does utility-soup. Material Theme Builder is colors-only. cia covers ALL 123 contract tokens — but today there's no way to export the result. Without download + share, the editor is a demo, not a tool.
+The theme editor is one of cia's three v1.0 differentiators. Tailwind Play does utility-soup. Material Theme Builder is colors-only. cia covers ALL 127 required contract tokens — but today there's no way to export the result. Without download + share, the editor is a demo, not a tool.
 
 ## Out of scope
 
@@ -153,7 +161,7 @@ The theme editor is one of cia's three v1.0 differentiators. Tailwind Play does 
 
 **Acceptance criteria:**
 - [ ] Port the contrast-check logic from `scripts/theme-validator.js` to a browser-safe module at `src/lib/theme-validator-browser.ts`
-- [ ] Check all 17 token contrast pairs whenever any color token changes
+- [ ] Check all **22** token contrast pairs whenever any color token changes (was 17; the five `--code-*` foregrounds against `--code-bg` were added 2026-08-30)
 - [ ] Badge each affected ColorRow with PASS / FAIL / DECORATIVE
 - [ ] Computation debounced to <50 ms per re-check; no jank on slider drag
 
@@ -224,7 +232,7 @@ The theme editor is one of cia's three v1.0 differentiators. Tailwind Play does 
 
 - **CompressionStream support.** Only Safari ≥16.4, Firefox ≥113, Chrome ≥80. Fallback to uncompressed base64 if missing — verify URL stays under 2,000 chars (could fail for full-edit themes). Mitigation: detect, warn, gracefully degrade.
 - **Validator browser port maintenance.** Two copies of the contrast logic = drift risk. Mitigation: extract shared module to `scripts/lib/contrast.mjs`, import from both Node script and browser code via package.json `exports`.
-- **Performance on full-token override.** 123 tokens × repaint on every slider tick could jank. Mitigation: requestAnimationFrame the style injection, debounce validator at 50 ms.
+- **Performance on full-token override.** 127 tokens × repaint on every slider tick could jank. Mitigation: requestAnimationFrame the style injection, debounce validator at 50 ms.
 
 ## Related
 
