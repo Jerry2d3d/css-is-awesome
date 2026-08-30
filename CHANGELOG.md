@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.1.0...v1.1.1) (2026-08-30)
+
+
+### Bug Fixes
+
+* **sass:** stop using the deprecated if() function; sharpen the AI on-ramp ([61df05a](https://github.com/Jerry2d3d/css-is-awesome/commit/61df05a31228fce169664690c2562d128bf06958))
+
 # [1.1.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.0.0...v1.1.0) (2026-08-30)
 
 
