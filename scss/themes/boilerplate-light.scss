@@ -1,0 +1,209 @@
+// ============================================================================
+// THEME — boilerplate-light
+// ============================================================================
+// Daylight half of Boilerplate.
+//
+// Promoted from a bundle-only block to a real source 2026-08-29.
+//
+// Selector: :root, :root[data-theme="boilerplate-light"]
+// ============================================================================
+@use '../mixins' as m;
+
+@include m.theme('boilerplate-light', light) {
+  /* Surfaces — off-white paper, light gray sunk */
+  --paper:        #fff;
+  --paper-raised: #f2f2f2;
+  --paper-sunk:   #f8fafc;
+  --paper-glass:  rgba(255, 255, 255, 0.85);
+
+  /* Ink — slate neutral ramp */
+  --ink:        #0f172a;
+  --ink-soft:   #1e293b;
+  --ink-faint:  #475569;
+  --graphite:   #0f172a;
+  --muted:      #64748b;
+
+  /* Lines — light slate borders */
+  --guide:      #cbd5e1;
+  --guide-soft: #e2e8f0;
+  --hair:       #e2e8f0;
+  --hair-soft:  #f1f5f9;
+
+  /* Primary accent — clean, recognizable blue */
+  --ai:         #2563eb;
+  --ai-ink:     #1d4ed8;
+  --ai-wash:    #eff6ff;
+
+  /* Seal — red (used for error / secondary action) */
+  --shu:        #dc2626;
+  --shu-wash:   #fef2f2;
+
+  /* Tertiary — amber (used for warning) */
+  --ochre:      #d97706;
+  --ochre-wash: #fffbeb;
+
+  /* Code — neutral light syntax surface */
+  --code-bg:     #f8fafc;
+  --code-ink:    #0f172a;
+  --code-muted:  #64748b;
+  --code-accent: #c2410c;
+  --code-green:  #15803d;
+  --code-blue:   #2563eb;
+
+  /* Typography — system stacks only (no @import) */
+  --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-script:  ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif:   ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-sans:    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Radius — standard, unsurprising */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  /* Shadow — subtle, neutral slate */
+  --shadow-sm:  0 1px 2px rgba(15, 23, 42, .04);
+  --shadow-md:  0 1px 3px rgba(15, 23, 42, .06), 0 1px 2px rgba(15, 23, 42, .04);
+  --shadow-lg:  0 4px 12px -2px rgba(15, 23, 42, .08), 0 2px 4px -2px rgba(15, 23, 42, .05);
+  --shadow-xl:  0 12px 24px -8px rgba(15, 23, 42, .10), 0 4px 8px -4px rgba(15, 23, 42, .06);
+  --shadow-2xl: 0 24px 48px -12px rgba(15, 23, 42, .15);
+
+  /* Blur — Boilerplate doesn't use frosted surfaces */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — Boilerplate doesn't use glow effects */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion — moderate, not flashy */
+  --duration-fast:   120ms;
+  --duration-normal: 180ms;
+  --duration-slow:   280ms;
+  --ease:            cubic-bezier(.4, 0, .2, 1);
+
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper);
+
+  /* Surfaces (semantic) */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-sunk);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--guide);
+  --border-focus:      var(--ai);
+
+  /* Interactive overlays */
+  --interactive-hover:  rgba(15, 23, 42, 0.04);
+  --interactive-active: rgba(15, 23, 42, 0.08);
+
+  /* Brand */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action triplets */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback */
+  --feedback-info:     var(--ai);
+  --feedback-success:  #16a34a;
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success */
+  --success-default: #16a34a;
+  --success-subtle:  #f0fdf4;
+  --success-text:    #15803d;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #b45309;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #b91c1c;
+
+  /* Space scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   12px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary:       var(--font-sans);
+  --font-size-base:     1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* Spacing rhythm — THE knob for how dense or airy this theme feels.
+     The numbered scale is the source of truth: every component reads
+     var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
+     are emitted by the library as references to these, so they follow
+     automatically. Change a value here and the whole page re-proportions. */
+  --space-0: 0;
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 0.875rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+}

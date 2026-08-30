@@ -34,6 +34,20 @@ jobs:
       - name: Lint SCSS (stylelint)
         run: npm run lint:scss
 
+      # validate-themes reads the COMMITTED CSS under public/, not the SCSS
+      # sources — and theme building was not part of any CI step. So a fix
+      # could land in scss/themes/*.scss, never be rebuilt, and this gate would
+      # validate the stale output and report success. Same shape as every other
+      # bug found here: a green check that proves nothing.
+      #
+      # This runs FIRST and does its own rebuild internally, comparing against
+      # the committed artifacts and then restoring them. Do NOT add a
+      # `build:css:themes` step before it — that would overwrite the committed
+      # files and make it compare rebuilt-vs-rebuilt, which always passes.
+      - name: Theme artifacts match their SCSS sources
+        run: npm run check:theme-drift
+
+      # Now safe: the artifacts below are proven to match their sources.
       - name: Validate themes
         run: npm run validate-themes
 
