@@ -40,9 +40,20 @@
   font-size: 0.72rem;
   line-height: 1.2;
   letter-spacing: 0.04em;
+  /* This button sits ON the code surface, so it must use the code surface's
+     own pair. --code-ink on --code-bg is the pair validate-themes enforces at
+     >= 5:1 across all 24 themes, which makes this legible by construction.
+
+     It previously set --code-ink (code-surface INK) on --paper-glass (a
+     translucent PAGE surface) with a --hair-soft border. Those tokens have no
+     contrast guarantee between them — they belong to different surface
+     systems — and on four docs routes the result was a serious axe
+     color-contrast violation. Firefox caught it; chromium did not, because it
+     skips the opacity:0 resting state that firefox still evaluates (the button
+     is focusable, so firefox is right to grade it). */
   color: var(--code-ink);
-  background: var(--paper-glass, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--hair-soft, rgba(255, 255, 255, 0.18));
+  background: var(--code-bg);
+  border: 1px solid color-mix(in oklch, var(--code-bg) 65%, var(--code-ink) 35%);
   border-radius: m.radius(sm);
   cursor: pointer;
   opacity: 0;
@@ -67,10 +78,13 @@
     opacity: 1;
   }
 
+  /* Hover moves ONLY the border. Tinting the background would pull it toward
+     --code-ink and cut the contrast ratio the resting state guarantees — on a
+     theme sitting near the 5:1 floor that is enough to fail. The border is
+     decorative (WCAG 2.2 SC 1.4.11 covers graphical objects essential to
+     understanding), so it can carry the affordance for free. */
   &:hover {
-    background: var(--paper-raised);
-    color: var(--ink);
-    border-color: var(--hair);
+    border-color: var(--code-ink);
   }
 
   &[data-copied='true'] {
