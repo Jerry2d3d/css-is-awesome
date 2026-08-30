@@ -8,6 +8,31 @@
 
 > **Shipped in 1.0.0:** a **recipes book** for building any component in any framework using cia mixins — `dialog`, `combobox` and `print-to-pdf` today, with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at `/docs/recipes`.
 
+## For AI agents — start here
+
+**Read [`llm.txt`](./llm.txt) first.** One file, the whole system: install path, hard rules, the mixin vocabulary, and the traps that make agents write wrong cia code. It ships in the npm package, so it's at `node_modules/css-is-awesome/llm.txt` in any project that has cia.
+
+**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 30 tools covering themes, mixins, functions, tokens, recipes and components.
+
+```bash
+npm install -D @modelcontextprotocol/sdk zod   # required — npm will NOT install these for you
+```
+
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "node",
+      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+    }
+  }
+}
+```
+
+The SDK and `zod` are declared as *optional* peer dependencies, so a plain `npm install css-is-awesome` skips them and the server exits with `@modelcontextprotocol/sdk is not installed`. Install both. `npx css-is-awesome-mcp` does **not** work around this — npx fetches the package but not its optional peers.
+
+Why it matters more here than for older frameworks: no model has memorised cia's API the way it has memorised Tailwind's class names. Without `llm.txt` or MCP, an agent will confidently invent a Tailwind-shaped API. With them, it reads the real thing. Details at [`/docs/mcp`](./src/app/docs/mcp/page.tsx).
+
 ## Three ways to use it
 
 > Full breakdown in [THREE-TIERS.md](./THREE-TIERS.md). cia is **mixin-first** since v0.8 — utility classes are an opt-in convenience.

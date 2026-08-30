@@ -27,19 +27,30 @@ npm install -D sass
 ```
 
 ```html
-<!-- in their HTML -->
+<!-- in their HTML. NO data-theme attribute is needed for a single theme file. -->
 <link rel="stylesheet" href="/cia/themes/boilerplate/theme.css">
-<html data-theme="boilerplate">
 ```
+
+**Selector model — get this right, it is the most common thing agents get wrong.**
+Every theme emits `:root, :root[data-theme="<name>"]`. The bare `:root` means one
+theme file dropped in as `theme.css` restyles the page with NO markup change.
+`<html data-theme="name">` is **optional** for a single theme file, and **required
+only** for the multi-theme bundle (`public/theme.css`), which carries all 24
+themes and strips the bare `:root` so they do not collide. Do NOT tell a consumer
+they must set an attribute matching their theme file — if they swap the file and
+forget, older cia rendered a page with no tokens at all, and that failure was
+silent.
 
 **Two-import model.** `css-is-awesome/api` is a zero-emit authoring barrel — import it in each component/`.module.scss` and only call mixins; emit the tokens once from the root/global stylesheet (`@use 'css-is-awesome';` or a `<link>`ed theme file). **Next.js / Turbopack:** the barrel WORKS under Turbopack — the showcase app runs Next 16 on Turbopack for dev and build with `css-is-awesome/scss/api` in all 116 stylesheets. Do not steer consumers to the leaf module; `scss/mixins` lacks `btn`, `card-base`, `stack`, `grid` and `animate`. Two setup notes: Sass ignores package.json `exports`, so add `node_modules` to `sassOptions.loadPaths`; and if you hit `Two forwarded modules both define a mixin named stack`, drop your own styles dir from `loadPaths`. That was ONE consumer report and is NOT reproducible in standard Sass — cia's internal forwards are `./`-relative, which Sass resolves without consulting load paths (asserted by validate-package). Treat it as a bundler-resolver deviation, not a Sass rule.
 
 ## What cia provides (one-line each)
 
 - **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.stepper`, `cia.progress`, `cia.wizard-shell`, `cia.sidebar`, `cia.toolbar`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.print`, `cia.print-base`, `cia.print-hidden`, `cia.print-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more.
-- **8 theme families / 9 source files** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite each ship one CSS file carrying both light + dark modes via `light-dark()`. **`terminal` is the exception**: two single-mode sources (`terminal` dark-only, `terminal-light` light-only), because they are two brands rather than two modes. Most families also build explicit `-light` / `-dark` files for `<link media>` pairing — 21 files total under `public/themes/`. MCP `list_themes` returns **9** because it counts sources; say **8 theme families** when you need one number.
+- **24 themes / 8 families** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal. Each family ships three files: an unsuffixed dual-mode base (both modes via `light-dark()`) plus pinned `-light` and `-dark` single-mode variants for `<link media>` pairing. Every one has exactly one SCSS source under `scss/themes/`; `public/themes/<name>/theme.css` is BUILD OUTPUT and is gated against its source by `npm run check:theme-drift` — never hand-edit it. MCP `list_themes` returns **24**. Say **24 themes across 8 families** when you need one number.
 - **6 zero-JS interactive components** — accordion (`<details name>`), modal (`<dialog>`), tooltip (`popover="hint"`), dropdown (`[popover]`), tabs (radio + `:has()`), copy-button (Clipboard API via consumer-wired JS).
-- **123 contract tokens** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
+- **163 contract tokens — 127 required + 36 optional** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
+- **Spacing is themeable, and the numbered scale is the knob.** Themes declare `--space-0` … `--space-9` (contract-required). The t-shirt names (`--space-md`, `--space-lg` …) are contract-OPTIONAL and emitted by the library as `var()` aliases onto the numbered steps. `space(4)` compiles to `var(--space-4)`, so **theme the numbered step, never the alias** — setting `--space-md` alone leaves every component untouched. Library defaults emit under `:where(:root)` (specificity 0,0,0) so any theme declaration outranks them regardless of load order.
+- **Per-component shape knobs are `--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius`** — they cascade from the generic radii (`--btn-radius: var(--radius-md, 0.25rem)`). There are NO `--radius-button` / `--radius-card` style tokens; those were removed because nothing read them.
 - **Icons — two systems.** `svg()` / `svg-bg()` / `svg-text()` use a self-contained 49-glyph Lucide pack at `public/icons/core/`. Adding a glyph is drop-in: put `star.svg` in the folder and `cia.icon-svg(star)` works, no registration. Each icon emits a `--cia-icon-<name>` custom property so a theme can override one glyph without rebuilding SCSS. **`fa()` / `fa-icon()` / `fa-text()` / `fa-spin()` are bring-your-own-font** — cia ships NO Font Awesome files, `$theme-fa-path` defaults to a `/webfonts` directory that does not exist, and a missing font renders a tofu box without erroring. Default to `svg()` unless the user says they use Font Awesome.
 
 ## Hard rules (do not violate)
@@ -70,7 +81,7 @@ This is the most-missed piece. **Consumers CAN:**
 }
 ```
 
-The validator (`node scripts/theme-validator.js`) is the gate — 123 tokens + WCAG 2.2 AA contrast required.
+The validator (`node scripts/theme-validator.js`) is the gate — 127 required tokens + WCAG 2.2 AA contrast across 22 audited pairs per theme. It accepts quoted AND unquoted `[data-theme=x]` selectors, and refuses to grade rather than fall back if it sees `data-theme` but parses no block.
 
 ## Paired themes (two brand identities by mode)
 
@@ -89,7 +100,7 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 | Mixin reference (every public mixin) | `src/app/docs/mixins/page.tsx` |
 | Component examples | `src/app/docs/components/*/page.tsx` (6 components) |
 | Theme authoring (full walkthrough) | `src/app/docs/authoring/themes/page.tsx` |
-| Theme contract (123 tokens, machine-readable) | `scripts/theme-contract.json` |
+| Theme contract (127 required + 36 optional, machine-readable) | `scripts/theme-contract.json` |
 | Theme pairing (`<link media>` recipe) | `src/app/docs/themes/pairing/page.tsx` |
 | CopyButton JS recipe | `src/app/docs/recipes/copy-button/page.tsx` |
 | Anchor positioning recipe | `src/app/docs/recipes/anchor-positioning/page.tsx` |
@@ -113,7 +124,7 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 
 ## MCP server (shipped 2026-05-22)
 
-cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` (version read from package.json), protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin and included in the `files` manifest — so it lands in every consumer's `node_modules`. **30 tools** across 8 resource families: themes, mixins, functions, tokens (123 of them), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
+cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` (version read from package.json), protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin and included in the `files` manifest — so it lands in every consumer's `node_modules`. **30 tools** across 8 resource families: themes, mixins, functions, tokens (127 required + 36 optional), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
 
 Add to your MCP client's `.mcp.json`:
 ```json
@@ -126,7 +137,23 @@ Add to your MCP client's `.mcp.json`:
   }
 }
 ```
-Or `npx css-is-awesome-mcp`. SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in the client project to run it.
+**Two dependencies are required and npm will NOT install them for you.** They are
+declared as OPTIONAL peer dependencies, so `npm install css-is-awesome` skips
+them silently and the server exits with:
+
+```
+css-is-awesome MCP server: @modelcontextprotocol/sdk is not installed.
+```
+
+Fix, in the client project:
+
+```bash
+npm install -D @modelcontextprotocol/sdk zod
+```
+
+Do NOT suggest `npx css-is-awesome-mcp` as a shortcut. `npx` fetches the package
+but not its optional peers, so it hits the same error. Run it from an install
+that has both, using the config above.
 
 ## Recipes (v1.0 preview — landing in 1.0.0)
 
@@ -145,7 +172,7 @@ AI agents read recipes via MCP `list_recipes` / `get_recipe(name)` and generate 
 
 1. **Users first** — easy to learn, no framework lock-in, no maintenance treadmill
 2. **Tokens** — one source of truth, swap one value = whole app shifts
-3. **Theme editor on website** — visual customization for all 123 tokens at `/themes`
+3. **Theme editor on website** — visual customization for all 127 required tokens at `/themes`
 4. **Mixin-first speed** — `@include cia.btn(primary)` on any selector
 5. **AI second (huge bonus)** — recipes book + MCP make cia uniquely AI-composable
 
@@ -153,4 +180,4 @@ Humans first. AI's role is to compose, not to lead the pitch.
 
 ---
 
-*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for v1.0 architecture lock. Update when the API surface changes.*
+*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for the v1.0 architecture lock, and 2026-08-30 for the theme single-source rework (24 themes, 127+36 contract, themeable spacing, `:root, :root[data-theme]` selector). Update when the API surface changes.*

@@ -984,7 +984,14 @@ $_flex-align: (
 // attribute is the only thing distinguishing them.
 @mixin theme($name, $scheme: light dark, $standalone: true) {
   $scoped: ':root[data-theme="#{$name}"]';
-  $selector: if($standalone, ':root, #{$scoped}', $scoped);
+
+  // @if/@else rather than the if() FUNCTION: Sass deprecated `if()` in favour
+  // of the CSS if() syntax, and every theme build emitted a deprecation
+  // warning through it — 24 themes' worth of noise in the release log.
+  $selector: $scoped;
+  @if $standalone {
+    $selector: ':root, #{$scoped}';
+  }
 
   #{$selector} {
     color-scheme: #{$scheme};
