@@ -4,6 +4,8 @@
 **Effort estimate:** ~5-7 working days
 **Stories:** 13
 
+> **Update 2026-09-01 — v1.0 launched with this epic partial.** v1.0.0 was tagged 2026-08-17 and the launch (first npm publish `css-is-awesome@1.1.0`, public repo, live docs site) completed 2026-09-01. The six open stories — datepicker, data-table, and command-palette recipes (US-01.2.3–01.2.5), the authoring guide page (US-01.1.2), and `validate-recipes` (US-01.1.3), plus the dependent US-01.2.6 — are **carried forward post-launch** per the ship-then-see rule; they queue behind real user signal.
+
 ## Audited status — 2026-07-16 (main @ 97f6ae3)
 
 The recipe format, catalog, dynamic route, and MCP exposure all shipped. Only **2 of the 5 planned recipes** landed (dialog, combobox); a bonus `print-to-pdf` recipe shipped instead of the other three. The authoring docs page and the `validate-recipes` lint script were never built.

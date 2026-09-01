@@ -233,16 +233,16 @@ export default function FaqPage() {
 
       <h2 id="state-of-project">Is this production ready?</h2>
       <p>
-        Not yet. We&apos;re pre-1.0 and the mixin API is still
-        settling. The token contract is locked (127 required slots plus 36
-        optional, validated on every theme), but expect mixin signatures to move
-        before 1.0.
+        Yes. 1.0 has shipped and the package is published on npm
+        (<code>npm install css-is-awesome</code>). The mixin API is stable
+        under SemVer, and the token contract is locked (127 required slots
+        plus 36 optional, validated on every theme).
       </p>
       <p>
-        That said, we eat our own dogfood: every pixel on this docs
+        We also eat our own dogfood: every pixel on this docs
         site — the buttons, cards, type scale, the theme picker — is
-        built with cia. Once the mixin API is locked we tag 1.0. See{" "}
-        <code>ROADMAP.md</code> at the repo root for current status.
+        built with cia. See the <Link href="/docs/roadmap">roadmap</Link>{" "}
+        for what&apos;s next.
       </p>
 
       <h2 id="contributing">Can I contribute?</h2>

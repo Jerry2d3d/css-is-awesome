@@ -39,6 +39,12 @@ export default function RoadmapPage() {
       <p>Available today, gated in CI on every push.</p>
       <ul>
         <li>
+          <strong>Published on npm.</strong>{" "}
+          <code>npm install css-is-awesome</code> works, and jsDelivr and
+          unpkg mirror every release for build-free consumption.{" "}
+          <Link href="/docs/install">Install</Link>.
+        </li>
+        <li>
           <strong>24 themes</strong>, eight families &times; three variants.
           Each builds from exactly one SCSS source, and dropping one in as{" "}
           <code>theme.css</code> restyles a page with no markup change.
@@ -65,8 +71,8 @@ export default function RoadmapPage() {
         </li>
         <li>
           <strong>A recipes book</strong> &mdash; framework-agnostic patterns
-          for dialog, combobox, datepicker, data table, command palette and
-          print-to-PDF. <Link href="/docs/recipes">Browse them</Link>.
+          for dialog, combobox and print-to-PDF.{" "}
+          <Link href="/docs/recipes">Browse them</Link>.
         </li>
         <li>
           <strong>A theme editor</strong> on this site, with a download that
@@ -82,10 +88,6 @@ export default function RoadmapPage() {
       <h2 id="now">Working on now</h2>
       <ul>
         <li>
-          <strong>Getting on npm.</strong> The single most useful thing for
-          anyone who wants to actually use this.
-        </li>
-        <li>
           <strong>Shipping the MCP server as its own installable package</strong>{" "}
           so it takes one line of config and no install step. Today it needs
           dependencies added by hand, which nobody should have to discover.
@@ -95,9 +97,9 @@ export default function RoadmapPage() {
       <h2 id="next">Next up</h2>
       <ul>
         <li>
-          <strong>More recipes</strong> &mdash; multiselect combobox,
-          breadcrumb, pagination, file upload, toast, sortable list, colour
-          picker.
+          <strong>More recipes</strong> &mdash; datepicker, data table,
+          command palette, multiselect combobox, breadcrumb, pagination, file
+          upload, toast, sortable list, colour picker.
         </li>
         <li>
           <strong>A guided installer.</strong> <code>npm create cia</code>{" "}

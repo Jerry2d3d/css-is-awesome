@@ -3,7 +3,7 @@
 **Target release:** v2.0.0 (~6-12 months after v1.5 — gives v1.x time to settle and validate before a major bump)
 **Theme:** The Recipes Maker — Jerry's visual recipe builder. A major version because it changes the cia surface area significantly (a new product layer on top of the recipe book).
 
-> **Status: Not started (planned).** This is a post-v1.0 version — v1.0 has not shipped yet. No story in the epic below has begun; everything here is future work. Per the "ship-then-see" rule, v2.0 may never ship at all (see "Why might v2.0 NEVER ship" below).
+> **Status: Not started (planned).** This is a post-v1.0 version (v1.0 shipped: tagged 2026-08-17, launched 2026-09-01). No story in the epic below has begun; everything here is future work. Per the "ship-then-see" rule, v2.0 may never ship at all (see "Why might v2.0 NEVER ship" below).
 
 ## Epics
 

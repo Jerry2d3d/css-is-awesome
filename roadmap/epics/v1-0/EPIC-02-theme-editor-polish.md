@@ -4,6 +4,8 @@
 **Effort estimate:** ~3-4 working days
 **Stories:** 9
 
+> **Update 2026-09-01 — v1.0 launched with this epic partial.** v1.0.0 was tagged 2026-08-17; the launch (first npm publish `css-is-awesome@1.1.0`, public repo, live docs site) completed 2026-09-01. The open work — `.scss` download (US-02.1.1), the re-opened US-02.1.2 follow-up, the inline contrast validator (F2.3), and full reset/diff (F2.4) — is **carried forward post-launch** per the ship-then-see rule.
+
 ## Audited status — 2026-07-16 (main @ 97f6ae3)
 
 The dock lives at `src/components/ThemeEditorDock/ThemeEditorDock.tsx`. **Share via URL is fully shipped** (encode + copy + hydrate, commit 656f1a4). **Download ships `.css` only** — the `.scss` / `@include cia.theme()` export was never added. The **inline contrast validator (F2.3) was never built** (no `src/lib/theme-validator-browser.ts`, no contrast/ratio/WCAG UI in the dock). Reset is **global-only**; the diff view is a passive always-on "modified" badge, not the specced toggle.

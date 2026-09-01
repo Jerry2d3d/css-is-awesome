@@ -4,6 +4,8 @@
 **Effort estimate:** ~3-4 working days
 **Stories:** 7
 
+> **Update 2026-09-01 — v1.0 launched with this epic partial.** v1.0.0 was tagged 2026-08-17; the launch (first npm publish `css-is-awesome@1.1.0`, public repo, live docs site) completed 2026-09-01. The MCP server test suite (F5.2, US-05.2.1/05.2.2) is **carried forward post-launch** per the ship-then-see rule. Note on US-05.1.2's CDN criterion: before 2026-09-01 no version of the package existed on npm, so no CDN URL could return 200; as of 2026-09-01 the `@1` jsDelivr URLs (which `/docs/install` pins) and unpkg resolve — verified against `dist/css-is-awesome.min.css` and `public/themes/boilerplate/theme.css`.
+
 ## Audited status — 2026-07-16 (main @ 97f6ae3)
 
 All three audit fixes (F5.1) landed, and the MCP README trim + `/docs/mcp` page (F5.3) shipped. The one gap is **MCP server tests (F5.2)** — there is no `mcp/server.test.*` and no `test:mcp` script, so the 30-tool server still has zero automated coverage. (Note: the MCP server has since grown to **30 tools**, not the 27 referenced in this epic's original prose.)

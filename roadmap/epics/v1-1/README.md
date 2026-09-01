@@ -1,9 +1,9 @@
 # v1.1 — Recipes Momentum
 
-**Target release:** v1.1.0 (~4-6 weeks after v1.0 ships)
+**Target release:** originally v1.1.0 — but that npm version number has been consumed: semantic-release published `css-is-awesome@1.1.0` on 2026-09-01 carrying the launch-wave work (theme rework, a11y fixes, linux baselines), not this backlog. This backlog ships under whatever later versions semantic-release derives from its commits.
 **Theme:** Capitalize on v1.0 recipes momentum. Expand the recipe catalog, ship the install wizard, scaffold the `@cia/a11y-recipes` add-on, and prove the recipes → framework-pack codegen pattern with `@cia/react` v0.1.
 
-> **Status: Not started (planned).** This is a post-v1.0 version — v1.0 has not shipped yet. No story in any epic below has begun; everything here is future work.
+> **Status: Not started (planned).** v1.0 has shipped (v1.0.0 tagged 2026-08-17; launched 2026-09-01 with the first npm publish, public repo, and live docs site) — but no story in any epic below has begun; everything here is future work. The density knob (EPIC-05) was queued into this version on 2026-08-29 (f9822be) and is likewise unstarted. The 18 v1.0 stories carried forward post-launch (see [v1-0/README.md](../v1-0/README.md)) compete with this backlog for priority once real user signal arrives.
 
 ## Epics
 
@@ -23,5 +23,5 @@
 - [ ] `npm create cia@latest` ships and works on Mac/Linux/Windows
 - [ ] `@cia/a11y-recipes` npm package published
 - [ ] `@cia/react` v0.1 published with 3-5 generated components
-- [ ] CHANGELOG.md v1.1.0 entry
+- [ ] CHANGELOG.md entry for this backlog's release (note: CHANGELOG already has a `1.1.0` entry dated 2026-09-01 — that's the launch wave, not this backlog)
 - [ ] No regression in v1.0 epic DoDs

@@ -9,6 +9,8 @@
 > As of 2026-07-16 (main @ 97f6ae3) **no playground work exists**: there is no `/playground` route (no `src/app/**/playground/` directory), no in-browser Sass compiler wiring, no Monaco integration, and no playground share-URL code. This epic is entirely outstanding v1.0 scope. Every story below (US-04.1.1 through US-04.3.1) is unimplemented.
 >
 > This file is the authoritative spec for that remaining work — what the playground is, why it matters, and the acceptance criteria to build against.
+>
+> **Update 2026-09-01 — carried forward post-launch.** v1.0 launched without the playground (v1.0.0 tagged 2026-08-17; first npm publish + public repo + live docs site 2026-09-01). All 7 stories remain unstarted and are **carried forward** per the ship-then-see rule — prioritization waits for real user signal.
 
 ## Mission
 

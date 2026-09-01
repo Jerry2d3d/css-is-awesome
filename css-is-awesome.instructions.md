@@ -385,7 +385,7 @@ Library defaults emit under **`:where(:root)`** (specificity 0,0,0), so any them
 
 **Never hand-edit `public/theme.css` or `public/themes/**/theme.css`.** They are generated from `scss/themes/*.scss` and gated by `check:theme-drift`.
 
-See `/docs/authoring/themes` for the full guide.
+See `/docs/authoring/themes` on the docs site (https://jerry2d3d.github.io/css-is-awesome/docs/authoring/themes/) for the full guide.
 
 ### Spacing is themeable — set the numbered step
 
@@ -477,14 +477,14 @@ A recipe is a markdown file at `scss/recipes/<name>.md` carrying:
 - an a11y checklist graded against WCAG 2.2 AA
 - framework-neutral notes so it ports to React / Vue / Svelte / vanilla
 
-**Shipped today:** `dialog`, `combobox`, `print-to-pdf`. Queued for 1.0.0:
+**Shipped today:** `dialog`, `combobox`, `print-to-pdf`. Queued next:
 `datepicker`, `data-table`, `command-palette`.
 
 How to reach them:
 
 - **AI agents** — `list_recipes` / `get_recipe(name)` over MCP. Prefer this over
   writing an interactive pattern from memory; the recipe encodes the a11y work.
-- **Humans** — `/docs/recipes`, or read the markdown directly.
+- **Humans** — `/docs/recipes` on the docs site (https://jerry2d3d.github.io/css-is-awesome/docs/recipes/), or read the markdown directly.
 
 Note the two different things living in `scss/recipes/`: `<slug>.md` files are
 *pattern* recipes (read them, don't import them), while `_<slug>.scss` files —

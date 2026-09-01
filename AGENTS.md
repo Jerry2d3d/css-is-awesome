@@ -8,7 +8,7 @@ A token-driven SCSS design system with a **single mixin-router per component**. 
 
 **Every mixin is a knob-board.** Each look/feel dimension is an *input*, so a consumer can restyle any mixin at any time by changing an argument — row→column is just `@include cia.flex($direction: column)`, never a hand-written `flex-direction`. Customization lives in the mixin's arguments; the consumer stays one line. **If a visual dimension can only be reached by overriding in CSS, that's a missing input — add it to the mixin.** Fewer SCSS lines always wins.
 
-**v1.0 architecture (locked 2026-05-23):** humans-first, AI-second. The 5-pillar priority is **(1) users first, (2) tokens, (3) theme editor on the website, (4) mixin-first speed, (5) AI as composer via recipes book + MCP server**. v1.0 ships the recipes book + theme editor polish + Tailwind/Bootstrap migration CLI + playground + MCP polish. No separate React component library (Jerry's call — recipes are the deliverable). Full backlog: [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/).
+**v1.0 architecture (locked 2026-05-23):** humans-first, AI-second. The 5-pillar priority is **(1) users first, (2) tokens, (3) theme editor on the website, (4) mixin-first speed, (5) AI as composer via recipes book + MCP server**. v1.0 shipped the recipes book + theme editor polish + Tailwind/Bootstrap migration CLI + playground + MCP polish. No separate React component library (Jerry's call — recipes are the deliverable). Full backlog: [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/).
 
 Three authoring tiers, in primary-to-fallback order:
 
@@ -273,6 +273,8 @@ self-contained and needs no setup.
 
 ## Where to read deeper
 
+Live docs site: **https://jerry2d3d.github.io/css-is-awesome/** — mixin reference, recipes, theme authoring, MCP setup.
+
 Inside this package (all whitelisted in `files`):
 
 - **`css-is-awesome.instructions.md`** — full authoring rules (~14 KB, Cursor/Copilot pick up via `applyTo: "**"` frontmatter)
@@ -340,4 +342,4 @@ The markdown files above, the `cia` CLI, and the MCP server are the source of tr
 
 ---
 
-If you're a human reading this and want full developer docs, start at `README.md`.
+If you're a human reading this and want full developer docs, start at `README.md` or the docs site: https://jerry2d3d.github.io/css-is-awesome/.

@@ -3,6 +3,8 @@
 **Decision date:** 2026-05-03
 **Status:** Locked direction; naming + repo layout TBD.
 
+> **Update 2026-09-01.** Milestones in this doc are historical: css-is-awesome is well past the "v0.7 npm cut" — v1.0.0 was tagged 2026-08-17, and on 2026-09-01 the project launched for real (**first-ever npm publish, `css-is-awesome@1.1.0`**; repo public; docs site live at <https://jerry2d3d.github.io/css-is-awesome/>). The "Gremlin UI" component-library product below was **superseded at the 2026-05-23 v1.0 architecture lock** — the framework story is recipes-first and cia ships zero JS; see the STATUS banner in [`epics/03-react-components.md`](./epics/03-react-components.md) and [`epics/v1-0/README.md`](./epics/v1-0/README.md).
+
 ## TL;DR
 
 The umbrella is split into three (arguably four) distinct products. css-is-awesome is the styling system — pure SCSS + CSS, no React. A separate React component library and a Next.js starter live as sister products.

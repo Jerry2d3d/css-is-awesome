@@ -3,7 +3,7 @@
 **Target release:** v1.5.0 (~3-6 months after v1.3 — gives v1.1-v1.3 time to settle)
 **Theme:** IDE integration. The single epic is the VS Code extension Jerry explicitly slated for v1.5 during the 2026-05-23 architecture lock.
 
-> **Status: Not started (planned).** This is a post-v1.0 version — v1.0 has not shipped yet. No story in the epic below has begun; everything here is future work.
+> **Status: Not started (planned).** This is a post-v1.0 version (v1.0 shipped: tagged 2026-08-17, launched 2026-09-01). No story in the epic below has begun; everything here is future work.
 
 ## Epics
 

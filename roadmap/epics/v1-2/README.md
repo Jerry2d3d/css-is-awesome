@@ -3,7 +3,7 @@
 **Target release:** v1.2.0 (~3-5 weeks after v1.1)
 **Theme:** Close coverage gaps. RTL, form validation, i18n, print, and migration-on-ramp expansion to MUI + Chakra.
 
-> **Status: Not started (planned) — with one item partially delivered early in v1.0.** This is a post-v1.0 version and v1.0 has not shipped yet. Every epic below is future work EXCEPT the **Print Recipe (EPIC-04)**, whose core was pulled forward and shipped in v1.0 as a pure-CSS, zero-JS layer — see [`scss/recipes/print-to-pdf.md`](../../../scss/recipes/print-to-pdf.md) and the `print` / `print-base` / `print-hidden` / `print-only` mixins. EPIC-04 is marked Superseded; its remaining stories describe the original plan, not the delivered shape.
+> **Status: Not started (planned) — with one item partially delivered early in v1.0.** This is a post-v1.0 version (v1.0 shipped: tagged 2026-08-17, launched 2026-09-01). Every epic below is future work EXCEPT the **Print Recipe (EPIC-04)**, whose core was pulled forward and shipped in v1.0 as a pure-CSS, zero-JS layer — see [`scss/recipes/print-to-pdf.md`](../../../scss/recipes/print-to-pdf.md) and the `print` / `print-base` / `print-hidden` / `print-only` mixins. EPIC-04 is marked Superseded; its remaining stories describe the original plan, not the delivered shape.
 
 ## Epics
 

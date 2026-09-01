@@ -42,9 +42,10 @@ export default function AboutPage() {
         <h2>Milestones, so far</h2>
         <ol className={styles.timeline}>
           <TimelineItem date="2009 — the origin" title="A meme is posted.">Steven Frank ships the now-famous <code>CSS&nbsp;IS&nbsp;AWESOME</code> image. The internet keeps it forever.</TimelineItem>
-          <TimelineItem date="2025 — the package" title="v0.1.0 on npm.">A token-driven SCSS design system ships. Light and dark themes, semantic tokens, an ~800-LOC mixin API, Figma tokens auto-generated from Tokens Studio.</TimelineItem>
+          <TimelineItem date="2025 — the package" title="v0.1.0 is cut.">A token-driven SCSS design system takes shape. Light and dark themes, semantic tokens, an ~800-LOC mixin API, Figma tokens auto-generated from Tokens Studio.</TimelineItem>
           <TimelineItem date="2026 — the themes" title="Five voices, one system.">Zen, Bricks, Brutalist, Terminal, Blueprint — each a full skin, each honoring the overflow. Sketchbook arrives later in the year.</TimelineItem>
           <TimelineItem date="now — for agents" title="An MCP server, shipped.">The MCP server is live — it ships inside the npm package and hands agents like Claude, Cursor, and Gemini a set of tools to reason about the system directly, no repo grep-walking required. Still on the way: a companion CLI for scaffolding, and custom bots that speak it fluently.</TimelineItem>
+          <TimelineItem date="2026 — the launch" title="Published, public, live.">The first release lands on npm — <code>npm install css-is-awesome</code> is real, jsDelivr and unpkg mirror it, the GitHub repo is public, and this docs site is live on GitHub Pages.</TimelineItem>
         </ol>
 
         <hr className="brush-rule" />
