@@ -35,7 +35,10 @@ const nextConfig = {
   // Expose the design-system library's SCSS source to any module.scss
   // in the app. Components can write `@use 'mixins' as m;` directly.
   sassOptions: {
+    // Next 16 compiles Sass through the modern API, which reads `loadPaths`;
+    // `includePaths` stays for the legacy API so a rollback keeps working.
     includePaths: [path.resolve(__dirname, "scss")],
+    loadPaths: [path.resolve(__dirname, "scss")],
   },
 };
 
