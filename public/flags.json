@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "comingSoon": true,
+  "comingSoon": false,
   "comingSoonMessage": "We're putting the finishing touches on css-is-awesome. Back very soon.",
   "announcement": {
     "active": false,
