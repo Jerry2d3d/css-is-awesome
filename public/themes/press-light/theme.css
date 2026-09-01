@@ -1,0 +1,235 @@
+@charset "UTF-8";
+/* ============================================================
+   THEME — Press (light)
+   -----------------------------------------------------------
+   Standalone file for `[data-theme="press-light"]` consumers.
+   This is the ONE FILE users swap to reskin their site.
+   Replace this file with any other theme.css to change the
+   entire look & feel. Tokens only — no component CSS lives here.
+
+   Mood: T-Magazine / Stripe Press / Apple Newsroom editorial
+   newsprint. Classical measure, thin hairlines, dramatic serif
+   display, a single press-red accent. Warm off-white paper,
+   near-black ink, very square radii, minimal flat shadows.
+
+   TOKEN CONTRACT
+   -----------------------------------------------------------
+   Every theme MUST declare every variable in this file, even
+   if it sets it to a neutral value (e.g. --blur-md: none;).
+   That's what guarantees a clean one-file swap.
+
+   Slots:
+     Surfaces : --paper, --paper-raised, --paper-sunk, --paper-glass
+     Ink      : --ink, --ink-soft, --ink-faint, --graphite, --muted
+     Lines    : --guide, --guide-soft, --hair, --hair-soft
+     Primary  : --ai, --ai-ink, --ai-wash           (near-ink editorial link)
+     Seal     : --shu, --shu-wash                    (press red — the accent)
+     Accent   : --ochre, --ochre-wash                (warm gold / pull-quote)
+     Code     : --code-bg/ink/muted/accent/green/blue
+     Type     : --font-display/script/serif/sans/mono
+     Radius   : --r-sm, --r-md, --r-lg
+     Shadow   : --shadow-sm, --shadow-md, --shadow-lg
+     Blur     : --blur-sm, --blur-md, --blur-lg     (editorial: none)
+     Glow     : --glow-sm, --glow-md, --glow-lg     (editorial: transparent)
+     Motion   : --duration-fast, --duration-normal, --duration-slow, --ease
+   ============================================================ */
+@import 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@400;500;600;700&display=swap';
+:root, :root[data-theme=press-light] {
+  color-scheme: light;
+  /* Surfaces — warm newsprint */
+  --paper: #FAFAF7;
+  --paper-raised: #FFF;
+  --paper-sunk: #F2F1EC;
+  --paper-glass: rgba(255, 255, 255, 0.80);
+  /* Ink — warm near-black */
+  --ink: #0A0A0A;
+  --ink-soft: #555;
+  --ink-faint: #727069;
+  --graphite: #1A1A1A;
+  --muted: #8E8C86;
+  /* Rules / hairlines — thin editorial rules */
+  --guide: #1A1A1A;
+  --guide-soft: #D9D7D1;
+  --hair: #1A1A1A;
+  --hair-soft: #ECEAE4;
+  /* Primary accent — near-ink editorial link (not a bright hue) */
+  --ai: #1A1A1A;
+  --ai-ink: #0A0A0A;
+  --ai-wash: #ECEAE4;
+  /* Seal — press red (the single editorial accent) */
+  --shu: #D93025;
+  --shu-wash: #FBEAE8;
+  /* Pull-quote / marginalia — warm gold */
+  --ochre: #B5873A;
+  --ochre-wash: #F4EBD6;
+  /* Code surface — keep editorial (ink slab) */
+  --code-bg: #0A0A0A;
+  --code-ink: #FAFAF7;
+  --code-muted: #8A8A86;
+  --code-accent: #E8B96E;
+  --code-green: #B8C57A;
+  --code-blue: #94AFC9;
+  /* Typography */
+  --font-display: 'Playfair Display', 'Tiempos', 'Fraunces', Georgia, serif;
+  --font-script: 'Caveat', 'Shadows Into Light', cursive;
+  --font-serif: 'Playfair Display', 'Tiempos', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+  /* Radius — editorial is tight, very square */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 4px;
+  /* Shadows — minimal, single-layer, editorial flat */
+  --shadow-sm: 0 1px 2px rgba(10, 10, 10, .05);
+  --shadow-md: 0 6px 24px rgba(10, 10, 10, .06);
+  --shadow-lg: 0 18px 48px rgba(10, 10, 10, .09);
+  --shadow-xl: 0 28px 64px rgba(10, 10, 10, .12);
+  --shadow-2xl: 0 40px 96px rgba(10, 10, 10, .18);
+  /* Blur — editorial doesn't use it; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+  /* Glow — editorial doesn't use it; declared transparent */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+  /* Motion — editorial reads slower than digital */
+  --duration-fast: 200ms;
+  --duration-normal: 280ms;
+  --duration-slow: 420ms;
+  --ease: cubic-bezier(0.33, 0.66, 0.33, 1);
+  /* ----------------------------------------------------------
+     SEMANTIC ALIASES
+     -----------------------------------------------------------
+     Bridge the library's expected names to this theme's native
+     palette. Components can now write m.color(surface-default)
+     or var(--surface-default) and reskin with the theme
+     automatically.
+     ---------------------------------------------------------- */
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle: var(--paper-sunk);
+  --background-navbar: var(--paper-raised);
+  /* Surfaces */
+  --surface-default: var(--paper);
+  --surface-raised: var(--paper-raised);
+  --surface-sunk: var(--paper-sunk);
+  --surface-muted: var(--paper-sunk);
+  --surface-subtle: var(--paper-raised);
+  --surface-emphasis: var(--ink);
+  --surface-glass: var(--paper-glass);
+  /* Text */
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted: var(--ink-faint);
+  --text-tertiary: var(--muted);
+  --text-inverse: var(--paper);
+  --text-link: var(--ai);
+  --text-link-hover: var(--ai-ink);
+  /* Borders */
+  --border-default: var(--hair);
+  --border-subtle: var(--hair-soft);
+  --border-emphasis: var(--ink);
+  --border-focus: var(--ai);
+  /* Interactive (hover / active wash layers) — ink overlays on paper */
+  --interactive-hover: rgba(10, 10, 10, 0.05);
+  --interactive-active: rgba(10, 10, 10, 0.10);
+  /* Brand (identity — action-primary references these) */
+  --brand-primary: var(--ai);
+  --brand-primary-hover: var(--ai-ink);
+  /* Action (primary / secondary / tertiary) */
+  --action-primary-default: var(--ai);
+  --action-primary-hover: var(--ai-ink);
+  --action-primary-active: var(--ai-ink);
+  --action-primary-wash: var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover: var(--shu);
+  --action-secondary-active: var(--shu);
+  --action-secondary-wash: var(--shu-wash);
+  --action-tertiary-default: var(--ochre);
+  --action-tertiary-hover: var(--ochre);
+  --action-tertiary-active: var(--ochre);
+  --action-tertiary-wash: var(--ochre-wash);
+  /* Feedback / status (high-level semantic) */
+  --feedback-info: var(--ai);
+  --feedback-success: var(--code-green);
+  --feedback-warning: var(--ochre);
+  --feedback-error: var(--shu);
+  /* Status — info (three-part: default / subtle / text).
+     Press has no indigo; --ai is a near-ink editorial tone. */
+  --info-default: var(--ai);
+  --info-subtle: var(--ai-wash);
+  --info-text: var(--ai-ink);
+  /* Status — success. Restrained editorial green (desaturated). */
+  --success-default: #2F7A3A;
+  --success-subtle: #E3EEDF;
+  --success-text: #1F5228;
+  /* Status — warning. Warm editorial ochre. */
+  --warning-default: #A86A1A;
+  --warning-subtle: var(--ochre-wash);
+  --warning-text: #6B4512;
+  /* Status — error. Press red IS the error color. */
+  --error-default: var(--shu);
+  --error-subtle: var(--shu-wash);
+  --error-text: #8A1D15;
+  /* ----------------------------------------------------------
+     LIBRARY SCALES (space / radius / type / z)
+     -----------------------------------------------------------
+     The library mixins emit var(--space-<key>), var(--radius-<key>),
+     var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+     Themes declare the slots so those mixins always resolve.
+     Numeric scales mirror Sketchbook so rhythm is consistent.
+     ---------------------------------------------------------- */
+  /* Space scale (rem for accessibility) */
+  /* Spacing rhythm — THE knob for how dense or airy this theme feels.
+     The numbered scale is the source of truth: every component reads
+     var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
+     are emitted by the library as references to these, so they follow
+     automatically. Change a value here and the whole page re-proportions.
+     Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
+  --space-0: 0; /* flush            */
+  --space-1: 0.5rem; /* tight inner gap  */
+  --space-2: 0.75rem; /* control padding  */
+  --space-3: 0.875rem; /* (no t-shirt)     */
+  --space-4: 1rem; /* default rhythm   */
+  --space-5: 1.5rem; /* section gap      */
+  --space-6: 2rem; /* block gap        */
+  --space-7: 3rem; /* major gap        */
+  --space-8: 4rem; /* page section     */
+  --space-9: 6rem; /* hero rhythm      */
+  /* Radius alias — mirrors --r-* with standard names so
+     `m.radius(size)` in the library finds --radius-<size>.
+     Press is editorial and angular: xl stays tight (4px). */
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: 6px;
+  --radius-full: 9999px;
+  /* Typography — base body font + key scale slots.
+     Press body is Inter (--font-sans). */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+  /* Z-index layers */
+  --z-sticky: 1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  /* ----------------------------------------------------------
+     OPTIONAL COMPONENT OVERRIDES (Feature 1.3)
+     -----------------------------------------------------------
+     Press is editorial newsprint: very tight radii (2–4px),
+     shadowless cards (rules, not lifts), flat panels.
+     Overrides are sparse — only the choices that define the
+     editorial voice, defaults carry the rest.
+     ---------------------------------------------------------- */
+  --btn-radius: var(--r-sm); /* 2px — near-square control */
+  --card-radius: var(--r-sm); /* 2px — boxed layout */
+  --card-shadow: none; /* editorial is flat */
+  --card-border: 1px solid var(--hair); /* thin ink rule instead */
+  --input-radius: var(--r-sm); /* 2px — text field */
+  --modal-radius: var(--r-md); /* 3px — still tight */
+}

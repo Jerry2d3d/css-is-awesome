@@ -2,12 +2,16 @@
 // LAYOUT - Grid, Container, and Page Structure Mixins
 // ============================================================================
 // Smart defaults that work for 80% of cases. Override with parameters.
-// Usage: @include m.container;  @include m.grid(3);  @include m.page-layout;
+// Usage: @include m.wrap;       @include m.grid(3);  @include m.page-layout;
 // ============================================================================
+@use 'sass:list';
 @use 'sass:map';
+@use 'sass:math';
 @use 'sass:meta';
-@use 'system' as s;
-@use 'theme' as t;
+@use 'sass:string';
+@use './system' as s;
+@use './theme' as t;
+@use './mixins' as m;
 
 // ============================================================================
 // CONTAINER
@@ -17,7 +21,7 @@
 //   @include container;            → 1280px max, responsive padding
 //   @include container(sm);        → 640px max
 //   @include container(full);      → no max-width, just padding
-//   @include container($px: 6);    → custom horizontal padding (space key 6)
+//   @include wrap($px: 6);         → custom horizontal padding (space key 6)
 
 $_container-widths: (
   sm:   40rem,
@@ -28,7 +32,7 @@ $_container-widths: (
   full: none,
 );
 
-@mixin container($size: xl, $px: null) {
+@mixin wrap($size: xl, $px: null) {
   width: 100%;
   margin-inline: auto;
 
@@ -38,11 +42,11 @@ $_container-widths: (
   }
 
   $pad: $px or 4;
-  $pad-val: map.get(t.$space, $pad) or $pad;
+  $pad-val: m.space($pad);
   padding-inline: $pad-val;
 
   @media screen and (min-width: map.get(s.$breakpoints, md)) {
-    $pad-up: if($px, $pad-val, map.get(t.$space, 5));
+    $pad-up: if(sass($px): $pad-val; else: m.space(5));
     padding-inline: $pad-up;
   }
 }
@@ -59,7 +63,7 @@ $_container-widths: (
 
 @mixin grid($cols: 1, $gap: 4, $bp: md, $min: null) {
   display: grid;
-  gap: map.get(t.$space, $gap) or $gap;
+  gap: m.space($gap);
 
   @if $cols == auto {
     $min-val: $min or 16rem;
@@ -101,60 +105,177 @@ $_container-widths: (
 }
 
 // ============================================================================
-// PAGE LAYOUT
+// PAGE LAYOUT — Named-Region Engine
 // ============================================================================
-// Full-page grid: header + main + footer. Sticky footer built in.
-// Usage:
-//   body { @include page-layout; }
-//   body { @include page-layout(sidebar-left); }
+// One engine, FOUR ways to use it — simplest → most powerful. Users pick the
+// tier they're comfortable with; every tier compiles to plain
+// grid-template-areas with zero runtime cost.
+//
+//   Tier 0  @include m.page-layout(sidebar-left);          // preset keyword
+//   Tier 1  @include m.named-layout(app, $wire: true);     // reusable map + auto-place
+//   Tier 2  @include m.layout((nav),(side body),(foot));   // build from YOUR names
+//   Tier 3  body { @include m.page-layout-switchable; }    // runtime data-layout switch
+// ============================================================================
 
-@mixin page-layout($variant: default) {
-  display: grid;
-  min-height: 100vh;
+// ----------------------------------------------------------------------------
+// ENGINE — turn a list of region rows into a grid-template-areas spec.
+// Returns (areas: <space-list of quoted strings>, cols: <int>, regions: <rows>).
+//
+// Fill rule: a row with fewer names than the widest row stretches its LAST
+// region to fill the width — so a single-name row becomes a full-width band,
+// and every generated template is a valid rectangle no matter what's passed.
+// ----------------------------------------------------------------------------
+@function _layout-spec($rows) {
+  $max: 1;
+  $norm: ();
+  @each $row in $rows {
+    $cells: if(sass(meta.type-of($row) != list): ($row,); else: $row);
+    $norm: list.append($norm, $cells, comma);
+    $max: math.max($max, list.length($cells));
+  }
 
-  @if $variant == default {
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas:
-      "header"
-      "main"
-      "footer";
-  } @else if $variant == sidebar-left {
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      "header header"
-      "sidebar main"
-      "footer footer";
-
-    @media screen and (max-width: calc(#{map.get(s.$breakpoints, md)} - 1px)) {
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "header"
-        "main"
-        "footer";
+  $template: ();
+  @each $cells in $norm {
+    $n: list.length($cells);
+    $line: list.nth($cells, 1);
+    @if $max > 1 {                       // guard: Sass @for counts DOWN if from > through
+      @for $i from 2 through $max {
+        $next: if(sass($i <= $n): list.nth($cells, $i); else: list.nth($cells, $n));
+        $line: "#{$line} #{$next}";
+      }
     }
-  } @else if $variant == sidebar-right {
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "header header"
-      "main sidebar"
-      "footer footer";
+    $template: list.append($template, string.quote($line), space);
+  }
 
-    @media screen and (max-width: calc(#{map.get(s.$breakpoints, md)} - 1px)) {
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "header"
-        "main"
-        "footer";
+  @return (areas: $template, cols: $max, regions: $norm);
+}
+
+// Flatten regions → ordered, de-duped single-column stack (used for mobile collapse).
+@function _layout-flatten($regions) {
+  $flat: ();
+  @each $cells in $regions {
+    @each $name in $cells {
+      @if not list.index($flat, $name) { $flat: list.append($flat, $name); }
+    }
+  }
+  @return $flat;
+}
+
+// ----------------------------------------------------------------------------
+// TIER 2 — generic builder from region names YOU choose.
+//   @include m.layout(nav, body, foot);                     // single-column stack
+//   @include m.layout((header),(sidebar main),(footer));    // rows of columns
+//   @include m.layout((a),(b c), $tracks: 16rem 1fr);       // custom column tracks
+//   @include m.layout((a),(b c), $wire: true);              // auto-place by data-area
+// ----------------------------------------------------------------------------
+@mixin layout($rows...) {
+  $opts: meta.keywords($rows);
+  $gap: map.get($opts, gap) or 4;
+  $tracks: map.get($opts, tracks) or null;
+  $wire: map.get($opts, wire);
+
+  $spec: _layout-spec($rows);
+  display: grid;
+  gap: m.space($gap);
+  grid-template-columns: if(sass($tracks): $tracks; else: repeat(#{map.get($spec, cols)}, 1fr));
+  grid-template-areas: map.get($spec, areas);
+
+  @if $wire {
+    @each $cells in map.get($spec, regions) {
+      @each $name in $cells {
+        > [data-area="#{$name}"] { grid-area: $name; }
+      }
     }
   }
 }
 
-@mixin page-header { grid-area: header; }
-@mixin page-main { grid-area: main; }
-@mixin page-footer { grid-area: footer; }
+// Place a child into a named region (when not using $wire). Or just write
+// `grid-area: <name>` yourself.
+@mixin area($name) { grid-area: $name; }
+
+// ----------------------------------------------------------------------------
+// TIER 0 / 1 — named presets. One shared registry feeds page-layout,
+// named-layout, AND the runtime switcher. Add a layout = ONE map entry.
+// ----------------------------------------------------------------------------
+$_layouts: (
+  default:       ((header), (main), (footer)),
+  sidebar-left:  ((header), (sidebar main), (footer)),
+  sidebar-right: ((header), (main sidebar), (footer)),
+  holy-grail:    ((header), (nav main aside), (footer)),
+);
+
+// Tier 1: reusable named layout. Forwards $gap / $tracks / $wire to layout().
+// (Named args BEFORE the rest arg — required by Dart Sass 2.0.)
+@mixin named-layout($name, $gap: 4, $tracks: null, $wire: null) {
+  $rows: map.get($_layouts, $name);
+  @if not $rows {
+    @error "Unknown layout '#{$name}'. Available: #{map.keys($_layouts)}";
+  }
+  @include layout($gap: $gap, $tracks: $tracks, $wire: $wire, $rows...);
+}
+
+// Tier 0: full page shell — viewport height, sticky footer, auto mobile collapse.
+//   body { @include m.page-layout; }
+//   body { @include m.page-layout(holy-grail); }
+@mixin page-layout($variant: default, $collapse-at: md) {
+  $rows: map.get($_layouts, $variant);
+  @if not $rows {
+    @error "Unknown page-layout '#{$variant}'. Available: #{map.keys($_layouts)}";
+  }
+  $spec: _layout-spec($rows);
+
+  display: grid;
+  min-block-size: 100dvh;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: repeat(#{map.get($spec, cols)}, 1fr);
+  grid-template-areas: map.get($spec, areas);
+
+  @if map.get($spec, cols) > 1 {
+    @include m.media-down($collapse-at) {
+      $stacked: _layout-spec(_layout-flatten(map.get($spec, regions)));
+      grid-template-columns: 1fr;
+      grid-template-areas: map.get($stacked, areas);
+    }
+  }
+}
+
+// Region placement helpers (unchanged from the original API).
+@mixin page-header  { grid-area: header; }
+@mixin page-main    { grid-area: main; }
+@mixin page-footer  { grid-area: footer; }
 @mixin page-sidebar { grid-area: sidebar; }
+@mixin page-nav     { grid-area: nav; }
+@mixin page-aside   { grid-area: aside; }
+
+// ----------------------------------------------------------------------------
+// TIER 3 — runtime switching, ZERO recompile. Selector-based (NOT custom
+// properties — Sass strips the quotes off grid-template-areas when
+// interpolated into a custom prop, producing invalid CSS).
+//
+//   body { @include m.page-layout-switchable; }
+//   <body data-layout="sidebar-left">         // flip live: el.dataset.layout = 'holy-grail'
+// ----------------------------------------------------------------------------
+@mixin page-layout-switchable($collapse-at: md) {
+  display: grid;
+  min-block-size: 100dvh;
+  grid-template-rows: auto 1fr auto;
+
+  @each $name, $rows in $_layouts {
+    &[data-layout="#{$name}"] {
+      $spec: _layout-spec($rows);
+      grid-template-columns: repeat(#{map.get($spec, cols)}, 1fr);
+      grid-template-areas: map.get($spec, areas);
+
+      @if map.get($spec, cols) > 1 {
+        @include m.media-down($collapse-at) {
+          $stacked: _layout-spec(_layout-flatten(map.get($spec, regions)));
+          grid-template-columns: 1fr;
+          grid-template-areas: map.get($stacked, areas);
+        }
+      }
+    }
+  }
+}
 
 // ============================================================================
 // SECTION
@@ -165,39 +286,13 @@ $_container-widths: (
 //   section { @include section($py: 9); }
 
 @mixin section($py: 8, $px: null) {
-  $py-val: map.get(t.$space, $py) or $py;
+  $py-val: m.space($py);
   padding-block: $py-val;
 
   @if $px {
-    $px-val: map.get(t.$space, $px) or $px;
+    $px-val: m.space($px);
     padding-inline: $px-val;
   }
-}
-
-// ============================================================================
-// ROW & COL (Flex-based)
-// ============================================================================
-// Simple flex row/column with smart defaults.
-// Usage:
-//   @include row;              → horizontal, centered, md gap
-//   @include row($gap: 5);     → horizontal, large gap (space key 5)
-//   @include col;              → vertical stack, md gap
-
-@mixin row($gap: 4, $align: center, $justify: flex-start, $wrap: wrap) {
-  display: flex;
-  flex-direction: row;
-  align-items: $align;
-  justify-content: $justify;
-  flex-wrap: $wrap;
-  gap: map.get(t.$space, $gap) or $gap;
-}
-
-@mixin col($gap: 4, $align: stretch, $justify: flex-start) {
-  display: flex;
-  flex-direction: column;
-  align-items: $align;
-  justify-content: $justify;
-  gap: map.get(t.$space, $gap) or $gap;
 }
 
 // ============================================================================
@@ -205,16 +300,298 @@ $_container-widths: (
 // ============================================================================
 
 @mixin divider($color: border-default, $spacing: 4) {
-  $space-val: map.get(t.$space, $spacing) or $spacing;
+  $space-val: m.space($spacing);
   border: none;
   border-block-start: 1px solid var(--#{$color});
   margin-block: $space-val;
 }
 
 @mixin divider-vertical($color: border-default, $spacing: 4) {
-  $space-val: map.get(t.$space, $spacing) or $spacing;
+  $space-val: m.space($spacing);
   border: none;
   border-inline-start: 1px solid var(--#{$color});
   margin-inline: $space-val;
   align-self: stretch;
+}
+
+// ============================================================================
+// INTRINSIC LAYOUT — Every Layout vocabulary, cia-native
+// ============================================================================
+
+// STACK — vertical rhythm via flex column + gap.
+// Usage:
+//   .field-group { @include stack; }
+//   .form        { @include stack($gap: 5); }
+@mixin stack($gap: 4) {
+  display: flex;
+  flex-direction: column;
+  gap: m.space($gap);
+}
+
+// CLUSTER — wrapping inline group (pills, tags, button rows).
+// Usage:
+//   .toolbar { @include cluster; }
+//   .tag-row { @include cluster($gap: 1, $align: center); }
+@mixin cluster($gap: 2, $align: center, $justify: start) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: m.space($gap);
+  align-items: $align;
+  justify-content: $justify;
+}
+
+// SWITCHER — auto switches between row and column based on container width.
+// When container is wider than $threshold, items flow as a row. Below, stack.
+// Container-query aware: works inside any sized parent.
+// Usage:
+//   .form-row { @include switcher($threshold: 30rem); }
+@mixin switcher($threshold: 30rem, $gap: 4, $limit: 4) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: m.space($gap);
+
+  > * {
+    flex-grow: 1;
+    flex-basis: calc((#{$threshold} - 100%) * 999);
+  }
+
+  > :nth-last-child(n+#{$limit + 1}),
+  > :nth-last-child(n+#{$limit + 1}) ~ * {
+    flex-basis: 100%;
+  }
+}
+
+// COVER — hero / full-height section with vertically-centered content.
+// Designated centered child gets margin-block: auto.
+// Usage:
+//   <section class="hero">
+//     <h1>Title</h1>
+//     <div class="cover-center">Centered content</div>
+//     <p>Footer note</p>
+//   </section>
+//
+//   .hero { @include cover; }
+@mixin cover($min-height: 100vh, $center-selector: '.cover-center', $padding: 5) {
+  display: flex;
+  flex-direction: column;
+  min-block-size: $min-height;
+  padding: m.space($padding);
+
+  > * { margin-block: 1rem; }
+  > :first-child:not(#{$center-selector}) { margin-block-start: 0; }
+  > :last-child:not(#{$center-selector})  { margin-block-end: 0; }
+  > #{$center-selector} { margin-block: auto; }
+}
+
+// FRAME — aspect-ratio wrapper for media (images, video, iframes).
+// Usage:
+//   .video-wrap { @include frame; }                       → 16:9 default
+//   .square     { @include frame($ratio: 1); }
+//   .portrait   { @include frame($ratio: math.div(3, 4)); }
+@mixin frame($ratio: math.div(16, 9)) {
+  aspect-ratio: $ratio;
+  overflow: hidden;
+  display: block;
+
+  > img,
+  > video,
+  > iframe {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+}
+
+// ============================================================================
+// FLOW — preset flexbox layer over the existing m.flex() engine
+// ============================================================================
+// One-word switchable flex default + responsive axis switch. Same "presets
+// over one engine" pattern as page-layout for grid — no duplicated property
+// logic; flow() delegates to m.flex().
+//
+//   Tier 0  @include m.flow;                          // sensible flex row
+//   Tier 0  @include m.flow(col);                     // switch row → col → wrap...
+//   Tier 0  @include m.flow(row, $at: md, $then: col);// responsive axis switch
+//   Tier 1  @include m.stack / m.cluster / m.toolbar  // existing semantic names (keep)
+//   Tier 2  @include m.flex($direction:.., $justify:..)  // existing full-control primitive
+//   Tier 3  @include m.flow-switchable;  <el data-flow="col">  // runtime switch
+// ============================================================================
+
+// Preset registry. Each entry is a complete flex config bundle. Add a mode =
+// one map entry. justify/align use flex()'s shorthand vocabulary.
+$_flow: (
+  row:     (direction: row,    wrap: nowrap, justify: start,         align: center),
+  col:     (direction: column, wrap: nowrap, justify: start,         align: stretch),
+  wrap:    (direction: row,    wrap: wrap,   justify: start,         align: center),
+  center:  (direction: row,    wrap: nowrap, justify: center,        align: center),
+  between: (direction: row,    wrap: nowrap, justify: space-between, align: center),
+  around:  (direction: row,    wrap: nowrap, justify: space-around,  align: center),
+);
+
+// One-word flex default with an optional breakpoint axis-switch.
+//   $preset  one of $_flow keys (default: row)
+//   $gap     space-scale key (default: 4)
+//   $at      breakpoint key/value — below it, swap to $then
+//   $then    preset to switch to below $at (e.g. row → col on mobile)
+@mixin flow($preset: row, $gap: 4, $at: null, $then: null) {
+  $cfg: map.get($_flow, $preset);
+  @if not $cfg {
+    @error "Unknown flow '#{$preset}'. Available: #{map.keys($_flow)}";
+  }
+  @include m.flex(
+    $direction: map.get($cfg, direction),
+    $wrap:      map.get($cfg, wrap),
+    $justify:   map.get($cfg, justify),
+    $align:     map.get($cfg, align),
+    $gap:       $gap
+  );
+
+  @if $at and $then {
+    $alt: map.get($_flow, $then);
+    @if not $alt {
+      @error "Unknown flow '#{$then}'. Available: #{map.keys($_flow)}";
+    }
+    @include m.media-down($at) {
+      @include m.flex(
+        $direction: map.get($alt, direction),
+        $wrap:      map.get($alt, wrap),
+        $justify:   map.get($alt, justify),
+        $align:     map.get($alt, align),
+        $gap:       $gap
+      );
+    }
+  }
+}
+
+// Tier 3 (optional) — runtime switch with zero recompile.
+//   .bar { @include m.flow-switchable; }
+//   <div class="bar" data-flow="between">…</div>   // el.dataset.flow = 'col'
+@mixin flow-switchable($gap: 4) {
+  @each $name, $cfg in $_flow {
+    &[data-flow="#{$name}"] {
+      @include m.flex(
+        $direction: map.get($cfg, direction),
+        $wrap:      map.get($cfg, wrap),
+        $justify:   map.get($cfg, justify),
+        $align:     map.get($cfg, align),
+        $gap:       $gap
+      );
+    }
+  }
+}
+
+// ============================================================================
+// APP-SHELL FAMILY — wizard-shell + sidebar + toolbar
+// ============================================================================
+
+// WIZARD-SHELL — 3-row layout with shared horizontal rhythm.
+// Stepper at top + body in middle + controls at bottom all use the same
+// padding-inline. Body scrolls; header and footer rails are fixed-height.
+//
+// Usage:
+//   <div class="my-wizard">
+//     <header data-slot="header"><Stepper /></header>
+//     <main   data-slot="body">{stepContent}</main>
+//     <footer data-slot="footer"><BackButton/><NextButton/></footer>
+//   </div>
+//   .my-wizard { @include wizard-shell; }
+@mixin wizard-shell(
+  $min-height: 100dvh,
+  $gutter: 6,
+  $body-padding: 5,
+  $rail-padding: 3,
+  $max-width: lg,
+  $footer-border: true,
+) {
+  min-block-size: $min-height;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+
+  > [data-slot='header'],
+  > [data-slot='body'],
+  > [data-slot='footer'] {
+    padding-inline: m.space($gutter);
+  }
+  > [data-slot='header'] {
+    padding-block: m.space($rail-padding);
+  }
+  > [data-slot='body']   {
+    padding-block: m.space($body-padding);
+    overflow-y: auto;
+
+    @if $max-width != none {
+      $bp: map.get(s.$breakpoints, $max-width) or $max-width;
+      display: grid;
+      justify-content: center;
+      > * {
+        max-inline-size: $bp;
+        inline-size: 100%;
+      }
+    }
+  }
+  > [data-slot='footer'] {
+    padding-block: m.space($rail-padding);
+    @if $footer-border {
+      border-block-start: 1px solid var(--border-subtle, #{map.get(t.$theme-light, border-subtle)});
+    }
+  }
+}
+
+// SIDEBAR — Every-Layout primitive: fixed-width nav + flexible content.
+// Wraps to stack when content falls below $content-min of the container.
+//
+// Usage:
+//   <div class="layout">
+//     <aside data-slot="side">…</aside>
+//     <main  data-slot="content">…</main>
+//   </div>
+//   .layout { @include sidebar; }
+//
+//   // Side on the right:
+//   .layout { @include sidebar($side: end); }
+@mixin sidebar(
+  $side: start,
+  $side-width: 16rem,
+  $content-min: 50%,
+  $gap: 4,
+) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: m.space($gap);
+
+  > [data-slot='side'] {
+    flex-basis: $side-width;
+    flex-grow: 1;
+  }
+
+  > [data-slot='content'] {
+    flex-basis: 0;
+    flex-grow: 999;
+    min-inline-size: $content-min;
+  }
+
+  @if $side == end {
+    > [data-slot='side'] { order: 2; }
+  }
+}
+
+// TOOLBAR — cluster with auto-margin trailing slot.
+// Left group + right group on the same row (e.g. DataTable filters + actions,
+// modal footer with Cancel left / Confirm right).
+//
+// Usage:
+//   <div class="my-toolbar">
+//     <span>Filters: …</span>
+//     <span data-slot="trailing"><Button>Save</Button></span>
+//   </div>
+//   .my-toolbar { @include toolbar; }
+@mixin toolbar($gap: 3, $align: center) {
+  display: flex;
+  align-items: $align;
+  gap: m.space($gap);
+  flex-wrap: wrap;
+
+  > [data-slot='trailing'] {
+    margin-inline-start: auto;
+  }
 }

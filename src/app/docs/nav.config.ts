@@ -18,11 +18,14 @@ export const docsNav: DocsNavSection[] = [
       { label: "Utility classes", href: "/docs/utilities" },
       { label: "Animation", href: "/docs/animation" },
       { label: "Accessibility", href: "/docs/a11y" },
+      { label: "Testing", href: "/docs/testing" },
+      { label: "MCP server", href: "/docs/mcp" },
     ],
   },
   {
     title: "Patterns",
     items: [
+      { label: "Composition", href: "/docs/composition" },
       { label: "Recipes", href: "/docs/recipes" },
     ],
   },
@@ -44,6 +47,7 @@ export const docsNav: DocsNavSection[] = [
     title: "Help",
     items: [
       { label: "FAQ", href: "/docs/faq" },
+      { label: "Roadmap", href: "/docs/roadmap" },
     ],
   },
 ];

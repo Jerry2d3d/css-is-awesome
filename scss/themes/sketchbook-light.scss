@@ -1,0 +1,231 @@
+// ============================================================================
+// THEME — sketchbook-light
+// ============================================================================
+// Daylight half of Sketchbook, and the docs site's DEFAULT theme
+// (src/app/layout.tsx boots with data-theme="sketchbook-light").
+//
+// Promoted from a bundle-only block to a real source 2026-08-29. It had no
+// scss/ file and no public/themes/ directory, so nothing rebuilt it and the
+// contract gate could not see it.
+//
+// Selector: :root, :root[data-theme="sketchbook-light"]
+// ============================================================================
+@use '../mixins' as m;
+
+@include m.theme('sketchbook-light', light) {
+  /* Surfaces — warm paper */
+  --paper:        #F7F3EA;
+  --paper-raised: #FDFAF2;
+  --paper-sunk:   #ECE5D3;
+  --paper-glass:  rgba(253, 250, 242, 0.75);
+
+  /* Ink — warm pencil + sumi */
+  --ink:        #2A241E;
+  --ink-soft:   #4A4037;
+  --ink-faint:  #726858;
+  --graphite:   #3A332B;
+  --muted:      #948977;
+
+  /* Construction lines */
+  --guide:      #C9BDA5;
+  --guide-soft: #DDD4C0;
+  --hair:       #D4CCBB;
+  --hair-soft:  #E8E2D4;
+
+  /* Primary accent — indigo */
+  --ai:         #1F3A5F;
+  --ai-ink:     #14263F;
+  --ai-wash:    #E5EBF1;
+
+  /* Seal — vermilion (reserve for emphasis) */
+  --shu:        #C1272D;
+  --shu-wash:   #F6E3E1;
+
+  /* Draft / marginalia — warm gold */
+  --ochre:      #A37B30;
+  --ochre-wash: #F0E5CC;
+
+  /* Code surface */
+  --code-bg:     #2B2420;
+  --code-ink:    #F7F3EA;
+  --code-muted:  #A39787;
+  --code-accent: #E5B660;
+  --code-green:  #A8B86C;
+  --code-blue:   #94AFC9;
+
+  /* Typography */
+  --font-display: 'DM Serif Display', 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-script:  'Caveat', 'Shadows Into Light', cursive;
+  --font-serif:   'Noto Serif JP', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace;
+
+  /* Radius */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 6px;
+
+  /* Shadows — ink bleeding through paper */
+  --shadow-sm: 0 1px 2px rgba(42, 36, 30, .06);
+  --shadow-md: 0 4px 18px rgba(42, 36, 30, .08);
+  --shadow-lg: 0 12px 40px rgba(42, 36, 30, .12);
+  --shadow-xl: 0 20px 50px rgba(42, 36, 30, .16);
+  --shadow-2xl: 0 28px 70px rgba(42, 36, 30, .22);
+
+  /* Blur — paper themes don't use it; declared so swap stays lossless */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+
+  /* Glow — faint ink bleed, not phosphor */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+
+  /* Motion */
+  --duration-fast:   180ms;
+  --duration-normal: 240ms;
+  --duration-slow:   380ms;
+  --ease:            cubic-bezier(0.33, 0.66, 0.33, 1);
+
+  /* ----------------------------------------------------------
+  SEMANTIC ALIASES
+  -----------------------------------------------------------
+  Bridge the library's expected names to this theme's native
+  palette. Components can now write m.color(surface-default)
+  or var(--surface-default) and reskin with the theme
+  automatically.
+  ---------------------------------------------------------- */
+
+  /* Backgrounds (page-level) */
+  --background-default: var(--paper);
+  --background-subtle:  var(--paper-sunk);
+  --background-navbar:  var(--paper-raised);
+
+  /* Surfaces */
+  --surface-default:   var(--paper);
+  --surface-raised:    var(--paper-raised);
+  --surface-sunk:      var(--paper-sunk);
+  --surface-muted:     var(--paper-sunk);
+  --surface-subtle:    var(--paper-raised);
+  --surface-emphasis:  var(--ink);
+  --surface-glass:     var(--paper-glass);
+
+  /* Text */
+  --text-primary:      var(--ink);
+  --text-secondary:    var(--ink-soft);
+  --text-muted:        var(--ink-faint);
+  --text-tertiary:     var(--muted);
+  --text-inverse:      var(--paper);
+  --text-link:         var(--ai);
+  --text-link-hover:   var(--ai-ink);
+
+  /* Borders */
+  --border-default:    var(--hair);
+  --border-subtle:     var(--hair-soft);
+  --border-emphasis:   var(--ink);
+  --border-focus:      var(--ai);
+
+  /* Interactive (hover / active wash layers) */
+  --interactive-hover:  rgba(42, 36, 30, 0.06);
+  --interactive-active: rgba(42, 36, 30, 0.12);
+
+  /* Brand (identity — action-primary usually references these) */
+  --brand-primary:        var(--ai);
+  --brand-primary-hover:  var(--ai-ink);
+
+  /* Action (primary / secondary / tertiary) */
+  --action-primary-default:   var(--ai);
+  --action-primary-hover:     var(--ai-ink);
+  --action-primary-active:    var(--ai-ink);
+  --action-primary-wash:      var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover:   var(--shu);
+  --action-secondary-active:  var(--shu);
+  --action-secondary-wash:    var(--shu-wash);
+  --action-tertiary-default:  var(--ochre);
+  --action-tertiary-hover:    var(--ochre);
+  --action-tertiary-active:   var(--ochre);
+  --action-tertiary-wash:     var(--ochre-wash);
+
+  /* Feedback / status (high-level semantic) */
+  --feedback-info:     var(--ai);
+  --feedback-success:  var(--code-green);
+  --feedback-warning:  var(--ochre);
+  --feedback-error:    var(--shu);
+
+  /* Status — info (three-part: default / subtle / text) */
+  --info-default: var(--ai);
+  --info-subtle:  var(--ai-wash);
+  --info-text:    var(--ai-ink);
+
+  /* Status — success */
+  --success-default: #5A7A3A;
+  --success-subtle:  #EAEFDC;
+  --success-text:    #3F5627;
+
+  /* Status — warning */
+  --warning-default: var(--ochre);
+  --warning-subtle:  var(--ochre-wash);
+  --warning-text:    #6B4E1E;
+
+  /* Status — error */
+  --error-default: var(--shu);
+  --error-subtle:  var(--shu-wash);
+  --error-text:    #7A1A1F;
+
+  /* ----------------------------------------------------------
+  LIBRARY SCALES (space / radius / type / motion / z)
+  -----------------------------------------------------------
+  The library mixins emit var(--space-<key>), var(--radius-<key>),
+  var(--font-primary), var(--font-size-<key>), var(--z-<key>), …
+  Themes declare the slots so those mixins always resolve.
+  Override any of these to change the whole system's rhythm.
+  ---------------------------------------------------------- */
+
+  /* Space scale (rem for accessibility) */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Radius alias — mirrors --r-* with standard names so
+  `m.radius(size)` in the library finds --radius-<size>. */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   0.75rem;
+  --radius-full: 9999px;
+
+  /* Typography — base body font + key scale slots */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+
+  /* Z-index layers */
+  --z-sticky:   1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal:    1050;
+  --z-popover:  1060;
+  --z-tooltip:  1070;
+
+  /* Spacing rhythm — THE knob for how dense or airy this theme feels.
+     The numbered scale is the source of truth: every component reads
+     var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
+     are emitted by the library as references to these, so they follow
+     automatically. Change a value here and the whole page re-proportions. */
+  --space-0: 0;
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 0.875rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+}

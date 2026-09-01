@@ -1,0 +1,94 @@
+name: Update visual snapshots
+
+# Visual baselines are platform-specific (see snapshotPathTemplate in
+# playwright.config.ts — it carries {platform}). Baselines generated on a dev
+# machine are win32; CI runs linux and needs its own set. Generating them
+# locally would require Docker or WSL, so this job produces them on the exact
+# runner CI uses and commits them back.
+#
+# Run it manually from the Actions tab whenever a deliberate visual change
+# lands. It is never triggered automatically — auto-updating baselines would
+# defeat the point of visual regression testing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to regenerate baselines on
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  update-snapshots:
+    name: Regenerate linux baselines
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Build docs site (Next.js static export)
+        run: npm run build
+
+      # Scoped deliberately to visual.spec.ts on chromium — the only spec that
+      # owns baselines, and the only project that runs it (firefox/webkit
+      # `testIgnore` it, because Desktop Safari's deviceScaleFactor: 2 would
+      # make its PNGs a structurally different artifact).
+      #
+      # Do NOT use `npm run test:update-snapshots` here: that is
+      # `playwright test --update-snapshots`, which spans all three projects.
+      # This job installs chromium only, so firefox and webkit fail to launch
+      # and the run exits 1 having regenerated nothing.
+      - name: Regenerate visual baselines
+        run: npx playwright test tests/visual.spec.ts --project=chromium --update-snapshots
+
+      - name: Commit updated baselines
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Stage FIRST, then test the staged diff. `git diff --quiet` alone
+          # only sees tracked files, so brand-new baselines — the entire point
+          # of this job — registered as "no changes" and were silently
+          # discarded while the job exited 0. It reported success and did
+          # nothing.
+          git add -A tests/__screenshots__
+          if git diff --cached --quiet -- tests/__screenshots__; then
+            echo "No baseline changes — nothing to commit."
+            exit 0
+          fi
+
+          echo "Baselines changed:"
+          git diff --cached --name-status -- tests/__screenshots__
+
+          # No [skip ci]: CI must run on this commit, because release.yml is
+          # gated on a successful CI run. Skipping CI here stalls the release
+          # chain. There is no loop risk — this workflow is workflow_dispatch
+          # only and is never triggered by CI.
+          git commit -m "chore(test): regenerate linux visual baselines"
+          git push
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

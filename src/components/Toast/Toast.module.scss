@@ -4,9 +4,7 @@
 .stack {
   position: fixed;
   z-index: 1100;
-  display: flex;
-  flex-direction: column;
-  gap: m.space(2);
+  @include m.flex($direction: column, $gap: 2, $align: stretch);
   max-width: 22rem;
   padding: m.space(4);
   pointer-events: none;
@@ -24,9 +22,7 @@
 .toast {
   @include fb.toast-base;
   position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: m.space(3);
+  @include m.flex($align: start, $gap: 3);
   padding: m.space(3) m.space(4);
   background: m.color(surface-default);
   color: m.color(text-primary);

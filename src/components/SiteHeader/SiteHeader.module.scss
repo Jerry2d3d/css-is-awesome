@@ -3,8 +3,11 @@
    Imported from SiteHeader.tsx as `styles` and applied via className={styles.x}.
    .logo-sm (the mark inside the brand link) is shared and stays in globals.
    ============================================================ */
+@use 'mixins' as m;
 
 .header {
+  // Site nav is wayfinding for a browser, not content. Off on paper.
+  @include m.print-hidden;
   border-bottom: 1px solid var(--hair);
   background: var(--paper);
   position: sticky;
@@ -49,4 +52,9 @@
 .nav a.isActive {
   color: var(--ink);
   border-bottom-color: var(--ink);
+}
+.themeControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

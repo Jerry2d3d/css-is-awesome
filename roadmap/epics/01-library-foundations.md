@@ -1,5 +1,11 @@
 # Epic 1: Library Foundations
 
+> **STATUS — audited 2026-07-16 against `main` @ v0.8.2 (pre-1.0).** Foundations are **largely shipped**. In place and CI-gated: numbered sizing scale, the full token contract (`scripts/theme-contract.json`, ~123 tokens), the theme validator (`scripts/theme-validator.js`), the public-API validator (`scripts/validate-api.mjs`), the app-styles leak fix, and the pack/publish loop (the package is now at 0.8.2, well past the 0.6.1-specific Features 1.10–1.12). The SCSS↔TS token bridge (Feature 1.13) shipped as `scripts/generate-token-types.mjs` → `dist/tokens.d.ts` (exported at `./tokens`). **Not done:** the component depth audit (Feature 1.14) — `roadmap/component-audit.md` does not exist. The individual `- [ ]` acceptance boxes below are **stale** and were not flipped item-by-item; treat this banner as the source of truth.
+
+> **Update 2026-08-30 — Features 1.2, 1.4, 1.6.** The contract is now **127 required + 36 optional** (was 123 + 30). **US-1.4.1 is DONE for the spacing scale**: `--space-0` … `--space-9` are contract-required and every theme declares them, so `space(4)` finally resolves to a *theme-declared* value instead of a library literal — the t-shirt names (`--space-md` etc.) are now `var()` aliases onto the numbered steps rather than independent literals, and are optional. The remaining five scale maps (`$font-weights`, `$line-heights`, `$font-sizes`, `$shadow`, `$z-layers`) are still library-owned, so **1.4 stays PARTIAL**. Six dead required tokens were dropped from the contract (`--radius-button/card/input/modal/badge/avatar`, zero consumers); the live `--btn-radius` / `--card-radius` / `--input-radius` / `--modal-radius` / `--badge-radius` / `--tag-radius` knobs are documented as optional in their place. **US-1.6.2 is now honest**: `validate-themes` reads the *committed* CSS, so a fix in `scss/themes/*.scss` that was never rebuilt used to validate green — `npm run check:theme-drift` now rebuilds into a scratch copy and diffs declaration-by-declaration ahead of the validator in CI.
+
+> **Update 2026-09-01 — Features 1.10–1.12 (the publish loop) finally closed for real.** Every version before this — 0.6.1 (the specific target of Features 1.10–1.12), 0.8.2, even the tagged v1.0.0 — was packed and tagged but **never reached the npm registry**. The **first npm publish in the project's history was `css-is-awesome@1.1.0` on 2026-09-01** (semantic-release via CI, dist-tag `latest`, GitHub Release + annotated tag). The 0.6.1-specific jsDelivr criteria below are therefore moot as written; the current equivalents are verified live: `https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css` and `.../@1/public/themes/boilerplate/theme.css` return 200 (unpkg resolves too).
+
 ## Summary
 This epic makes the SCSS library internally complete and theme-aware from end to end. It locks in a numbered sizing scale as the single source of truth, ensures every theme declares the full contract of tokens the library's mixins depend on, introduces a per-theme component-override map, adds auto-detected dark mode with manual override, and ships a token validator that prevents incomplete themes from ever reaching main. With this epic landed, any theme in the repo (or contributed downstream) is guaranteed to light up every component correctly, and the library stops silently falling back to defaults.
 
@@ -316,6 +322,162 @@ A repo-root document that explains exactly how to author and submit a new theme:
 **Priority:** P2
 **Effort:** 1
 **Role:** system author
+
+### Feature 1.9: App-styles leak fix
+The library entry point at `scss/main.scss` currently `@use`s `_app-styles.scss`, a file that holds project-owned styles for the docs site rather than library API. Any consumer pulling `scss/main.scss` (Tier 2 SCSS install) inherits these site-specific styles, polluting their build. Remove the import from `main.scss` and relocate the file to a docs-only entry point so the library shipped to npm is clean.
+
+#### User Stories
+
+**US-1.9.1** — As a maintainer, I want the library entry point to stop pulling in project-owned styles, so that consumers compiling `scss/main.scss` don't inherit docs-site CSS.
+
+**Acceptance criteria:**
+- [ ] `_app-styles.scss` is removed from `scss/main.scss` (the line at `scss/main.scss:11` is deleted).
+- [ ] `_app-styles.scss` (or its contents) is moved to a docs-only entry point that the Next app loads directly, not the library bundle.
+- [ ] `npm run build:css` produces output that contains no rules originating from `_app-styles.scss`.
+- [ ] The docs site at `npm run dev` still renders correctly with all previously app-owned styles intact.
+- [ ] A diff of the dist file before/after the fix shows only removals tied to the leaked file.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** maintainer
+
+### Feature 1.10: `npm pack` smoke test
+Before publishing 0.6.1 to npm, verify the package shape end-to-end by running `npm pack`, installing the resulting tarball into a throwaway folder, compiling a Tier 2 page that uses the buttons mixin, and visually confirming the output. This catches missing files in the `files` field, broken `exports` paths, and any leak that `npm publish --dry-run` alone wouldn't surface. Optionally automate the same flow in CI so every PR proves the tarball still works.
+
+#### User Stories
+
+**US-1.10.1** — As a maintainer, I want to pack the library into a tarball, install it into an empty project, and compile a Tier 2 SCSS page using the buttons mixin, so that I can prove the published shape works before pushing to npm.
+
+**Acceptance criteria:**
+- [ ] `npm pack` produces `css-is-awesome-0.6.1.tgz` with no warnings.
+- [ ] In a throwaway folder, `npm init -y && npm install /path/to/tarball sass` completes cleanly.
+- [ ] A test SCSS file (`@use "css-is-awesome/scss/mixins" as cia; .btn { @include cia.button(); }`) compiles via `sass` with no errors.
+- [ ] The compiled CSS contains the expected button rules (background, padding, hover state).
+- [ ] A rendered HTML page using the compiled CSS shows a styled button matching the default theme.
+- [ ] No project-owned styles (e.g. from `_app-styles.scss`) appear in the consumer's compiled output.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** maintainer
+
+**US-1.10.2** — As a CI system, I want the pack-install-compile flow to optionally run on every PR, so that no shape regression reaches the registry.
+
+**Acceptance criteria:**
+- [ ] A GitHub Actions job (or npm script) runs `npm pack`, installs the tarball into a temp dir, and compiles a fixture SCSS file.
+- [ ] The job fails on any compile error or missing-file error.
+- [ ] The job is wired to run pre-publish at minimum; ideally on every PR touching `scss/`, `package.json`, or `dist/`.
+- [ ] A short README block under `scripts/` (or the workflow file itself) documents how to reproduce locally.
+
+**Priority:** P1
+**Effort:** 3
+**Role:** CI system
+
+### Feature 1.11: `npm publish` 0.6.1
+Cut the 0.6.1 release: bump the version, write the CHANGELOG entry covering the app-styles fix and any other 1.0-track changes, run `npm publish --access public`, then verify the package resolves on the npm registry and on jsDelivr. This is the first real release since the library entry point was cleaned up, so verification must include a sanity check that the published artifact matches the local pack output.
+
+#### User Stories
+
+**US-1.11.1** — As a release manager, I want to publish 0.6.1 to npm with public access, so that consumers can install the cleaned-up library from the registry.
+
+**Acceptance criteria:**
+- [ ] `package.json` version is bumped to `0.6.1`.
+- [ ] `CHANGELOG.md` has a `## 0.6.1` entry listing the app-styles leak fix and any other shipped changes.
+- [ ] `npm publish --access public` succeeds and the version appears at https://www.npmjs.com/package/css-is-awesome.
+- [ ] `npm view css-is-awesome@0.6.1` shows the expected `files`, `exports`, and `main` fields.
+- [ ] A git tag `v0.6.1` is pushed to the repo.
+
+**Priority:** P0
+**Effort:** 1
+**Role:** release manager
+
+**US-1.11.2** — As a consumer, I want the published 0.6.1 to be reachable on jsDelivr, so that I can drop a `<link>` tag without an install step.
+
+**Acceptance criteria:**
+- [ ] `https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.1/dist/css-is-awesome.min.css` returns 200 with the expected CSS.
+- [ ] `https://cdn.jsdelivr.net/npm/css-is-awesome@0.6.1/dist/css-is-awesome.css` returns 200.
+- [ ] The CHANGELOG entry includes the jsDelivr URL for copy-paste.
+- [ ] A smoke-test HTML page loaded against the jsDelivr URL renders the default theme correctly.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** consumer
+
+### Feature 1.12: Boilerplate consumer install
+Once 0.6.1 is on npm, install it into a real boilerplate project as a Tier 2 SCSS consumer to prove the registry path works for the audience that will actually use it. This validates the full loop: registry fetch, peer dependency on `sass`, `@use` resolution against the package's `exports`, and theme.css consumption. Includes a one-page smoke test of the most common mixins (buttons, cards, inputs).
+
+#### User Stories
+
+**US-1.12.1** — As a consumer building a boilerplate project, I want to install `css-is-awesome@0.6.1` from npm and consume it as a Tier 2 SCSS dependency, so that I can validate the published path matches the documented install instructions.
+
+**Acceptance criteria:**
+- [ ] In a real boilerplate repo, `npm install css-is-awesome sass` completes cleanly.
+- [ ] A project SCSS file imports the library via `@use "css-is-awesome/scss/mixins" as cia;` and compiles without errors.
+- [ ] The boilerplate's theme is loaded via `@import "css-is-awesome/theme.css";` (or an equivalent `<link>` to the package theme.css).
+- [ ] At least three component mixins (buttons, cards, inputs) render correctly on the smoke-test page.
+- [ ] Switching the loaded theme.css to a different in-repo theme (e.g. `css-is-awesome/themes/cupertino`) visibly changes the page.
+- [ ] Any drift between docs install instructions and what actually worked is filed back as a docs issue.
+
+**Priority:** P0
+**Effort:** 3
+**Role:** consumer
+
+### Feature 1.13: SCSS↔TS token bridge
+Generate a TypeScript declaration file (`tokens.d.ts`) from the canonical token contract at `scripts/theme-contract.json` so React and Next.js consumers get autocomplete and type safety when referencing token names in code (className builders, CSS-in-JS, runtime style switching). The bridge runs as a build step; the contract stays the single source of truth, and TS types stay in sync automatically when the contract changes. Post-1.0 follow-on once the contract is locked.
+
+#### User Stories
+
+**US-1.13.1** — As a TS consumer, I want a generated `tokens.d.ts` shipped with the package, so that token names autocomplete in my editor and typos fail at compile time.
+
+**Acceptance criteria:**
+- [ ] `scripts/generate-token-types.js` reads `scripts/theme-contract.json` and emits `dist/tokens.d.ts`.
+- [ ] The emitted file exports a union type of token names and a typed object describing each token's category and CSS variable name.
+- [ ] The package's `exports` field exposes the types under `./tokens` (or equivalent) so `import type { TokenName } from "css-is-awesome/tokens"` resolves.
+- [ ] A reference Next.js app in `examples/` (or a test fixture) uses the type and gets autocomplete in VS Code.
+- [ ] Removing a token from the contract causes a TS error in the example app on the next build.
+
+**Priority:** P2
+**Effort:** 5
+**Role:** consumer
+
+**US-1.13.2** — As a maintainer, I want the token type generation wired into the publish pipeline, so that a published artifact never has stale types.
+
+**Acceptance criteria:**
+- [ ] `npm run build:css:all` (or the prepublish hook) invokes `generate-token-types.js`.
+- [ ] CI fails if `dist/tokens.d.ts` is out of sync with the contract (regenerate-and-diff check).
+- [ ] A CHANGELOG note documents the new entry point on first release.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** maintainer
+
+### Feature 1.14: Component depth audit
+Compare the components the library currently ships against what Bootstrap and shadcn/ui ship, and produce a written gap analysis at `roadmap/component-audit.md`. The audit is the input that converts "we feel behind on components" into a concrete backlog: each missing component (modal, toast, popover, tooltip, accordion, breadcrumb, pagination, badge, avatar, dropdown, offcanvas, etc.) becomes a candidate feature in Epic 3 (React) or Epic 1 (SCSS mixin) depending on tier. Post-1.0 planning task.
+
+#### User Stories
+
+**US-1.14.1** — As a maintainer, I want a written catalog of every component Bootstrap and shadcn ship versus what cia ships today, so that the gap is documented in one place rather than scattered across notes.
+
+**Acceptance criteria:**
+- [ ] `roadmap/component-audit.md` exists and lists every component from Bootstrap 5 and shadcn/ui.
+- [ ] Each row shows: component name, Bootstrap status, shadcn status, cia SCSS-mixin status, cia React-component status, notes.
+- [ ] At minimum the following are checked: modal, toast, popover, tooltip, accordion, breadcrumb, pagination, badge, avatar, dropdown, offcanvas, alert, progress, spinner, carousel, navbar, tabs.
+- [ ] Each gap row includes a one-line rationale (P0/P1/P2 priority, target tier).
+- [ ] A summary at the top counts: total components, gaps, P0 gaps.
+
+**Priority:** P2
+**Effort:** 3
+**Role:** maintainer
+
+**US-1.14.2** — As a maintainer, I want the audit's gap rows promoted into candidate features in the right epics, so that the catalog drives concrete backlog work.
+
+**Acceptance criteria:**
+- [ ] Each P0/P1 gap in the audit has a corresponding feature stub filed in Epic 1 (mixin), Epic 3 (React), or both.
+- [ ] The audit doc cross-links each gap row to its epic feature ID.
+- [ ] A short "next steps" section closes the audit doc with the prioritized order to tackle gaps.
+
+**Priority:** P2
+**Effort:** 1
+**Role:** maintainer
 
 ## Dependencies
 - Blocks: Epic 2 (Themes & Icons — community submission depends on validator and full contract), Epic 3 (React Component Library — components consume the numbered scale and `$theme-components` map), Epic 4 (Documentation Content — docs reference token names that stabilize here).

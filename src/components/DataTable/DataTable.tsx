@@ -1,9 +1,9 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import Checkbox from "@/components/Checkbox";
-import Pagination from "@/components/Pagination";
-import Skeleton from "@/components/Skeleton";
+import Checkbox from "../Checkbox";
+import Pagination from "../Pagination";
+import Skeleton from "../Skeleton";
 import styles from "./DataTable.module.scss";
 
 export type ColumnAlign = "start" | "center" | "end";

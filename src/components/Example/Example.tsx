@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import styles from "./Example.module.scss";
+import CopyButton from "./CopyButton";
 
 export type ExampleProps = {
   children: ReactNode;
@@ -24,20 +25,24 @@ function Preview({
 }
 
 function Code({ children }: { children: ReactNode }) {
-  // <pre> is horizontally scrollable (overflow-x: auto). axe's
-  // `scrollable-region-focusable` rule requires a tabindex and a label so
-  // keyboard-only users can pan the code preview. The label is intentionally
-  // generic; per-example labelling is overkill for what is documentation
-  // syntax-highlighting, but the region must be reachable.
+  // <pre> is horizontally scrollable; axe's `scrollable-region-focusable`
+  // requires a tabindex + label so keyboard-only users can pan the code.
+  // CopyButton is the only interactive piece here — extracted into its
+  // own client island so the rest of Example stays server-renderable
+  // and the compound API (Example.Code / Example.Preview) survives the
+  // RSC boundary for the ~15 docs pages that import <Example>.
   return (
-    <pre
-      className={styles.code}
-      tabIndex={0}
-      role="region"
-      aria-label="Code sample"
-    >
-      {children}
-    </pre>
+    <div className={styles.codeWrap}>
+      <pre
+        className={styles.code}
+        tabIndex={0}
+        role="region"
+        aria-label="Code sample"
+      >
+        {children}
+      </pre>
+      <CopyButton />
+    </div>
   );
 }
 

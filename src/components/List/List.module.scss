@@ -21,17 +21,13 @@
 
 .item {
   @include d.list-item;
-  display: flex;
-  align-items: center;
-  gap: m.space(3);
+  @include m.flex($gap: 3);
 }
 
 .itemInteractive {
   @include d.list-item($interactive: true);
   all: unset;
-  display: flex;
-  align-items: center;
-  gap: m.space(3);
+  @include m.flex($gap: 3);
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
@@ -53,8 +49,7 @@
 .leading,
 .trailing {
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
+  @include m.flex($inline: true);
 }
 
 .body {

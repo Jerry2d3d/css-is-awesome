@@ -1,0 +1,159 @@
+@charset "UTF-8";
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap';
+:root, :root[data-theme=prism] {
+  color-scheme: light dark;
+  /* Surfaces */
+  --paper: light-dark(#fff, #09090b);
+  --paper-raised: light-dark(#fff, #18181b);
+  --paper-sunk: light-dark(#f4f4f5, #27272a);
+  --paper-glass: light-dark(rgba(255, 255, 255, 0.80), rgba(24, 24, 27, 0.80));
+  /* Ink — zinc neutral ramp */
+  --ink: light-dark(#09090b, #fafafa);
+  --ink-soft: light-dark(#27272a, #e4e4e7);
+  --ink-faint: light-dark(#52525b, #a1a1aa);
+  --graphite: light-dark(#18181b, #f4f4f5);
+  --muted: light-dark(#71717a, #71717a);
+  /* Lines */
+  --guide: light-dark(#d4d4d8, #3f3f46);
+  --guide-soft: light-dark(#e4e4e7, #27272a);
+  --hair: light-dark(#e4e4e7, #27272a);
+  --hair-soft: light-dark(#f4f4f5, #18181b);
+  /* Primary accent — refined blue (brighter for dark) */
+  --ai: light-dark(#2563eb, #3b82f6);
+  --ai-ink: light-dark(#1d4ed8, #60a5fa);
+  --ai-wash: light-dark(#eff6ff, #1e3a8a);
+  /* Seal — red */
+  --shu: light-dark(#dc2626, #ef4444);
+  --shu-wash: light-dark(#fef2f2, #450a0a);
+  /* Tertiary — amber */
+  --ochre: light-dark(#ca8a04, #eab308);
+  --ochre-wash: light-dark(#fefce8, #422006);
+  /* Code surface */
+  --code-bg: light-dark(#fafafa, #0a0a0a);
+  --code-ink: light-dark(#18181b, #e4e4e7);
+  --code-muted: light-dark(#6B6B73, #808089);
+  --code-accent: light-dark(#C1410C, #fb923c);
+  --code-green: light-dark(#117D39, #4ade80);
+  --code-blue: light-dark(#2462EB, #60a5fa);
+  /* Typography — identical across modes */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-script: 'Inter', cursive;
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Roboto Mono', Consolas, Menlo, monospace;
+  /* Radius — identical */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  /* Shadow — extremely subtle, heavier on dark */
+  --shadow-sm: 0 1px 1px light-dark(rgba(9, 9, 11, 0.03), rgba(0, 0, 0, 0.30));
+  --shadow-md: 0 1px 2px light-dark(rgba(9, 9, 11, 0.05), rgba(0, 0, 0, 0.40));
+  --shadow-lg: 0 4px 12px -4px light-dark(rgba(9, 9, 11, 0.08), rgba(0, 0, 0, 0.60));
+  --shadow-xl: 0 16px 32px -16px light-dark(rgba(9, 9, 11, 0.15), rgba(0, 0, 0, 0.70));
+  --shadow-2xl: 0 0 0 1px light-dark(#e4e4e7, #27272a), 0 8px 24px -8px light-dark(rgba(9, 9, 11, 0.12), rgba(0, 0, 0, 0.60));
+  /* Blur / glow — Prism uses neither */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+  /* Motion — fast + crisp, identical */
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 250ms;
+  --ease: cubic-bezier(.32, .72, 0, 1);
+  /* Semantic aliases */
+  --background-default: var(--paper);
+  --background-subtle: var(--paper-sunk);
+  --background-navbar: var(--paper-raised);
+  --surface-default: var(--paper);
+  --surface-raised: var(--paper-raised);
+  --surface-sunk: var(--paper-sunk);
+  --surface-muted: var(--paper-sunk);
+  --surface-subtle: var(--paper-raised);
+  --surface-emphasis: var(--ink);
+  --surface-glass: var(--paper-glass);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted: var(--ink-faint);
+  --text-tertiary: var(--muted);
+  --text-inverse: var(--paper);
+  --text-link: var(--ai);
+  --text-link-hover: var(--ai-ink);
+  --border-default: var(--hair);
+  --border-subtle: var(--hair-soft);
+  --border-emphasis: var(--guide);
+  --border-focus: var(--ai);
+  --interactive-hover: light-dark(rgba(9, 9, 11, 0.05), rgba(255, 255, 255, 0.05));
+  --interactive-active: light-dark(rgba(9, 9, 11, 0.10), rgba(255, 255, 255, 0.10));
+  --brand-primary: var(--ai);
+  --brand-primary-hover: var(--ai-ink);
+  --action-primary-default: var(--ai);
+  --action-primary-hover: var(--ai-ink);
+  --action-primary-active: var(--ai-ink);
+  --action-primary-wash: var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover: var(--shu);
+  --action-secondary-active: var(--shu);
+  --action-secondary-wash: var(--shu-wash);
+  --action-tertiary-default: var(--ochre);
+  --action-tertiary-hover: var(--ochre);
+  --action-tertiary-active: var(--ochre);
+  --action-tertiary-wash: var(--ochre-wash);
+  --feedback-info: var(--ai);
+  --feedback-success: light-dark(#16a34a, #22c55e);
+  --feedback-warning: var(--ochre);
+  --feedback-error: var(--shu);
+  --info-default: var(--ai);
+  --info-subtle: var(--ai-wash);
+  --info-text: light-dark(var(--ai-ink), #85BFFF);
+  --success-default: light-dark(#16a34a, #22c55e);
+  --success-subtle: light-dark(#f0fdf4, #14532d);
+  --success-text: light-dark(#15803d, #4ade80);
+  --warning-default: light-dark(#ca8a04, #eab308);
+  --warning-subtle: light-dark(#fefce8, #422006);
+  --warning-text: light-dark(#854d0e, #fde047);
+  --error-default: light-dark(#dc2626, #ef4444);
+  --error-subtle: light-dark(#fef2f2, #450a0a);
+  --error-text: light-dark(#b91c1c, #fca5a5);
+  /* Library scales — identical */
+  /* Spacing rhythm — THE knob for how dense or airy this theme feels.
+     The numbered scale is the source of truth: every component reads
+     var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
+     are emitted by the library as references to these, so they follow
+     automatically. Change a value here and the whole page re-proportions.
+     Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
+  --space-0: 0; /* flush            */
+  --space-1: 0.5rem; /* tight inner gap  */
+  --space-2: 0.75rem; /* control padding  */
+  --space-3: 0.875rem; /* (no t-shirt)     */
+  --space-4: 1rem; /* default rhythm   */
+  --space-5: 1.5rem; /* section gap      */
+  --space-6: 2rem; /* block gap        */
+  --space-7: 3rem; /* major gap        */
+  --space-8: 4rem; /* page section     */
+  --space-9: 6rem; /* hero rhythm      */
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+  --z-sticky: 1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  /* Component overrides — border-driven, tight radii */
+  --btn-radius: var(--r-md);
+  --card-radius: var(--r-md);
+  --card-shadow: var(--shadow-sm);
+  --card-border: 1px solid var(--hair);
+  --input-radius: var(--r-md);
+  --modal-radius: var(--r-lg);
+}

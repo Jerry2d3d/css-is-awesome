@@ -2,9 +2,7 @@
 
 .bar {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: m.space(2);
+  @include m.flex($gap: 2);
 }
 
 .icon {

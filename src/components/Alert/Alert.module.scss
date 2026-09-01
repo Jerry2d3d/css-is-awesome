@@ -3,15 +3,12 @@
 
 .alert {
   @include fb.alert-base;
-  display: flex;
-  align-items: flex-start;
-  gap: m.space(3);
+  @include m.flex($align: start, $gap: 3);
 }
 
 .icon {
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
+  @include m.flex($inline: true);
   line-height: 1;
   font-size: 1.25em;
 }

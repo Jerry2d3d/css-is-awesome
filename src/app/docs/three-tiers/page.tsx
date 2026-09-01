@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Example from "@/components/Example";
 import Button from "@/components/Button";
 
@@ -31,7 +32,7 @@ export default function ThreeTiersPage() {
         </Example.Preview>
         <Example.Code><span className="tok-com">{"<!-- in your <head> -->"}</span>
 {"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"css-is-awesome.min.css"</span><span className="tok-sel">{">"}</span>
-{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"theme-sketchbook.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"themes/sketchbook-light/theme.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}
 {"\n"}<span className="tok-com">{"<!-- in your <body> -->"}</span>
 {"\n"}<span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"/start"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
@@ -42,6 +43,13 @@ export default function ThreeTiersPage() {
         One class per element. No BEM, no <code>__element</code> /{" "}
         <code>--modifier</code> chains. The <code>cia-</code> prefix keeps every
         utility and component class out of your app&rsquo;s namespace.
+      </p>
+      <p>
+        Note what isn&rsquo;t there: no <code>data-theme</code> on{" "}
+        <code>&lt;html&gt;</code>. A single theme file emits{" "}
+        <code>:root</code> as well as its own attribute selector, so swapping
+        the second <code>&lt;link&gt;</code> for a different theme is the entire
+        reskin. The attribute is only needed for the 24-theme bundle.
       </p>
 
       <h2 id="tier-2">Tier 2 — SCSS mixins + HTML</h2>
@@ -160,7 +168,7 @@ export default function ThreeTiersPage() {
           <strong>Tier 4 — React.</strong> Components in <code>src/</code> wrap
           the same mixins through CSS Modules. Same output,
           framework-aware ergonomics. See the{" "}
-          <a href="/docs/recipes">recipes</a> page for live examples.
+          <Link href="/docs/recipes">recipes</Link> page for live examples.
         </li>
       </ul>
       <p>

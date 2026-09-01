@@ -1,0 +1,52 @@
+// ─── Global print layer ──────────────────────────────────────────────────────
+// Dogfoods cia's own print mixins on the docs site.
+//
+// This file exists because `cia.print-base` emits its OWN `:root` block plus
+// `@page`, so it must be included at the ROOT of a global stylesheet — it
+// cannot live in a `.module.scss` (Next.js CSS Modules "pure" mode forbids a
+// top-level `:root`) and it must not be wrapped in a selector, which would
+// double-nest the `:root` it already writes.
+//
+// Everything else is co-located: each chrome component calls `print-hidden` in
+// its own module, so a component that stops existing takes its print rule with
+// it instead of leaving a dangling selector here.
+@use 'mixins' as m;
+
+// Emits the control plane (--is-print / --print-hide / --print-show), the
+// @page box, and the animation freeze that stops a page snapshotted
+// mid-entrance-fade from printing as invisible text.
+@include m.print-base;
+
+// Paper wants ink on white, not the theme's paper colour — a dark theme would
+// otherwise burn a whole cartridge. Themed surfaces are a screen affordance.
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  // Links are useless as blue underlines on paper.
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  // Keep code blocks legible in ink rather than reversed-out white-on-black.
+  // Selector must match globals.css's `.recipe-body .recipe-codeblock pre`
+  // (0,2,0) — a bare `.recipe-codeblock` (0,1,0) loses, and overriding only
+  // the colour leaves dark text on the dark --code-bg. Worse than not trying.
+  .recipe-body .recipe-codeblock pre {
+    background: #fff;
+    color: #000;
+    border: 1px solid #999;
+  }
+
+  .recipe-body .recipe-codeblock code {
+    background: transparent;
+    color: #000;
+  }
+
+  .recipe-body .recipe-codeblock-lang {
+    display: none;
+  }
+}

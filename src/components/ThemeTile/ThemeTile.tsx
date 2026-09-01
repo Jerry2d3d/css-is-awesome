@@ -2,6 +2,7 @@
 import styles from "./ThemeTile.module.scss";
 
 import Button from "@/components/Button";
+import { setTheme } from "@/lib/themeState";
 
 export type ThemeTileProps = {
   id: string;
@@ -24,11 +25,7 @@ export default function ThemeTile({
   swatches,
 }: ThemeTileProps) {
   function applyTheme() {
-    const link = document.getElementById(
-      "cia-theme-link"
-    ) as HTMLLinkElement | null;
-    if (link) link.href = href;
-    localStorage.setItem("cia-theme-file", id);
+    setTheme(id);
   }
 
   return (

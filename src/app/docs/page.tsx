@@ -16,9 +16,8 @@ export default function DocsPage() {
       <h2 id="minimum-setup">Minimum setup</h2>
       <p>
         Prerequisites: any modern browser. No Node, no bundler, no build step.
-        The stylesheets below are served from the planned CDN at{" "}
-        <code>https://cdn.css-is-awesome.dev/v1/</code> — theme first so the
-        base can read its tokens.
+        The stylesheets below are served from jsDelivr, auto-mirrored from the
+        npm package — theme first so the base can read its tokens.
       </p>
       <Example>
         <Example.Code><span className="tok-sel">{"<!doctype html>"}</span>
@@ -26,8 +25,8 @@ export default function DocsPage() {
 {"\n"}<span className="tok-sel">{"<head>"}</span>
 {"\n"}  <span className="tok-sel">{"<meta"}</span> <span className="tok-prop">charset</span>=<span className="tok-val">"utf-8"</span><span className="tok-sel">{">"}</span>
 {"\n"}  <span className="tok-sel">{"<title>"}</span>Hello, sketchbook<span className="tok-sel">{"</title>"}</span>
-{"\n"}  <span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/theme-sketchbook.css"</span><span className="tok-sel">{">"}</span>
-{"\n"}  <span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/cia.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}  <span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/public/themes/sketchbook-light/theme.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}  <span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}<span className="tok-sel">{"</head>"}</span>
 {"\n"}<span className="tok-sel">{"<body>"}</span>
 {"\n"}  <span className="tok-sel">{"<main"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-container"</span><span className="tok-sel">{">"}</span>
@@ -69,6 +68,58 @@ export default function DocsPage() {
 {"\n"}<span className="tok-sel">{"</article>"}</span></Example.Code>
       </Example>
 
+      <h2 id="three-tiers">Three bundle tiers</h2>
+      <p>
+        Pick the smallest bundle that covers your needs — they all read the
+        same theme tokens, so you can start with <code>core</code> and graduate
+        to <code>full</code> later without changing markup.
+      </p>
+      <ul>
+        <li>
+          <strong>core</strong> — <strong>2.4 KB gzipped</strong>. Tokens (CSS
+          custom properties) and base resets only. The minimum to use the
+          system; bring your own components.
+        </li>
+        <li>
+          <strong>utilities</strong> — <strong>11.5 KB gzipped</strong>. Every{" "}
+          <code>cia-*</code> utility class — spacing, typography, layout,
+          color, flex/grid helpers. Composes with your own component CSS.
+        </li>
+        <li>
+          <strong>full</strong> — <strong>15.2 KB gzipped</strong>. Core +
+          utilities + every component recipe (<code>cia-btn-primary</code>,{" "}
+          <code>cia-card</code>, <code>cia-alert</code>, …) in one file. The
+          drop-in default; what the CDN snippet above ships.
+        </li>
+      </ul>
+      <p>
+        The <Link href="/compare">/compare page</Link> shows these sizes next
+        to Tailwind&apos;s and Bootstrap&apos;s equivalents.
+      </p>
+
+      <h2 id="utility-or-mixin">Utility class, or SCSS mixin</h2>
+      <p>
+        The same button is reachable two ways. If you have no build step, drop
+        the utility class on a tag. If you have a Sass build, call the mixin
+        from your own selector — every variant the utility class ships rides
+        through to the mixin and back.
+      </p>
+      <Example>
+        <Example.Preview style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <Button variant="primary" href="#">Utility class</Button>
+          <Button variant="primary" href="#">Same, via mixin</Button>
+        </Example.Preview>
+        <Example.Code><span className="tok-com">{"<!-- Tier 1: utility class, no build -->"}</span>
+{"\n"}<span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
+{"\n"}
+{"\n"}<span className="tok-com">{"// Tier 2: same output, via the SCSS mixin"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">&apos;css-is-awesome/scss/components/buttons&apos;</span> <span className="tok-prop">as</span> <span className="tok-val">b</span>;
+{"\n"}
+{"\n"}<span className="tok-sel">.hero-cta</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary)</span>;
+{"\n"}{"}"}</Example.Code>
+      </Example>
+
       <h2 id="swap-the-theme">Swap the theme</h2>
       <p>
         Themes are single files. The base stylesheet never hard-codes a colour,
@@ -78,10 +129,10 @@ export default function DocsPage() {
       </p>
       <Example>
         <Example.Code><span className="tok-com">{"/* before — sketchbook */"}</span>
-{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/theme-sketchbook.css"</span><span className="tok-sel">{">"}</span>
+{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/public/themes/sketchbook-light/theme.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}
-{"\n"}<span className="tok-com">{"/* after — brutalist */"}</span>
-{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.css-is-awesome.dev/v1/theme-brutalist.css"</span><span className="tok-sel">{">"}</span></Example.Code>
+{"\n"}<span className="tok-com">{"/* after — press */"}</span>
+{"\n"}<span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/public/themes/press/theme.css"</span><span className="tok-sel">{">"}</span></Example.Code>
       </Example>
       <p>
         The <strong>ThemePicker</strong> in the site header does exactly that
@@ -97,12 +148,29 @@ export default function DocsPage() {
           Sass entry points for build-step projects.
         </li>
         <li>
-          <Link href="/docs/tokens">Tokens</Link> — every CSS custom property
-          the system reads, grouped by role.
+          <Link href="/docs/tokens">Tokens</Link> — live swatches, type scale,
+          spacing and radii for the active theme. Pick a new theme; the
+          gallery reskins.
         </li>
         <li>
           <Link href="/docs/utilities">Utilities</Link> — the{" "}
           <code>cia-</code> utility classes for spacing, layout and type.
+        </li>
+        <li>
+          <Link href="/docs/animation">Animation</Link> — the motion tokens
+          and the named keyframes the system ships.
+        </li>
+        <li>
+          <Link href="/themes">Themes editor</Link> — the live theme browser
+          and editor for shipped themes.
+        </li>
+        <li>
+          <Link href="/docs/authoring/themes">Authoring themes</Link> — the
+          token contract and validator for writing your own.
+        </li>
+        <li>
+          <Link href="/compare">Compare</Link> — bundle sizes and feature
+          parity with Tailwind and Bootstrap.
         </li>
       </ul>
     </>

@@ -64,19 +64,37 @@
 
 @use 'sass:map';
 @use 'sass:list';
-@use 'theme' as t;
+@use './theme' as t;
 
 // ============================================================================
 // SVG ICONS
 // ============================================================================
-// FOLDER-BASED: Just drop files into $theme-icon-path folder
-// Filename = icon name: arrow.svg → @include svg(arrow)
+// PACK-BASED: glyphs live at $theme-icon-path/$theme-icon-pack/<name>.svg.
+// Default pack is `core` (vendored from Lucide). Drop additional SVGs into
+// /icons/<pack>/ to add a new pack, or into the same `core` folder to add
+// to the default pack.
 //
-// How it works:
-// 1. Checks $theme-icon-svg-alias for remapping (delete → trash.svg)
-// 2. If not in alias, uses name directly (arrow → arrow.svg)
+// How `m.svg(name)` resolves at runtime:
 //
-// To add icons: Just put the .svg file in your folder. Done.
+//   mask: var(--cia-icon-<name>, url('<core-pack-path>/<name>.svg'));
+//
+//   1. If a theme declares `--cia-icon-<name>: url(...)` on `:root`, the
+//      browser uses that override URL — that file lives at
+//      /themes/<theme-name>/icons/<pack>/<name>.svg by convention.
+//   2. Else the browser falls back to the bundled core-pack URL.
+//   3. If neither resolves, the browser 404s (graceful — the host element
+//      stays sized but renders empty).
+//
+// At compile time, an alias map ($theme-icon-svg-alias) lets call sites
+// use semantic names (close, delete) that resolve to a different on-disk
+// filename (x, trash). Aliases run BEFORE the override lookup so theme
+// overrides key off the canonical filename, not the alias.
+//
+// To add icons: drop the .svg file in /icons/<pack>/. Done.
+// To override an icon for one theme: drop a replacement at
+// /themes/<theme>/icons/<pack>/<name>.svg AND declare the override
+// custom property in that theme's theme.css. See CONTRACT.md →
+// "Icons contract" for the full mechanism.
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -92,6 +110,22 @@
     @return $alias;
   }
   @return $name;
+}
+
+// ----------------------------------------------------------------------------
+// _svg-url($name) — private helper
+// Returns the unquoted CSS value used in mask / background. Emits a
+// `var(--cia-icon-<file>, url('<base>/<file>.svg'))` so themes can
+// override one glyph at a time by declaring the custom property without
+// touching the rest of the pack.
+// ----------------------------------------------------------------------------
+@function _svg-url($name) {
+  $file: _svg-file($name);
+  $base: '#{t.$theme-icon-path}/#{t.$theme-icon-pack}';
+  @return var(
+    --cia-icon-#{$file},
+    url('#{$base}/#{$file}.svg')
+  );
 }
 
 // ----------------------------------------------------------------------------
@@ -113,7 +147,7 @@
   $size: t.$theme-icon-size,
   $color: currentColor
 ) {
-  $file: _svg-file($name);
+  $url: _svg-url($name);
 
   display: inline-flex;
   align-items: center;
@@ -128,8 +162,8 @@
     width: 100%;
     height: 100%;
     background: currentColor;
-    mask: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
-    -webkit-mask: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
+    mask: $url center / contain no-repeat;
+    -webkit-mask: $url center / contain no-repeat;
   }
 }
 
@@ -141,21 +175,21 @@
 //
 // Params:
 //   $name  — icon name (matches `<name>.svg` in $theme-icon-path)
-//   $size  — icon width/height (default: t.$icon-size)
+//   $size  — icon width/height (default: t.$theme-icon-size)
 //
 // Example:
 //   .logo { @include m.svg-bg(brand-mark, 48px); }
 // ----------------------------------------------------------------------------
 @mixin svg-bg(
   $name,
-  $size: t.$icon-size
+  $size: t.$theme-icon-size
 ) {
-  $file: _svg-file($name);
+  $url: _svg-url($name);
 
   display: inline-block;
   width: $size;
   height: $size;
-  background: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
+  background: $url center / contain no-repeat;
 }
 
 // ----------------------------------------------------------------------------
@@ -179,7 +213,7 @@
   $gap: 0.5em,
   $position: before
 ) {
-  $file: _svg-file($name);
+  $url: _svg-url($name);
 
   display: inline-flex;
   align-items: center;
@@ -195,8 +229,8 @@
     width: $size;
     height: $size;
     background: currentColor;
-    mask: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
-    -webkit-mask: url('#{t.$theme-icon-path}/#{$file}.svg') center / contain no-repeat;
+    mask: $url center / contain no-repeat;
+    -webkit-mask: $url center / contain no-repeat;
   }
 }
 
@@ -420,13 +454,13 @@ $_fa-styles: _fa-styles(t.$theme-fa-pro);
 //
 // Params:
 //   $name   — icon name (typically `spinner` or `refresh`)
-//   $size   — icon dimension (default: t.$icon-size)
+//   $size   — icon dimension (default: t.$theme-icon-size)
 //   $style  — FA family (default: t.$theme-fa-style)
 //
 // Example:
 //   .loader { @include m.fa-spin(spinner); }
 // ----------------------------------------------------------------------------
-@mixin fa-spin($name, $size: t.$icon-size, $style: t.$theme-fa-style) {
+@mixin fa-spin($name, $size: t.$theme-icon-size, $style: t.$theme-fa-style) {
   @include fa-icon($name, $size, $style);
 
   &::before {

@@ -1,0 +1,92 @@
+@use 'mixins' as m;
+
+.shell {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem;
+
+  // On paper the @page box already supplies the margin, and the screen's
+  // reading-measure cap would waste half the sheet.
+  @include m.print {
+    max-width: none;
+    padding: 0;
+  }
+}
+
+.back {
+  // "← All posts" is navigation, not the story. Off on paper.
+  @include m.print-hidden;
+  font-size: 0.85rem;
+  margin: 0 0 1.5rem;
+
+  a {
+    color: var(--text-secondary, var(--ink-soft));
+    text-decoration: none;
+    &:hover { color: var(--text-link, var(--ai)); text-decoration: underline; }
+  }
+}
+
+.head {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-default, var(--hair));
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, var(--muted));
+  margin: 0 0 0.5rem;
+}
+
+.head h1 {
+  font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+  line-height: 1.15;
+  margin: 0 0 0.75rem;
+}
+
+.excerpt {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-secondary, var(--ink-soft));
+  margin: 0 0 1.25rem;
+}
+
+.meta,
+.updated {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary, var(--muted));
+  margin: 0;
+}
+
+.updated { margin-top: 0.25rem; }
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+
+  li {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full, 999px);
+    background: var(--surface-muted, var(--paper-sunk));
+    color: var(--text-secondary, var(--ink-soft));
+    border: 1px solid var(--border-default, var(--hair));
+  }
+}
+
+// Body typography. `.recipe-body` in globals.css already styles headings,
+// code blocks and tables for the recipes pages — reusing it keeps posts and
+// recipes visually identical instead of maintaining two prose styles.
+.body {
+  font-size: 1rem;
+  line-height: 1.7;
+}

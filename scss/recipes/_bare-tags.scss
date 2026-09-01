@@ -12,10 +12,10 @@
 //
 // Or copy the contents into your own SCSS and edit to taste.
 //
-// Specificity is normal (single-tag selectors, 0,0,1). To override, write any
-// class-based selector and it wins automatically:
+// Specificity is zero ( :where() = 0,0,0 ). To override, write ANY selector —
+// even another bare tag — and it wins automatically:
 //
-//   .checkout button { background: gold; }   // wins, (0,1,1) > (0,0,1)
+//   button { background: gold; }   // wins, (0,0,1) > (0,0,0)
 //
 // Heads up: bare-tag styling is global. If you mount third-party React
 // components that render their own <button> internally (Radix, react-select,
@@ -27,30 +27,31 @@
 @use '../components/buttons' as b;
 @use '../components/forms' as f;
 @use '../components/data' as d;
+@use '../components/overlay' as o;
 
 // ----------------------------------------------------------------------------
 // TYPOGRAPHY
 // ----------------------------------------------------------------------------
-h1 { @include m.type(heading-1); margin-block: m.space(5) m.space(3); }
-h2 { @include m.type(heading-2); margin-block: m.space(5) m.space(3); }
-h3 { @include m.type(heading-3); margin-block: m.space(4) m.space(2); }
-h4 { @include m.type(heading-4); margin-block: m.space(4) m.space(2); }
-h5 { @include m.type(heading-4); margin-block: m.space(3) m.space(2); }
-h6 {
+:where(h1) { @include m.type(heading-1); margin-block: m.space(5) m.space(3); }
+:where(h2) { @include m.type(heading-2); margin-block: m.space(5) m.space(3); }
+:where(h3) { @include m.type(heading-3); margin-block: m.space(4) m.space(2); }
+:where(h4) { @include m.type(heading-4); margin-block: m.space(4) m.space(2); }
+:where(h5) { @include m.type(heading-4); margin-block: m.space(3) m.space(2); }
+:where(h6) {
   @include m.type(body);
   font-weight: m.font-weight(semibold);
   margin-block: m.space(3) m.space(2);
 }
 
-p {
+:where(p) {
   margin-block: 0 m.space(3);
 }
 
-small {
+:where(small) {
   font-size: m.font-size(2);
 }
 
-blockquote {
+:where(blockquote) {
   margin-block: m.space(4);
   margin-inline: 0;
   padding-block: m.space(2);
@@ -63,9 +64,7 @@ blockquote {
 // ----------------------------------------------------------------------------
 // CODE
 // ----------------------------------------------------------------------------
-code,
-kbd,
-samp {
+:where(code, kbd, samp) {
   font-family: m.font-family(mono);
   font-size: 0.9em;
   background: m.color(surface-subtle);
@@ -73,7 +72,7 @@ samp {
   border-radius: m.radius(sm);
 }
 
-pre {
+:where(pre) {
   font-family: m.font-family(mono);
   font-size: m.font-size(2);
   background: m.color(surface-subtle);
@@ -82,7 +81,7 @@ pre {
   overflow-x: auto;
   margin-block: m.space(3);
 
-  code {
+  :where(code) {
     background: transparent;
     padding: 0;
     border-radius: 0;
@@ -92,31 +91,30 @@ pre {
 // ----------------------------------------------------------------------------
 // LISTS
 // ----------------------------------------------------------------------------
-ul,
-ol {
+:where(ul, ol) {
   margin-block: 0 m.space(3);
   padding-inline-start: m.space(5);
 }
 
-li {
+:where(li) {
   margin-block-end: m.space(1);
 }
 
 // ----------------------------------------------------------------------------
 // STRUCTURAL
 // ----------------------------------------------------------------------------
-hr {
+:where(hr) {
   border: none;
   border-block-start: 1px solid m.color(border-default);
   margin-block: m.space(5);
 }
 
-figure {
+:where(figure) {
   margin-block: m.space(4);
   margin-inline: 0;
 }
 
-figcaption {
+:where(figcaption) {
   font-size: m.font-size(2);
   color: m.color(text-secondary);
   margin-block-start: m.space(1);
@@ -125,7 +123,7 @@ figcaption {
 // ----------------------------------------------------------------------------
 // TABLES
 // ----------------------------------------------------------------------------
-table {
+:where(table) {
   @include d.table-base;
   margin-block: m.space(3);
 }
@@ -133,35 +131,37 @@ table {
 // ----------------------------------------------------------------------------
 // FORMS — bare tags get base styling. Variants via class or @include.
 // ----------------------------------------------------------------------------
-button {
+:where(button) {
   @include b.btn(primary);
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="search"],
-input[type="tel"],
-input[type="url"],
-input[type="number"],
-input[type="date"],
-input[type="time"],
-input[type="datetime-local"] {
+:where(
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"]
+) {
   @include f.input-base;
 }
 
-select   { @include f.select-base; }
-textarea { @include f.textarea-base; }
-label    { @include f.label-base; }
+:where(select)   { @include f.select-base; }
+:where(textarea) { @include f.textarea-base; }
+:where(label)    { @include f.label-base; }
 
-fieldset {
+:where(fieldset) {
   border: 1px solid m.color(border-default);
   border-radius: m.radius(md);
   padding: m.space(4);
   margin-block: m.space(3);
 }
 
-legend {
+:where(legend) {
   padding-inline: m.space(2);
   font-weight: m.font-weight(semibold);
 }
@@ -169,10 +169,10 @@ legend {
 // ----------------------------------------------------------------------------
 // INTERACTIVE
 // ----------------------------------------------------------------------------
-details {
+:where(details) {
   margin-block: m.space(2);
 
-  > summary {
+  > :where(summary) {
     cursor: pointer;
     padding: m.space(2);
     font-weight: m.font-weight(medium);
@@ -184,7 +184,49 @@ details {
     }
   }
 
-  > summary + * {
+  > :where(summary) + * {
     padding: m.space(2);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// V0.8 NATIVE COMPONENTS — sensible defaults for <dialog>, <progress>
+// ----------------------------------------------------------------------------
+// Round out Tier 3 for the v0.8 zero-JS component slate. Pair with the
+// existing component mixins (cia.modal, cia.progress) when richer styling
+// is needed.
+
+:where(dialog) {
+  @include o.modal-base;
+  border: 0;
+  margin: auto;
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
+}
+
+:where(progress) {
+  inline-size: 100%;
+  block-size: 0.5rem;
+  appearance: none;
+  border: 0;
+  border-radius: m.radius(full);
+  background: m.color(surface-muted);
+  overflow: hidden;
+
+  &::-webkit-progress-bar {
+    background: m.color(surface-muted);
+    border-radius: m.radius(full);
+  }
+  &::-webkit-progress-value {
+    background: m.color(action-primary-default);
+    border-radius: inherit;
+    @include m.transition(inline-size, slow);
+  }
+  &::-moz-progress-bar {
+    background: m.color(action-primary-default);
+    border-radius: inherit;
   }
 }

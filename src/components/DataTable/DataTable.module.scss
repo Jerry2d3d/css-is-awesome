@@ -3,9 +3,7 @@
 
 .wrapper {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: m.space(3);
+  @include m.flex($direction: column, $gap: 3, $align: stretch);
 }
 
 .scroll {
@@ -49,9 +47,7 @@
 
 .sortable .sortButton {
   all: unset;
-  display: inline-flex;
-  align-items: center;
-  gap: m.space(1);
+  @include m.flex($inline: true, $gap: 1);
   cursor: pointer;
   font: inherit;
   color: inherit;
@@ -88,11 +84,7 @@
 }
 
 .paginationBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: m.space(3);
-  flex-wrap: wrap;
+  @include m.flex($justify: between, $gap: 3, $wrap: wrap);
 }
 
 .count {

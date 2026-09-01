@@ -1,0 +1,42 @@
+/* ============================================================
+   LightDarkToggle — single button that flips between -light and
+   -dark variants of the current theme. Disabled when the active
+   theme is single-mode (e.g. `terminal`).
+   ============================================================ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Square, sized from the shared header-control token so it always matches
+     the theme dropdown next to it. */
+  width: var(--control-h, 2.25rem);
+  height: var(--control-h, 2.25rem);
+  padding: 0;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 6px);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 180ms var(--ease),
+    border-color 180ms var(--ease),
+    color 180ms var(--ease);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--paper-sunk);
+  border-color: var(--ink-faint);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--ai);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

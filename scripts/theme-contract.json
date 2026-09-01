@@ -14,122 +14,98 @@
     "--action-tertiary-default",
     "--action-tertiary-hover",
     "--action-tertiary-wash",
-
     "--ai",
     "--ai-ink",
     "--ai-wash",
-
     "--background-default",
     "--background-navbar",
     "--background-subtle",
-
     "--blur-lg",
     "--blur-md",
     "--blur-sm",
-
     "--border-default",
     "--border-emphasis",
     "--border-focus",
     "--border-subtle",
-
     "--brand-primary",
     "--brand-primary-hover",
-
     "--code-accent",
     "--code-bg",
     "--code-blue",
     "--code-green",
     "--code-ink",
     "--code-muted",
-
     "--duration-fast",
     "--duration-normal",
     "--duration-slow",
     "--ease",
-
     "--error-default",
     "--error-subtle",
     "--error-text",
-
     "--feedback-error",
     "--feedback-info",
     "--feedback-success",
     "--feedback-warning",
-
     "--font-display",
     "--font-mono",
     "--font-primary",
     "--font-sans",
     "--font-script",
     "--font-serif",
-
     "--font-size-base",
-
     "--font-weight-medium",
-
     "--glow-lg",
     "--glow-md",
     "--glow-sm",
-
     "--graphite",
     "--guide",
     "--guide-soft",
     "--hair",
     "--hair-soft",
-
     "--info-default",
     "--info-subtle",
     "--info-text",
-
     "--ink",
     "--ink-faint",
     "--ink-soft",
-
     "--interactive-active",
     "--interactive-hover",
-
     "--line-height-normal",
-
     "--muted",
-
     "--ochre",
     "--ochre-wash",
-
     "--paper",
     "--paper-glass",
     "--paper-raised",
     "--paper-sunk",
-
     "--r-lg",
     "--r-md",
     "--r-sm",
-
     "--radius-full",
     "--radius-lg",
     "--radius-md",
     "--radius-sm",
     "--radius-xl",
-
     "--shadow-2xl",
     "--shadow-lg",
     "--shadow-md",
     "--shadow-sm",
     "--shadow-xl",
-
     "--shu",
     "--shu-wash",
-
-    "--space-2xs",
-    "--space-lg",
-    "--space-md",
-    "--space-sm",
-    "--space-xl",
-    "--space-xs",
-
+    "--space-0",
+    "--space-1",
+    "--space-2",
+    "--space-3",
+    "--space-4",
+    "--space-5",
+    "--space-6",
+    "--space-7",
+    "--space-8",
+    "--space-9",
     "--success-default",
     "--success-subtle",
     "--success-text",
-
     "--surface-default",
     "--surface-emphasis",
     "--surface-glass",
@@ -137,7 +113,6 @@
     "--surface-raised",
     "--surface-subtle",
     "--surface-sunk",
-
     "--text-inverse",
     "--text-link",
     "--text-link-hover",
@@ -145,11 +120,9 @@
     "--text-primary",
     "--text-secondary",
     "--text-tertiary",
-
     "--warning-default",
     "--warning-subtle",
     "--warning-text",
-
     "--z-backdrop",
     "--z-dropdown",
     "--z-modal",
@@ -157,5 +130,42 @@
     "--z-sticky",
     "--z-tooltip"
   ],
-  "optional": []
+  "optional": [
+    "--background-elevated",
+    "--background-hero",
+    "--background-overlay",
+    "--background-scrim",
+    "--badge-radius",
+    "--border-card",
+    "--border-divider",
+    "--border-focus-ring",
+    "--border-input",
+    "--btn-radius",
+    "--card-radius",
+    "--duration-button-hover",
+    "--duration-modal-open",
+    "--duration-toast-slide",
+    "--input-radius",
+    "--logo-default",
+    "--logo-mark",
+    "--logo-monochrome",
+    "--logo-wordmark",
+    "--modal-radius",
+    "--shadow-button",
+    "--shadow-card",
+    "--shadow-dropdown",
+    "--shadow-input-focus",
+    "--shadow-modal",
+    "--shadow-popover",
+    "--shadow-text",
+    "--shadow-tooltip",
+    "--space-2xs",
+    "--space-lg",
+    "--space-md",
+    "--space-sm",
+    "--space-xl",
+    "--space-xs",
+    "--tag-radius",
+    "--touch-target-min"
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "css-is-awesome",
-  "version": "0.6.0",
+  "version": "1.1.0",
   "description": "A token-driven SCSS design system with light/dark theming, semantic color tokens, and a 800+ LOC mixin API.",
   "homepage": "https://github.com/Jerry2d3d/css-is-awesome#readme",
   "bugs": {
@@ -9,6 +9,10 @@
   "main": "dist/css-is-awesome.css",
   "style": "dist/css-is-awesome.css",
   "sass": "scss/main.scss",
+  "bin": {
+    "css-is-awesome-mcp": "mcp/server.cjs",
+    "cia": "bin/cia.cjs"
+  },
   "sideEffects": [
     "**/*.css",
     "**/*.scss"
@@ -19,14 +23,24 @@
       "style": "./dist/css-is-awesome.css",
       "default": "./dist/css-is-awesome.css"
     },
+    "./api": {
+      "sass": "./scss/api.scss"
+    },
+    "./api.scss": "./scss/api.scss",
     "./core": "./dist/css-is-awesome.core.css",
     "./core.css": "./dist/css-is-awesome.core.css",
+    "./tokens": "./dist/tokens.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens.d.ts": "./dist/tokens.d.ts",
     "./utilities": "./dist/css-is-awesome.utilities.css",
     "./utilities.css": "./dist/css-is-awesome.utilities.css",
     "./min": "./dist/css-is-awesome.min.css",
     "./min.css": "./dist/css-is-awesome.min.css",
+    "./css": "./dist/css-is-awesome.css",
+    "./css.css": "./dist/css-is-awesome.css",
     "./scss": "./scss/main.scss",
     "./scss/main": "./scss/main.scss",
+    "./scss/tokens": "./scss/tokens.scss",
     "./scss/mixins": "./scss/_mixins.scss",
     "./scss/generator": "./scss/_generator.scss",
     "./scss/utilities": "./scss/_utilities.scss",
@@ -49,14 +63,36 @@
   },
   "files": [
     "scss",
+    "api.scss",
+    "_index.scss",
     "dist",
     "figma-tokens",
+    "mcp",
+    "scripts/theme-contract.json",
+    "scripts/theme-validator.js",
+    "scripts/theme-a11y.js",
+    "scripts/icon-validator.js",
+    "scripts/icon-contract.json",
+    "bin",
     "public/theme.css",
     "public/themes",
+    "public/icons",
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
-    "css-is-awesome.instructions.md"
+    "LICENSE-third-party",
+    "css-is-awesome.instructions.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "llm.txt",
+    "THREE-TIERS.md",
+    "THEMING.md",
+    "MIGRATION.md",
+    "CONTRACT.md",
+    "ROADMAP.md",
+    "VERSIONING.md",
+    "scripts/prepare-dist.mjs"
   ],
   "scripts": {
     "dev": "next dev -p 5173",
@@ -68,15 +104,31 @@
     "lint:scss:fix": "stylelint \"scss/**/*.scss\" --fix",
     "build:css": "sass scss/main.scss dist/css-is-awesome.css --no-source-map",
     "build:css:core": "sass scss/core.scss dist/css-is-awesome.core.css --no-source-map",
+    "build:css:tokens": "sass scss/tokens.scss dist/tokens.css --no-source-map",
+    "build:css:themes": "node scripts/build-themes.mjs && node scripts/build-theme-bundle.mjs",
     "build:css:utilities": "sass scss/utilities-only.scss dist/css-is-awesome.utilities.css --no-source-map",
-    "build:css:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
-    "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:utilities && npm run build:css:min",
+    "build:css:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/tokens.scss dist/tokens.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
+    "build:token-types": "node scripts/generate-token-types.mjs",
+    "dtcg-to-scss": "node scripts/dtcg-to-scss.mjs",
+    "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:tokens && npm run build:css:utilities && npm run build:css:themes && npm run build:css:min && npm run build:token-types",
     "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
     "validate-themes": "node scripts/theme-validator.js --all",
+    "validate-icons": "node scripts/icon-validator.js",
+    "validate-api": "node scripts/validate-api.mjs",
+    "validate-package": "node scripts/validate-package.mjs",
+    "validate-recipes": "node scripts/validate-recipes.mjs",
+    "size-budget": "node scripts/size-budget.mjs",
+    "size-report": "node scripts/size-budget.mjs --report",
+    "coverage:api": "node scripts/api-coverage.mjs",
+    "coverage:mcp": "node scripts/mcp-coverage.mjs",
+    "coverage": "npm run coverage:api && npm run coverage:mcp",
+    "pack:consumer": "node scripts/pack-to-consumer.mjs",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
-    "playwright:install": "playwright install chromium --with-deps",
-    "prepublishOnly": "npm run build:css:all"
+    "playwright:install": "playwright install --with-deps",
+    "prepare": "node scripts/prepare-dist.mjs",
+    "prepublishOnly": "npm run build:css:all",
+    "check:theme-drift": "node scripts/check-theme-drift.mjs"
   },
   "keywords": [
     "css",
@@ -100,16 +152,25 @@
     "node": ">=20"
   },
   "peerDependencies": {
-    "sass": "^1.77.0"
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "sass": "^1.77.0",
+    "zod": "^3.25.0 || ^4.0.0"
   },
   "peerDependenciesMeta": {
     "sass": {
+      "optional": true
+    },
+    "@modelcontextprotocol/sdk": {
+      "optional": true
+    },
+    "zod": {
       "optional": true
     }
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
     "@eslint/eslintrc": "^3.2.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@playwright/test": "^1.59.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.0",
@@ -122,6 +183,8 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.0.0",
+    "jiti": "^2.7.0",
+    "marked": "^15.0.12",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -130,6 +193,7 @@
     "serve": "^14.2.6",
     "stylelint": "^17.8.0",
     "stylelint-config-standard-scss": "^17.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "zod": "^3.25.0"
   }
 }

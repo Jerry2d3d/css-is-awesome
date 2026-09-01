@@ -1,0 +1,69 @@
+// ============================================================================
+// COPY BUTTON
+// ============================================================================
+// Reusable copy-to-clipboard button. Decoupled from any parent context;
+// consumer wires it to any element via `data-copy-target="#id"`.
+//
+// Usage (mixin — primary API):
+//   .doc-copy { @include copy-button; }
+//
+// Usage (utility class):
+//   <pre id="snippet">…</pre>
+//   <button data-copy-target="#snippet" class="cia-copy-button">Copy</button>
+//
+// cia ships ZERO JavaScript in the npm package. Wire your own click handler
+// to read `data-copy-target` and call navigator.clipboard.writeText().
+//
+// Copy-paste recipe + the framework-free shim are documented at
+// /docs/recipes/copy-button on the cia site. A separate add-on package
+// (@cia/copy-button) is on the v1.x roadmap.
+//
+// Toast variant: pair the button with <div popover="hint" class="cia-copy-toast">
+// and add `popovertarget="..."` to the button. Native popover handles show;
+// your handler calls hidePopover() after a timeout for auto-hide.
+// ============================================================================
+@use '../mixins' as m;
+@use './overlay' as o;
+
+@mixin copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(1);
+  padding: m.space(1) m.space(2);
+  min-height: var(--touch-target-min, 24px);                  /* WCAG 2.2 SC 2.5.8 */
+  font-family: m.font-family(mono);
+  font-size: m.font-size(2);
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: m.color(text-secondary);
+  background: m.color(surface-raised);
+  border: 1px solid m.color(border-default);
+  border-radius: m.radius(sm);
+  cursor: pointer;
+  @include m.transition(background-color, color, border-color);
+  @include m.focus-ring;
+
+  &:hover {
+    background: m.color(surface-emphasis);
+    color: m.color(text-primary);
+    border-color: m.color(border-emphasis);
+  }
+
+  /* Copied state — JS shim toggles data-copied="true" for 1.5s */
+  &[data-copied='true'] {
+    background: m.color(success-subtle);
+    color: m.color(success-text);
+    border-color: m.color(success-default);
+  }
+}
+
+// Toast variant — composes with the tooltip mixin from overlay.
+// Used as a separate element triggered by the copy button via popovertarget.
+@mixin copy-toast {
+  @include o.tooltip;
+  background: m.color(success-default);
+  color: m.color(text-inverse);
+  font-family: m.font-family(primary);
+  font-size: m.font-size(2);
+  white-space: normal;
+}

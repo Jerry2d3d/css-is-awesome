@@ -1,9 +1,7 @@
 @use 'mixins' as m;
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: m.space(2);
+  @include m.flex($direction: column, $gap: 2, $align: stretch);
 }
 
 .hint {

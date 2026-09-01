@@ -1,8 +1,94 @@
 # Epics
 
-Detailed breakdown of the work needed to take css-is-awesome to 1.0 and beyond. Each epic is a thematic slice of the system. `ROADMAP.md` at the repo root is the phase/milestone view; these files are the work-item view. User stories from any epic may ship across multiple phases.
+> **Updated 2026-05-23.** This folder now contains TWO parallel structures:
+>
+> 1. **Versioned epic folders (v1-0/ through v2-0/)** — the current backlog organized by release. Created during the 2026-05-23 v1.0 architecture lock. These are the active source of truth.
+> 2. **Legacy numbered epics (01-07)** — the original 7-epic structure from earlier 2026. Items mostly shipped (theme system, MCP server, CI) or absorbed into the new versioned epics. Preserved for history.
 
-## Format (every epic file follows this)
+Detailed breakdown of the work needed to take css-is-awesome from v1.0 to v2.0. Each epic is a thematic slice of the system. `ROADMAP.md` at the repo root is the phase/milestone view; these files are the work-item view.
+
+> **Launch note (2026-09-01) — the launch milestone is DONE.** **css-is-awesome@1.1.0 was published to npm on 2026-09-01** — the first publish in the project's history — with dist-tag `latest`, a GitHub Release, and an annotated tag; the release automation (semantic-release via the CI → Release workflows) is proven end to end. The **GitHub repo went public 2026-09-01**, and the **docs site is live at <https://jerry2d3d.github.io/css-is-awesome/>** (Actions-based GitHub Pages deploy, auto-deploys on every push to `main`). CDN delivery verified: `https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css` and the per-theme files resolve (unpkg too).
+> **Version-number caveat:** npm versions are derived by semantic-release from commit history, so they do NOT map 1:1 onto the version folders below. The published **1.1.0** carries the 2026-08-29 → 2026-09-01 wave (theme single-source rework, themes-own-spacing, a11y fixes, linux visual baselines, public roadmap page) — it is **not** the `v1-1/` backlog, none of which has started. Never hand-type a "current version" here; state versions only as dated historical facts.
+>
+> **Audit note (2026-08-30) — theme system.** The `fix/theme-single-source` pass closes several long-open criteria in the legacy epics and corrects one that was reported green but wasn't: the contrast audit's block regex required quotes, so an unquoted `[data-theme=dark]` matched nothing and the file fell through to a `:root`-only path that audited nothing and exited 0. **US-2.6.1 / US-2.6.2 / US-5.5.1 / US-5.5.3 were passing on a validator that never read the themes.** Now fixed and expanded (17 → 22 pairs, `--code-*` added), with all **24** themes genuinely passing. Also landed: every theme has exactly one SCSS source (13 hand-authored CSS files ported, 3 bundle-only themes promoted), themes own `--space-0..9` (US-1.4.1, spacing half), and `npm run check:theme-drift` gates the committed artifacts against their sources in CI. This wave shipped in the `1.1.0` (2026-09-01) section of [`CHANGELOG.md`](../../CHANGELOG.md).
+>
+> **Audit note (2026-07-16).** Reconciled against `main` @ **v0.8.2 (pre-1.0)**. Legacy epics **01 / 02 / 04 / 06 / 07 are largely shipped**; **05 is partial** (Storybook killed; Jest, Lighthouse, and bundle-size gates not built); **03 is SUPERSEDED** (no React component package — cia ships zero JS; `src/components/` is the docs-site reference only). Each legacy epic file now carries a **STATUS banner** under its title with the per-feature detail; the individual `- [ ]` acceptance boxes inside those files are **stale** and were not flipped item-by-item. The active, accurate backlog is the **v1-0/ sprint folder** ([`v1-0/README.md`](./v1-0/README.md)).
+
+## Versioned epic folders (current source of truth)
+
+| Release | Theme | Folder | Stories | Status |
+|---|---|---|---|---|
+| [v1.0](./v1-0/README.md) | **Recipes-first reframe** — recipes book, theme editor polish, migration on-ramp, playground, bug-fix patch | v1-0/ | 42 | Shipped — tagged v1.0.0 2026-08-17 at 24/42 (ship-then-see); **launched 2026-09-01** (npm publish + public repo + live site); 18 stories carried forward post-launch |
+| [v1.1](./v1-1/README.md) | **Recipes momentum** — 7 more recipes, install wizard, @cia/a11y-recipes, @cia/react codegen POC, density knob | v1-1/ | 47 | Planned — not started (the npm version 1.1.0, published 2026-09-01, is NOT this backlog; see version-number caveat above) |
+| [v1.2](./v1-2/README.md) | **Coverage** — RTL audit, form validation, i18n, print, MUI/Chakra migration | v1-2/ | 32 | Planned |
+| [v1.3](./v1-3/README.md) | **Ecosystem** — Figma plugin, theme marketplace, DTCG migration, @cia/angular | v1-3/ | 34 | Planned |
+| v1.4 | *Reserved — scoped from v1.1-v1.3 feedback* | — | — | Not scoped |
+| [v1.5](./v1-5/README.md) | **IDE integration** — VS Code extension | v1-5/ | 15 | Planned |
+| [v2.0](./v2-0/README.md) | **Visual builder** — Recipes Maker | v2-0/ | 18 | Planned — may never ship |
+
+**Total planned stories across all versions:** 188 (was 184; the density knob epic, queued into v1.1 on 2026-08-29, added 4).
+
+> **On effort estimates.** Per-story day estimates live inside the individual
+> epic files as planning aids. They are deliberately NOT summarised here or on
+> the public roadmap page: a day count on a public list reads as a delivery
+> date, and then work gets shipped to the date instead of to the standard.
+> The public view is [`/docs/roadmap`](../../src/app/docs/roadmap/page.tsx),
+> which states direction and ordering with no dates at all.
+
+## Versioned epic format
+
+Every versioned epic file follows the structure documented in [`v1-0/README.md`](./v1-0/README.md). Standard sections: Mission, Why now, Out of scope, Features (each with user stories + acceptance criteria + effort), Definition of done, Risks, Related.
+
+### Story IDs
+
+`US-V<MM>.<EE>.<FF>.<SS>` where:
+- `V<MM>` = version major+minor (V10 for v1.0, V11 for v1.1, V15 for v1.5, V20 for v2.0)
+- `<EE>` = epic number within that version
+- `<FF>` = feature number within that epic
+- `<SS>` = story number within that feature
+
+Example: `US-V11.04.1.1` = v1.1, epic 04 (@cia/react POC), feature 1 (codegen pipeline), story 1 (parse recipe markdown into AST).
+
+### Effort scale (hours-based)
+
+- **S** — under 4 hours
+- **M** — 4 to 8 hours
+- **L** — 1 to 2 days
+- **XL** — more than 2 days (rare; usually a sign the story should be split)
+
+## Cross-cutting decisions (every epic respects these)
+
+- **Zero JS in npm `files` manifest** — CLI binaries in `bin/` allowed (MCP server already there)
+- **No `@layer`** — `:where()` for bare-tag specificity
+- **No BEM** — no `__` / `--` patterns in cia class names
+- **No component library to maintain** — recipes are the framework story; `@cia/<framework>` packs ship via codegen if at all
+- **Mixin-first** — cia is the mixin; the selector is the consumer's choice
+- **Themes are data** — one theme = one file via `light-dark()`; tokens only
+- **Fail-by-default a11y** — `--allow-a11y-fail` opts out; default enforces WCAG 2.2 AA
+
+See memory in `~/.claude/projects/K--repo-css-is-awesome/memory/` for the full architectural lock history.
+
+## How to add an epic post-lock
+
+1. Pick the right version folder (or create one)
+2. Add `EPIC-<NN>-<name>.md` following the existing structure in that version
+3. Update that version's `README.md` to list the new epic
+4. Update this top-level README's "Versioned epic folders" table
+
+## How to deprecate an epic
+
+1. Rename file → `<filename>.archived.md`
+2. Add header note: `**STATUS: ARCHIVED <date>** — Reason: <one line>. See [<replacement>](path) for current direction.`
+3. Update the version README to note the archive
+4. Don't delete — history matters
+
+---
+
+# Legacy: original 7 epics (preserved for history)
+
+> The structure below predates the 2026-05-23 v1.0 architecture lock. Most items have shipped (MCP server, theme validator, CI, semantic-release) or were absorbed into the new versioned epics. The "Gremlin UI" plan in particular has been REVISED — see Phase 8 in `ROADMAP.md` and [`v1-0/post-v1-ideas.md`](./v1-0/post-v1-ideas.md) for the current "boiler = showcase, not a separate React component library" direction.
+
+## Legacy format
 
 ```md
 # Epic {N}: {Name}
@@ -10,17 +96,9 @@ Detailed breakdown of the work needed to take css-is-awesome to 1.0 and beyond. 
 ## Summary
 One paragraph. What this epic delivers and why it matters.
 
-## Goals
-- Measurable outcome 1
-- Measurable outcome 2
-
-## Out of scope
-- Things explicitly NOT in this epic (go elsewhere)
-
 ## Features
 
 ### Feature {N.M}: {Name}
-One-paragraph description.
 
 #### User Stories
 
@@ -32,66 +110,30 @@ One-paragraph description.
 
 **Priority:** P0 | P1 | P2
 **Effort:** 1 | 3 | 5 | 7 | 9 | 11 | 13
-**Role:** {role — pulled from the "As a" opener; e.g. "maintainer", "consumer", "CI system"}
-
-(repeat per story)
-
-(repeat per feature)
-
-## Dependencies
-- Blocks: Epic N, Epic M
-- Blocked by: Epic N
-
-## Priority
-P0 (blocker for 1.0) | P1 (wanted for 1.0) | P2 (post-1.0)
 ```
 
-## ID scheme
+(Legacy effort scale was modified-Fibonacci 1-13; new versioned epics use S/M/L/XL with hour ranges. Mapping: old 1 → S, 3 → M, 7 → L, 13 → XL.)
 
-`US-{epic#}.{feature#}.{story#}` — e.g. `US-1.2.3` = Epic 1, Feature 2, Story 3. IDs are stable; renumbering retires an ID and assigns a new one.
+## Legacy ID scheme
 
-## Priority scale
+`US-{epic#}.{feature#}.{story#}` — e.g. `US-1.2.3` = legacy Epic 1, Feature 2, Story 3.
+
+(New versioned epics use the prefixed format `US-V<MM>.<EE>.<FF>.<SS>` documented above to avoid collision.)
+
+## Legacy priority scale
 
 - **P0** — blocker for 1.0 release.
 - **P1** — wanted for 1.0, can slip without blocking the release.
 - **P2** — post-1.0.
 
-## Effort scale
+## The original seven epics
 
-Modified-Fibonacci odd scale. Bigger numbers mean more uncertainty as well as more hours.
+1. [Library Foundations](01-library-foundations.md) — token coverage, sizing scale, `$theme-components` map, theme validator, dark-mode auto-detect *(largely shipped; only the component-depth audit, `roadmap/component-audit.md`, is outstanding)*
+2. [Themes & Icons](02-themes-and-icons.md) — per-theme icon packs, preview thumbnails, authoring guide, community submission, contrast audit; add-ons feature *(largely shipped — **24 themes**, one SCSS source each, light/dark pairing + naming migration, Lucide core pack, contrast + icon validators (contrast false-pass bug fixed 2026-08-30), `/themes` editor; outstanding: Phosphor/Heroicons packs, per-theme size CI, add-ons layer. Community submission also tracked in [v1.3 EPIC-02 theme marketplace](./v1-3/EPIC-02-theme-marketplace.md))*
+3. [React Component Library](03-react-components.md) — companion React component library — Gremlin UI *(**SUPERSEDED** 2026-05-23: NO separate component library ships; cia is zero-JS. `src/components/` is the docs-site reference. See the epic's STATUS banner and [v1.1 EPIC-04 @cia/react codegen](./v1-1/EPIC-04-framework-pack-react.md) for the codegen-if-at-all approach.)*
+4. [Documentation Site](04-documentation-site.md) — real `/docs` content + site UX *(content shipped; chrome gaps — no site search, no custom 404, no OG images)*
+5. [Quality & Delivery](05-quality-delivery.md) — tests, a11y, visual regression, Lighthouse, bundle budget, CI, deploy, release automation, Storybook, starter templates *(**partial**: CI + Playwright a11y/smoke/visual + release automation + Pages deploy shipped — and proven 2026-09-01: first npm publish (1.1.0) end to end via semantic-release, docs site live on Pages, visual baselines committed for both win32 and linux; Storybook explicitly killed; Jest unit harness, Lighthouse baseline, and bundle-size gates NOT built)*
+6. [AI Integration](06-ai-integration.md) — MCP server, CLI, JSON tokens, AI prompt templates *(**shipped**: MCP server, `cia` CLI (`bin/cia.cjs`), JSON tokens, `llm.txt`, AGENTS/CLAUDE/GEMINI files; outstanding: prompt-template folder, hosted bots, unified `/docs/ai` page)*
+7. [Community & Project Meta](07-community-meta.md) — CONTRIBUTING, CoC, SECURITY, issue/PR templates, SemVer policy *(mostly shipped; outstanding: FUNDING.yml, MAINTAINERS.md, brand assets, announcement kit)*
 
-- **1** — trivial; under half a day of focused work
-- **3** — simple; roughly one day
-- **5** — straightforward; two to three days
-- **7** — medium; one working week
-- **9** — complex; a week plus some uncertainty
-- **11** — hard; more than a week with open questions
-- **13** — large; multi-week or needs to be split
-
-Default existing stories map roughly: old **S → 1**, **M → 3**, **L → 7**, **XL → 13**. Re-estimate when better information shows up.
-
-## Role
-
-Every user story has one primary role pulled from the "As a {role}…" opener. Kept as its own metadata line so the backlog is scannable by audience. Roles to use consistently across epics:
-
-- **system author** / **maintainer** — Jerry or anyone keeping the library running
-- **consumer** — a developer using css-is-awesome in their project
-- **theme author** — someone writing a new theme
-- **contributor** — external PR author
-- **CI system** — automated checks
-- **designer** — non-engineer stakeholder
-- **accessibility reviewer**
-- **release manager**
-- **AI assistant** — Claude / ChatGPT / Gemini / Copilot / Cursor
-- **new user** — first five minutes on the site
-- **Bootstrap migrant**, **keyboard user**, **screen-reader user**, etc. as specific stories need
-
-## The seven epics
-
-1. [Library Foundations](01-library-foundations.md) — token coverage, sizing scale, `$theme-components` map, theme validator, dark-mode auto-detect
-2. [Themes & Icons](02-themes-and-icons.md) — per-theme icon packs, preview thumbnails, authoring guide, community submission, contrast audit
-3. [React Component Library](03-react-components.md) — the ~25 missing React wrappers (atoms → molecules → overlays)
-4. [Documentation Site](04-documentation-site.md) — real `/docs` content + site UX: mixin reference, migration guide, search, TOC, Shiki, mobile nav, copy-to-clipboard
-5. [Quality & Delivery](05-quality-delivery.md) — tests, a11y, visual regression, Lighthouse, bundle budget, CI, deploy, release automation, Storybook, starter templates
-6. [AI Integration](06-ai-integration.md) — MCP server, CLI, JSON tokens, AI prompt templates
-7. [Community & Project Meta](07-community-meta.md) — CONTRIBUTING, CoC, SECURITY, issue/PR templates, SemVer policy
+See also: [`roadmap/product-architecture.md`](../product-architecture.md) for the (also revised) umbrella product split.

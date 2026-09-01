@@ -1,0 +1,107 @@
+// ============================================================================
+// ANIMATIONS-UTILITIES — keyframes + .cia-anim-* + .cia-hover-* + global safety net
+// ============================================================================
+// Load ONCE globally. NOT safe to `@use` from a CSS Module (`.module.scss`)
+// because of the global `*, *::before, *::after` selector — CSS Modules
+// pure-mode rejects unscoped selectors.
+//
+// Counterpart to _animations.scss (which is the mixin surface).
+//
+// Two consumer patterns:
+//
+//   1. Full bundle (recommended) — main.scss already loads this file:
+//        @use 'css-is-awesome/scss/main';
+//
+//   2. Pieces — load this file once globally, then @use the mixin file
+//      from any .module.scss for the animate() / animate-on() API:
+//        // globals.scss (loaded once at app root)
+//        @use 'css-is-awesome/scss/animations-utilities';
+//
+//        // any-component.module.scss
+//        @use 'css-is-awesome/scss/animations' as anim;
+//        .my-spinner { @include anim.animate(spin, $iteration: infinite, $timing: linear); }
+//
+// The mixin's `animation-name: cia-spin` reference resolves at runtime
+// against the global @keyframes declared here — even when the mixin call
+// site is inside a CSS Module.
+// ============================================================================
+@use './animations' as a;
+
+// ----------------------------------------------------------------------------
+// KEYFRAME LIBRARY
+// ----------------------------------------------------------------------------
+// The definitions themselves live in `_animations.scss` (`keyframes-for()`),
+// next to the `animate()` mixin that has to be able to emit them on its own.
+// This module just asks for all of them, so the global bundle keeps shipping
+// the full set while there is only ONE copy of each definition to maintain.
+@each $name in a.animation-names() {
+  @include a.keyframes-for($name);
+}
+
+// ----------------------------------------------------------------------------
+// UTILITY CLASSES — .cia-anim-* + .cia-hover-*
+// ----------------------------------------------------------------------------
+
+.cia-anim-fade-in       { @include a.animate(fade-in); }
+.cia-anim-fade-in-fast  { @include a.animate(fade-in, $speed: fast); }
+.cia-anim-fade-in-slow  { @include a.animate(fade-in, $speed: slow); }
+
+.cia-anim-fade-out      { @include a.animate(fade-out); }
+.cia-anim-fade-out-fast { @include a.animate(fade-out, $speed: fast); }
+.cia-anim-fade-out-slow { @include a.animate(fade-out, $speed: slow); }
+
+.cia-anim-slide-up       { @include a.animate(slide-up); }
+.cia-anim-slide-up-fast  { @include a.animate(slide-up, $speed: fast); }
+.cia-anim-slide-up-slow  { @include a.animate(slide-up, $speed: slow); }
+
+.cia-anim-slide-down       { @include a.animate(slide-down); }
+.cia-anim-slide-down-fast  { @include a.animate(slide-down, $speed: fast); }
+.cia-anim-slide-down-slow  { @include a.animate(slide-down, $speed: slow); }
+
+.cia-anim-slide-left       { @include a.animate(slide-left); }
+.cia-anim-slide-left-fast  { @include a.animate(slide-left, $speed: fast); }
+.cia-anim-slide-left-slow  { @include a.animate(slide-left, $speed: slow); }
+
+.cia-anim-slide-right       { @include a.animate(slide-right); }
+.cia-anim-slide-right-fast  { @include a.animate(slide-right, $speed: fast); }
+.cia-anim-slide-right-slow  { @include a.animate(slide-right, $speed: slow); }
+
+.cia-anim-scale-in       { @include a.animate(scale-in); }
+.cia-anim-scale-in-fast  { @include a.animate(scale-in, $speed: fast); }
+.cia-anim-scale-in-slow  { @include a.animate(scale-in, $speed: slow); }
+
+.cia-anim-pop       { @include a.animate(pop); }
+.cia-anim-pop-fast  { @include a.animate(pop, $speed: fast); }
+.cia-anim-pop-slow  { @include a.animate(pop, $speed: slow); }
+
+.cia-anim-wiggle       { @include a.animate(wiggle); }
+.cia-anim-wiggle-fast  { @include a.animate(wiggle, $speed: fast); }
+.cia-anim-wiggle-slow  { @include a.animate(wiggle, $speed: slow); }
+
+// Loopers — infinite by default when used as utility
+.cia-anim-spin    { @include a.animate(spin,    $speed: slow, $iteration: infinite, $timing: linear); }
+.cia-anim-pulse   { @include a.animate(pulse,   $speed: slow, $iteration: infinite); }
+.cia-anim-shimmer { @include a.animate(shimmer, $speed: slow, $iteration: infinite, $timing: linear); }
+
+.cia-hover-lift  { @include a.animate-on(hover, lift); }
+.cia-hover-glow  { @include a.animate-on(hover, glow); }
+.cia-hover-press { @include a.animate-on(hover, press); }
+.cia-hover-fade  { @include a.animate-on(hover, fade); }
+
+// ----------------------------------------------------------------------------
+// GLOBAL REDUCED-MOTION SAFETY NET
+// ----------------------------------------------------------------------------
+// Lives here (not in the mixin file) because the `*, *::before, *::after`
+// selector is bare-global — CSS Modules pure-mode rejects it. Consumers
+// load this file once globally; .module.scss code @use's the mixin file
+// instead and inherits this safety net from the global scope.
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    /* stylelint-disable declaration-no-important -- !important is the canonical pattern for the global reduced-motion safety net: it must override any animation/transition declared anywhere in the document. */
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    /* stylelint-enable declaration-no-important */
+  }
+}

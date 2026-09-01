@@ -1,18 +1,22 @@
 /* ============================================================
-   Themes gallery (/themes) — co-located styles.
+   Themes builder (/themes) — sidebar + sectioned component
+   showcase. The editor dock mounts as a separate component.
+   The full theme tile gallery lives at /themes/gallery.
    ============================================================ */
+
 .shell {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 4rem 1.5rem 6rem;
 }
+
 .hero {
   text-align: center;
-  margin-bottom: 3.5rem;
+  margin-bottom: 2.5rem;
 }
 .eyebrow {
   font-family: var(--font-script);
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   color: var(--shu);
   line-height: 1;
   margin-bottom: 0.5rem;
@@ -25,13 +29,164 @@
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  max-width: 60ch;
 }
 .hero code {
   font-family: var(--font-mono);
   font-size: 0.9em;
 }
-.grid {
+
+/* ---------- Builder layout ---------- */
+
+.layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 220px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.sidebar {
+  position: sticky;
+  top: calc(var(--header-height, 60px) + 1rem);
+  align-self: start;
+  font-size: 0.92rem;
+
+  h5 {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint, var(--text-muted));
+    margin: 0 0 0.5rem;
+  }
+  ul {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  li a {
+    display: block;
+    padding: 0.35rem 0.5rem;
+    border-radius: var(--radius-sm, 4px);
+    color: var(--ink-soft, currentColor);
+    text-decoration: none;
+    transition: background 120ms ease, color 120ms ease;
+  }
+  li a:hover {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.05));
+    color: var(--ink, currentColor);
+  }
+}
+.sidebarFoot {
+  font-size: 0.78rem;
+  color: var(--ink-faint, var(--text-muted));
+  line-height: 1.5;
+  padding: 0 0.5rem;
+}
+@media (max-width: 800px) {
+  .sidebar {
+    position: static;
+  }
+}
+
+.content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.section {
+  scroll-margin-top: calc(var(--header-height, 60px) + 1rem);
+
+  .eyebrow {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ai, var(--text-muted));
+    background: var(--ai-wash, transparent);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm, 4px);
+    display: inline-block;
+    margin: 0;
+  }
+  h2 {
+    font-size: 1.6rem;
+    margin: 0.6rem 0 0.4rem;
+  }
+  p {
+    color: var(--ink-soft, var(--text-muted));
+    margin: 0 0 1rem;
+    max-width: 60ch;
+  }
+  code {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.9em;
+  }
+}
+
+.preview {
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-md, 8px);
+  background: var(--paper-raised, var(--paper-default));
+  overflow: hidden;
+}
+.stage {
+  padding: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--paper-default);
+}
+.stageCol {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+.previewFoot {
+  border-top: 1px solid var(--hair);
+  padding: 0.6rem 1rem;
+  background: var(--paper-sunk, var(--background-subtle));
+  font-size: 0.78rem;
+  color: var(--ink-faint, var(--text-muted));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  code {
+    font-family: var(--font-mono, monospace);
+  }
+}
+
+.galleryLink {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--hair);
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--ink-soft, var(--text-muted));
+
+  a {
+    color: var(--ai, currentColor);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
 }

@@ -10,17 +10,14 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  display: inline-flex;
-  align-items: center;
+  @include m.flex($inline: true);
 }
 
 .item {
   @include nav.pagination-item;
   all: unset;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  @include m.flex($inline: true, $justify: center);
   min-width: 2.25rem;
   height: 2.25rem;
   padding: 0 m.space(2);
@@ -48,6 +45,5 @@
 .dots {
   padding: 0 m.space(2);
   color: m.color(text-muted);
-  display: inline-flex;
-  align-items: center;
+  @include m.flex($inline: true);
 }

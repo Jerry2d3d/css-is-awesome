@@ -1,5 +1,7 @@
 # Epic 6: AI Integration
 
+> **STATUS — audited 2026-07-16 (v0.8.2). Strong — largely shipped.** MCP server at `mcp/server.cjs` (bin `css-is-awesome-mcp`, **30 tools** incl. list/get tokens, mixins, components, `resolve_size`, `assemble_prompt`, `search_components`, `read_versioning`) (Feature 6.1); the `cia` CLI shipped as `bin/cia.cjs` (bin `cia`) rather than a separate `@css-is-awesome/cli` package (6.2); JSON token export in `figma-tokens/` (6.3); `llm.txt` at repo root + served (6.6); AI-agent instruction files `AGENTS.md` / `CLAUDE.md` / `GEMINI.md` plus the deep `css-is-awesome.instructions.md` (6.9); `/docs/mcp` + `/docs/composition` pages. **Not shipped:** the `validate_theme` MCP tool (US-6.1.4 — the server has no such tool; theme validation is CLI-only via `npm run validate-themes`), the reusable prompt-template folder `prompts/` (6.4), hosted custom Claude/ChatGPT/Gemini bots (6.5), and a unified `/docs/ai` integration page (6.8 — `/docs/mcp` covers only the MCP slice). Per-criteria `- [ ]` boxes below are **stale**.
+
 ## Summary
 Makes css-is-awesome first-class legible to AI coding assistants (Claude, ChatGPT, Gemini, Cursor, Windsurf, Copilot) so they can reason about the system and generate correct code with it. The mixin-first architecture already fits in a few thousand tokens; this epic capitalizes on that by shipping the machine-readable artifacts, tools, and prompt surfaces that let an agent introspect tokens, mixins, and components, validate a theme, and scaffold a project without the user hand-feeding it docs. Deliverables include a Model Context Protocol (MCP) server, a `cia` CLI, an auto-generated JSON token export, reusable prompt templates, custom Claude/ChatGPT/Gemini bots, an `llm.txt` summary at repo root, a SemVer policy for AI consumers, and an integration guide. Together they turn "AI can probably handle this" into "an AI assistant can build a working page in one prompt."
 
@@ -434,11 +436,84 @@ A dedicated docs-site page that walks a reader through every way to hook AI into
 **Effort:** 1
 **Role:** developer using an AI copilot
 
+### Feature 6.9: AI-agent instruction files (AGENTS.md / CLAUDE.md / GEMINI.md)
+Ship a small set of agent-specific entry-point files at the package root so that any AI coding assistant working in a consumer's project can immediately discover the library's authoring rules without crawling the docs site or the source. `AGENTS.md` is the substantive entry point (cross-tool — Aider, Codex, growing 2026 standard); `CLAUDE.md` and `GEMINI.md` are short pointers that satisfy each platform's auto-load convention. The deep reference (`css-is-awesome.instructions.md`) already ships and stays the source of truth. All files are whitelisted in `package.json#files` so they land in `node_modules/css-is-awesome/` after install. This is the cheapest leverage in the entire epic: a few small files unlock correct AI codegen across every mainstream agent in 2026.
+
+#### User Stories
+
+**US-6.9.1** — As an AI coding assistant working in a consumer project, I want a single `AGENTS.md` at the package root that tells me what the library is, the three tiers, the install command, one Tier 2 example, and the rules of the road, so that I generate correct code on the first try without scraping docs.
+
+**Acceptance criteria:**
+- [ ] `AGENTS.md` exists at the package root and is included in `package.json#files`.
+- [ ] Contents cover: one-paragraph overview, tier picker, install command (npm + sass + sass invocation), one Tier 2 SCSS example, theme system one-liner, links to the deep instructions file, and a "common gotchas" list.
+- [ ] File size stays under 8 KB so it loads in a single agent context refresh without paging.
+- [ ] Verified by manual smoke test: a fresh AI agent (Claude Code, Cursor, or Aider) reads only `AGENTS.md` and produces a correct primary-button Tier 2 SCSS file on first prompt.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** AI assistant
+
+**US-6.9.2** — As Claude Code working in a consumer project, I want a `CLAUDE.md` at the package root that points at `AGENTS.md`, so that the file I auto-load gets me to the real instructions in one hop.
+
+**Acceptance criteria:**
+- [ ] `CLAUDE.md` exists at the package root, ≤ 10 lines, links to `AGENTS.md` and `css-is-awesome.instructions.md`.
+- [ ] Whitelisted in `package.json#files`.
+- [ ] Verified to be auto-loaded by Claude Code from `node_modules/css-is-awesome/CLAUDE.md` when working in a consumer project.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** AI assistant
+
+**US-6.9.3** — As Gemini CLI working in a consumer project, I want a `GEMINI.md` at the package root that points at `AGENTS.md`, so that Gemini's auto-load convention picks up the same rules as every other agent.
+
+**Acceptance criteria:**
+- [ ] `GEMINI.md` exists at the package root, ≤ 10 lines, links to `AGENTS.md` and `css-is-awesome.instructions.md`.
+- [ ] Whitelisted in `package.json#files`.
+- [ ] Verified manually with `gemini -p` to read the file and produce a correct Tier 2 example.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** AI assistant
+
+**US-6.9.4** — As a developer using an AI copilot, I want a "drop in this 3-line AGENTS.md" snippet for my own project that points at `node_modules/css-is-awesome/AGENTS.md`, so that my local AI is wired up without me writing a system prompt.
+
+**Acceptance criteria:**
+- [ ] A copy-paste template lives in the docs site (Feature 6.8 integration guide) and the root `README.md`.
+- [ ] The template is one fenced code block, ≤ 5 lines, and references the canonical filenames inside `node_modules/css-is-awesome/`.
+- [ ] A short note explains that Cursor/Copilot also pick up the existing `css-is-awesome.instructions.md` via its `applyTo:` frontmatter, no extra config needed.
+
+**Priority:** P1
+**Effort:** 1
+**Role:** developer using an AI copilot
+
+**US-6.9.5** — As a system author, I want the AI-instruction files validated in CI, so that drift between `AGENTS.md` content and the actual library API is caught before release.
+
+**Acceptance criteria:**
+- [ ] A lint script verifies that every mixin name, token name, or example referenced in `AGENTS.md` resolves to a real symbol in the source.
+- [ ] Stale references fail CI with the offending line cited.
+- [ ] The lint runs in the same job that validates the JSON token export and `llm.txt` (Feature 6.6).
+
+**Priority:** P2
+**Effort:** 3
+**Role:** system author
+
+**US-6.9.6** — As a release manager, I want a periodic "agent-file landscape" review (every 6 months or every major version), so that we add or retire files as the AI-tooling ecosystem changes.
+
+**Acceptance criteria:**
+- [ ] A short doc lists every common AI agent's instruction-file convention (Cursor `.cursor/rules`, Copilot `.github/copilot-instructions.md`, Aider `AGENTS.md`/`CONVENTIONS.md`, Continue `.continuerules`, etc.).
+- [ ] On review, the team decides whether to add per-tool files or rely on the existing pointer set.
+- [ ] Decisions and the rationale land in `roadmap/agent-file-review.md`.
+
+**Priority:** P2
+**Effort:** 1
+**Role:** release manager
+
 ## Dependencies
-- Blocks: nothing in 1.0. This epic is mostly post-1.0, though the MCP server, CLI, `llm.txt`, and JSON token export can ship ahead as differentiators without gating the 1.0 release.
+- Blocks: nothing in 1.0. This epic is mostly post-1.0, though the MCP server, CLI, `llm.txt`, JSON token export, and the AI-agent instruction files (Feature 6.9) can ship ahead as differentiators without gating the 1.0 release.
 - Blocked by: Epic 1 (token contract + validator — the MCP `list_tokens` and `validate_theme` tools, the JSON export, and `llm.txt` all consume the contract), Epic 3 (React component API — the MCP `list_components` and CLI `add` commands introspect this surface), Epic 4 (docs content — the integration guide and bots reference the published docs).
 
 ## Priority
-P2 (post-1.0) overall, with two P1 exceptions that should ship before 1.0 because they are cheap and high leverage:
+P2 (post-1.0) overall, with three P1 exceptions that should ship before 1.0 because they are cheap and high leverage:
 - Feature 6.6 (`llm.txt` / `ai.txt`) — a single generated file that dramatically lifts AI accuracy.
 - Feature 6.3 (JSON token export) — verification and automation of an artifact the repo already partially ships.
+- Feature 6.9 (AI-agent instruction files) — `AGENTS.md` / `CLAUDE.md` / `GEMINI.md` at the package root unlock correct AI codegen across every mainstream agent on day one of v0.7. Already implemented in the v0.7 cut.

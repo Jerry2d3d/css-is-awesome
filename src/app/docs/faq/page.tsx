@@ -93,13 +93,20 @@ export default function FaqPage() {
 
       <h2 id="how-theming-works">How does the one-file theme swap actually work?</h2>
       <p>
-        Every theme is a{" "}
-        <code>[data-theme=&quot;name&quot;] {"{ ... }"}</code> block in
-        one consolidated <code>theme.css</code>. Each block declares the
-        same 123 CSS custom properties with theme-specific values. The{" "}
-        <code>data-theme</code> attribute on the <code>&lt;html&gt;</code>{" "}
-        element picks which block applies; flip it and the whole
-        application reskins.
+        Every theme is a single CSS file that declares the same 127 required
+        custom properties with theme-specific values, under{" "}
+        <code>:root, :root[data-theme=&quot;name&quot;]</code>. Because of the
+        bare <code>:root</code>, dropping one file in as your{" "}
+        <code>theme.css</code> reskins the page with{" "}
+        <strong>no markup change at all</strong> — the{" "}
+        <code>data-theme</code> attribute is optional in that case.
+      </p>
+      <p>
+        The attribute matters for the <strong>bundle</strong>: the shipped{" "}
+        <code>public/theme.css</code> carries all 24 themes in one file, with
+        the bare <code>:root</code> stripped, so <code>data-theme</code> on{" "}
+        <code>&lt;html&gt;</code> is the only thing choosing between them. Flip
+        it and the whole application reskins.
       </p>
       <p>
         Persistence is a cookie read server-side before first paint, so
@@ -109,23 +116,37 @@ export default function FaqPage() {
 
       <h2 id="adding-new-theme">Can I make my own theme?</h2>
       <p>
-        Yes. Every theme declares the same 123 tokens documented in the{" "}
+        Yes. Every theme declares the same 127 required tokens (plus up to 36
+        optional ones) documented in the{" "}
         <Link href="/docs/authoring/themes">/docs/authoring/themes</Link>{" "}
         contract. Fork the contract, set values for every required slot,
         run the validator (<code>node scripts/theme-validator.js</code>),
         and drop the file in. If you skip a token the validator tells
         you which one.
       </p>
+      <p>
+        Spacing is part of that: themes own the numbered scale{" "}
+        <code>--space-0</code>&hellip;<code>--space-9</code>, so a theme can
+        re-proportion the page and not just recolour it.
+      </p>
 
       <h2 id="how-many-themes-ship">How many themes ship?</h2>
       <p>
-        Six in the box: <strong>Sketchbook</strong> (default warm paper),{" "}
+        24 theme files, in eight families:{" "}
+        <strong>Sketchbook</strong> (default warm paper),{" "}
+        <strong>Boilerplate</strong> (neutral starter),{" "}
         <strong>Press</strong> (editorial newsprint),{" "}
+        <strong>Prism</strong> (modern-app zinc),{" "}
         <strong>Graphite</strong> (dark aluminium),{" "}
         <strong>Glass</strong> (visionOS-style frosted),{" "}
         <strong>Cupertino</strong> (macOS / Apple HIG), and{" "}
-        <strong>Terminal</strong> (CRT phosphor). Preview all six in the{" "}
-        <Link href="/themes">Themes gallery</Link>.
+        <strong>Terminal</strong> (CRT phosphor).
+      </p>
+      <p>
+        Each family ships three files: the base name auto-switches light and
+        dark via <code>light-dark()</code>, while the <code>-light</code> and{" "}
+        <code>-dark</code> variants pin a single mode. Preview the families in
+        the <Link href="/themes">Themes gallery</Link>.
       </p>
 
       <h2 id="custom-brand-colors">How do I use my brand colors?</h2>
@@ -164,14 +185,16 @@ export default function FaqPage() {
       <p>
         For the CSS-only consumer: one <code>theme.css</code> plus one
         base stylesheet. No runtime JavaScript. The consolidated{" "}
-        <code>theme.css</code> that ships all six built-in themes is
-        about 48 KB uncompressed — well under 10 KB gzipped — and the
-        base stylesheet is smaller still.
+        <code>theme.css</code> that ships all 24 built-in themes is about
+        162 KB uncompressed / 18 KB gzipped — that is the price of carrying
+        every theme at once.
       </p>
       <p>
-        If you only need one theme, use the per-theme files in{" "}
-        <code>public/themes/&lt;name&gt;/theme.css</code> — each is
-        roughly 10 KB uncompressed.
+        Almost nobody needs that. If you only need one theme, use the per-theme
+        file at <code>public/themes/&lt;name&gt;/theme.css</code> — roughly
+        6.5 KB uncompressed, 2.4 KB gzipped — and because it emits a bare{" "}
+        <code>:root</code> it needs no <code>data-theme</code> attribute to take
+        effect.
       </p>
 
       <h2 id="javascript-required">Is JavaScript required?</h2>
@@ -195,10 +218,9 @@ export default function FaqPage() {
 
       <h2 id="upgrade-policy">How do you handle breaking changes?</h2>
       <p>
-        Pre-1.0 we reserve the right to make breaking changes in MINOR
-        releases — the API surface is still settling. Every breaking
-        change lands with a loud entry in <code>CHANGELOG.md</code> and,
-        where we can, a codemod.
+        As of 1.0 we follow SemVer strictly: breaking changes only ever
+        land in a MAJOR release. Every breaking change lands with a loud
+        entry in <code>CHANGELOG.md</code> and, where we can, a codemod.
       </p>
       <p>
         Post-1.0 we follow SemVer strictly. Breaking changes require a
@@ -211,15 +233,16 @@ export default function FaqPage() {
 
       <h2 id="state-of-project">Is this production ready?</h2>
       <p>
-        Not yet. We&apos;re pre-1.0 and the mixin API is still
-        settling. The token contract is locked (123 slots, validated on
-        every theme), but expect mixin signatures to move before 1.0.
+        Yes. 1.0 has shipped and the package is published on npm
+        (<code>npm install css-is-awesome</code>). The mixin API is stable
+        under SemVer, and the token contract is locked (127 required slots
+        plus 36 optional, validated on every theme).
       </p>
       <p>
-        That said, we eat our own dogfood: every pixel on this docs
+        We also eat our own dogfood: every pixel on this docs
         site — the buttons, cards, type scale, the theme picker — is
-        built with cia. Once the mixin API is locked we tag 1.0. See{" "}
-        <code>ROADMAP.md</code> at the repo root for current status.
+        built with cia. See the <Link href="/docs/roadmap">roadmap</Link>{" "}
+        for what&apos;s next.
       </p>
 
       <h2 id="contributing">Can I contribute?</h2>

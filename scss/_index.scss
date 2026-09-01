@@ -1,31 +1,17 @@
 // ============================================================================
-// INDEX - Barrel File
+// INDEX - Full Barrel (authoring API + global animation utilities)
 // ============================================================================
-// Clean re-exports for easy importing.
-// Usage: @use 'design-system' as ds;
+// Kitchen-sink barrel: the zero-emit authoring API (defined in `api.scss`)
+// PLUS the global animation utility classes + keyframes + reduced-motion
+// safety net, which DO emit CSS.
+//
+// For a component-safe, ZERO-EMIT import (the common case, safe inside a
+// `.module.scss`), use `css-is-awesome/api` instead — see `api.scss`.
+//
+// The authoring surface (mixins/functions/token maps) is defined ONCE in
+// `api.scss`; this file only adds the emitting utilities on top, so the two
+// barrels can never drift.
 // ============================================================================
 
-// Forward with namespaces
-@forward 'system' as sys-*;
-@forward 'theme' as theme-*;
-@forward 'generator';
-@forward 'mixins' as *;        // No prefix - main API
-@forward 'layout' as *;       // Layout mixins (grid, container, page)
-@forward 'icons' as icon-*;   // Icon mixins with prefix
-@forward 'animations' as *;   // Keyframes + animate() mixin + .cia-anim-* utilities
-@forward 'components' as *;   // Component mixins (btn, card, nav, etc.)
-
-// For direct access to maps (advanced usage)
-@use 'system' as s;
-@use 'theme' as t;
-@use 'generator';
-
-// Re-export key maps
-$spacing: s.$spacing;
-$breakpoints: s.$breakpoints;
-$z-layers: s.$z-layers;
-$font-sizes: s.$font-sizes;
-$theme-brand: t.$theme-brand;
-$theme-light: t.$theme-light;
-$theme-dark: t.$theme-dark;
-$theme-radius: t.$theme-radius;
+@forward 'api';
+@forward './animations-utilities';  // Keyframes + .cia-anim-* + global reduced-motion safety net

@@ -9,6 +9,12 @@ const basePath = process.env.NEXT_BASE_PATH || "";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // NOTE: `next dev` and `next build` share .next. Running a build while a dev
+  // server is up rips chunks out from under it — symptoms are "Cannot find
+  // module './<n>.js'" and "__webpack_modules__[moduleId] is not a function".
+  // The cure is: stop dev, `rm -rf .next`, restart. Do not try to dodge this
+  // with a custom `distDir` — under `output: "export"` that redirects the
+  // exported site away from out/ and breaks the Playwright webServer.
   // Static export so the docs site can deploy to any static host.
   // The theme-swap mechanism (runtime <link> swap) is pure CSS + client JS,
   // so SSG is perfectly compatible.

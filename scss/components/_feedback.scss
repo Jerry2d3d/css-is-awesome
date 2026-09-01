@@ -46,26 +46,9 @@
 }
 
 // ----------------------------------------------------------------------------
-// BADGE
+// BADGE — moved to _data.scss in v0.8.1 (next to card-base/table-base).
+// (Re-exported via the components barrel, so `cia.badge-base` still works.)
 // ----------------------------------------------------------------------------
-@mixin badge-base(
-  $py: 1,
-  $px: 1,
-  $r: full,
-  $font-size: 1
-) {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--badge-padding-y, #{m.space($py)}) var(--badge-padding-x, #{m.space($px)});
-  border-radius: var(--badge-radius, #{m.radius($r)});
-  @include m.font(medium, $font-size);
-}
-
-@mixin badge($status: info) {
-  @include badge-base;
-  background: m.color(#{$status}-subtle);
-  color: m.color(#{$status}-text);
-}
 
 // ----------------------------------------------------------------------------
 // TAG / CHIP
@@ -98,7 +81,19 @@
 // ----------------------------------------------------------------------------
 // PROGRESS BAR
 // ----------------------------------------------------------------------------
-@mixin progress-track($height: 0.5rem, $r: full, $bg: surface-muted) {
+// Two primitives + a composer.
+//
+// Primitives (compose your own markup):
+//   .my-track { @include progress-track-base; }
+//   .my-track > .fill { @include progress-fill-base; }
+//
+// Composer (one mixin, data-slot markup):
+//   <div class="my-progress" role="progressbar"><span data-slot="fill" style="inline-size: 60%"></span></div>
+//   .my-progress { @include progress; }
+//
+// Renamed from progress-track / progress-fill in v0.8.1 (added -base suffix
+// to signal "compose me" intent and unblock the progress() router name).
+@mixin progress-track-base($height: 0.5rem, $r: full, $bg: surface-muted) {
   width: 100%;
   height: $height;
   border-radius: m.radius($r);
@@ -106,11 +101,21 @@
   overflow: hidden;
 }
 
-@mixin progress-fill($color: action-primary-default) {
+@mixin progress-fill-base($color: action-primary-default) {
   height: 100%;
   border-radius: inherit;
   background: m.color($color);
-  @include m.transition(width, slow);
+  @include m.transition(inline-size, slow);
+}
+
+@mixin progress(
+  $height: 0.5rem,
+  $r: full,
+  $bg: surface-muted,
+  $fill: action-primary-default,
+) {
+  @include progress-track-base($height, $r, $bg);
+  > [data-slot='fill'] { @include progress-fill-base($fill); }
 }
 
 // ----------------------------------------------------------------------------
@@ -135,14 +140,17 @@
     animation: cia-spinner-pulse 1.2s ease-in-out infinite;
     border-top-color: m.color($color);
   }
-}
 
-@keyframes cia-spinner-rotate {
-  to { transform: rotate(360deg); }
-}
-@keyframes cia-spinner-pulse {
-  0%, 100% { opacity: 0.4; }
-  50%      { opacity: 1; }
+  /* Keyframes scoped via @at-root — emit only when the mixin is called */
+  @at-root {
+    @keyframes cia-spinner-rotate {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes cia-spinner-pulse {
+      0%, 100% { opacity: 0.4; }
+      50%      { opacity: 1; }
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -174,13 +182,16 @@
     background-image: none;
     animation: cia-skeleton-pulse 1.6s ease-in-out infinite;
   }
-}
 
-@keyframes cia-skeleton-shimmer {
-  0%   { background-position: -100% 0; }
-  100% { background-position: 200% 0; }
-}
-@keyframes cia-skeleton-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.7; }
+  /* Keyframes scoped via @at-root — emit only when the mixin is called */
+  @at-root {
+    @keyframes cia-skeleton-shimmer {
+      0%   { background-position: -100% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes cia-skeleton-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.7; }
+    }
+  }
 }

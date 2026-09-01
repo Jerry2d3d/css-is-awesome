@@ -1,0 +1,34 @@
+// ============================================================================
+// Package-root shim for `@use 'css-is-awesome'`
+// ============================================================================
+// Sass does NOT read package.json "exports". It resolves a bare specifier by
+// looking for a file on disk relative to a load path — for `css-is-awesome`
+// that means `node_modules/css-is-awesome/_index.scss`. Without this file the
+// README's headline example fails on a clean install.
+//
+// This file must behave the way `exports["."].sass` does, or Sass users and
+// bundler users get different results from the same import. It forwards BOTH
+// halves deliberately:
+//
+//   @forward './scss/index'  — the authoring API (mixins, functions, token
+//                              maps) plus the global .cia-anim-* utilities.
+//                              Without this, `@use 'css-is-awesome' as cia;`
+//                              exports no members and `cia.btn()` fails to
+//                              resolve: scss/main.scss uses `@use`, not
+//                              `@forward`, so it re-exports nothing.
+//
+//   @use './scss/main'       — emits the tokens, resets and base rules.
+//                              Without this the import prints no `:root` block
+//                              at all, contradicting the documented "emit the
+//                              tokens once at your root" model. That exact
+//                              regression shipped briefly and is now asserted
+//                              by validate-package.
+//
+// Sass evaluates each module once, so modules shared by the two halves
+// (animations-utilities in particular) are not emitted twice — verified.
+//
+// This is the GLOBAL entry point: it emits ~72 KB and belongs in a root
+// stylesheet, included once. Component stylesheets want `css-is-awesome/api`,
+// which is zero-emit and safe under Next.js CSS Modules pure mode.
+@forward './scss/index';
+@use './scss/main';

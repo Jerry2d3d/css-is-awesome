@@ -15,8 +15,7 @@
 }
 
 .overlayLogo {
-  display: flex;
-  justify-content: center;
+  @include m.flex($justify: center);
   margin: 0 0 m.space(5);
 }
 
@@ -72,9 +71,7 @@
 }
 
 .announcement {
-  display: flex;
-  align-items: center;
-  gap: m.space(3);
+  @include m.flex($gap: 3);
   padding: m.space(2) m.space(4);
   font-size: m.font-size(sm);
   background: var(--surface-raised);

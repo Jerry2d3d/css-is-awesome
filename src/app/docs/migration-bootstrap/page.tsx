@@ -146,7 +146,7 @@ export default function MigrationBootstrapPage() {
             </td>
             <td>
               <code>.cia-flex-center</code> (or{" "}
-              <code>@include m.flex-center</code>)
+              <code>@include m.flex($justify: center)</code>)
             </td>
           </tr>
           <tr>

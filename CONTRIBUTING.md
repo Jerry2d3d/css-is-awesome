@@ -238,7 +238,7 @@ If a pattern cannot be made accessible, do not ship it.
 
 ## Releases + versioning
 
-See [./VERSIONING.md](./VERSIONING.md) for the SemVer policy, release cadence, and changelog rules. The short version: pre-1.0 right now, every release cuts a GitHub tag + entry in [CHANGELOG.md](./CHANGELOG.md).
+See [./VERSIONING.md](./VERSIONING.md) for the SemVer policy, release cadence, and changelog rules. The short version: 1.0 and under strict SemVer — breaking changes require a MAJOR bump. Every release cuts a GitHub tag + entry in [CHANGELOG.md](./CHANGELOG.md).
 
 ## Code of Conduct
 

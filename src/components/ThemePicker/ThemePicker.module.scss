@@ -1,6 +1,9 @@
 /* ThemePicker component — floating theme-swap widget (CSS Module). */
+@use 'mixins' as m;
 
 .picker {
+  // A theme switcher is a screen affordance — it means nothing on paper.
+  @include m.print-hidden;
   position: fixed;
   right: 16px;
   bottom: 16px;

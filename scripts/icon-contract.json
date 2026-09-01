@@ -1,0 +1,67 @@
+{
+  "$schema": "./icon-contract.schema (informal)",
+  "version": "1",
+  "description": "Canonical icon pack contract. Every pack must declare every glyph in its `glyphs` list. The icon-validator (scripts/icon-validator.js) enforces completeness.",
+  "packs": {
+    "core": {
+      "description": "UI essentials. Bundled with css-is-awesome under public/icons/core/. Source: Lucide (ISC + MIT, see LICENSE-third-party).",
+      "glyphs": [
+        "arrow-right",
+        "check",
+        "chevron-down",
+        "close",
+        "download",
+        "edit",
+        "menu",
+        "search",
+
+        "arrow-left",
+        "arrow-up",
+        "arrow-down",
+        "chevron-up",
+        "chevron-left",
+        "chevron-right",
+        "external-link",
+        "home",
+
+        "upload",
+        "copy",
+        "share",
+        "trash",
+        "save",
+        "refresh",
+        "settings",
+        "filter",
+        "sort",
+        "plus",
+        "minus",
+        "more-horizontal",
+
+        "info",
+        "warning",
+        "error",
+        "success",
+        "help",
+        "loading",
+
+        "mail",
+        "bell",
+        "calendar",
+        "clock",
+        "message",
+
+        "user",
+        "users",
+        "lock",
+        "unlock",
+        "eye",
+        "eye-off",
+
+        "play",
+        "pause",
+        "star",
+        "heart"
+      ]
+    }
+  }
+}

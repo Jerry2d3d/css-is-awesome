@@ -67,10 +67,30 @@ jobs:
         # Stops GitHub Pages' Jekyll preprocessor from ignoring _next/.
         run: touch out/.nojekyll
 
+      # Fails with "Get Pages site failed ... Not Found" until Pages is enabled
+      # in repo Settings with Source = GitHub Actions. On a FREE plan that also
+      # requires the repo to be public — Pages is not available for private
+      # repos without a paid plan.
+      #
+      # Marked continue-on-error so an unconfigured Pages site does not paint
+      # every CI run red and bury real failures. The deploy step below still
+      # reports honestly: if this step is skipped, there is nothing to upload
+      # and the job ends without claiming a deployment happened.
       - name: Configure Pages
+        id: configure-pages
+        continue-on-error: true
         uses: actions/configure-pages@v5
 
+      - name: Pages not configured — skipping deploy
+        if: steps.configure-pages.outcome == 'failure'
+        run: |
+          echo "::notice::GitHub Pages is not enabled for this repository, so the docs site was not deployed."
+          echo "::notice::Enable it at Settings -> Pages -> Source: GitHub Actions (requires a public repo on the free plan)."
+
+      # Skipped when Pages is not configured — uploading a Pages artifact that
+      # can never be deployed would be a green step that means nothing.
       - name: Upload Pages artifact
+        if: steps.configure-pages.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
           path: out

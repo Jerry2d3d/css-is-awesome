@@ -7,6 +7,20 @@
    component. Tokens come from theme.css (swappable).
    ============================================================ */
 
+/* Site-wide custom font slugs. Add a `--font-<slug>: <stack>;` line here for
+   any custom face beyond the 6 theme-contract slots, then consume from any
+   component via `font-family: var(--font-<slug>);` or
+   `@include m.font($family: <slug>)`. Override in any tighter scope (theme,
+   page, block, element) by re-declaring the variable there. */
+:root {
+  --font-meme: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Shared height for the small header controls (theme dropdown, light/dark
+     toggle). One value so they can't drift apart — they were 30.4px and 36px
+     because one was sized by padding and the other by a fixed square. */
+  --control-h: 2.25rem;
+}
+
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 
@@ -265,6 +279,159 @@ hr,
 .tok-sel  { color: var(--code-blue); }
 .tok-prop { color: var(--code-green); }
 .tok-val  { color: var(--code-accent); }
+
+/* ============================================================
+   RECIPE PAGES (markdown rendered from scss/recipes/*.md)
+   Scoped under .recipe-body so it never touches hand-built docs.
+   ============================================================ */
+.recipe-breadcrumb {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+}
+.recipe-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 2rem;
+}
+.recipe-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  background: var(--paper-sunk);
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+}
+/* Complexity chips ride the a11y contract pairs (--*-text on --*-subtle) rather
+   than the --code-* syntax palette, which is tuned for code blocks and fails
+   contrast at this size on --paper-sunk. */
+.recipe-chip[data-complexity="simple"]  { color: var(--success-text); background: var(--success-subtle); }
+.recipe-chip[data-complexity="medium"]  { color: var(--warning-text); background: var(--warning-subtle); }
+.recipe-chip[data-complexity="complex"] { color: var(--info-text);    background: var(--info-subtle); }
+.recipe-chip-version { font-variant-numeric: tabular-nums; }
+
+/* Recipe library card grid on /docs/recipes */
+.recipe-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 2rem;
+}
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  transition: border-color 160ms var(--ease, ease), box-shadow 160ms;
+}
+.recipe-card:hover {
+  border-color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+.recipe-card:focus-visible { outline: 2px solid var(--ai); outline-offset: 3px; }
+.recipe-card-title {
+  font-family: var(--font-display, var(--font-serif));
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.recipe-card-desc {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.recipe-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+/* Fenced code blocks emitted by marked: .recipe-codeblock > pre > code */
+.recipe-body .recipe-codeblock {
+  position: relative;
+  margin: 1.25rem 0 1.75rem;
+}
+.recipe-body .recipe-codeblock pre {
+  margin: 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border-radius: var(--r-md);
+  overflow-x: auto;
+}
+.recipe-body .recipe-codeblock code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  white-space: pre;
+}
+.recipe-body .recipe-codeblock-lang {
+  position: absolute;
+  top: 0.55rem;
+  left: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--code-muted);
+  pointer-events: none;
+}
+.recipe-body .recipe-codeblock-lang ~ pre { padding-top: 1.9rem; }
+
+/* Copy button injected by RecipeCopyButtons (client island) */
+.recipe-body .recipe-copy {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.6rem;
+  padding: 0.25rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  background: var(--paper-raised);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-sm, 6px);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 160ms var(--ease, ease), color 160ms;
+}
+.recipe-body .recipe-codeblock:hover .recipe-copy,
+.recipe-body .recipe-copy:focus-visible { opacity: 1; }
+.recipe-body .recipe-copy:hover { color: var(--ink); }
+.recipe-body .recipe-copy[data-copied="true"] { color: var(--code-green); opacity: 1; }
+
+/* Inline code inside recipe prose */
+.recipe-body :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 0.1em 0.35em;
+  background: var(--paper-sunk);
+  border-radius: 4px;
+}
+
+/* GFM tables from marked */
+.recipe-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0 1.75rem;
+  font-size: 0.9rem;
+}
+.recipe-body th,
+.recipe-body td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--hair-soft);
+}
+.recipe-body th { color: var(--ink); font-weight: 600; }
+.recipe-body td { color: var(--ink-soft); }
 
 /* ============================================================
    BUTTONS (shared demo component)

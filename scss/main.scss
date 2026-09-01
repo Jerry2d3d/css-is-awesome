@@ -4,11 +4,11 @@
 // This generates the actual CSS output.
 // Import this once at your app's root.
 // ============================================================================
-@use 'generator';
-@use 'mixins' as m;
-@use 'animations';
-@use 'utilities';
-@use 'app-styles';
+@use './generator';
+@use './mixins' as m;
+@use './animations';
+@use './animations-utilities';
+@use './utilities';
 
 // ----------------------------------------------------------------------------
 // GENERATE CSS VARIABLES
@@ -62,7 +62,3 @@ a {
 :focus:not(:focus-visible) {
   outline: none;
 }
-
-// ----------------------------------------------------------------------------
-// APP STYLES (Project-owned — never overwritten by boilerplate)
-// ----------------------------------------------------------------------------

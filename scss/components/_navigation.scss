@@ -162,7 +162,7 @@
 }
 
 @mixin pagination-item($size: 2.25rem, $r: md) {
-  @include m.flex-center;
+  @include m.flex($justify: center);
   width: $size;
   height: $size;
   border-radius: m.radius($r);

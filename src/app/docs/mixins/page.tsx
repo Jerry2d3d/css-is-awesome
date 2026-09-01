@@ -22,7 +22,7 @@ export default function DocsMixinsPage() {
         is the barrel for core layout, typography, colour, interactive and effect
         mixins — the atomic vocabulary. Each component partial in{" "}
         <code>scss/components/*</code> exports its own composite mixins
-        (<code>btn-primary</code>, <code>card-base</code>, <code>input-base</code>,
+        (<code>btn</code>, <code>card-base</code>, <code>input-base</code>,
         etc.) so you only import the components you need and your compiled CSS
         stays lean.
       </p>
@@ -33,7 +33,7 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'cia/scss/components/forms'</span> <span className="tok-sel">as</span> <span className="tok-prop">f</span>;
 {"\n"}
 {"\n"}<span className="tok-sel">.my-cta</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">b.btn-primary()</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">b.btn(primary)</span>;
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.elevation(2)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
@@ -108,8 +108,17 @@ export default function DocsMixinsPage() {
         <code>xl</code>).
       </p>
 
-      <h3 id="flex-center"><code>flex-center</code></h3>
-      <p>Centers children horizontally and vertically with flexbox.</p>
+      <h3 id="flex"><code>flex</code></h3>
+      <p>
+        The one flex primitive. Pass only what differs from the defaults
+        (<code>row</code> / <code>center</code> cross-axis / <code>start</code>{" "}
+        main-axis / <code>nowrap</code> / no gap). <code>$justify</code> and{" "}
+        <code>$align</code> accept the shorthand{" "}
+        <code>start</code> / <code>end</code> / <code>center</code> /{" "}
+        <code>between</code> / <code>around</code> / <code>evenly</code>{" "}
+        (mapping to <code>flex-start</code>, <code>space-between</code>, etc.).
+        Full CSS values still pass through.
+      </p>
       <Example>
         <Example.Preview style={{ display: "flex", justifyContent: "center" }}>
           <div
@@ -127,58 +136,65 @@ export default function DocsMixinsPage() {
           </div>
         </Example.Preview>
         <Example.Code><span className="tok-com">{"// signature"}</span>
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">flex-center</span>;
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">flex</span>(<span className="tok-val">$direction: row, $gap: null, $align: center, $justify: start, $wrap: nowrap, $inline: false</span>);
 {"\n"}
-{"\n"}<span className="tok-com">{"// usage"}</span>
+{"\n"}<span className="tok-com">{"// perfectly centered children"}</span>
 {"\n"}<span className="tok-sel">.hero</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex-center</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="flex-between"><code>flex-between</code></h3>
-      <p>Flex row with <code>space-between</code> — ideal for toolbars and card headers.</p>
-      <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">flex-between</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex($justify: center)</span>;
+{"\n"}{"}"}
 {"\n"}
+{"\n"}<span className="tok-com">{"// header bar / accordion trigger"}</span>
 {"\n"}<span className="tok-sel">.toolbar</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex-between</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="stack"><code>stack</code></h3>
-      <p>Vertical flex stack with a token-aware gap. Default gap is <code>4</code>.</p>
-      <Example>
-        <Example.Preview>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div style={{ padding: 8, background: "var(--surface-muted,#eee)" }}>one</div>
-            <div style={{ padding: 8, background: "var(--surface-muted,#eee)" }}>two</div>
-            <div style={{ padding: 8, background: "var(--surface-muted,#eee)" }}>three</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">stack</span>(<span className="tok-val">$gap: 4, $align: stretch</span>);
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex($justify: between, $gap: 3)</span>;
+{"\n"}{"}"}
 {"\n"}
+{"\n"}<span className="tok-com">{"// vertical stack with gap"}</span>
 {"\n"}<span className="tok-sel">.feed</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.stack(3)</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="inline"><code>inline</code></h3>
-      <p>Horizontal flex row with gap, alignment and wrapping controls.</p>
-      <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">inline</span>(<span className="tok-val">$gap: 2, $align: center, $wrap: nowrap</span>);
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex($direction: column, $gap: 4)</span>;
+{"\n"}{"}"}
 {"\n"}
-{"\n"}<span className="tok-sel">.toolbar</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.inline(2, center, wrap)</span>;
+{"\n"}<span className="tok-com">{"// inline-flex chip lockup"}</span>
+{"\n"}<span className="tok-sel">.chip</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.flex($inline: true, $gap: 2)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
 
-      <h3 id="container"><code>container</code></h3>
-      <p>Page-width container with responsive horizontal padding. Sizes: <code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>2xl</code>, <code>full</code>.</p>
+      <h3 id="flow"><code>flow</code></h3>
+      <p>One-word switchable flex default — a preset layer over the existing <code>flex</code> engine (no duplicated property logic). Pass a preset keyword to switch the whole config; optionally pass <code>$at</code> + <code>$then</code> to swap the axis at a breakpoint. Presets: <code>row</code> (default), <code>col</code>, <code>wrap</code>, <code>center</code>, <code>between</code>, <code>around</code>. The semantic primitives <code>stack</code> / <code>cluster</code> / <code>toolbar</code> stay — they read better as named patterns; <code>flow</code> is the generic switchable workhorse.</p>
       <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">container</span>(<span className="tok-val">$size: xl, $px: null</span>);
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">flow</span>(<span className="tok-val">$preset: row, $gap: 4, $at: null, $then: null</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// sensible flex row"}</span>
+{"\n"}<span className="tok-sel">.bar</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// switch row → column"}</span>
+{"\n"}<span className="tok-sel">.menu</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow(col)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// pushed apart"}</span>
+{"\n"}<span className="tok-sel">.toolbar</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow(between)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// responsive axis switch — row desktop, column below md"}</span>
+{"\n"}<span className="tok-sel">.cardrow</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow(row, $at: md, $then: col)</span>; {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="flow-switchable"><code>flow-switchable</code></h3>
+      <p>Runtime flex switching with zero recompile. Drop on any element; toggle <code>data-flow="..."</code> at runtime. Emits one selector-based rule per preset in the registry. Pairs with the <code>flow</code> presets above.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">flow-switchable</span>(<span className="tok-val">$gap: 4</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.bar</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.flow-switchable</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// HTML:  <div class='bar' data-flow='between'>…</div>"}</span>
+{"\n"}<span className="tok-com">{"// JS:    el.dataset.flow = 'col';"}</span></Example.Code>
+      </Example>
+
+      <h3 id="wrap"><code>wrap</code></h3>
+      <p>Page-width wrap with responsive horizontal padding. Sizes: <code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>2xl</code>, <code>full</code>. (Renamed from <code>container</code> in v0.8 — the namer mixin for container queries kept the <code>container</code> name; this layout-wrap mixin became <code>wrap</code> to avoid the collision.)</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">wrap</span>(<span className="tok-val">$size: xl, $px: null</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">.page</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.container(lg)</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.wrap(lg)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
 
@@ -221,9 +237,9 @@ export default function DocsMixinsPage() {
       </Example>
 
       <h3 id="page-layout"><code>page-layout</code></h3>
-      <p>Full-page grid with sticky footer. Variants: <code>default</code>, <code>sidebar-left</code>, <code>sidebar-right</code>. Pair with <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code> grid-area helpers.</p>
+      <p>Full-page grid with sticky footer + automatic mobile collapse below the breakpoint. Variants: <code>default</code>, <code>sidebar-left</code>, <code>sidebar-right</code>, <code>holy-grail</code>. Pair with <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code> grid-area helpers. For runtime switching, see <code>page-layout-switchable</code>; for custom region names, see <code>layout</code>.</p>
       <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">page-layout</span>(<span className="tok-val">$variant: default</span>);
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">page-layout</span>(<span className="tok-val">$variant: default, $collapse-at: md</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">body</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.page-layout(sidebar-left)</span>;
@@ -234,6 +250,52 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">footer</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.page-footer</span>; {"}"}</Example.Code>
       </Example>
 
+      <h3 id="layout"><code>layout</code></h3>
+      <p>Build any page layout from your own region names. Single-column stack or rows of columns — the engine guarantees a valid rectangular <code>grid-template-areas</code>. A row with fewer names than the widest row stretches its last region to fill (so a single-name row becomes a full-width band). Accepts <code>$gap</code>, <code>$tracks</code> for custom column tracks, and <code>$wire</code> to auto-place children by <code>[data-area]</code>.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">layout</span>(<span className="tok-val">$rows...</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// single-column stack"}</span>
+{"\n"}<span className="tok-sel">.app</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.layout(nav, body, foot)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// rows of columns"}</span>
+{"\n"}<span className="tok-sel">.dashboard</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.layout((header), (sidebar main), (footer))</span>;
+{"\n"}{"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// custom column tracks + auto-place via [data-area]"}</span>
+{"\n"}<span className="tok-sel">.app-shell</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.layout((nav), (side body), (foot), $tracks: 16rem 1fr, $wire: true)</span>;
+{"\n"}{"}"}</Example.Code>
+      </Example>
+
+      <h3 id="named-layout"><code>named-layout</code></h3>
+      <p>Reusable named layout from the built-in registry (<code>default</code>, <code>sidebar-left</code>, <code>sidebar-right</code>, <code>holy-grail</code>). Forwards <code>$gap</code>, <code>$tracks</code>, <code>$wire</code> to <code>layout</code>. Use when you want a preset by name with the option to auto-place children by <code>[data-area]</code>.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">named-layout</span>(<span className="tok-val">$name, $gap: 4, $tracks: null, $wire: null</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.app</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.named-layout(holy-grail, $wire: true)</span>; {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="area"><code>area</code></h3>
+      <p>Place a child element into a named grid region. Equivalent to writing <code>grid-area: &lt;name&gt;</code> by hand.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">area</span>(<span className="tok-val">$name</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.sidebar</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.area(sidebar)</span>; {"}"}</Example.Code>
+      </Example>
+
+      <h3 id="page-layout-switchable"><code>page-layout-switchable</code></h3>
+      <p>Runtime layout switching with zero recompile. Drop on <code>body</code>; toggle <code>&lt;body data-layout=&quot;...&quot;&gt;</code> at runtime (e.g. <code>document.body.dataset.layout = &apos;holy-grail&apos;</code>). All four built-in layouts plus auto mobile collapse, baked into one selector-based rule per layout. Selector-based (not custom properties) because Sass strips quotes from <code>grid-template-areas</code> when interpolated into a custom prop.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">page-layout-switchable</span>(<span className="tok-val">$collapse-at: md</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">body</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.page-layout-switchable</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// HTML: <body data-layout='sidebar-left'>"}</span>
+{"\n"}<span className="tok-com">{"// JS:   document.body.dataset.layout = 'holy-grail';"}</span></Example.Code>
+      </Example>
+
       <h3 id="section"><code>section</code></h3>
       <p>Vertical page section with consistent top/bottom padding.</p>
       <Example>
@@ -242,16 +304,6 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">section</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.section($py: 9)</span>;
 {"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="row-col"><code>row</code> and <code>col</code></h3>
-      <p>Simple flex row / column with token-aware gap and alignment defaults.</p>
-      <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">row</span>(<span className="tok-val">$gap: 4, $align: center, $justify: flex-start, $wrap: wrap</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">col</span>(<span className="tok-val">$gap: 4, $align: stretch, $justify: flex-start</span>);
-{"\n"}
-{"\n"}<span className="tok-sel">.form-row</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.row(3)</span>; {"}"}
-{"\n"}<span className="tok-sel">.form-col</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.col(2)</span>; {"}"}</Example.Code>
       </Example>
 
       <h3 id="inset"><code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code></h3>
@@ -300,7 +352,7 @@ export default function DocsMixinsPage() {
 {"\n"}
 {"\n"}<span className="tok-sel">.hero</span> {"{"}
 {"\n"}  <span className="tok-prop">font-size</span>: <span className="tok-val">2rem</span>;
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.bp(md)</span> {"{"} <span className="tok-prop">font-size</span>: <span className="tok-val">3rem</span>; {"}"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.media(md)</span> {"{"} <span className="tok-prop">font-size</span>: <span className="tok-val">3rem</span>; {"}"}
 {"\n"}{"}"}</Example.Code>
       </Example>
 
@@ -313,19 +365,125 @@ export default function DocsMixinsPage() {
 {"\n"}{"}"}</Example.Code>
       </Example>
 
-      <h3 id="cq"><code>container</code>, <code>cq</code>, <code>cq-down</code>, <code>cq-between</code></h3>
-      <p>Container queries. Name the container with <code>container</code>, then query it with <code>cq</code> variants.</p>
+      <h3 id="contain"><code>container</code>, <code>contain</code>, <code>contain-down</code>, <code>contain-between</code></h3>
+      <p>Container queries. Name the container with <code>container</code>, then query it with <code>contain</code> variants. (Renamed from <code>cq</code> / <code>cq-down</code> / <code>cq-between</code> in v0.8 to read better; the namer <code>container</code> kept its name.)</p>
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">container</span>(<span className="tok-val">$name: null, $type: inline-size</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">cq</span>(<span className="tok-val">$size, $name: null</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">cq-down</span>(<span className="tok-val">$size, $name: null</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">cq-between</span>(<span className="tok-val">$min, $max, $name: null</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">contain</span>(<span className="tok-val">$size, $name: null</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">contain-down</span>(<span className="tok-val">$size, $name: null</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">contain-between</span>(<span className="tok-val">$min, $max, $name: null</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">.card</span> {"{"}
 {"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.container(card)</span>;
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.cq(md, card)</span> {"{"} <span className="tok-prop">display</span>: <span className="tok-val">grid</span>; {"}"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.contain(md, card)</span> {"{"} <span className="tok-prop">display</span>: <span className="tok-val">grid</span>; {"}"}
 {"\n"}{"}"}</Example.Code>
       </Example>
+
+      <h2 id="print">Print / PDF</h2>
+      <p>
+        Turn any page into a faithful PDF with nothing but a print stylesheet — zero JS, no library, no server. The page <em>is</em> the PDF source, and the browser&apos;s native Print → &ldquo;Save as PDF&rdquo; is the generator. Full walkthrough in the <Link href="/docs/recipes/print-to-pdf">print-to-pdf recipe</Link>.
+      </p>
+
+      <h3 id="m-print-base"><code>print-base</code></h3>
+      <p>Page-level defaults, on by default. Include <strong>once at the stylesheet root</strong> (it emits <code>@page</code>, which is invalid nested in a selector). Sets the page box, collapses animations to their final frame so nothing prints invisible, and emits the print variable control plane. It does not force <code>opacity: 1</code> / <code>transform: none</code> — deliberate translucency and rotation survive.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">print-base</span>(<span className="tok-val">$freeze-animations: true, $size: letter, $margin: 0.5in</span>);
+{"\n"}
+{"\n"}<span className="tok-prop">@include</span> <span className="tok-val">m.print-base</span>;                                  <span className="tok-com">{"// at root"}</span>
+{"\n"}<span className="tok-prop">@include</span> <span className="tok-val">m.print-base($size: A4, $freeze-animations: false)</span>;</Example.Code>
+      </Example>
+
+      <h3 id="m-print"><code>print</code>, <code>print-hidden</code>, <code>print-only</code></h3>
+      <p><code>print</code> wraps a bare <code>@media print</code> block so an override sits next to the rule it changes. <code>print-hidden</code> drops chrome on paper (the &ldquo;hide the nav&rdquo; case); <code>print-only</code> reveals paper-only content (an inline URL footer, a &ldquo;printed on&rdquo; stamp).</p>
+      <Example>
+        <Example.Code><span className="tok-sel">.site-nav</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print-hidden</span>; {"}"}
+{"\n"}<span className="tok-sel">.url-foot</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print-only</span>; {"}"}
+{"\n"}<span className="tok-sel">.subtitle</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print</span> {"{"} <span className="tok-prop">color</span>: <span className="tok-val">m.color(text-secondary)</span>; {"}"} {"}"}</Example.Code>
+      </Example>
+      <p>
+        <strong>Why these emit <code>!important</code>.</strong> cia avoids it
+        everywhere else — the print layer is a deliberate exception.{" "}
+        <code>@media</code> contributes <em>no specificity</em>, so{" "}
+        <code>print-hidden</code> produces a rule with exactly the specificity
+        of the selector you included it in. A later declaration at equal
+        specificity wins, in print too — and it is usually not even yours, but
+        a utility class or a component library cia cannot see. Measured in a
+        browser: with <code>!important</code> the element hides; without it, it
+        prints anyway. The failure is silent and paper-only.
+      </p>
+      <p>
+        <strong><code>@layer</code> would be worse here.</strong> Layered CSS
+        always loses to unlayered CSS, so a layered print rule would lose to
+        any consumer stylesheet that isn&rsquo;t layered — which is most of
+        them. (<code>!important</code> also inverts layer order, so the two
+        don&rsquo;t compose as you&rsquo;d expect.) cia ships unlayered by
+        design. The blast radius stays small: 8 declarations, all inside{" "}
+        <code>@media print</code>, all variable-driven — override{" "}
+        <code>--print-hide</code> / <code>--print-show</code> to change what
+        happens, rather than fighting the rule to win.
+      </p>
+
+      <h3 id="print-vars">The variable filter system</h3>
+      <p>
+        <code>print-base</code> emits three custom properties that are the control plane — flip them and the output changes with no rule rewrite. <code>--is-print</code> is <code>0</code> on screen / <code>1</code> on paper (read it in <code>calc()</code>, <code>opacity</code>, or <code>@container style()</code>); <code>--print-hide</code> and <code>--print-show</code> are the <code>display</code> values applied to hidden / paper-only elements. Re-aim either on a single element for a per-element exception.
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">.legal</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print-hidden</span>; <span className="tok-prop">--print-hide</span>: <span className="tok-val">revert</span>; {"}"} <span className="tok-com">{"// keep this one on paper"}</span>
+{"\n"}<span className="tok-sel">.cover</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.print</span> {"{"} <span className="tok-prop">opacity</span>: <span className="tok-val">var(--is-print)</span>; {"}"} {"}"} <span className="tok-com">{"// fades in only on paper"}</span></Example.Code>
+      </Example>
+
+      <h2 id="geometric-utilities">Geometric utilities</h2>
+      <p>
+        Pure functions for sizes that aren&apos;t a design choice — they&apos;re geometric truth shared across Figma, the design system, and the codebase. <strong>NOT themeable;</strong> consumers don&apos;t tune the 4px grid. Distinct from <code>m.space()</code> which IS themeable (consumer can re-tune the spacing scale per theme).
+      </p>
+      <p>
+        Both functions return <code>rem</code> (so user zoom + browser default font-size still scale) and inline at the call site — they emit nothing on their own. The functions exist so AI tools (MCP <code>resolve_size</code>, Figma → Code) have a deterministic surface from design intent to cia code.
+      </p>
+
+      <h3 id="m-grid"><code>grid</code></h3>
+      <p>Explicit geometric size on cia&apos;s 4px coordinate system. <code>n</code> is the step count (<code>n × 0.25rem</code>). Use for icon widths, control heights, fixed dimensions that must align with the design grid.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@function</span> <span className="tok-prop">grid</span>(<span className="tok-val">$n, $base: 0.25rem</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.icon-sm</span>     {"{"} <span className="tok-prop">width</span>: <span className="tok-val">m.grid(4)</span>;  {"}"}   <span className="tok-com">{"// 16px"}</span>
+{"\n"}<span className="tok-sel">.control-md</span>  {"{"} <span className="tok-prop">height</span>: <span className="tok-val">m.grid(10)</span>; {"}"}  <span className="tok-com">{"// 40px"}</span>
+{"\n"}<span className="tok-sel">.avatar-xl</span>   {"{"} <span className="tok-prop">inline-size</span>: <span className="tok-val">m.grid(20)</span>; {"}"}<span className="tok-com">{"// 80px"}</span></Example.Code>
+      </Example>
+
+      <h3 id="m-px"><code>px</code></h3>
+      <p>Raw pixel value converted to <code>rem</code>, intentionally off-grid. Use for the rare one-off value that doesn&apos;t fit any cia scale — a <code>17px</code> hero margin, a <code>33px</code> badge offset. <strong>Prefer <code>m.grid()</code> / <code>m.space()</code> / the typed token functions when they fit</strong> — <code>m.px()</code> is the escape hatch, not the default.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@function</span> <span className="tok-prop">px</span>(<span className="tok-val">$value</span>);
+{"\n"}
+{"\n"}<span className="tok-sel">.hero</span>    {"{"} <span className="tok-prop">margin-block-start</span>: <span className="tok-val">m.px(33)</span>; {"}"}  <span className="tok-com">{"// 2.0625rem"}</span>
+{"\n"}<span className="tok-sel">.badge</span>   {"{"} <span className="tok-prop">margin-inline-end</span>: <span className="tok-val">m.px(17)</span>;  {"}"}  <span className="tok-com">{"// 1.0625rem"}</span></Example.Code>
+      </Example>
+
+      <h3 id="m-grid-from-px"><code>grid-from-px</code></h3>
+      <p>Snap a px value to the nearest cia grid step. For <strong>tooling</strong> (Figma → Code, MCP, codegen) — pure math, no rendering output. AI agents call this to map a design&apos;s px value to the cia step, then emit <code>m.grid(step)</code> in generated code.</p>
+      <Example>
+        <Example.Code><span className="tok-sel">@function</span> <span className="tok-prop">grid-from-px</span>(<span className="tok-val">$px, $base-px: 4</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// Returns the step number (integer). Compose with m.grid()"}</span>
+{"\n"}<span className="tok-com">{"// to emit the rem value, e.g. m.grid( m.grid-from-px(24) )"}</span>
+{"\n"}<span className="tok-com">{"//"}</span>
+{"\n"}<span className="tok-com">{"// m.grid-from-px(24)   → 6"}</span>
+{"\n"}<span className="tok-com">{"// m.grid-from-px(17)   → 4   (rounds to nearest step)"}</span>
+{"\n"}<span className="tok-com">{"// m.grid-from-px(100)  → 25"}</span></Example.Code>
+      </Example>
+
+      <h3 id="grid-decision-tree">Which function should I use?</h3>
+      <p>The decision tree for picking the right size mechanism in cia:</p>
+      <ul>
+        <li><strong>color / type / radius / shadow / motion</strong> → themed tokens: <code>m.color()</code>, <code>m.font-size()</code>, <code>m.radius()</code>, <code>m.shadow()</code>, <code>m.duration()</code></li>
+        <li><strong>margin / padding / gap</strong> → <code>m.space(n)</code> (themeable spacing scale)</li>
+        <li><strong>explicit geometric size on the grid</strong> → <code>m.grid(n)</code> (4px grid, not themed)</li>
+        <li><strong>off-grid pixel value</strong> (rare) → <code>m.px(value)</code> (raw rem conversion)</li>
+        <li><strong>component</strong> → <code>m.btn()</code> / <code>m.modal()</code> / etc., overriding parameters as needed</li>
+      </ul>
+      <p>
+        Full decision tree with composition fallbacks: <code>/docs/composition</code>.
+      </p>
 
       <h2 id="typography">Typography</h2>
       <p>
@@ -347,19 +505,31 @@ export default function DocsMixinsPage() {
       </Example>
 
       <h3 id="font-load"><code>font-load</code> &amp; <code>font-load-local</code></h3>
-      <p>Drop a one-off font into a single page or section without forking the theme. <code>font-load</code> registers a Google Fonts URL once (idempotent across the compile), emits the <code>@import</code>, and optionally aliases the loaded family to one of the theme&apos;s font tokens (<code>display</code>, <code>script</code>, <code>serif</code>, <code>sans</code>, <code>mono</code>, <code>primary</code>) so the rest of the page can keep using <code>var(--font-display)</code> with no further changes. <code>font-load-local</code> is the sister mixin for self-hosted woff2/ttf via <code>@font-face</code>.</p>
+      <p>Two lines to add any custom font: declare the slug on <code>:root</code> in a global stylesheet, then consume from any component. <code>font-load</code> handles the <code>@import url(...)</code> plumbing for hosted fonts; <code>font-load-local</code> wraps <code>@font-face</code> for self-hosted. Both are called from a <em>global</em> Sass file (not <code>.module.scss</code>).</p>
       <Example>
-        <Example.Code><span className="tok-com">{"// Load + apply (Google Fonts)"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">'Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap'</span>);
-{"\n"}<span className="tok-sel">.headline</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.font(reg, 7, $family: 'Pacifico')</span>; {"}"}
+        <Example.Code><span className="tok-com">{"// --- 1) Declare on :root in your global stylesheet ---"}</span>
+{"\n"}<span className="tok-com">{"// globals.css"}</span>
+{"\n"}<span className="tok-sel">:root</span> {"{"}
+{"\n"}  <span className="tok-prop">--font-meme</span>: <span className="tok-val">'Helvetica Neue', Helvetica, Arial, sans-serif</span>;
+{"\n"}{"}"}
 {"\n"}
-{"\n"}<span className="tok-com">{"// Load + alias to a theme token (page-scoped --font-display override)"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load</span>(<span className="tok-val">{"'Pacifico', '<url>', $alias: display"}</span>);
+{"\n"}<span className="tok-com">{"// --- 2) Use from any component ---"}</span>
+{"\n"}<span className="tok-sel">.logo</span>  {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.font($lh: 0.95, $family: meme)</span>; {"}"}
+{"\n"}<span className="tok-sel">.stamp</span> {"{"} <span className="tok-prop">font-family</span>: <span className="tok-val">var(--font-meme)</span>; {"}"}
 {"\n"}
-{"\n"}<span className="tok-com">{"// Self-hosted file"}</span>
-{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-load-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);</Example.Code>
+{"\n"}<span className="tok-com">{"// --- Override anywhere — set the variable in a tighter scope ---"}</span>
+{"\n"}<span className="tok-sel">.landing-page</span> {"{"} <span className="tok-prop">--font-meme</span>: <span className="tok-val">'Caveat', cursive</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// --- Hosted font (Google / CDN) — call from a global .scss file ---"}</span>
+{"\n"}<span className="tok-com">{"// src/styles/fonts.scss (imported from layout.tsx)"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-face</span>(<span className="tok-val">'Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico'</span>);
+{"\n"}<span className="tok-com">{"// → emits @import url(...)"}</span>
+{"\n"}<span className="tok-com">{"// then declare the variable in globals.css and consume like step 2"}</span>
+{"\n"}
+{"\n"}<span className="tok-com">{"// --- Self-hosted font (woff2 / ttf) ---"}</span>
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-prop">m.font-face-local</span>(<span className="tok-val">'Untitled Sans', '/fonts/UntitledSans.woff2'</span>);</Example.Code>
       </Example>
-      <p>Tip: drop the <code>font-load</code> call inside a per-route CSS Module (e.g. <code>src/app/special-landing/page.module.scss</code>) and Next will scope the font download to that route only — pages that don&apos;t import the module never see the font in their network tab.</p>
+      <p>Tip: <code>m.font($family: meme)</code> emits <code>font-family: var(--font-meme)</code>. The slug is just a CSS variable name — no Sass-side registry, no validation. As long as <code>--font-meme</code> is declared somewhere in scope, the browser resolves it.</p>
 
       <h3 id="type"><code>type</code></h3>
       <p>Applies a named type-scale preset: size + weight + line-height + letter-spacing in one include.</p>
@@ -639,8 +809,9 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">badge</span>(<span className="tok-val">$status: info</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">tag</span>(<span className="tok-val">$py: 2xs, $px: 2, $r: md, $font-size: 2, $removable: false</span>);
 {"\n"}
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress-track</span>(<span className="tok-val">$height, $r: full, $bg: surface-muted</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress-fill</span>(<span className="tok-val">$color: action-primary-default</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress-track-base</span>(<span className="tok-val">$height, $r: full, $bg: surface-muted</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress-fill-base</span>(<span className="tok-val">$color: action-primary-default</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">progress</span>(<span className="tok-val">$height, $r: full, $bg: surface-muted, $fill: action-primary-default</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">spinner</span>(<span className="tok-val">...</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">skeleton</span>(<span className="tok-val">...</span>);</Example.Code>
       </Example>
@@ -731,18 +902,21 @@ export default function DocsMixinsPage() {
         examples.
       </p>
       <ul>
-        <li><strong>Layout:</strong> <code>flex-center</code>, <code>flex-between</code>, <code>stack</code>, <code>inline</code>, <code>inset</code>, <code>inset-x</code>, <code>inset-y</code>, <code>squish</code>, <code>container</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>section</code>, <code>row</code>, <code>col</code>, <code>divider</code>, <code>divider-vertical</code></li>
-        <li><strong>Breakpoints:</strong> <code>bp</code>, <code>bp-down</code>, <code>bp-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
-        <li><strong>Container queries:</strong> <code>container</code>, <code>cq</code>, <code>cq-down</code>, <code>cq-between</code></li>
+        <li><strong>Layout:</strong> <code>flex</code>, <code>flow</code>, <code>flow-switchable</code>, <code>pad</code>, <code>pad-x</code>, <code>pad-y</code>, <code>pad-asym</code>, <code>wrap</code>, <code>grid</code>, <code>subgrid</code>, <code>page-layout</code>, <code>page-header</code>, <code>page-main</code>, <code>page-footer</code>, <code>page-sidebar</code>, <code>page-nav</code>, <code>page-aside</code>, <code>layout</code>, <code>named-layout</code>, <code>area</code>, <code>page-layout-switchable</code>, <code>stack</code>, <code>cluster</code>, <code>switcher</code>, <code>cover</code>, <code>frame</code>, <code>sidebar</code>, <code>toolbar</code>, <code>wizard-shell</code>, <code>section</code>, <code>divider</code>, <code>divider-vertical</code></li>
+        <li><strong>Geometric utilities (functions):</strong> <code>grid</code>, <code>px</code>, <code>grid-from-px</code></li>
+        <li><strong>Breakpoints:</strong> <code>media</code>, <code>media-down</code>, <code>media-between</code>, <code>mobile-only</code>, <code>tablet</code>, <code>tablet-only</code>, <code>desktop</code>, <code>wide</code></li>
+        <li><strong>Container queries:</strong> <code>container</code>, <code>contain</code>, <code>contain-down</code>, <code>contain-between</code></li>
+        <li><strong>Print / PDF:</strong> <code>print</code>, <code>print-base</code>, <code>print-hidden</code>, <code>print-only</code> <em>(+ <code>--is-print</code> / <code>--print-hide</code> / <code>--print-show</code> vars)</em></li>
         <li><strong>Typography:</strong> <code>font</code>, <code>type</code>, <code>truncate</code></li>
         <li><strong>Borders & effects:</strong> <code>border</code>, <code>elevation</code></li>
         <li><strong>Interactive:</strong> <code>focus-ring</code>, <code>hover</code>, <code>interactive</code>, <code>transition</code>, <code>disabled</code>, <code>sr-only</code></li>
         <li><strong>Resets:</strong> <code>button-reset</code>, <code>list-reset</code>, <code>header-reset</code>, <code>form-reset</code></li>
         <li><strong>Animation:</strong> <code>animate</code>, <code>animate-on</code>, <code>spin</code>, <code>pulse</code>, <code>fade-in</code>, <code>slide-up</code></li>
         <li><strong>Icons:</strong> <code>svg</code>, <code>svg-bg</code>, <code>svg-text</code>, <code>fa-load</code>, <code>fa</code>, <code>fa-icon</code>, <code>fa-text</code>, <code>fa-spin</code></li>
-        <li><strong>Buttons:</strong> <code>btn-base</code>, <code>btn-primary</code>, <code>btn-secondary</code>, <code>btn-outline</code>, <code>btn-ghost</code>, <code>btn-icon</code></li>
+        <li><strong>Buttons:</strong> <code>btn-base</code>, <code>btn</code>, <code>btn-icon</code> (variants <code>primary</code> / <code>secondary</code> / <code>outline</code> / <code>ghost</code> / status are parameters to <code>btn()</code>, not separate mixins)</li>
         <li><strong>Data:</strong> <code>table-base</code>, <code>table-responsive</code>, <code>card-base</code>, <code>card-header</code>, <code>card-footer</code>, <code>card-interactive</code>, <code>list-base</code>, <code>list-item</code>, <code>avatar</code>, <code>avatar-placeholder</code>, <code>avatar-group</code></li>
-        <li><strong>Feedback:</strong> <code>alert-base</code>, <code>alert</code>, <code>toast-base</code>, <code>badge-base</code>, <code>badge</code>, <code>tag</code>, <code>progress-track</code>, <code>progress-fill</code>, <code>spinner</code>, <code>skeleton</code></li>
+        <li><strong>Feedback:</strong> <code>alert-base</code>, <code>alert</code>, <code>toast-base</code>, <code>tag</code>, <code>progress</code>, <code>progress-track-base</code>, <code>progress-fill-base</code>, <code>spinner</code>, <code>skeleton</code></li>
+        <li><strong>Data:</strong> <code>table-base</code>, <code>card-base</code>, <code>badge-base</code>, <code>badge</code></li>
         <li><strong>Forms:</strong> <code>input-base</code>, <code>select-base</code>, <code>textarea-base</code>, <code>check-base</code>, <code>radio-base</code>, <code>switch-base</code>, <code>slider-base</code>, <code>label-base</code>, <code>form-layout</code>, <code>form-group</code>, <code>form-row</code>, <code>form-help</code>, <code>form-error</code></li>
         <li><strong>Navigation:</strong> <code>navbar-base</code>, <code>navbar-brand</code>, <code>navbar-nav</code>, <code>navbar-link</code>, <code>nav-base</code>, <code>breadcrumb</code>, <code>tabs-base</code>, <code>tab-item</code>, <code>pagination</code>, <code>pagination-item</code></li>
         <li><strong>Overlays:</strong> <code>modal-backdrop</code>, <code>modal-base</code>, <code>modal-header</code>, <code>modal-footer</code>, <code>tooltip-base</code>, <code>popover-base</code>, <code>dropdown-menu</code>, <code>dropdown-item</code>, <code>dropdown-divider</code></li>

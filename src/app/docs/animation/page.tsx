@@ -1,184 +1,288 @@
+"use client";
+
+import { useState, type ReactNode } from "react";
 import Example from "@/components/Example";
+import styles from "./page.module.scss";
 
-// ------------------------------------------------------------------
-// Page-scoped CSS
-// ------------------------------------------------------------------
-// The compiled .cia-anim-* / .cia-hover-* utility classes live in the
-// library's own cia.css, which is not bundled into the docs site.
-// We redeclare the keyframes + the minimal utility behaviour here
-// (prefixed .docs-anim-*) so every live preview on this page actually
-// animates. Every rule reads from --duration-* / --ease so the demos
-// still reskin when the ThemePicker swaps themes.
-// ------------------------------------------------------------------
-const pageCSS = `
-@keyframes docs-cia-fade-in {
-  from { opacity: 0; } to { opacity: 1; }
-}
-@keyframes docs-cia-slide-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes docs-cia-scale-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes docs-cia-pop {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.06); }
-  100% { transform: scale(1); }
-}
-@keyframes docs-cia-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
-}
-@keyframes docs-cia-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes docs-cia-wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-2deg); }
-  75% { transform: rotate(2deg); }
-}
-@keyframes docs-cia-shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
+// ----------------------------------------------------------------------------
+// Animation card data — sourced 1:1 from scss/_animations.scss
+// ----------------------------------------------------------------------------
 
-.docs-anim-stage {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  align-items: center;
-}
-.docs-anim-dot {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: var(--r-md);
-  background: var(--surface-emphasis);
-  color: var(--text-inverse);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
-  border: 1px solid var(--border-default);
-}
-.docs-anim-fade-in  { animation: docs-cia-fade-in  var(--duration-slow) var(--ease) infinite alternate both; }
-.docs-anim-slide-up { animation: docs-cia-slide-up var(--duration-slow) var(--ease) infinite alternate both; }
-.docs-anim-scale-in { animation: docs-cia-scale-in var(--duration-slow) var(--ease) infinite alternate both; }
-.docs-anim-pop      { animation: docs-cia-pop      var(--duration-slow) var(--ease) infinite both; }
-.docs-anim-pulse    { animation: docs-cia-pulse    var(--duration-slow) var(--ease) infinite both; }
-.docs-anim-spin     { animation: docs-cia-spin     var(--duration-slow) linear      infinite; }
-.docs-anim-wiggle   { animation: docs-cia-wiggle   var(--duration-slow) var(--ease) infinite both; }
+type AnimKind =
+  | "one-shot"   // plays once on hover/focus/click
+  | "loop";      // plays continuously
 
-.docs-anim-shimmer-bar {
-  height: 14px;
-  width: 240px;
-  border-radius: var(--r-sm);
-  background: linear-gradient(
-    90deg,
-    var(--surface-sunk)    0%,
-    var(--surface-raised) 50%,
-    var(--surface-sunk)  100%
+type AnimDef = {
+  /** name without the cia- prefix (matches the $_anims map key) */
+  id: string;
+  /** human-friendly description for the card */
+  description: string;
+  /** how this animation runs by default in the utility class */
+  kind: AnimKind;
+  /** speed used by the default utility class */
+  speed: "fast" | "normal" | "slow";
+  /** which preview shape this card shows */
+  preview: "dot" | "shimmer";
+  /** which docs-anim-* CSS Module class to attach to the preview element */
+  replayKey?:
+    | "replayFadeIn"
+    | "replayFadeOut"
+    | "replaySlideUp"
+    | "replaySlideDown"
+    | "replaySlideLeft"
+    | "replaySlideRight"
+    | "replayScaleIn"
+    | "replayPop"
+    | "replayWiggle";
+  loopKey?: "loopPulse" | "loopSpin" | "loopShimmer";
+};
+
+const ANIMATIONS: AnimDef[] = [
+  {
+    id: "fade-in",
+    description: "Opacity 0 to 1. The default reveal for content arriving after mount.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replayFadeIn",
+  },
+  {
+    id: "fade-out",
+    description: "Opacity 1 to 0. Pair with unmount to dismiss toasts and overlays.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replayFadeOut",
+  },
+  {
+    id: "slide-up",
+    description: "Rises 8px while fading in. Reach for it on dropdowns and popovers.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replaySlideUp",
+  },
+  {
+    id: "slide-down",
+    description: "Drops 8px while fading in. Header banners and inline alerts.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replaySlideDown",
+  },
+  {
+    id: "slide-left",
+    description: "Slides in from the right while fading in.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replaySlideLeft",
+  },
+  {
+    id: "slide-right",
+    description: "Slides in from the left while fading in.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replaySlideRight",
+  },
+  {
+    id: "scale-in",
+    description: "Grows from 0.96 to 1 while fading in. Modal bodies, tooltip content.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replayScaleIn",
+  },
+  {
+    id: "pop",
+    description: "Brief beat 1 to 1.06 to 1. Notification badges, success ticks.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replayPop",
+  },
+  {
+    id: "wiggle",
+    description: "Rotation jitter. Invalid-input feedback, attention nudges.",
+    kind: "one-shot",
+    speed: "normal",
+    preview: "dot",
+    replayKey: "replayWiggle",
+  },
+  {
+    id: "pulse",
+    description: "Opacity loop 1 to 0.55 to 1. Live indicators, subtle awaits.",
+    kind: "loop",
+    speed: "slow",
+    preview: "dot",
+    loopKey: "loopPulse",
+  },
+  {
+    id: "spin",
+    description: "Continuous 360 degree rotation, linear timing. Spinners, refresh.",
+    kind: "loop",
+    speed: "slow",
+    preview: "dot",
+    loopKey: "loopSpin",
+  },
+  {
+    id: "shimmer",
+    description: "Sweeps a gradient across the element. Skeleton loaders.",
+    kind: "loop",
+    speed: "slow",
+    preview: "shimmer",
+    loopKey: "loopShimmer",
+  },
+];
+
+// ----------------------------------------------------------------------------
+// AnimationCard — one tile in the live grid
+// ----------------------------------------------------------------------------
+
+function AnimationCard({ anim }: { anim: AnimDef }) {
+  const [playKey, setPlayKey] = useState(0);
+  const isOneShot = anim.kind === "one-shot";
+
+  // For one-shot animations the click handler bumps a key on the preview
+  // element so React remounts it — the simplest, most reliable way to
+  // replay a CSS animation from JS without triggering layout reads.
+  const handlePlay = () => {
+    if (isOneShot) setPlayKey((k) => k + 1);
+  };
+
+  const utilityClass = `cia-anim-${anim.id}`;
+
+  return (
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <h3 className={styles.cardName}>cia-{anim.id}</h3>
+        <span className={styles.cardSpeed}>{anim.speed}</span>
+      </div>
+
+      <p className={styles.cardDesc}>{anim.description}</p>
+
+      <div
+        className={styles.stage}
+        // The button below is the keyboard-accessible play target; we still
+        // want hover-to-play for one-shots, which the CSS Module wires via
+        // `.stage:hover .replay*`. Looping previews ignore both — they run
+        // continuously regardless.
+      >
+        {isOneShot && (
+          <button
+            type="button"
+            className={styles.stageTrigger}
+            onClick={handlePlay}
+            aria-label={`Replay ${anim.id} animation`}
+          />
+        )}
+        <PreviewElement anim={anim} playKey={playKey} />
+      </div>
+
+      <pre className={styles.cardCode} aria-label={`Utility class for ${anim.id}`}>
+        {`<div class="${utilityClass}">…</div>`}
+      </pre>
+    </div>
   );
-  background-size: 200% 100%;
-  animation: docs-cia-shimmer var(--duration-slow) linear infinite;
-  border: 1px solid var(--border-subtle);
 }
 
-.docs-anim-token-btn {
-  appearance: none;
-  border: 1px solid var(--border-default);
-  padding: 0.55rem 1rem;
-  border-radius: var(--r-md);
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  background: var(--surface-raised);
-  cursor: pointer;
-  transition:
-    background var(--duration-fast) var(--ease),
-    color      var(--duration-fast) var(--ease);
-}
-.docs-anim-token-btn:hover {
-  background: var(--brand-primary);
-  color: var(--text-inverse);
-}
+function PreviewElement({ anim, playKey }: { anim: AnimDef; playKey: number }) {
+  const replayClass = anim.replayKey ? styles[anim.replayKey] : undefined;
+  const loopClass = anim.loopKey ? styles[anim.loopKey] : undefined;
 
-.docs-anim-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.6rem 1.1rem;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border-default);
-  background: var(--surface-raised);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  cursor: pointer;
-  user-select: none;
-}
-.docs-hover-lift {
-  transition:
-    transform  var(--duration-fast) var(--ease),
-    box-shadow var(--duration-fast) var(--ease);
-}
-.docs-hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-.docs-hover-press {
-  transition: transform var(--duration-fast) var(--ease);
-}
-.docs-hover-press:hover { transform: translateY(1px) scale(0.99); }
-.docs-hover-fade {
-  transition: opacity var(--duration-fast) var(--ease);
-}
-.docs-hover-fade:hover { opacity: 0.7; }
+  // We attach `.replay` (a marker selector used by the stylesheet's
+  // `:hover .replay` rule) plus the per-animation replay class. The
+  // `key` forces React to swap the node so click-to-play retriggers
+  // the CSS animation cleanly.
+  const className = [
+    anim.preview === "shimmer" ? styles.shimmerBar : styles.dot,
+    replayClass,
+    loopClass,
+    "replay",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-@media (prefers-reduced-motion: reduce) {
-  .docs-anim-fade-in,
-  .docs-anim-slide-up,
-  .docs-anim-scale-in,
-  .docs-anim-pop,
-  .docs-anim-pulse,
-  .docs-anim-spin,
-  .docs-anim-wiggle,
-  .docs-anim-shimmer-bar {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+  if (anim.preview === "shimmer") {
+    return <span key={playKey} className={className} aria-hidden />;
   }
-  .docs-anim-token-btn,
-  .docs-hover-lift,
-  .docs-hover-press,
-  .docs-hover-fade { transition: none !important; }
-  .docs-hover-lift:hover,
-  .docs-hover-press:hover { transform: none !important; }
-}
-`;
 
-export default function DocsAnimationPage() {
+  return (
+    <span key={playKey} className={className} aria-hidden>
+      {anim.id.split("-")[0]}
+    </span>
+  );
+}
+
+// ----------------------------------------------------------------------------
+// Page
+// ----------------------------------------------------------------------------
+
+export default function DocsAnimationPage(): ReactNode {
+  const oneShots = ANIMATIONS.filter((a) => a.kind === "one-shot");
+  const loops = ANIMATIONS.filter((a) => a.kind === "loop");
+
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: pageCSS }} />
-
+      {/* ============================================================ */}
+      {/* Hero                                                         */}
+      {/* ============================================================ */}
+      <p className={styles.eyebrow}>motion · live</p>
       <h1>Animation</h1>
       <p className="lead">
-        Motion tokens drive every transition; keyframes stay small and
-        intentional; reduced-motion is respected at both the utility and
-        document level.
+        Every keyframe in the system reads from <code>--duration-*</code> and{" "}
+        <code>--ease</code>, so swapping themes changes the feel — Terminal
+        snaps, Glass floats, Press drifts — without a single code change.
+      </p>
+      <p className={styles.themeNote}>
+        Try it now: open the theme dropdown in the header (or the floating
+        ThemePicker in the bottom-right) and watch every preview below
+        retime in place.
       </p>
 
+      {/* ============================================================ */}
+      {/* Live grid                                                    */}
+      {/* ============================================================ */}
+      <h2 id="live-grid">Live grid</h2>
+      <p>
+        Every animation in the library, rendered as a card. One-shot
+        animations play on hover or click; looping animations run
+        continuously so you can read the rhythm. The utility class shown
+        on each card is the easiest way to trigger the animation in your
+        own markup.
+      </p>
+      <p className={styles.hint}>
+        Hover a card&apos;s preview area, click it, or focus it with the
+        keyboard to replay one-shot animations. Loops never stop.
+      </p>
+
+      <h3 id="grid-one-shot">One-shot animations</h3>
+      <div className={styles.grid} role="list">
+        {oneShots.map((anim) => (
+          <div role="listitem" key={anim.id}>
+            <AnimationCard anim={anim} />
+          </div>
+        ))}
+      </div>
+
+      <h3 id="grid-loops">Looping animations</h3>
+      <div className={styles.grid} role="list">
+        {loops.map((anim) => (
+          <div role="listitem" key={anim.id}>
+            <AnimationCard anim={anim} />
+          </div>
+        ))}
+      </div>
+
+      {/* ============================================================ */}
+      {/* Motion tokens                                                */}
       {/* ============================================================ */}
       <h2 id="motion-tokens">Motion tokens</h2>
       <p>
         The whole animation system reads from four CSS custom properties.
-        Swap the theme and every transition, hover and keyframe retimes
-        without a single code change — Terminal snaps, Glass floats, Press
-        drifts.
+        Swap the theme and every transition, hover, and keyframe retimes
+        without any code change.
       </p>
       <table>
         <thead>
@@ -218,7 +322,7 @@ export default function DocsAnimationPage() {
       </p>
       <Example>
         <Example.Preview>
-          <button type="button" className="docs-anim-token-btn">
+          <button type="button" className={styles.tokenBtn}>
             Hover me
           </button>
         </Example.Preview>
@@ -233,184 +337,7 @@ export default function DocsAnimationPage() {
       </Example>
 
       {/* ============================================================ */}
-      <h2 id="keyframes">Keyframe library</h2>
-      <p>
-        <code>_animations.scss</code> ships a fixed vocabulary of twelve{" "}
-        <code>@keyframes</code>. Every one is prefixed <code>cia-</code> so it
-        never collides with host app animations. Durations default to{" "}
-        <code>--duration-normal</code>; override per-utility with the{" "}
-        <code>-fast</code> / <code>-slow</code> suffixes.
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Keyframe</th>
-            <th>What it animates</th>
-            <th>Typical use</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>cia-fade-in</code></td>
-            <td>Opacity <code>0 → 1</code>.</td>
-            <td>Content appearing after mount, skeleton-to-data swap.</td>
-          </tr>
-          <tr>
-            <td><code>cia-fade-out</code></td>
-            <td>Opacity <code>1 → 0</code>.</td>
-            <td>Dismissing toasts, closing overlays.</td>
-          </tr>
-          <tr>
-            <td><code>cia-slide-up</code></td>
-            <td>Opacity + <code>translateY(8px → 0)</code>.</td>
-            <td>Dropdowns, popovers, off-canvas drawers.</td>
-          </tr>
-          <tr>
-            <td><code>cia-slide-down</code></td>
-            <td>Opacity + <code>translateY(-8px → 0)</code>.</td>
-            <td>Header banners, inline alerts.</td>
-          </tr>
-          <tr>
-            <td><code>cia-slide-left</code></td>
-            <td>Opacity + <code>translateX(8px → 0)</code>.</td>
-            <td>Right-edge panels entering.</td>
-          </tr>
-          <tr>
-            <td><code>cia-slide-right</code></td>
-            <td>Opacity + <code>translateX(-8px → 0)</code>.</td>
-            <td>Left-edge panels entering.</td>
-          </tr>
-          <tr>
-            <td><code>cia-scale-in</code></td>
-            <td>Opacity + <code>scale(0.96 → 1)</code>.</td>
-            <td>Modal content, tooltip bodies.</td>
-          </tr>
-          <tr>
-            <td><code>cia-pop</code></td>
-            <td>Scale beat: <code>1 → 1.06 → 1</code>.</td>
-            <td>Notification badges, success icons.</td>
-          </tr>
-          <tr>
-            <td><code>cia-pulse</code></td>
-            <td>Opacity loop <code>1 → 0.55 → 1</code>.</td>
-            <td>Loading placeholders, live indicators.</td>
-          </tr>
-          <tr>
-            <td><code>cia-spin</code></td>
-            <td><code>rotate(0 → 360deg)</code>, linear.</td>
-            <td>Spinners, refresh icons.</td>
-          </tr>
-          <tr>
-            <td><code>cia-shimmer</code></td>
-            <td>Sweeps a gradient background across an element.</td>
-            <td>Skeletons with a moving highlight.</td>
-          </tr>
-          <tr>
-            <td><code>cia-wiggle</code></td>
-            <td>Rotation jitter <code>-2° → 2°</code>.</td>
-            <td>Invalid-input feedback, attention shakes.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 id="keyframes-fade">Fade-in</h3>
-      <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-dot docs-anim-fade-in">fade</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">.demo</span> {"{"}
-{"\n"}  <span className="tok-prop">animation</span>: <span className="tok-val">cia-fade-in var(--duration-slow) var(--ease) infinite alternate both</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="keyframes-slide-up">Slide-up</h3>
-      <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-dot docs-anim-slide-up">slide</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">.demo</span> {"{"}
-{"\n"}  <span className="tok-prop">animation</span>: <span className="tok-val">cia-slide-up var(--duration-normal) var(--ease) both</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="keyframes-scale-in">Scale-in</h3>
-      <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-dot docs-anim-scale-in">scale</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">.modal</span><span className="tok-sel">__body</span> {"{"}
-{"\n"}  <span className="tok-prop">animation</span>: <span className="tok-val">cia-scale-in var(--duration-normal) var(--ease) both</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="keyframes-pop">Pop</h3>
-      <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-dot docs-anim-pop">pop</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">.badge</span><span className="tok-sel">--new</span> {"{"}
-{"\n"}  <span className="tok-prop">animation</span>: <span className="tok-val">cia-pop var(--duration-slow) var(--ease)</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="keyframes-pulse">Pulse</h3>
-      <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-dot docs-anim-pulse">pulse</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">.live-dot</span> {"{"}
-{"\n"}  <span className="tok-prop">animation</span>: <span className="tok-val">cia-pulse var(--duration-slow) var(--ease) infinite</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="keyframes-spin">Spin</h3>
-      <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-dot docs-anim-spin">spin</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">.spinner</span> {"{"}
-{"\n"}  <span className="tok-prop">animation</span>: <span className="tok-val">cia-spin var(--duration-slow) linear infinite</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="keyframes-wiggle">Wiggle</h3>
-      <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-dot docs-anim-wiggle">wiggle</div>
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">.field</span><span className="tok-sel">--invalid</span> {"{"}
-{"\n"}  <span className="tok-prop">animation</span>: <span className="tok-val">cia-wiggle var(--duration-slow) var(--ease)</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
-      <h3 id="keyframes-shimmer">Shimmer</h3>
-      <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-shimmer-bar" aria-hidden />
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">.skeleton</span> {"{"}
-{"\n"}  <span className="tok-prop">background</span>: <span className="tok-val">linear-gradient(90deg, var(--surface-sunk), var(--surface-raised), var(--surface-sunk))</span>;
-{"\n"}  <span className="tok-prop">background-size</span>: <span className="tok-val">200% 100%</span>;
-{"\n"}  <span className="tok-prop">animation</span>: <span className="tok-val">cia-shimmer var(--duration-slow) linear infinite</span>;
-{"\n"}{"}"}</Example.Code>
-      </Example>
-
+      {/* Utility classes                                              */}
       {/* ============================================================ */}
       <h2 id="utility-classes">Utility classes</h2>
       <p>
@@ -421,108 +348,20 @@ export default function DocsAnimationPage() {
         iteration count built in, because that is how they are used 99% of
         the time.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Class</th>
-            <th>Effect</th>
-            <th>Duration</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>.cia-anim-fade-in</code></td>
-            <td>Fade from transparent to opaque, runs once.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-fade-out</code></td>
-            <td>Fade from opaque to transparent, runs once.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-slide-up</code></td>
-            <td>Rise 8px while fading in, runs once.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-slide-down</code></td>
-            <td>Drop 8px while fading in, runs once.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-slide-left</code></td>
-            <td>Slide in from the right 8px while fading.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-slide-right</code></td>
-            <td>Slide in from the left 8px while fading.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-scale-in</code></td>
-            <td>Scale from 0.96 to 1 while fading in.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-pop</code></td>
-            <td>Brief scale beat up to 1.06, runs once.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-wiggle</code></td>
-            <td>Small rotation jitter, runs once.</td>
-            <td><code>--duration-normal</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-spin</code></td>
-            <td>Continuous 360° rotation.</td>
-            <td><code>--duration-slow</code>, infinite, linear</td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-pulse</code></td>
-            <td>Continuous opacity breathing.</td>
-            <td><code>--duration-slow</code>, infinite</td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-shimmer</code></td>
-            <td>Continuous gradient sweep across the element.</td>
-            <td><code>--duration-slow</code>, infinite, linear</td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-&lt;name&gt;-fast</code></td>
-            <td>Same animation, runs at <code>--duration-fast</code>.</td>
-            <td><code>--duration-fast</code></td>
-          </tr>
-          <tr>
-            <td><code>.cia-anim-&lt;name&gt;-slow</code></td>
-            <td>Same animation, runs at <code>--duration-slow</code>.</td>
-            <td><code>--duration-slow</code></td>
-          </tr>
-        </tbody>
-      </table>
-      <p>
-        Two examples the system leans on most — a pulsing live dot and a
-        shimmering skeleton — rendered live with the exact behaviour the
-        utility classes produce.
-      </p>
       <Example>
-        <Example.Preview>
-          <div className="docs-anim-stage">
-            <div className="docs-anim-dot docs-anim-pulse">pulse</div>
-            <div className="docs-anim-shimmer-bar" aria-hidden />
-          </div>
-        </Example.Preview>
-        <Example.Code><span className="tok-sel">{"<span"}</span> <span className="tok-prop">class</span>=<span className="tok-val">{'"cia-anim-pulse"'}</span><span className="tok-sel">{">"}</span>live<span className="tok-sel">{"</span>"}</span>
+        <Example.Code><span className="tok-sel">{"<div"}</span> <span className="tok-prop">class</span>=<span className="tok-val">{'"cia-anim-fade-in"'}</span><span className="tok-sel">{">"}</span>…<span className="tok-sel">{"</div>"}</span>
+{"\n"}<span className="tok-sel">{"<div"}</span> <span className="tok-prop">class</span>=<span className="tok-val">{'"cia-anim-slide-up-fast"'}</span><span className="tok-sel">{">"}</span>…<span className="tok-sel">{"</div>"}</span>
+{"\n"}<span className="tok-sel">{"<span"}</span> <span className="tok-prop">class</span>=<span className="tok-val">{'"cia-anim-pulse"'}</span><span className="tok-sel">{">"}</span>live<span className="tok-sel">{"</span>"}</span>
 {"\n"}<span className="tok-sel">{"<div"}</span> <span className="tok-prop">class</span>=<span className="tok-val">{'"skeleton cia-anim-shimmer"'}</span><span className="tok-sel">{">"}</span><span className="tok-sel">{"</div>"}</span></Example.Code>
       </Example>
 
       {/* ============================================================ */}
+      {/* Hover utilities                                              */}
+      {/* ============================================================ */}
       <h2 id="hover-utilities">Hover utilities</h2>
       <p>
         Four hover primitives cover the interactions the system needs most.
-        Each one is a token-driven micro-transition — no motion values are
+        Each is a token-driven micro-transition — no motion values are
         hard-coded, so they adopt the active theme&apos;s timing curve.
       </p>
       <table>
@@ -556,18 +395,12 @@ export default function DocsAnimationPage() {
           </tr>
         </tbody>
       </table>
-      <p>
-        <code>.cia-hover-glow</code> only reads as a true glow under themes
-        that ship non-transparent <code>--glow-*</code> values (Terminal,
-        Graphite, Glass). Paper themes declare the glow token as a no-op
-        so the class still applies without visual noise.
-      </p>
       <Example>
         <Example.Preview>
-          <div className="docs-anim-stage">
-            <span className="docs-anim-chip docs-hover-lift">lift</span>
-            <span className="docs-anim-chip docs-hover-press">press</span>
-            <span className="docs-anim-chip docs-hover-fade">fade</span>
+          <div className={styles.chipRow}>
+            <span className={`${styles.chip} ${styles.hoverLift}`}>lift</span>
+            <span className={`${styles.chip} ${styles.hoverPress}`}>press</span>
+            <span className={`${styles.chip} ${styles.hoverFade}`}>fade</span>
           </div>
         </Example.Preview>
         <Example.Code><span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">{'"cia-card cia-hover-lift"'}</span><span className="tok-sel">{">"}</span>…<span className="tok-sel">{"</a>"}</span>
@@ -576,59 +409,54 @@ export default function DocsAnimationPage() {
       </Example>
 
       {/* ============================================================ */}
-      <h2 id="transition-mixins">Transition mixin</h2>
+      {/* Mixin                                                        */}
+      {/* ============================================================ */}
+      <h2 id="animate-mixin">The animate() mixin</h2>
       <p>
-        For authored components that need a token-aware{" "}
-        <code>transition</code> declaration without typing it by hand,{" "}
-        <code>_mixins.scss</code> exposes a variadic{" "}
-        <code>transition</code> mixin. It accepts a list of properties
-        interleaved with optional speed and easing keywords.
+        For authored components, <code>_animations.scss</code> exposes an{" "}
+        <code>animate()</code> mixin that wires duration, easing, iteration,
+        and reduced-motion in one call.
       </p>
       <Example>
         <Example.Code><span className="tok-com">{"// signature"}</span>
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">transition</span>($props...);
-{"\n"}
-{"\n"}<span className="tok-com">{"// speed keywords:   instant | fast | normal | slow | slower"}</span>
-{"\n"}<span className="tok-com">{"// easing keywords:  linear | ease | ease-in | ease-out | ease-in-out | bounce | smooth"}</span>
-{"\n"}<span className="tok-com">{"// anything else is treated as a CSS property"}</span>
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">animate</span>($name, $speed: normal, $delay: 0s, $iteration: 1, $fill: both, $timing: var(--ease));
 {"\n"}
 {"\n"}<span className="tok-com">{"// usage"}</span>
-{"\n"}<span className="tok-sel">.my-card</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.transition(background, color)</span>;           <span className="tok-com">{"// fast + smooth (defaults)"}</span>
+{"\n"}<span className="tok-sel">.toast</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">animate(slide-up)</span>;
 {"\n"}{"}"}
 {"\n"}
-{"\n"}<span className="tok-sel">.my-modal</span> {"{"}
-{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">m.transition(opacity, transform, slow, ease-out)</span>;
+{"\n"}<span className="tok-sel">.spinner</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">animate(spin, $speed: slow, $iteration: infinite, $timing: linear)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
       <p>
-        The mixin collapses all supplied properties into a single{" "}
-        <code>transition</code> declaration and injects a{" "}
-        <code>@media (prefers-reduced-motion: reduce)</code> block that
-        turns the transition off entirely — so every authored component
-        is automatically accessibility-aware.
-      </p>
-      <p>
-        Animations themselves are authored with the companion{" "}
-        <code>animate</code> mixin from <code>_animations.scss</code>:{" "}
-        <code>@include animate(slide-up)</code>,{" "}
-        <code>@include animate(spin, $speed: slow, $iteration: infinite, $timing: linear)</code>.
-        The mixin validates names at compile time and wires up reduced-motion
-        for you.
+        The mixin validates animation names at compile time — pass an
+        unknown name and the build fails with a list of the legal ones.
       </p>
 
       {/* ============================================================ */}
+      {/* Reduced motion                                               */}
+      {/* ============================================================ */}
       <h2 id="reduced-motion">Reduced motion</h2>
       <p>
-        The system respects <code>prefers-reduced-motion: reduce</code> at
-        three layers: the <code>animate</code> mixin collapses its own
-        animation to <code>0.01ms</code>, the <code>transition</code>{" "}
-        mixin drops transitions entirely, and{" "}
-        <code>_animations.scss</code> ships a global safety net that
-        defuses every animation and transition on the page.
+        Every animation on this page — both the live cards above and the
+        utility classes you copy into your own markup — respects{" "}
+        <code>prefers-reduced-motion: reduce</code>. Users with that setting
+        enabled see the final state of each animation immediately: no
+        fade, no slide, no pulse, no spin. Hover-driven transitions are
+        suppressed too. Nothing is hidden, nothing is moved off-screen —
+        the content is simply rendered without motion.
+      </p>
+      <p>
+        The guarantee comes from three layers in <code>_animations.scss</code>:
+        the <code>animate()</code> mixin collapses its own animation to{" "}
+        <code>0.01ms</code>, the <code>transition()</code> mixin drops
+        transitions entirely, and a global <code>*</code> rule defuses any
+        animation or transition declared anywhere in the document.
       </p>
       <Example>
-        <Example.Code><span className="tok-com">{"// scss/_animations.scss"}</span>
+        <Example.Code><span className="tok-com">{"// scss/_animations.scss — global safety net"}</span>
 {"\n"}<span className="tok-sel">@media</span> <span className="tok-val">(prefers-reduced-motion: reduce)</span> {"{"}
 {"\n"}  <span className="tok-sel">*</span>, <span className="tok-sel">*::before</span>, <span className="tok-sel">*::after</span> {"{"}
 {"\n"}    <span className="tok-prop">animation-duration</span>: <span className="tok-val">0.01ms !important</span>;
@@ -638,16 +466,11 @@ export default function DocsAnimationPage() {
 {"\n"}  {"}"}
 {"\n"}{"}"}</Example.Code>
       </Example>
-      <p>
-        The <code>!important</code> flag is deliberate — this is the one
-        place in the system where it belongs. It guarantees that a host
-        app&apos;s custom animation cannot override the user&apos;s OS-level
-        motion preference.
-      </p>
 
       {/* ============================================================ */}
+      {/* Writing your own                                             */}
+      {/* ============================================================ */}
       <h2 id="writing-your-own">Writing your own</h2>
-      <p>A short checklist for new motion in a consuming app.</p>
       <ul>
         <li>
           <strong>Use the motion tokens.</strong> Type{" "}
@@ -657,20 +480,21 @@ export default function DocsAnimationPage() {
         </li>
         <li>
           <strong>Prefer <code>transform</code> and <code>opacity</code>.</strong>{" "}
-          Both are GPU-accelerated and do not trigger layout.
-          Animating <code>width</code>, <code>height</code>, or{" "}
-          <code>top</code> will jank on low-end hardware.
+          Both are GPU-accelerated and do not trigger layout. Animating{" "}
+          <code>width</code>, <code>height</code>, or <code>top</code> will
+          jank on low-end hardware.
         </li>
         <li>
           <strong>Wrap new keyframes in a reduced-motion check,</strong> or
-          reach for the <code>animate</code> / <code>transition</code>{" "}
+          reach for the <code>animate()</code> / <code>transition()</code>{" "}
           mixins that already do it. A user who opts out of motion should
           opt out of <em>your</em> motion too.
         </li>
         <li>
           <strong>Keep the vocabulary small.</strong> If the library&apos;s
-          twelve keyframes cover the intent, use them — a consistent motion
-          language reads as a single voice, not a grab-bag of easings.
+          twelve keyframes cover the intent, use them — a consistent
+          motion language reads as a single voice, not a grab-bag of
+          easings.
         </li>
       </ul>
     </>

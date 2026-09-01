@@ -7,7 +7,7 @@ export default function MigrationTailwindPage() {
       <p className="lead">
         Tailwind gives you atomic utilities; css-is-awesome gives you
         mixin-first composition and token-driven themes — fewer classes in
-        your markup, one data-theme swap for the whole app.
+        your markup, one file swap for the whole app.
       </p>
 
       <h2 id="why-migrate">Why migrate</h2>
@@ -20,8 +20,9 @@ export default function MigrationTailwindPage() {
       </p>
       <ul>
         <li>
-          <strong>Token-driven theming.</strong> One{" "}
-          <code>data-theme</code> flip reskins everything — no rebuild,
+          <strong>Token-driven theming.</strong> Swapping one CSS file — or
+          flipping one <code>data-theme</code> attribute if you loaded the
+          bundle — reskins everything, including the spacing scale. No rebuild,
           no JIT pass, no PostCSS. Tailwind&apos;s equivalent is editing{" "}
           <code>tailwind.config.js</code> and recompiling the entire
           stylesheet.
@@ -38,10 +39,12 @@ export default function MigrationTailwindPage() {
           is valid CSS on delivery.
         </li>
         <li>
-          <strong>Zero JavaScript by default.</strong> Tailwind leans on
-          Headless UI, Radix, or Alpine for interactivity. cia ships its
-          own React components (Modal, Tabs, Dropdown) and they&apos;re
-          opt-in — plain HTML + CSS works on its own.
+          <strong>Zero JavaScript, period.</strong> Tailwind leans on
+          Headless UI, Radix, or Alpine for interactivity. The cia npm
+          package contains no <code>.js</code> at all — its six interactive
+          components are built on native primitives (<code>&lt;dialog&gt;</code>,{" "}
+          <code>&lt;details name&gt;</code>, <code>[popover]</code>, radio +{" "}
+          <code>:has()</code>), so the browser holds the state.
         </li>
       </ul>
 
@@ -65,7 +68,8 @@ export default function MigrationTailwindPage() {
               <code>tailwind.config.js</code> + rebuild
             </td>
             <td>
-              <code>data-theme</code> attribute + CSS custom properties
+              Swap one CSS file, or flip a <code>data-theme</code> attribute —
+              CSS custom properties either way
             </td>
           </tr>
           <tr>
@@ -87,7 +91,7 @@ export default function MigrationTailwindPage() {
               <code>dark:</code> variant on every affected class
             </td>
             <td>
-              <code>data-theme=&quot;graphite&quot;</code> swaps one
+              <code>data-theme=&quot;graphite-dark&quot;</code> swaps one
               attribute for the whole app
             </td>
           </tr>
@@ -123,7 +127,7 @@ export default function MigrationTailwindPage() {
             </td>
             <td>
               <code>class=&quot;cia-flex-center&quot;</code> or{" "}
-              <code>@include m.flex-center</code>
+              <code>@include m.flex($justify: center)</code>
             </td>
           </tr>
           <tr>
@@ -204,7 +208,7 @@ export default function MigrationTailwindPage() {
               <code>@apply flex items-center gap-2</code>
             </td>
             <td>
-              <code>@include m.inline(2)</code> — or any other mixin.{" "}
+              <code>@include m.flex($gap: 2)</code> — or any other mixin.{" "}
               <code>@include</code> takes a mixin name, not a class list.
             </td>
           </tr>
@@ -371,10 +375,14 @@ export default function MigrationTailwindPage() {
           <a href="/docs/install">/docs/install</a>.
         </li>
         <li>
-          <strong>Pick a theme file.</strong>{" "}
-          <code>&lt;html data-theme=&quot;press&quot;&gt;</code> reskins
-          the whole app without a rebuild. Preview themes before
-          committing — see <a href="/docs/tokens">/docs/tokens</a>.
+          <strong>Pick a theme file.</strong> Link{" "}
+          <code>themes/press-light/theme.css</code> and you&apos;re done — each
+          theme emits a bare <code>:root</code>, so it reskins the whole app
+          without a rebuild and without touching your markup. Use{" "}
+          <code>&lt;html data-theme=&quot;press-light&quot;&gt;</code> only if
+          you loaded the 24-theme bundle and need to choose between them.
+          Preview themes before committing — see{" "}
+          <a href="/docs/tokens">/docs/tokens</a>.
         </li>
         <li>
           <strong>Convert one component type at a time.</strong> Start
@@ -391,8 +399,8 @@ export default function MigrationTailwindPage() {
           </strong>{" "}
           <code>flex items-center justify-center</code> becomes{" "}
           <code>cia-flex-center</code> (markup) or{" "}
-          <code>@include m.flex-center</code> (SCSS). A regex codemod
-          handles the bulk.
+          <code>@include m.flex($justify: center)</code> (SCSS). A regex
+          codemod handles the bulk.
         </li>
         <li>
           <strong>Delete Tailwind plugin imports</strong> for features
@@ -419,7 +427,7 @@ export default function MigrationTailwindPage() {
           </strong>{" "}
           cia uses the <code>data-theme</code> attribute for any theme
           switch —{" "}
-          <code>data-theme=&quot;graphite&quot;</code> is cia&apos;s dark
+          <code>data-theme=&quot;graphite-dark&quot;</code> is cia&apos;s dark
           mode, but it&apos;s just another theme and the mechanism is
           the same as brand themes.
         </li>

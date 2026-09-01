@@ -1,72 +1,33 @@
 // ============================================================================
-// ANIMATIONS - Keyframe library + mixin + cia-* utility classes
+// ANIMATIONS — Mixin-only surface (safe to @use from .module.scss)
 // ============================================================================
 // Philosophy: a fixed keyframe vocabulary, theme-driven duration + easing.
 // Every animation reads from --duration-* and --ease so swapping themes
 // changes the feel (Terminal snappy, Glass floaty) with zero code change.
 //
 // Respects prefers-reduced-motion — all animations collapse to 0s.
+//
+// This file is the MIXIN surface. The keyframe definitions, .cia-anim-*
+// utility classes, and the global *, *::before, *::after reduced-motion
+// safety net live in _animations-utilities.scss — load that ONCE globally
+// (via main.scss or your app's global SCSS entry).
+//
+// Why split: top-level rules + global selectors here would fail Next.js
+// CSS Modules pure-mode (`Selector "*, *::before, *::after" is not pure`)
+// when a `.module.scss` does `@use 'css-is-awesome/scss/animations' as anim;`.
+// Mixin-only files are safe to @use from any scoped context.
 // ============================================================================
 @use 'sass:map';
-
-// ----------------------------------------------------------------------------
-// KEYFRAME LIBRARY
-// ----------------------------------------------------------------------------
-
-@keyframes cia-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes cia-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
-@keyframes cia-slide-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes cia-slide-down {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes cia-slide-left {
-  from { opacity: 0; transform: translateX(8px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes cia-slide-right {
-  from { opacity: 0; transform: translateX(-8px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes cia-scale-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes cia-pop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.06); }
-  100% { transform: scale(1); }
-}
-@keyframes cia-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.55; }
-}
-@keyframes cia-shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-@keyframes cia-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes cia-wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(-2deg); }
-  75%      { transform: rotate(2deg); }
-}
+@use 'sass:list';
+@use 'sass:meta';
 
 // ----------------------------------------------------------------------------
 // ANIMATION VOCABULARY
 // ----------------------------------------------------------------------------
+// Maps animation slug → keyframe name. The keyframes themselves live in
+// _animations-utilities.scss (loaded globally). The mixin emits the name as
+// a string reference, which resolves at runtime against the globally-loaded
+// @keyframes — even when the mixin call site is inside a CSS Module.
 
 $_anims: (
   fade-in:     cia-fade-in,
@@ -97,6 +58,107 @@ $_speeds: (
 // @include animate(spin, $speed: slow, $iteration: infinite, $timing: linear);
 // ----------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------
+// KEYFRAME LIBRARY — the single definition of every cia keyframe.
+//
+// This lives here, next to `animate()`, rather than in `_animations-utilities`
+// because `animate()` has to be able to emit the keyframe it references. The
+// utilities module loops over these for the global bundle, so there is exactly
+// one copy of each definition.
+//
+// `@at-root` hoists the block out of whatever selector called `animate()`, and
+// co-emitting is what makes the reference survive CSS Modules: a top-level
+// `@keyframes` gets hashed to a local name while an `animation-name` written
+// elsewhere does not. Emitted together, both are renamed or neither is —
+// the same reason `spinner()` and `skeleton()` already do this.
+// ----------------------------------------------------------------------------
+/// Every animation name `animate()` and `keyframes-for()` accept.
+/// Exposed so the utilities bundle can loop the full set without duplicating
+/// the registry, and so consumers can enumerate what's available.
+@function animation-names() {
+  @return map.keys($_anims);
+}
+
+// Names already emitted in THIS compilation. Sass resets module state per
+// compiled file, which is exactly the granularity we want: one copy per output
+// file (CSS Modules needs its own hashed copy per module), never 42 copies in
+// one bundle because 30 utility classes each asked for one.
+$_emitted: ();
+
+@mixin keyframes-for($name) {
+  $keyframe: map.get($_anims, $name);
+  @if not $keyframe {
+    @error "keyframes-for(): unknown animation '#{$name}'. Known: #{map.keys($_anims)}";
+  }
+
+  @if not list.index($_emitted, $name) {
+    $_emitted: list.append($_emitted, $name) !global;
+    @include _emit-keyframe($name);
+  }
+}
+
+@mixin _emit-keyframe($name) {
+  @at-root {
+    @if $name == fade-in {
+      @keyframes cia-fade-in { from { opacity: 0; } to { opacity: 1; } }
+    } @else if $name == fade-out {
+      @keyframes cia-fade-out { from { opacity: 1; } to { opacity: 0; } }
+    } @else if $name == slide-up {
+      @keyframes cia-slide-up {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+    } @else if $name == slide-down {
+      @keyframes cia-slide-down {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+    } @else if $name == slide-left {
+      @keyframes cia-slide-left {
+        from { opacity: 0; transform: translateX(8px); }
+        to   { opacity: 1; transform: translateX(0); }
+      }
+    } @else if $name == slide-right {
+      @keyframes cia-slide-right {
+        from { opacity: 0; transform: translateX(-8px); }
+        to   { opacity: 1; transform: translateX(0); }
+      }
+    } @else if $name == scale-in {
+      @keyframes cia-scale-in {
+        from { opacity: 0; transform: scale(0.96); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+    } @else if $name == pop {
+      @keyframes cia-pop {
+        0%   { transform: scale(1); }
+        40%  { transform: scale(1.06); }
+        100% { transform: scale(1); }
+      }
+    } @else if $name == pulse {
+      @keyframes cia-pulse {
+        0%, 100% { opacity: 1; }
+        50%      { opacity: 0.55; }
+      }
+    } @else if $name == shimmer {
+      @keyframes cia-shimmer {
+        0%   { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+    } @else if $name == spin {
+      @keyframes cia-spin {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+      }
+    } @else if $name == wiggle {
+      @keyframes cia-wiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25%      { transform: rotate(-2deg); }
+        75%      { transform: rotate(2deg); }
+      }
+    }
+  }
+}
+
 @mixin animate(
   $name,
   $speed: normal,
@@ -106,14 +168,29 @@ $_speeds: (
   $timing: var(--ease, cubic-bezier(0.33, 0.66, 0.33, 1))
 ) {
   $keyframe: map.get($_anims, $name);
+
+  // A raw duration (`1s`, `750ms`) passes through. Only an unrecognised
+  // *keyword* is an error — rejecting raw values forced consumers to hand-roll
+  // the entire animation just to keep a duration the scale doesn't carry, which
+  // is exactly what Boiler's spinners did.
   $duration: map.get($_speeds, $speed);
+  @if not $duration and meta.type-of($speed) == 'number' {
+    $duration: $speed;
+  }
 
   @if not $keyframe {
     @error "animate(): unknown animation '#{$name}'. Known: #{map.keys($_anims)}";
   }
   @if not $duration {
-    @error "animate(): unknown speed '#{$speed}'. Known: fast, normal, slow";
+    @error "animate(): unknown speed '#{$speed}'. Known: fast, normal, slow, or a duration like 1s";
   }
+
+  // Co-emit the keyframe this rule references. Without it, `animate()` on the
+  // documented per-component path (`css-is-awesome/api`, or a theme <link> for
+  // tokens) emitted an `animation-name` pointing at nothing — valid CSS, no
+  // error, no animation. Duplicate identical @keyframes across files are
+  // harmless and gzip away; a dangling reference is not.
+  @include keyframes-for($name);
 
   animation-name: $keyframe;
   animation-duration: $duration;
@@ -167,41 +244,5 @@ $_speeds: (
   @media (prefers-reduced-motion: reduce) {
     transition: none;
     &:#{$event} { transform: none; }
-  }
-}
-
-// ----------------------------------------------------------------------------
-// UTILITY CLASSES — .cia-anim-* + .cia-hover-*
-// ----------------------------------------------------------------------------
-
-@each $name, $keyframe in $_anims {
-  .cia-anim-#{$name} {
-    @include animate($name);
-  }
-  .cia-anim-#{$name}-fast { @include animate($name, $speed: fast); }
-  .cia-anim-#{$name}-slow { @include animate($name, $speed: slow); }
-}
-
-// Loopers — spin + pulse + shimmer want infinite by default when used as utility
-.cia-anim-spin    { @include animate(spin,    $speed: slow, $iteration: infinite, $timing: linear); }
-.cia-anim-pulse   { @include animate(pulse,   $speed: slow, $iteration: infinite); }
-.cia-anim-shimmer { @include animate(shimmer, $speed: slow, $iteration: infinite, $timing: linear); }
-
-.cia-hover-lift  { @include animate-on(hover, lift); }
-.cia-hover-glow  { @include animate-on(hover, glow); }
-.cia-hover-press { @include animate-on(hover, press); }
-.cia-hover-fade  { @include animate-on(hover, fade); }
-
-// ----------------------------------------------------------------------------
-// GLOBAL REDUCED-MOTION SAFETY NET
-// ----------------------------------------------------------------------------
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    /* stylelint-disable declaration-no-important -- !important is the canonical pattern for the global reduced-motion safety net: it must override any animation/transition declared anywhere in the document. */
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-    /* stylelint-enable declaration-no-important */
   }
 }

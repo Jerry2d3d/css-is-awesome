@@ -1,0 +1,558 @@
+/* Theme Editor Dock — bottom-right pill + right-edge slide-out panel.
+   All visual tokens come from the active cia theme so the dock itself
+   reskins along with the page it edits. */
+@use 'mixins' as m;
+
+$panel-width: 440px;
+
+.pill {
+  // Editor chrome — screen only.
+  @include m.print-hidden;
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 9999;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--action-primary-default, var(--ink));
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: var(--shadow-md, 0 6px 20px rgba(0, 0, 0, 0.18));
+  transition: transform 150ms ease, opacity 150ms ease;
+
+  &:hover {
+    background: var(--action-primary-hover, var(--ink));
+    border-color: var(--action-primary-hover, var(--ink));
+    transform: translateY(-1px);
+  }
+  &[aria-expanded="true"] {
+    transform: translateX(-#{$panel-width});
+  }
+}
+.pillDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ai-ink, var(--text-inverse, #fff));
+}
+.modBadge {
+  margin-left: 0.4rem;
+  color: var(--shu, currentColor);
+  font-size: 0.75em;
+  line-height: 1;
+}
+.titleBadge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: var(--shu-wash, var(--ai-wash));
+  color: var(--shu, var(--ai));
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+}
+
+.panel {
+  @include m.print-hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: $panel-width;
+  height: 100vh;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper-raised, var(--paper, #fff));
+  color: var(--ink, currentColor);
+  border-left: 1px solid var(--hair, rgba(0, 0, 0, 0.12));
+  transform: translateX(100%);
+  transition: transform 250ms cubic-bezier(0.32, 0.72, 0, 1);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+.open {
+  transform: translateX(0);
+}
+
+.head {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--hair);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+.sub {
+  font-size: 0.7rem;
+  color: var(--ink-soft, var(--text-muted));
+  margin: 0.15rem 0 0;
+}
+.close {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--hair);
+  background: transparent;
+  color: var(--ink, currentColor);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.05));
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem 0;
+}
+.tab {
+  flex: 1;
+  height: 2rem;
+  border: 1px solid var(--hair);
+  background: transparent;
+  color: var(--ink, currentColor);
+  font: inherit;
+  font-weight: 600;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.05));
+  }
+}
+.tabActive {
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
+  border-color: var(--action-primary-default, var(--ink));
+
+  &:hover {
+    background: var(--action-primary-hover, var(--ink));
+  }
+}
+
+/* ---------- Category tab strip (Color / Layout / Type / Motion) ---------- */
+.catTabs {
+  display: flex;
+  gap: 0;
+  padding: 0.5rem 1rem 0;
+  border-bottom: 1px solid var(--hair);
+}
+.catTab {
+  flex: 1;
+  height: 1.85rem;
+  padding: 0 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft, var(--text-muted));
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: var(--ink, currentColor);
+  }
+}
+.catTabActive {
+  color: var(--ink, currentColor);
+  border-bottom-color: var(--ai, var(--ink, currentColor));
+}
+
+/* ---------- Sub-page pills (shown only on Color category for now) --- */
+.subTabs {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--hair);
+  flex-wrap: wrap;
+}
+.subTab {
+  height: 1.5rem;
+  padding: 0 0.55rem;
+  border: 1px solid var(--hair);
+  background: transparent;
+  color: var(--ink-soft, var(--text-muted));
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.04));
+    color: var(--ink, currentColor);
+  }
+}
+.subTabActive {
+  background: var(--ai-wash, var(--paper-sunk));
+  border-color: var(--ai, var(--hair));
+  color: var(--ai, var(--ink, currentColor));
+  font-weight: 600;
+}
+
+/* ---------- Paginator (bottom of body, when sub-page > 1 page) ---- */
+.paginator {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-top: 1px solid var(--hair);
+}
+.pageBtn {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--hair);
+  background: var(--paper, #fff);
+  color: var(--ink, currentColor);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.04));
+    border-color: var(--ai, var(--ink, currentColor));
+  }
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+.pageStatus {
+  font-size: 0.78rem;
+  color: var(--ink-soft, var(--text-muted));
+  font-variant-numeric: tabular-nums;
+  min-width: 6rem;
+  text-align: center;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+.body::-webkit-scrollbar {
+  width: 8px;
+}
+.body::-webkit-scrollbar-thumb {
+  background: var(--hair);
+  border-radius: 4px;
+}
+.body::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-faint, var(--text-muted));
+}
+
+.group {
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-md, 6px);
+  overflow: hidden;
+  background: var(--paper, #fff);
+}
+.groupHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink, currentColor);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.04));
+  }
+}
+.caret {
+  color: var(--ink-soft, var(--text-muted));
+  font-size: 0.6rem;
+  transition: transform 150ms ease;
+}
+.groupOpen .caret {
+  transform: rotate(90deg);
+}
+.groupBody {
+  padding: 0.35rem 0.75rem 0.5rem;
+  border-top: 1px solid var(--hair);
+}
+.groupCount {
+  margin-left: 0.35rem;
+  font-size: 0.6rem;
+  color: var(--ink-faint, var(--text-muted));
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* ---------- Token rows ---------- */
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed var(--hair-soft, transparent);
+  min-width: 0;
+}
+.row:last-child {
+  border-bottom: 0;
+}
+.rowStacked {
+  grid-template-columns: 1fr;
+  gap: 0.3rem;
+}
+.rowLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+.rowName {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink, currentColor);
+}
+.rowToken {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.65rem;
+  color: var(--ink-faint, var(--text-muted));
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+
+.colorCtrl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.3rem 0.15rem 0.15rem;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: var(--paper, #fff);
+
+  input[type="color"] {
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 50%;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: 0;
+    border-radius: 50%;
+  }
+  input[type="color"]::-moz-color-swatch {
+    border: 0;
+    border-radius: 50%;
+  }
+
+  input[type="text"] {
+    width: 6.5rem;
+    height: 1.4rem;
+    border: 0;
+    background: transparent;
+    color: var(--ink, currentColor);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.7rem;
+    padding: 0 0.25rem 0 0;
+    outline: none;
+  }
+}
+
+.numCtrl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--paper, #fff);
+  padding: 0.1rem 0.4rem;
+  flex-shrink: 0;
+
+  input[type="range"] {
+    width: 4rem;
+    accent-color: var(--ai, currentColor);
+  }
+  input[type="number"] {
+    width: 2.6rem;
+    height: 1.4rem;
+    border: 0;
+    border-left: 1px solid var(--hair);
+    background: transparent;
+    color: var(--ink, currentColor);
+    text-align: center;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.72rem;
+    padding: 0 0.25rem;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .unit {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.65rem;
+    color: var(--ink-faint, var(--text-muted));
+  }
+}
+
+.unit {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.65rem;
+  color: var(--ink-faint, var(--text-muted));
+}
+
+.stringInput {
+  width: 100%;
+  height: 1.85rem;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--paper, #fff);
+  color: var(--ink, currentColor);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.72rem;
+  padding: 0 0.4rem;
+  outline: none;
+
+  &:focus {
+    border-color: var(--ai, var(--border-focus, currentColor));
+  }
+}
+
+.foot {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nameLabel {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  color: var(--ink-soft, var(--text-muted));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.nameInput {
+  flex: 1;
+  height: 1.85rem;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--paper, #fff);
+  color: var(--ink, currentColor);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.78rem;
+  padding: 0 0.5rem;
+  outline: none;
+
+  &:focus {
+    border-color: var(--ai, var(--border-focus, currentColor));
+  }
+}
+.btnRow {
+  display: flex;
+  gap: 0.5rem;
+}
+.btn {
+  flex: 1;
+  height: 2.25rem;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--hair);
+  background: transparent;
+  color: var(--ink, currentColor);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;   // keep arrow + label inline, no break at the space
+
+  &:hover:not(:disabled) {
+    background: var(--paper-sunk, rgba(0, 0, 0, 0.05));
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+.btnPrimary {
+  background: var(--action-primary-default, var(--ink));
+  color: var(--text-inverse, #fff);
+  border-color: var(--action-primary-default, var(--ink));
+
+  &:hover:not(:disabled) {
+    background: var(--action-primary-hover, var(--ink));
+    border-color: var(--action-primary-hover, var(--ink));
+  }
+}
+
+@media (max-width: 560px) {
+  .panel {
+    width: 100vw;
+  }
+  .pill[aria-expanded="true"] {
+    transform: translateX(-100vw);
+  }
+}

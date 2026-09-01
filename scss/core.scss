@@ -1,11 +1,15 @@
 // ============================================================================
 // CORE - Tokens + resets only (no utilities)
 // ============================================================================
-@use 'generator';
-@use 'mixins' as m;
-@use 'app-styles';
+@use './generator';
+@use './mixins' as m;
 
 @include generator.generate-theme;
+
+// WCAG 2.2 SC 2.5.8 — minimum touch-target size. Themes can override.
+:root {
+  --touch-target-min: 24px;
+}
 
 *,
 *::before,

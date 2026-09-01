@@ -1,0 +1,188 @@
+@charset "UTF-8";
+/* ============================================================
+   THEME — Prism Light
+   -----------------------------------------------------------
+   Clean component-library aesthetic inspired by Vercel,
+   Linear, Radix UI, shadcn/ui. Neutral grays do the heavy
+   lifting, single restrained refined-blue accent,
+   border-driven (not shadow-driven), generous whitespace.
+
+   Long-term default theme for boilerplate-derived projects.
+   Pairs with `prism-dark` (separate file).
+
+   Sketchbook is css-is-awesome's brand theme. This is one
+   of the shipped consumer themes.
+   ============================================================ */
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap';
+:root, :root[data-theme=prism-light] {
+  color-scheme: light;
+  /* Surfaces */
+  --paper: #fff;
+  --paper-raised: #fff;
+  --paper-sunk: #f4f4f5;
+  --paper-glass: rgba(255, 255, 255, 0.80);
+  /* Ink — Zinc neutral ramp */
+  --ink: #09090b;
+  --ink-soft: #27272a;
+  --ink-faint: #52525b;
+  --graphite: #18181b;
+  --muted: #71717a;
+  /* Lines */
+  --guide: #d4d4d8;
+  --guide-soft: #e4e4e7;
+  --hair: #e4e4e7;
+  --hair-soft: #f4f4f5;
+  /* Primary accent — refined blue */
+  --ai: #2563eb;
+  --ai-ink: #1d4ed8;
+  --ai-wash: #eff6ff;
+  /* Seal — red (used for error / secondary) */
+  --shu: #dc2626;
+  --shu-wash: #fef2f2;
+  /* Tertiary — amber (used for warning) */
+  --ochre: #ca8a04;
+  --ochre-wash: #fefce8;
+  /* Code — light syntax surface */
+  --code-bg: #fafafa;
+  --code-ink: #18181b;
+  --code-muted: #71717a;
+  --code-accent: #c2410c;
+  --code-green: #117C38;
+  --code-blue: #2563eb;
+  /* Typography */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-script: 'Inter', cursive;
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Roboto Mono', Consolas, Menlo, monospace;
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  /* Shadow — extremely subtle */
+  --shadow-sm: 0 1px 1px rgba(9, 9, 11, .03);
+  --shadow-md: 0 1px 2px rgba(9, 9, 11, .05);
+  --shadow-lg: 0 4px 12px -4px rgba(9, 9, 11, .08);
+  --shadow-xl: 0 16px 32px -16px rgba(9, 9, 11, .15);
+  --shadow-2xl: 0 0 0 1px #e4e4e7, 0 8px 24px -8px rgba(9, 9, 11, .12);
+  /* Blur — Prism doesn't use frosted surfaces */
+  --blur-sm: none;
+  --blur-md: none;
+  --blur-lg: none;
+  /* Glow — Prism doesn't use glow effects */
+  --glow-sm: 0 0 0 transparent;
+  --glow-md: 0 0 0 transparent;
+  --glow-lg: 0 0 0 transparent;
+  /* Motion — fast and crisp */
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 250ms;
+  --ease: cubic-bezier(.32, .72, 0, 1);
+  /* Backgrounds */
+  --background-default: var(--paper);
+  --background-subtle: var(--paper-sunk);
+  --background-navbar: var(--paper-raised);
+  /* Surfaces (semantic) */
+  --surface-default: var(--paper);
+  --surface-raised: var(--paper-raised);
+  --surface-sunk: var(--paper-sunk);
+  --surface-muted: var(--paper-sunk);
+  --surface-subtle: var(--paper-raised);
+  --surface-emphasis: var(--ink);
+  --surface-glass: var(--paper-glass);
+  /* Text */
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted: var(--ink-faint);
+  --text-tertiary: var(--muted);
+  --text-inverse: var(--paper);
+  --text-link: var(--ai);
+  --text-link-hover: var(--ai-ink);
+  /* Borders */
+  --border-default: var(--hair);
+  --border-subtle: var(--hair-soft);
+  --border-emphasis: var(--guide);
+  --border-focus: var(--ai);
+  /* Interactive overlays */
+  --interactive-hover: rgba(9, 9, 11, 0.05);
+  --interactive-active: rgba(9, 9, 11, 0.10);
+  /* Brand */
+  --brand-primary: var(--ai);
+  --brand-primary-hover: var(--ai-ink);
+  /* Action triplets */
+  --action-primary-default: var(--ai);
+  --action-primary-hover: var(--ai-ink);
+  --action-primary-active: var(--ai-ink);
+  --action-primary-wash: var(--ai-wash);
+  --action-secondary-default: var(--shu);
+  --action-secondary-hover: var(--shu);
+  --action-secondary-active: var(--shu);
+  --action-secondary-wash: var(--shu-wash);
+  --action-tertiary-default: var(--ochre);
+  --action-tertiary-hover: var(--ochre);
+  --action-tertiary-active: var(--ochre);
+  --action-tertiary-wash: var(--ochre-wash);
+  /* Feedback */
+  --feedback-info: var(--ai);
+  --feedback-success: #16a34a;
+  --feedback-warning: var(--ochre);
+  --feedback-error: var(--shu);
+  /* Status — info */
+  --info-default: var(--ai);
+  --info-subtle: var(--ai-wash);
+  --info-text: var(--ai-ink);
+  /* Status — success */
+  --success-default: #16a34a;
+  --success-subtle: #f0fdf4;
+  --success-text: #15803d;
+  /* Status — warning */
+  --warning-default: #ca8a04;
+  --warning-subtle: #fefce8;
+  --warning-text: #854d0e;
+  /* Status — error */
+  --error-default: #dc2626;
+  --error-subtle: #fef2f2;
+  --error-text: #b91c1c;
+  /* Space scale */
+  /* Spacing rhythm — THE knob for how dense or airy this theme feels.
+     The numbered scale is the source of truth: every component reads
+     var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
+     are emitted by the library as references to these, so they follow
+     automatically. Change a value here and the whole page re-proportions.
+     Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
+  --space-0: 0; /* flush            */
+  --space-1: 0.5rem; /* tight inner gap  */
+  --space-2: 0.75rem; /* control padding  */
+  --space-3: 0.875rem; /* (no t-shirt)     */
+  --space-4: 1rem; /* default rhythm   */
+  --space-5: 1.5rem; /* section gap      */
+  --space-6: 2rem; /* block gap        */
+  --space-7: 3rem; /* major gap        */
+  --space-8: 4rem; /* page section     */
+  --space-9: 6rem; /* hero rhythm      */
+  /* Radius alias */
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+  /* Typography */
+  --font-primary: var(--font-sans);
+  --font-size-base: 1rem;
+  --line-height-normal: 1.5;
+  --font-weight-medium: 500;
+  /* Z-index layers */
+  --z-sticky: 1020;
+  --z-dropdown: 1030;
+  --z-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  /* Component overrides — Prism is border-driven and tightly rounded */
+  --btn-radius: var(--r-md);
+  --card-radius: var(--r-md);
+  --card-shadow: var(--shadow-sm);
+  --card-border: 1px solid var(--hair);
+  --input-radius: var(--r-md);
+  --modal-radius: var(--r-lg);
+}

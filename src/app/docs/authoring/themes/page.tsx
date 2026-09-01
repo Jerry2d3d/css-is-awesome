@@ -6,28 +6,95 @@ export default function AuthoringThemesPage() {
     <>
       <h1>Authoring a theme</h1>
       <p className="lead">
-        A theme is a single CSS file declaring the 123 tokens in the contract.
+        Since v0.8, a theme is a single SCSS source at{" "}
+        <code>scss/themes/&lt;name&gt;.scss</code> that compiles to one CSS file
+        at <code>public/themes/&lt;name&gt;/theme.css</code>. Both light and dark
+        modes live inside the single file via native <code>light-dark()</code>.
         The validator guarantees a clean one-file swap.
       </p>
 
       <h2 id="overview">Overview</h2>
       <ul>
         <li>
-          Every theme must declare every token in{" "}
-          <code>scripts/theme-contract.json</code> — currently{" "}
-          <strong>123 required tokens</strong>. Missing any one of them is a
-          validator failure.
+          Author SCSS source: <code>scss/themes/&lt;name&gt;.scss</code>. Wrap
+          everything in <code>@include cia.theme(&apos;name&apos;) {`{...}`}</code>{" "}
+          — the mixin emits{" "}
+          <code>:root, :root[data-theme=&quot;name&quot;]</code> plus the{" "}
+          <code>color-scheme</code> declaration. The bare <code>:root</code> is
+          what makes a dropped-in file work with no markup change.
         </li>
         <li>
-          Themes live in <code>public/themes/&lt;your-theme&gt;/theme.css</code>{" "}
-          as a standalone file, or consolidated into the root{" "}
-          <code>public/theme.css</code> as a{" "}
-          <code>[data-theme=&quot;&lt;name&gt;&quot;]</code> block.
+          Build to CSS: <code>npm run build:css:themes</code> compiles every
+          source in <code>scss/themes/</code> to{" "}
+          <code>public/themes/&lt;name&gt;/theme.css</code>.
         </li>
         <li>
-          <code>node scripts/theme-validator.js</code> is the acceptance gate —
-          no theme ships without a passing run.
+          Validate: <code>node scripts/theme-validator.js --all</code>. Every
+          theme must declare every required token in{" "}
+          <code>scripts/theme-contract.json</code>. WCAG 2.2 AA contrast is also
+          checked.
         </li>
+      </ul>
+
+      <h2 id="quickstart">Quickstart — a new theme</h2>
+      <Example>
+        <Example.Code><span className="tok-com">{"// scss/themes/midnight.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'../mixins'</span> <span className="tok-prop">as</span> <span className="tok-val">m</span>;
+{"\n"}
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-val">m.theme(&apos;midnight&apos;)</span> {"{"}
+{"\n"}  <span className="tok-com">{"/* Surfaces — light-dark() handles both modes */"}</span>
+{"\n"}  <span className="tok-prop">--background-default</span>: <span className="tok-val">light-dark(#f5f5f7, #0a0a0e)</span>;
+{"\n"}  <span className="tok-prop">--surface-default</span>:    <span className="tok-val">light-dark(#ffffff, #14141a)</span>;
+{"\n"}  <span className="tok-prop">--text-primary</span>:       <span className="tok-val">light-dark(#0a0a0e, #f5f5f7)</span>;
+{"\n"}  <span className="tok-prop">--text-secondary</span>:     <span className="tok-val">light-dark(#54545e, #b5b5bf)</span>;
+{"\n"}
+{"\n"}  <span className="tok-com">{"/* Primary accent + auto-derived states via color-mix */"}</span>
+{"\n"}  <span className="tok-prop">--action-primary-default</span>: <span className="tok-val">light-dark(#3A5FCD, #60a5fa)</span>;
+{"\n"}  <span className="tok-sel">@include</span> <span className="tok-val">m.states(action-primary)</span>;
+{"\n"}
+{"\n"}  <span className="tok-com">{"/* Typography, radius, motion — identical across modes (no light-dark needed) */"}</span>
+{"\n"}  <span className="tok-prop">--font-sans</span>: <span className="tok-val">system-ui, sans-serif</span>;
+{"\n"}  <span className="tok-prop">--r-md</span>: <span className="tok-val">6px</span>;
+{"\n"}  <span className="tok-prop">--duration-fast</span>: <span className="tok-val">120ms</span>;
+{"\n"}{"}"}</Example.Code>
+      </Example>
+      <Example>
+        <Example.Code><span className="tok-com">{"# build + validate"}</span>
+{"\n"}<span className="tok-sel">npm</span> <span className="tok-val">run build:css:themes</span>
+{"\n"}<span className="tok-sel">node</span> <span className="tok-val">scripts/theme-validator.js public/themes/midnight/theme.css</span></Example.Code>
+      </Example>
+      <h3 id="theme-mixin">The <code>theme()</code> signature</h3>
+      <Example>
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-val">theme($name, $scheme: light dark, $standalone: true)</span></Example.Code>
+      </Example>
+      <ul>
+        <li>
+          <code>$name</code> — the <code>data-theme</code> value.
+        </li>
+        <li>
+          <code>$scheme</code> — the <code>color-scheme</code> value. Pass{" "}
+          <code>light</code> or <code>dark</code> for a single-mode theme.
+        </li>
+        <li>
+          <code>$standalone</code> — <code>true</code> (the default) emits{" "}
+          <code>:root, :root[data-theme=&quot;name&quot;]</code> so the file works
+          on its own. Pass <code>false</code> for the multi-theme bundle, where
+          every theme shares one file and a bare <code>:root</code> would make
+          them collide — there the attribute is the only thing telling them
+          apart. You never hand-write a bundle block:{" "}
+          <code>scripts/build-theme-bundle.mjs</code> regenerates{" "}
+          <code>public/theme.css</code> from every built theme and strips the
+          bare <code>:root</code> as it goes.
+        </li>
+      </ul>
+
+      <p>
+        Three shapes inside a single theme file:
+      </p>
+      <ul>
+        <li><strong>Mode-stable</strong> — declare <code>color-scheme: light</code> (or dark) explicitly and skip <code>light-dark()</code>. Used by Sketchbook (light-only brand) and Terminal (dark-only sacred).</li>
+        <li><strong>Symmetric (Pattern B)</strong> — <code>light-dark()</code> per color token; fonts/radii/motion identical across modes. Used by Boilerplate, Prism, Cupertino, Graphite, Press, Sketchbook (both modes).</li>
+        <li><strong>Asymmetric (Pattern C)</strong> — one nested <code>@media (prefers-color-scheme: dark)</code> block inside the theme for non-color overrides (different blur, font, or radius per mode). Used by Glass. <code>light-dark()</code> is color-only per spec; non-color values need the nested block.</li>
       </ul>
 
       <h2 id="token-contract">The token contract</h2>
@@ -83,6 +150,11 @@ export default function AuthoringThemesPage() {
         <li>
           <strong>Radius</strong> — <code>--r-sm/md/lg</code> (library short
           scale) plus <code>--radius-sm/md/lg/xl/full</code> (semantic scale).
+          The per-component overrides — <code>--btn-radius</code>,{" "}
+          <code>--card-radius</code>, <code>--input-radius</code>,{" "}
+          <code>--modal-radius</code>, <code>--badge-radius</code>,{" "}
+          <code>--tag-radius</code> — are <em>optional</em>. Leave them out and
+          each cascades from the generic radii above.
         </li>
         <li>
           <strong>Shadow</strong> — <code>--shadow-sm</code> through{" "}
@@ -116,11 +188,25 @@ export default function AuthoringThemesPage() {
           variant.
         </li>
         <li>
-          <strong>Library scales</strong> — <code>--space-2xs</code> through{" "}
-          <code>--space-xl</code>, plus the <code>--z-*</code> layering
-          scale (<code>--z-dropdown</code>, <code>--z-modal</code>, etc.).
+          <strong>Spacing</strong> — the numbered scale{" "}
+          <code>--space-0</code> through <code>--space-9</code>. Required, and
+          owned by the theme: declare it and the whole page re-proportions. The
+          six t-shirt names (<code>--space-2xs/xs/sm/md/lg/xl</code>) are{" "}
+          <em>optional</em> — the library emits them as <code>var()</code>{" "}
+          references (<code>--space-md: var(--space-4)</code>), so they follow
+          the numbered scale automatically.
+        </li>
+        <li>
+          <strong>Layering</strong> — the <code>--z-*</code> scale
+          (<code>--z-dropdown</code>, <code>--z-modal</code>, etc.).
         </li>
       </ul>
+      <p>
+        <strong>127 tokens are required; 36 more are optional</strong>, 163 in
+        total. The optional set is the per-component radius and shadow
+        overrides, the logo hooks, the named durations, the touch-target
+        minimum, and the t-shirt spacing aliases.
+      </p>
       <p>
         See <Link href="/docs/tokens">/docs/tokens</Link> for the full gallery
         with live swatches and current values for each shipped theme.
@@ -128,10 +214,10 @@ export default function AuthoringThemesPage() {
 
       <h2 id="file-structure">File structure</h2>
       <p>
-        A theme file is a font <code>@import</code> (optional) plus a single{" "}
-        <code>:root</code> block that sets every required token. Preserve the
-        commented section headers — they make the file scannable and keep the
-        contract visually grouped.
+        A compiled theme file is a font <code>@import</code> (optional) plus a
+        single <code>:root, :root[data-theme=&quot;name&quot;]</code> block that
+        sets every required token. Preserve the commented section headers — they
+        make the file scannable and keep the contract visually grouped.
       </p>
       <Example>
         <Example.Code><span className="tok-com">{"/* ============================================================"}</span>
@@ -140,7 +226,7 @@ export default function AuthoringThemesPage() {
 {"\n"}
 {"\n"}<span className="tok-sel">@import</span> <span className="tok-val">url(&apos;https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap&apos;)</span>;
 {"\n"}
-{"\n"}<span className="tok-sel">:root</span> {"{"}
+{"\n"}<span className="tok-sel">:root, :root[data-theme=<span className="tok-val">&quot;my-brand&quot;</span>]</span> {"{"}
 {"\n"}  <span className="tok-com">{"/* Surfaces */"}</span>
 {"\n"}  <span className="tok-prop">--paper</span>:        <span className="tok-val">#FFFFFF</span>;
 {"\n"}  <span className="tok-prop">--paper-raised</span>: <span className="tok-val">#F7F7F5</span>;
@@ -163,28 +249,39 @@ export default function AuthoringThemesPage() {
 {"\n"}{"}"}</Example.Code>
       </Example>
       <p>
-        If you are contributing your theme to the shipped consolidated file
-        instead, the body stays identical — wrap it in a{" "}
-        <code>[data-theme=&quot;&lt;name&gt;&quot;]</code> selector:
+        In the shipped consolidated file the body is identical, minus the bare{" "}
+        <code>:root</code> — inside a bundle every theme would match{" "}
+        <code>:root</code> at once and the last one would win, so the attribute
+        is the only thing telling them apart. You do not write this by hand:{" "}
+        <code>npm run build:css:themes</code> regenerates{" "}
+        <code>public/theme.css</code> from every built theme and strips the bare{" "}
+        <code>:root</code> for you.
       </p>
       <Example>
-        <Example.Code><span className="tok-sel">[data-theme=<span className="tok-val">&quot;my-brand&quot;</span>]</span> {"{"}
-{"\n"}  <span className="tok-com">{"/* same 123 token declarations */"}</span>
+        <Example.Code><span className="tok-sel">:root[data-theme=<span className="tok-val">&quot;my-brand&quot;</span>]</span> {"{"}
+{"\n"}  <span className="tok-com">{"/* same 127 required token declarations */"}</span>
 {"\n"}  <span className="tok-prop">--paper</span>: <span className="tok-val">#FFFFFF</span>;
 {"\n"}  <span className="tok-com">{"/* ... */"}</span>
 {"\n"}{"}"}</Example.Code>
       </Example>
 
       <h2 id="step-by-step">Step by step</h2>
+      <p>
+        Edit the <strong>SCSS source</strong>, never the built CSS.{" "}
+        <code>public/themes/*/theme.css</code> is a build artifact, and{" "}
+        <code>npm run check:theme-drift</code> fails CI if it stops matching its
+        source.
+      </p>
       <ol>
         <li>
-          Copy <code>public/themes/press/theme.css</code> (or any shipped
-          theme) as a starting point. Press is a good editorial baseline;
-          Cupertino is a good rounded/soft baseline; Terminal is a good
-          dark-mode baseline.
+          Copy <code>scss/themes/press-light.scss</code> (or any shipped theme)
+          as a starting point. Press is a good editorial baseline; Cupertino is
+          a good rounded/soft baseline; Terminal is a good dark-mode baseline.
         </li>
         <li>
-          Rename the file path to{" "}
+          Rename the file to <code>scss/themes/&lt;your-theme&gt;.scss</code> and
+          change the name you pass to <code>m.theme(&apos;…&apos;)</code> to
+          match. <code>npm run build:css:themes</code> compiles it to{" "}
           <code>public/themes/&lt;your-theme&gt;/theme.css</code>.
         </li>
         <li>
@@ -205,26 +302,28 @@ export default function AuthoringThemesPage() {
           <code>--paper-raised</code>).
         </li>
         <li>
-          Run the validator against your file:
+          Build, then run the validator against the compiled file:
           <Example>
-            <Example.Code><span className="tok-com">$</span> node scripts/theme-validator.js public/themes/&lt;your-theme&gt;/theme.css</Example.Code>
+            <Example.Code><span className="tok-com">$</span> npm run build:css:themes
+{"\n"}<span className="tok-com">$</span> node scripts/theme-validator.js public/themes/&lt;your-theme&gt;/theme.css</Example.Code>
           </Example>
-          It prints every missing token. Fix them and re-run until the output
-          reads <code>OK</code>.
+          It prints every missing token and every contrast failure. Fix them in
+          the SCSS source, rebuild, and re-run until the output reads{" "}
+          <code>OK</code>.
         </li>
         <li>
           Once the single file validates, register the theme in the picker.
           Add an entry (id + label) to the <code>THEMES</code> array in{" "}
-          <code>src/components/ThemePicker/ThemePicker.tsx</code>, and add the
-          id to the <code>VALID_THEMES</code> set in{" "}
-          <code>src/app/layout.tsx</code>.
+          <code>src/components/ThemePicker/ThemePicker.tsx</code>, and — if you
+          want a tile in the gallery — to the <code>THEMES</code> array in{" "}
+          <code>src/app/themes/gallery/page.tsx</code>.
         </li>
         <li>
-          If you are contributing upstream, also add a{" "}
-          <code>[data-theme=&quot;&lt;name&gt;&quot;]</code> block to the
-          consolidated <code>public/theme.css</code> with the same body. The
-          per-theme file is kept for standalone deploys; the consolidated
-          file powers the docs site picker.
+          Nothing else to do for the bundle:{" "}
+          <code>npm run build:css:themes</code> regenerates{" "}
+          <code>public/theme.css</code> from every built theme. The per-theme
+          file is kept for standalone deploys; the bundle powers the docs site
+          picker.
         </li>
       </ol>
 
@@ -318,10 +417,18 @@ export default function AuthoringThemesPage() {
           library, not the theme — file a bug.
         </li>
         <li>
-          Check contrast for each colour pair with a tool like{" "}
-          <code>a11y.digitala11y.com</code>: ink on paper, link on paper,
-          every status <code>-default</code> on paper, every status{" "}
-          <code>-text</code> on its matching <code>-subtle</code>.
+          Contrast is checked for you: the validator audits{" "}
+          <strong>22 foreground/background pairs</strong> per theme — ink on
+          paper, link on paper, every status <code>-text</code> on its matching{" "}
+          <code>-subtle</code>, and the five <code>--code-*</code> tokens on{" "}
+          <code>--code-bg</code> — in <em>both</em> <code>light-dark()</code>{" "}
+          branches, keeping the worse result. Failures fail the build.
+        </li>
+        <li>
+          Confirm the artifact still matches its source with{" "}
+          <code>npm run check:theme-drift</code>. It rebuilds every theme into a
+          scratch copy and diffs, so an edit made to the CSS instead of the SCSS
+          shows up immediately.
         </li>
       </ul>
 
@@ -329,9 +436,11 @@ export default function AuthoringThemesPage() {
       <p>
         For a <strong>standalone deploy</strong>, drop your theme file in
         your own <code>public/themes/&lt;your-theme&gt;/theme.css</code> and
-        link it from your HTML before <code>cia.css</code>. No registration
-        required — the base library reads tokens from whatever you put on{" "}
-        <code>:root</code>.
+        link it from your HTML before <code>cia.css</code>. No registration and
+        no <code>data-theme</code> attribute required — the file emits a bare{" "}
+        <code>:root</code> alongside its own attribute selector, and the
+        library&rsquo;s defaults sit at zero specificity under{" "}
+        <code>:where(:root)</code>, so your theme wins regardless of load order.
       </p>
       <p>
         To <strong>contribute your theme upstream</strong>, open a PR using

@@ -11,6 +11,35 @@
 #                   package.json bump commit back to main.
 #
 # Do not run this locally — semantic-release is configured to publish on green CI only.
+#
+# IF THIS JOB FAILS AT THE PUBLISH STEP, READ THIS FIRST.
+#
+# semantic-release runs `prepare` BEFORE `publish`. @semantic-release/git lives
+# in `prepare`, so by the time npm is contacted it has ALREADY written the
+# CHANGELOG, bumped package.json, committed `chore(release): X.Y.Z [skip ci]`
+# and pushed the tag. A publish failure therefore leaves the repo asserting a
+# version that exists nowhere — no npm package, no GitHub release — and every
+# retry burns another number (we lost v1.1.0 and v1.1.1 to this on 2026-08-30).
+#
+# Recovery: confirm the version is genuinely unpublished
+#   npm view css-is-awesome@X.Y.Z version      # expect E404
+# then delete the tag locally and on the remote before retrying:
+#   git tag -d vX.Y.Z && git push origin :refs/tags/vX.Y.Z
+# Otherwise the next run computes a patch bump on top of a release that never
+# shipped.
+#
+# Also: `gh run rerun` re-runs the job against its ORIGINAL commit. If main has
+# moved since (and it will have, because `prepare` already pushed), the rerun
+# exits with "The local branch main is behind the remote one, therefore a new
+# version won't be published" and reports SUCCESS having done nothing. Push a
+# fresh commit to trigger CI instead of re-running.
+#
+# npm auth notes, in the order they bit us:
+#   EINVALIDNPMTOKEN — NPM_TOKEN missing or malformed.
+#   EOTP            — the token authenticates but npm wants a 2FA code, which
+#                     CI cannot supply. Fix on the npm ACCOUNT: set two-factor
+#                     to "Authorization only", or use a Classic *Automation*
+#                     token, which bypasses 2FA by design.
 name: Release
 
 on:

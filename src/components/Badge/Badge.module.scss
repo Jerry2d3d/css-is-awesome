@@ -1,22 +1,28 @@
 @use 'mixins' as m;
-@use 'components/feedback' as fb;
+@use 'components/data' as d;
 
 .badge {
-  @include fb.badge-base;
-  display: inline-flex;
-  align-items: center;
-  gap: m.space(1);
+  @include d.badge-base;
+  @include m.flex($inline: true, $gap: 1);
   white-space: nowrap;
 }
 
+// `dot` marks the badge with a leading status dot — it must NOT resize the
+// badge itself. Sizing the ROOT to 0.5rem collapsed the pill to a 16px circle
+// and overflowed the label ("Beta" clipped to "Bet."). The dot is a marker, so
+// it belongs on ::before; the root keeps auto sizing from its text + padding.
 .dot {
-  padding: 0;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
+  &::before {
+    content: "";
+    flex: none;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
 }
 
-.info    { @include fb.badge($status: info); }
-.success { @include fb.badge($status: success); }
-.warning { @include fb.badge($status: warning); }
-.error   { @include fb.badge($status: error); }
+.info    { @include d.badge($status: info); }
+.success { @include d.badge($status: success); }
+.warning { @include d.badge($status: warning); }
+.error   { @include d.badge($status: error); }

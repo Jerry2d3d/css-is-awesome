@@ -6,10 +6,11 @@
 // ============================================================================
 @use 'sass:map';
 @use 'sass:list';
+@use 'sass:math';
 @use 'sass:meta';
 @use 'sass:string';
-@use 'theme' as t;
-@use 'system' as s;
+@use './theme' as t;
+@use './system' as s;
 
 // ============================================================================
 // HELPER: Component token runtime override (Feature 1.3)
@@ -59,7 +60,7 @@
   @return var(--brand-#{$name}, #{$fallback or currentColor});
 }
 
-@function color-raw($name) {
+@function color-static($name) {
   $value: map.get(t.$theme-light, $name);
   @if not $value {
     $value: map.get(t.$theme-brand, $name);
@@ -77,12 +78,24 @@
 // Usage:
 //   padding: space(4);    // Returns var(--space-4, 1rem)
 //   padding: space(md);   // Returns var(--space-md, 1rem)  (alias)
-// Both styles continue to work — themes declare both sets of custom props.
+// Both styles continue to work, but they are no longer independent: themes
+// declare only the NUMBERED set, and the library emits each t-shirt name as a
+// reference to it (--space-md: var(--space-4)). Previously both sets were
+// emitted as separate literals holding equal values, so a theme could set
+// --space-md while every component read var(--space-4) and nothing moved.
+// Theme the numbered step; the alias follows.
 // ============================================================================
 
 @function space($key) {
   $fallback: map.get(t.$space, $key);
-  @return var(--space-#{$key}, #{$fallback or 1rem});
+  // Not a scale key — a raw length like `12px` or `2rem`. Pass it through
+  // instead of inventing `var(--space-12px, 1rem)`, which silently resolved to
+  // the fallback and threw the caller's value away. This is what lets the
+  // layout mixins accept either a scale step or a literal.
+  @if not $fallback {
+    @return $key;
+  }
+  @return var(--space-#{$key}, #{$fallback});
 }
 
 @function space-raw($key) {
@@ -101,6 +114,62 @@
 }
 
 // ============================================================================
+// GEOMETRIC GRID — explicit sizes on cia's 4px coordinate system
+// ============================================================================
+// Pure functions for sizes that aren't a design choice — they're geometric
+// truth shared across Figma, the design system, and the codebase. NOT
+// themeable; consumers don't tune the 4px grid. Distinct from space() which
+// IS themeable (consumer can re-tune the spacing scale per theme).
+//
+// Use grid() for icon widths, control heights, fixed dimensions that must
+// align with the design grid. Use px() for the rare off-grid pixel value
+// that doesn't fit any system (a 17px hero margin, a 33px badge offset).
+// Both return rem (for a11y zoom + browser-default-font-size respect).
+// Both inline at call site — no custom properties emitted.
+//
+// Decision tree:
+//   color/type/radius/shadow/motion  → m.color() / m.font-size() / m.radius() / m.shadow() / m.duration()  (themed tokens)
+//   margin / padding / gap           → m.space(n)         (themeable spacing scale)
+//   explicit geometric size on grid  → m.grid(n)          (this section — 4px grid, not themed)
+//   off-grid pixel value (rare)      → m.px(value)        (this section — raw rem conversion)
+//   component                        → m.btn() / m.modal() / etc. + parameter-power overrides
+//
+// MCP / Figma → Code: AI agents resolve a design's px value via
+// `step = math.round(px / 4)` and emit `m.grid(step)`. See the
+// `resolve_size` MCP tool for the canonical mapping.
+// ============================================================================
+
+// Geometric value on the 4px grid. n is the step count (n × 0.25rem).
+//   m.grid(4)   →  1rem       (16px)
+//   m.grid(6)   →  1.5rem     (24px)
+//   m.grid(10)  →  2.5rem     (40px)
+//   m.grid(20)  →  5rem       (80px)
+@function grid($n, $base: 0.25rem) {
+  @return $n * $base;
+}
+
+// Raw pixel value converted to rem (off-grid, intentional). For values
+// that genuinely don't fit any cia scale. Prefer m.grid() / m.space() /
+// the typed token functions when they fit — m.px() is the escape hatch,
+// not the default. Returns rem so user zoom + browser font-size scaling
+// still work.
+//   m.px(17)   →  1.0625rem
+//   m.px(33)   →  2.0625rem
+@function px($value) {
+  @return math.div($value, 16) * 1rem;
+}
+
+// Snap a px value to the nearest cia grid step. For tooling
+// (Figma → code, MCP, codegen) — pure math, no rendering output. AI
+// agents call this to map a design's px value to the cia grid step,
+// then emit m.grid(step) in generated code.
+//   m.grid-from-px(24)  →  6
+//   m.grid-from-px(17)  →  4   (rounds to nearest grid step)
+@function grid-from-px($px, $base-px: 4) {
+  @return math.round(math.div($px, $base-px));
+}
+
+// ============================================================================
 // TYPOGRAPHY
 // ============================================================================
 
@@ -111,6 +180,18 @@
     @return var(--font-#{$type}, #{$fallback});
   }
   @return var(--font-#{$type}, sans-serif);
+}
+
+/// Letter-spacing from the tracking scale: tighter | tight | normal | wide |
+/// wider | widest. Emits a custom property with the scale value as fallback,
+/// so a theme can retune tracking without a rebuild — the same contract as
+/// `space()` and `font-size()`. A raw value (`0.03em`) passes straight through.
+@function letter-spacing($key) {
+  $fallback: map.get(s.$letter-spacings, $key);
+  @if not $fallback {
+    @return $key;
+  }
+  @return var(--letter-spacing-#{$key}, #{$fallback});
 }
 
 @function font-size($size) {
@@ -157,12 +238,21 @@ $_font-types: (
   black-it:    (weight: black, style: italic),
 );
 
-// Font mixin - accepts size as token name OR value.
-// $family handling: if it's a registered name (loaded via font-load), wraps
-// with quotes + the registered fallback. If it's a custom string with a comma
-// or var() reference, passes through as-is. If it's a single-word name that
-// is NOT registered, fails loudly with @error so typos surface at compile.
-@mixin font($type: reg, $size: null, $lh: null, $ls: null, $family: null) {
+// Font mixin - the complete text-style block in one call.
+// $family handling:
+//   - Bare slug (e.g. `meme`, `pacifico`) → emits font-family: var(--font-<slug>).
+//     Consumer declares the variable in their global stylesheet (globals.css).
+//   - Sass list / pre-formed string with commas or var() → passes through.
+// $color handling: pass a contract color name (e.g. `text-primary`, `ink`) and
+// the mixin emits `color: m.color($color)` at the end of the block.
+@mixin font(
+  $type: reg,
+  $size: null,
+  $lh: null,
+  $ls: null,
+  $family: null,
+  $color: null
+) {
   $cfg: map.get($_font-types, $type) or map.get($_font-types, reg);
   font-weight: font-weight(map.get($cfg, weight));
   font-style: map.get($cfg, style);
@@ -173,80 +263,89 @@ $_font-types: (
                    and not string.index('#{$family}', ',')
                    and not string.index('#{$family}', 'var(');
     @if $is-bare-name {
-      $registered: map.get($_loaded-fonts, $family);
-      @if not $registered {
-        @error "font(): family '#{$family}' is not loaded. Call `@include font-load('#{$family}', '<url>')` first. Loaded fonts: #{map.keys($_loaded-fonts)}.";
-      }
-      font-family: '#{$family}', #{map.get($registered, fallback)};
+      // Slugs are CSS variable names — emit var(--font-<slug>) and trust
+      // the consumer to declare the variable somewhere global
+      // (typically `:root { --font-<slug>: ...; }` in globals.css).
+      font-family: var(--font-#{$family});
     } @else {
       font-family: $family;
     }
   }
 
+  // Route scale keys through font-size()/line-height() so they emit
+  // `var(--font-size-N)` rather than a baked literal — otherwise a consumer
+  // overriding the token at runtime silently has no effect here, while the
+  // same override works on mixins that use the functions. Raw values
+  // (`0.8rem`, `1.4`) still pass straight through.
   @if $size {
-    $size-val: map.get(s.$font-sizes, $size);
-    @if $size-val {
-      font-size: $size-val;
+    @if map.get(s.$font-sizes, $size) {
+      font-size: font-size($size);
     } @else {
       font-size: $size;
     }
   }
 
   @if $lh {
-    $lh-val: map.get(s.$line-heights, $lh);
-    @if $lh-val {
-      line-height: $lh-val;
+    @if map.get(s.$line-heights, $lh) {
+      line-height: line-height($lh);
     } @else {
       line-height: $lh;
     }
   }
 
   @if $ls {
-    $ls-val: map.get(s.$letter-spacings, $ls);
-    @if $ls-val {
-      letter-spacing: $ls-val;
+    @if map.get(s.$letter-spacings, $ls) {
+      letter-spacing: letter-spacing($ls);
     } @else {
       letter-spacing: $ls;
     }
   }
+
+  @if $color {
+    color: color($color);
+  }
 }
 
 // ============================================================================
-// ONE-OFF PAGE FONTS — load + (optional) theme-token alias
+// FONTS — two-line model
 // ----------------------------------------------------------------------------
-// `font-load()` registers a font once and emits the `@import url(...)` once
-// per compile. Passing `$alias: display` (or any of the theme font tokens —
-// display, script, serif, sans, mono, primary) writes a local
-// `--font-#{$alias}: '<name>', <fallback>` so the rest of the page can keep
-// using the existing token vocabulary.
+// Two lines of work for any custom font, period:
 //
-// Apply via the existing `font()` mixin — it validates the family name
-// against the registry and fails loudly on typos.
+//   1) Declare the CSS variable on :root in your global stylesheet:
+//        :root { --font-meme: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
 //
-// Sister `font-load-local()` covers self-hosted woff2/ttf/etc. via @font-face.
+//   2) Use it in any component:
+//        @include m.font($lh: 0.95, $family: meme);   // mixin form
+//        font-family: var(--font-meme);                // raw form
 //
-// Usage:
-//   // Common case — Google Fonts:
-//   @include font-load('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-//   .headline { @include font(reg, 7, $family: 'Pacifico'); }
+// Override anywhere CSS variables work — root, theme, page, block, element.
 //
-//   // Theme-token override — page-scoped:
-//   @include font-load('Pacifico', '<url>', $alias: display);
-//   // now `var(--font-display)` resolves to Pacifico for this scope
+// HOSTED FONTS (Google Fonts / CDN):
+// `font-load` registers a URL and emits `@import url(...)`. Call it from a
+// global Sass file (NOT a .module.scss — CSS Modules pure mode forbids the
+// :root selector the auto-emit would need). The CSS variable still gets
+// declared via the consumer's global stylesheet, same as system fonts.
 //
-//   // Self-hosted:
-//   @include font-load-local('Untitled Sans', '/fonts/UntitledSans.woff2');
-//   .body { @include font(reg, 3, $family: 'Untitled Sans'); }
+//   // src/styles/fonts.scss (a global .scss imported from layout.tsx):
+//   @include m.font-face('Pacifico', 'https://fonts.googleapis.com/css2?family=Pacifico');
+//
+//   // src/app/globals.css:
+//   :root { --font-pacifico: 'Pacifico', cursive; }
+//
+//   // Any component:
+//   .heading { @include m.font($family: pacifico); }
+//
+// Sister `font-face-local()` covers self-hosted woff2/ttf/etc. via @font-face.
 // ============================================================================
 $_loaded-fonts: () !default;
 
-@mixin font-load($name, $url, $alias: null, $fallback: sans-serif) {
+@mixin font-face($name, $url, $alias: null, $fallback: sans-serif) {
   $existing: map.get($_loaded-fonts, $name);
   @if $existing {
     @if map.get($existing, url) != $url {
-      @error "font-load(): '#{$name}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One name, one URL.";
+      @error "font-face(): '#{$name}' is already registered with a different URL. Existing: #{map.get($existing, url)}. New: #{$url}. One name, one URL.";
     }
-    // Same name + URL = no-op. Emit nothing — registry already has it.
+    // Same name + URL = no-op. @import already emitted on the first call.
   } @else {
     $_loaded-fonts: map.set($_loaded-fonts, $name, (url: $url, fallback: $fallback)) !global;
     @at-root {
@@ -255,12 +354,15 @@ $_loaded-fonts: () !default;
     }
   }
 
+  // Optional: emit a theme-slot alias at the call site. Best called from a
+  // selector context that owns the override (e.g. inside :root in a global
+  // Sass file, or inside [data-theme="x"] for a per-theme override).
   @if $alias {
     --font-#{$alias}: '#{$name}', #{$fallback};
   }
 }
 
-@mixin font-load-local(
+@mixin font-face-local(
   $name,
   $src,
   $weight: 400,
@@ -272,7 +374,7 @@ $_loaded-fonts: () !default;
   $existing: map.get($_loaded-fonts, $name);
   @if $existing {
     @if map.get($existing, src) != $src {
-      @error "font-load-local(): '#{$name}' is already registered with a different src. Existing: #{map.get($existing, src)}. New: #{$src}. One name, one src.";
+      @error "font-face-local(): '#{$name}' is already registered with a different src. Existing: #{map.get($existing, src)}. New: #{$src}. One name, one src.";
     }
     // Same name + src = no-op.
   } @else {
@@ -309,7 +411,7 @@ $_type-scale: (
   body:       (size: 3, weight: normal,   lh: 4, ls: null),
   body-sm:    (size: 2, weight: normal,   lh: 4, ls: null),
   caption:    (size: 1, weight: normal,   lh: 4, ls: null),
-  overline:   (size: 1, weight: semibold, lh: 4, ls: wide),
+  overline:   (size: 1, weight: semibold, lh: 4, ls: wider, tt: uppercase),
 );
 
 @mixin type($preset) {
@@ -322,6 +424,7 @@ $_type-scale: (
   $w: map.get($cfg, weight);
   $lh-key: map.get($cfg, lh);
   $ls-key: map.get($cfg, ls);
+  $tt: map.get($cfg, tt);
 
   font-size: font-size($s);
   font-weight: font-weight($w);
@@ -335,6 +438,34 @@ $_type-scale: (
     $ls-val: map.get(s.$letter-spacings, $ls-key);
     @if $ls-val and $ls-val != 0 { letter-spacing: $ls-val; }
   }
+
+  @if $tt { text-transform: $tt; }
+}
+
+// ============================================================================
+// UI TEXT PRESETS — type() + a default color, packaged for the common cases
+// ----------------------------------------------------------------------------
+// When to reach for these: the lockup is a recognisable UI pattern (eyebrow
+// kicker, figure caption, footer note) rather than raw typography. They sit
+// on top of type() and add a default color token; pass $color to override.
+//
+// When NOT to reach for these: you just need a size/weight without a
+// semantic role — use type(<preset>) directly, no color, you keep currentColor.
+//
+// Adding a new one: name it for what the pattern IS (eyebrow, caption-text),
+// not what it does (small-caps-tracked-muted). Default $color to the slot
+// the pattern uses 80% of the time. Wrap an existing type() preset whenever
+// you can — don't redeclare font-size/weight/ls/lh inline.
+// ============================================================================
+
+// Eyebrow / kicker — small caps-tracked label that tags a section above
+// its heading. One-liner replacement for the
+//   font-size + color + text-transform + letter-spacing
+// four-property lockup that shows up wherever a chip-style label sits over
+// a title.
+@mixin eyebrow($color: text-secondary) {
+  @include type(overline);
+  color: color($color);
 }
 
 // ============================================================================
@@ -401,7 +532,7 @@ $_type-scale: (
 // BREAKPOINTS
 // ============================================================================
 
-@mixin bp($size) {
+@mixin media($size) {
   $width: $size;
   @if meta.type-of($size) != number {
     $width: map.get(s.$breakpoints, $size);
@@ -409,7 +540,7 @@ $_type-scale: (
   @media screen and (min-width: $width) { @content; }
 }
 
-@mixin bp-down($size) {
+@mixin media-down($size) {
   $width: $size;
   @if meta.type-of($size) != number {
     $width: map.get(s.$breakpoints, $size);
@@ -417,7 +548,7 @@ $_type-scale: (
   @media screen and (max-width: calc(#{$width} - 1px)) { @content; }
 }
 
-@mixin bp-between($min, $max) {
+@mixin media-between($min, $max) {
   $min-w: $min;
   $max-w: $max;
   @if meta.type-of($min) != number {
@@ -430,11 +561,103 @@ $_type-scale: (
 }
 
 // Convenience aliases
-@mixin mobile-only { @include bp-down(md) { @content; } }
-@mixin tablet { @include bp(md) { @content; } }
-@mixin tablet-only { @include bp-between(md, lg) { @content; } }
-@mixin desktop { @include bp(lg) { @content; } }
-@mixin wide { @include bp(xl) { @content; } }
+@mixin mobile-only { @include media-down(md) { @content; } }
+@mixin tablet { @include media(md) { @content; } }
+@mixin tablet-only { @include media-between(md, lg) { @content; } }
+@mixin desktop { @include media(lg) { @content; } }
+@mixin wide { @include media(xl) { @content; } }
+
+// ============================================================================
+// PRINT
+// ============================================================================
+// Print/PDF control. Every browser already ships a layout engine and a PDF
+// writer wired together behind Ctrl+P — the page IS the PDF source. These own the `@media print` layer: `print-base` ships
+// sensible page-level defaults ON; the rest are per-element toggles. Nothing
+// emits until called, and nothing here needs a button or a server — Ctrl+P
+// (or the print dialog's "Save as PDF") drives it all.
+// ============================================================================
+
+// Primitive: bare print media wrapper. Co-locate inside the selector it changes
+// so the override lives next to the rule it overrides.
+//   .subtitle { color: #ccc; @include m.print { color: #555; } }
+@mixin print {
+  @media print { @content; }
+}
+
+// Page-level defaults, ON by default. Include ONCE at the stylesheet ROOT —
+// NOT inside a selector. It emits `@page`, which is invalid nested under a rule
+// (`@page { body { … } }` does nothing). Toggle pieces off via args.
+//   @include m.print-base;                 // at root
+//   @include m.print-base($size: A4, $freeze-animations: false);
+//
+// Emits the print VARIABLE control plane — the whole filter flips from here:
+//   --is-print     0 on screen, 1 on paper. Read it in calc()/opacity/
+//                  @container style(--is-print: 1) for custom print effects.
+//   --print-hide   display applied to elements carrying `print-hidden`.
+//   --print-show   display applied to elements carrying `print-only`.
+// Override either locally for a per-element exception — no rule rewrite:
+//   .keep-this { --print-hide: revert; }   // stays on paper despite print-hidden
+//   .pdf-row   { --print-show: flex; }     // print-only block laid out as flex
+@mixin print-base($freeze-animations: true, $size: letter, $margin: 0.5in) {
+  :root {
+    --is-print: 0;
+    --print-hide: none;
+    --print-show: revert;
+  }
+
+  @media print {
+    :root { --is-print: 1; }
+
+    @page { size: $size; margin: $margin; }
+
+    @if $freeze-animations {
+      // The opacity:0 entrance-fade trap: a page snapshotted mid-animation
+      // prints invisible text.
+      //
+      // We do NOT solve this by forcing `opacity: 1` and `transform: none`.
+      // That fixes the fade but destroys every DELIBERATE use of the same
+      // properties — a 0.15 watermark, a 0.4 disabled control, a stamp rotated
+      // -4deg all get flattened on paper.
+      //
+      // Instead, collapse animations to zero duration and pin them to their
+      // final frame. An entrance fade lands on its end state (visible), while
+      // an element that was never animating is left completely alone.
+      //
+      // `!important` stays, and is load-bearing: @media adds no specificity, so
+      // any author `animation:` shorthand of equal-or-higher specificity would
+      // otherwise win and re-introduce the trap.
+      /* stylelint-disable declaration-no-important -- must beat author animation/transition declarations; @media contributes no specificity of its own. */
+      *,
+      *::before,
+      *::after {
+        animation-delay: 0s !important;
+        animation-duration: 0s !important;
+        animation-fill-mode: forwards !important;
+        transition-delay: 0s !important;
+        transition-duration: 0s !important;
+      }
+      /* stylelint-enable declaration-no-important */
+    }
+  }
+}
+
+// Hide on paper — the "hide the nav" case. The display VALUE is variable-driven
+// (--print-hide), so consumers re-aim it per element without a rule rewrite;
+// !important on the declaration keeps the hide reliable against component
+// `display` rules. Requires `print-base` at the root for the variable default.
+@mixin print-hidden {
+  /* stylelint-disable-next-line declaration-no-important -- hide-on-print must beat any component display rule; the value stays variable-driven via --print-hide. */
+  @media print { display: var(--print-hide, none) !important; }
+}
+
+// Show ONLY on paper (e.g. an inline URL footer). Hidden on screen; the paper
+// display is variable-driven (--print-show) so a print-only block can be flex.
+@mixin print-only {
+  /* stylelint-disable declaration-no-important -- show/hide-on-print must beat component display rules; values stay variable-driven. */
+  @media screen { display: none !important; }
+  @media print  { display: var(--print-show, revert) !important; }
+  /* stylelint-enable declaration-no-important */
+}
 
 // ============================================================================
 // CONTAINER QUERIES
@@ -450,7 +673,7 @@ $_type-scale: (
   }
 }
 
-@mixin cq($size, $name: null) {
+@mixin contain($size, $name: null) {
   $width: $size;
   @if meta.type-of($size) != number {
     $width: map.get(s.$breakpoints, $size);
@@ -462,7 +685,7 @@ $_type-scale: (
   }
 }
 
-@mixin cq-down($size, $name: null) {
+@mixin contain-down($size, $name: null) {
   $width: $size;
   @if meta.type-of($size) != number {
     $width: map.get(s.$breakpoints, $size);
@@ -474,7 +697,7 @@ $_type-scale: (
   }
 }
 
-@mixin cq-between($min, $max, $name: null) {
+@mixin contain-between($min, $max, $name: null) {
   $min-w: $min;
   $max-w: $max;
   @if meta.type-of($min) != number {
@@ -511,20 +734,40 @@ $_easings: (
   smooth: cubic-bezier(0.4, 0, 0.2, 1),
 );
 
+// Speed and easing can be given two ways:
+//   positionally  @include transition(color, slow, bounce)
+//   by name       @include transition(color, $duration: slow, $easing: bounce)
+//
+// The named form exists because the positional one is undiscoverable — the
+// signature is `$props...`, so nothing tells you a speed keyword is even
+// accepted, and an unrecognised word silently becomes a transitioned property.
+// A raw duration (`220ms`) is passed through as-is.
 @mixin transition($props...) {
-  $speed: fast;
-  $easing: smooth;
+  $kw: meta.keywords($props);
+  $speed: map.get($kw, duration) or fast;
+  $easing: map.get($kw, easing) or smooth;
   $result: ();
-  
+
+  // Pass 1 — pick up positional speed/easing keywords wherever they appear.
+  // Previously this happened in the same loop that built the list, so
+  // `transition(color, slow)` silently used the default speed: `color` was
+  // appended before `slow` had been seen. Only `transition(slow, color)` worked.
   @each $prop in $props {
     @if map.has-key($_speeds, $prop) {
       $speed: $prop;
     } @else if map.has-key($_easings, $prop) {
       $easing: $prop;
-    } @else {
+    }
+  }
+
+  // Pass 2 — build the list, now that speed and easing are settled.
+  // `or $speed` / `or $easing` lets a raw value through — `220ms` or a literal
+  // cubic-bezier() — instead of resolving to null and emitting `color  ;`.
+  @each $prop in $props {
+    @if not map.has-key($_speeds, $prop) and not map.has-key($_easings, $prop) {
       $result: list.append(
         $result,
-        $prop map.get($_speeds, $speed) map.get($_easings, $easing),
+        $prop (map.get($_speeds, $speed) or $speed) (map.get($_easings, $easing) or $easing),
         comma
       );
     }
@@ -538,46 +781,69 @@ $_easings: (
 // ============================================================================
 // LAYOUT
 // ============================================================================
+// One flex primitive. Pass only what differs from the defaults.
+//
+//   @include m.flex;                                    // flex row, centered cross-axis
+//   @include m.flex($direction: column, $gap: 3);       // vertical stack with gap
+//   @include m.flex($justify: between, $gap: 3);        // header bar / accordion trigger
+//   @include m.flex($justify: center);                  // perfectly centered children
+//   @include m.flex($inline: true, $gap: 2);            // inline-flex chip lockup
+//
+// $justify shorthand maps to CSS: start/end/center/between/around/evenly →
+// flex-start/flex-end/center/space-between/space-around/space-evenly. Same
+// idea for $align (start/end → flex-start/flex-end). Full CSS values pass
+// through unchanged, so $justify: space-between still works.
 
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+$_flex-justify: (
+  start:   flex-start,
+  end:     flex-end,
+  center:  center,
+  between: space-between,
+  around:  space-around,
+  evenly:  space-evenly,
+);
 
-@mixin flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+$_flex-align: (
+  start:    flex-start,
+  end:      flex-end,
+  center:   center,
+  baseline: baseline,
+  stretch:  stretch,
+);
 
-@mixin stack($gap: 4, $align: stretch) {
-  display: flex;
-  flex-direction: column;
-  gap: space($gap);
-  align-items: $align;
-}
+@mixin flex(
+  $direction: row,
+  $gap: null,
+  $align: center,
+  $justify: start,
+  $wrap: nowrap,
+  $inline: false
+) {
+  $j: map.get($_flex-justify, $justify) or $justify;
+  $a: map.get($_flex-align,   $align)   or $align;
 
-@mixin inline($gap: 2, $align: center, $wrap: nowrap) {
-  display: flex;
-  align-items: $align;
-  gap: space($gap);
+  display: if(sass($inline): inline-flex; else: flex);
+  flex-direction: $direction;
   flex-wrap: $wrap;
+  align-items: $a;
+  justify-content: $j;
+
+  @if $gap { gap: space($gap); }
 }
 
-@mixin inset($size: 4) {
+@mixin pad($size: 4) {
   padding: space($size);
 }
 
-@mixin inset-x($size: 4) {
+@mixin pad-x($size: 4) {
   padding-inline: space($size);
 }
 
-@mixin inset-y($size: 4) {
+@mixin pad-y($size: 4) {
   padding-block: space($size);
 }
 
-@mixin squish($y: 2, $x: 4) {
+@mixin pad-asym($y: 2, $x: 4) {
   padding: space($y) space($x);
 }
 
@@ -681,269 +947,90 @@ $_easings: (
 }
 
 // ============================================================================
-// COMPONENT BUILDERS
+// THEME
 // ============================================================================
+// Authoring helpers for theme files. Keep boilerplate out of per-theme source;
+// theme authors write only the token values.
 
-// Component mixin bodies wrap every override-controlled property in
-// `var(--<key>, <resolved-default>)`. Themes override the custom property
-// on :root; the library default is kept as the var() fallback so output
-// with no override is semantically identical to pre-1.3 behaviour.
+// Wraps a theme's :root[data-theme] selector + color-scheme around its body.
+//
+// Usage:
+//   @include theme('press') {
+//     --background-default: light-dark(#f7f2e8, #0a0a08);
+//     --ink:                light-dark(#1a1a1a, #f5f5f0);
+//   }
+//
+//   // Mode-stable themes pass an explicit scheme:
+//   @include theme('sketchbook', light) {
+//     --background-default: #faf8f1;
+//   }
+//
+// SELECTOR MODEL
+// ----------------------------------------------------------------------------
+// Emits `:root, :root[data-theme="<name>"]` by default, so ONE theme file
+// dropped in as theme.css restyles the page with no markup change, AND the same
+// file still responds to data-theme when several themes are loaded together.
+//
+// The bare `:root` is the whole point of the product promise: install cia once,
+// then reskin by swapping a single file. Requiring the consumer to also edit
+// `<html data-theme=...>` to match the file they just swapped makes a mismatch
+// silently render an untokenised page — the failure is invisible and the fix is
+// non-obvious. Before this, the shipped themes disagreed three ways: 9 emitted
+// `:root[data-theme=x]`, 7 emitted `[data-theme=x]`, and 5 emitted a bare
+// `:root`. Only the last group actually worked when dropped in alone.
+//
+// Pass $standalone: false for the multi-theme bundle, where every theme shares
+// one file and a bare `:root` would make them collide — there, the data-theme
+// attribute is the only thing distinguishing them.
+@mixin theme($name, $scheme: light dark, $standalone: true) {
+  $scoped: ':root[data-theme="#{$name}"]';
 
-@mixin btn-base(
-  $py: 1,
-  $px: 4,
-  $r: md,
-  $font-weight: medium
-) {
-  @include button-reset;
-  @include inline(2);
-  font-weight: var(--btn-font-weight, #{font-weight($font-weight)});
-  padding: var(--btn-padding-y, #{space($py)}) var(--btn-padding-x, #{space($px)});
-  border-radius: var(--btn-radius, #{radius($r)});
-  @include transition(background-color, border-color, color, box-shadow, fast);
-  @include focus-ring;
-}
+  // @if/@else rather than the if() FUNCTION: Sass deprecated `if()` in favour
+  // of the CSS if() syntax, and every theme build emitted a deprecation
+  // warning through it — 24 themes' worth of noise in the release log.
+  $selector: $scoped;
+  @if $standalone {
+    $selector: ':root, #{$scoped}';
+  }
 
-@mixin card-base(
-  $p: 4,
-  $r: lg,
-  $shadow: 1,
-  $bg: surface-default
-) {
-  padding: var(--card-padding, #{space($p)});
-  border-radius: var(--card-radius, #{radius($r)});
-  background: color($bg);
-  @if $shadow and $shadow != none {
-    box-shadow: var(--card-shadow, #{shadow($shadow)});
+  #{$selector} {
+    color-scheme: #{$scheme};
+    @content;
   }
 }
 
-@mixin input-base(
-  $py: 1,
-  $px: 2,
-  $r: md,
-  $border-width: 1px,
-  $bg: surface-default,
-  $border-color: border-default
-) {
-  padding: var(--input-padding-y, #{space($py)}) var(--input-padding-x, #{space($px)});
-  border: var(--input-border-width, #{$border-width}) solid color($border-color);
-  border-radius: var(--input-radius, #{radius($r)});
-  background: color($bg);
-  @include transition(border-color, box-shadow, fast);
-
-  &:focus {
-    outline: none;
-    border-color: color(border-focus);
-    box-shadow: 0 0 0 3px rgba(color-raw(border-focus), 0.2);
-  }
-  &:disabled { @include disabled; }
+// Derives hover/active states from a base color via color-mix in oklch.
+// Mixes BLACK in light mode, WHITE in dark mode — so light hover = darker,
+// dark hover = lighter, both feel right without separate per-mode declarations.
+//
+// Usage:
+//   --action-primary-default: light-dark(#3A5FCD, #60a5fa);
+//   @include states(action-primary);
+//   /* emits --action-primary-hover and --action-primary-active */
+@mixin states($group, $hover-amount: 12%, $active-amount: 20%) {
+  --#{$group}-hover:  color-mix(in oklch, var(--#{$group}-default), light-dark(black, white) #{$hover-amount});
+  --#{$group}-active: color-mix(in oklch, var(--#{$group}-default), light-dark(black, white) #{$active-amount});
 }
 
-@mixin badge-base(
-  $py: 1,
-  $px: 1,
-  $r: full,
-  $font-size: 1
-) {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--badge-padding-y, #{space($py)}) var(--badge-padding-x, #{space($px)});
-  border-radius: var(--badge-radius, #{radius($r)});
-  @include font(medium, $font-size);
-}
-
-@mixin modal-base(
-  $p: 5,
-  $r: xl,
-  $shadow: 5,
-  $max-width: 500px
-) {
-  padding: var(--modal-padding, #{space($p)});
-  border-radius: var(--modal-radius, #{radius($r)});
-  background: color(surface-default);
-  box-shadow: var(--modal-shadow, #{shadow($shadow)});
-  width: 90%;
-  max-width: $max-width;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-@mixin tooltip-base(
-  $py: 1,
-  $px: 1,
-  $r: md,
-  $bg: text-primary,
-  $color: text-inverse
-) {
-  padding: var(--tooltip-padding-y, #{space($py)}) var(--tooltip-padding-x, #{space($px)});
-  border-radius: var(--tooltip-radius, #{radius($r)});
-  background: color($bg);
-  color: color($color);
-  @include font(reg, 1);
-  white-space: nowrap;
-}
-
-// ============================================================================
-// FORM LAYOUT
-// ============================================================================
-
-@mixin form-layout($gap: 4, $columns: 1) {
-  display: grid;
-  gap: space($gap);
-  @if $columns > 1 {
-    @include tablet {
-      grid-template-columns: repeat($columns, 1fr);
-    }
-  }
-}
-
-@mixin form-group($gap: 1, $direction: column) {
-  display: flex;
-  flex-direction: $direction;
-  gap: space($gap);
-}
-
-@mixin form-row($gap: 2, $align: center) {
-  display: flex;
-  align-items: $align;
-  gap: space($gap);
-}
-
-// ============================================================================
-// ANIMATION HELPERS
-// ============================================================================
-
-@mixin spin($duration: 1s) {
-  animation: spin $duration linear infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-
+// Registers a list of color tokens with @property so theme swaps animate
+// smoothly via `transition: --token 240ms`. Only emits when called.
+//
+// Usage:
+//   @include theme-properties((
+//     action-primary-default,
+//     action-primary-hover,
+//     action-primary-active,
+//     background-default,
+//     ink,
+//   ));
+@mixin theme-properties($tokens) {
   @at-root {
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-  }
-}
-
-@mixin pulse($duration: 2s) {
-  animation: pulse $duration ease-in-out infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-
-  @at-root {
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-  }
-}
-
-@mixin fade-in($duration: normal) {
-  $dur: map.get($_speeds, $duration) or $duration;
-  animation: fade-in $dur ease-out both;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    opacity: 1;
-  }
-
-  @at-root {
-    @keyframes fade-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  }
-}
-
-@mixin slide-up($duration: normal, $distance: 1rem) {
-  $dur: map.get($_speeds, $duration) or $duration;
-  animation: slide-up $dur ease-out both;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-
-  @at-root {
-    @keyframes slide-up {
-      from {
-        opacity: 0;
-        transform: translateY($distance);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
+    @each $token in $tokens {
+      @property --#{$token} {
+        syntax: '<color>';
+        inherits: true;
+        initial-value: transparent;
       }
     }
-  }
-}
-
-// ============================================================================
-// BACKWARD COMPATIBILITY ALIASES
-// ============================================================================
-
-@mixin card {
-  @include card-base;
-}
-
-@mixin button-outline {
-  @include btn-base;
-  background: transparent;
-  border: 1px solid color(border-default);
-  color: color(text-primary);
-
-  &:hover {
-    background: color(interactive-hover);
-    border-color: color(border-focus);
-  }
-
-  &:active {
-    background: color(interactive-active);
-  }
-}
-
-@mixin form-input {
-  @include input-base;
-}
-
-@mixin label-base {
-  display: block;
-  @include font(medium, 2);
-  color: color(text-primary);
-  margin-bottom: space(1);
-}
-
-@mixin button-primary {
-  @include btn-base;
-  background: color(action-primary-default);
-  color: color(text-inverse);
-
-  &:hover {
-    background: color(action-primary-hover);
-  }
-
-  &:active {
-    background: color(action-primary-active);
-  }
-}
-
-@mixin button-secondary {
-  @include btn-base;
-  background: color(action-secondary-default);
-  color: color(text-inverse);
-
-  &:hover {
-    background: color(action-secondary-hover);
-  }
-
-  &:active {
-    background: color(action-secondary-active);
   }
 }
