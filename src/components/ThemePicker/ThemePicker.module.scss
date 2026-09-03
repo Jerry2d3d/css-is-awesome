@@ -21,8 +21,9 @@
   @include m.mobile-only {
     @include m.flex($justify: center, $inline: true);
     cursor: pointer;
-    width: m.space(11);
-    height: m.space(11);
+    /* 44px tap target — m.grid(11) = 11 × 4px; the space() scale tops out at 9. */
+    width: m.grid(11);
+    height: m.grid(11);
     border-radius: 50%;
     border: 1px solid var(--hair, rgba(0, 0, 0, 0.12));
     background: var(--paper-raised, #fff);

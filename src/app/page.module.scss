@@ -10,13 +10,13 @@
    NAVIGATION
    ============================================================ */
 .mainNav {
-  @include m.flex($gap: m.space(8), $justify: center, $wrap: wrap, $inline: true);
+  @include m.flex($gap: m.space(6), $justify: center, $wrap: wrap, $inline: true);
   font-family: var(--font-serif);
   font-size: 0.95rem;
   letter-spacing: 0.04em;
 
   @include m.mobile-only {
-    gap: m.space(3) m.space(5);
+    gap: m.space(2) m.space(5);
   }
 }
 .mainNav a {
@@ -61,8 +61,10 @@
     /* Top: the stamp sits in the top margin — keep clear of it without
        pushing the hero below the fold. Sides: text (the tagline especially)
        needs breathing room off the screen edges in every theme. Bottom:
-       the theme-picker disc floats in the corner — end above it. */
-    padding: m.space(16) m.space(7) m.space(20);
+       the theme-picker disc floats in the corner — end above it.
+       (Scale note: cia's numbered spacing scale is 1–9; 5 = 24px,
+       8 = 64px. Unknown keys pass through raw and invalidate the rule.) */
+    padding: m.space(8) m.space(5) m.space(8);
   }
 }
 .wordmark {
@@ -118,8 +120,8 @@
   margin: 0;
 }
 .stats {
-  @include m.flex($gap: m.space(6), $justify: center, $wrap: wrap);
-  margin-top: m.space(2);
+  @include m.flex($gap: m.space(5), $justify: center, $wrap: wrap);
+  margin-top: m.space(4);
 
   /* Phones: chips stack one per row instead of fighting for one line. */
   @include m.mobile-only {

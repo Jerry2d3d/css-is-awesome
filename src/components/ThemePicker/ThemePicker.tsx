@@ -63,7 +63,9 @@ export default function ThemePicker() {
         <span aria-hidden="true">🎨</span>
       </button>
       <div id="theme-picker-panel" className={styles.panel}>
-        <div className={styles.label}>Theme</div>
+        <div className={styles.label}>
+          <span aria-hidden="true">🎨</span> Theme
+        </div>
         <div className={styles.row}>
           {THEMES.map((t) => (
             <button
