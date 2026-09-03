@@ -1,5 +1,8 @@
+@use 'mixins' as m;
+
 /* StatChip component styles */
 .chip {
+  @include m.flex($gap: m.space(1), $justify: center, $inline: true);
   padding: 6px 14px;
   border: 1.5px solid var(--ink);
   border-radius: var(--r-sm);
@@ -9,8 +12,15 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   background: var(--paper-raised);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+
+  @include m.mobile-only {
+    /* Inside the landing grid each chip owns a cell: fill it, center the
+       text, and let long labels wrap to a second line. */
+    width: 100%;
+    padding: m.space(2);
+    text-align: center;
+    flex-wrap: wrap;
+    letter-spacing: 0.08em;
+  }
 }
 .chip strong { color: var(--ai); font-weight: 700; }
