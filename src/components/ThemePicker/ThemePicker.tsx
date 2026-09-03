@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import styles from "./ThemePicker.module.scss";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
@@ -44,20 +45,37 @@ export default function ThemePicker() {
   const activeFamily = family(active);
   const activeMode = mode(active);
 
+  // Phones: the panel starts collapsed behind a small corner disc so it
+  // doesn't sit over the content. Desktop ignores the toggle entirely
+  // (it's display:none there and the panel is always open).
+  const [open, setOpen] = useState(false);
+
   return (
     <div className={styles.picker} aria-label="Theme picker">
-      <div className={styles.label}>Theme</div>
-      <div className={styles.row}>
-        {THEMES.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            aria-pressed={family(t.id) === activeFamily}
-            onClick={() => setTheme(`${family(t.id)}-${activeMode}`)}
-          >
-            {t.label}
-          </button>
-        ))}
+      <button
+        type="button"
+        className={styles.toggle}
+        aria-expanded={open}
+        aria-controls="theme-picker-panel"
+        aria-label="Choose a theme"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span aria-hidden="true">🎨</span>
+      </button>
+      <div id="theme-picker-panel" className={styles.panel}>
+        <div className={styles.label}>Theme</div>
+        <div className={styles.row}>
+          {THEMES.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              aria-pressed={family(t.id) === activeFamily}
+              onClick={() => setTheme(`${family(t.id)}-${activeMode}`)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
