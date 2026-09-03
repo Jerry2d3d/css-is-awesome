@@ -14,11 +14,12 @@
   line-height: 1.4;
 }
 
-/* Collapsed-mode disc — phones only; desktop never renders it visibly. */
+/* Collapsed-mode disc — true phone widths only (below sm/640px);
+   mobile-only (md/768px) was catching narrow desktop windows too. */
 .toggle {
   display: none;
 
-  @include m.mobile-only {
+  @include m.media-down(sm) {
     @include m.flex($justify: center, $inline: true);
     cursor: pointer;
     /* 44px tap target — m.grid(11) = 11 × 4px; the space() scale tops out at 9. */
@@ -51,7 +52,7 @@
 
   /* Phones: the panel exists only while the disc says it's expanded —
      semantic state hangs off the ARIA attribute, not a class. */
-  @include m.mobile-only {
+  @include m.media-down(sm) {
     .toggle[aria-expanded="false"] + & {
       display: none;
     }
