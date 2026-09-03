@@ -70,7 +70,11 @@
   grid-template-columns: 1fr 1fr;
   gap: 4px;
 }
-.picker button {
+/* Scoped to the theme buttons only — `.picker button` also caught the
+   collapse toggle, and its `all: unset` outranked the toggle's own
+   `display: none` (class+element beats lone class), leaking the disc
+   into desktop view as bare text. */
+.row button {
   all: unset;
   cursor: pointer;
   padding: 5px 8px;
@@ -82,10 +86,10 @@
   font: inherit;
   transition: background 120ms ease, border-color 120ms ease;
 }
-.picker button:hover {
+.row button:hover {
   background: var(--paper-sunk, rgba(0,0,0,0.05));
 }
-.picker button[aria-pressed="true"] {
+.row button[aria-pressed="true"] {
   background: var(--ai-wash, rgba(0,0,0,0.08));
   border-color: var(--ai, currentColor);
   color: var(--ai, currentColor);
