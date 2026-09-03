@@ -59,9 +59,10 @@
 
   @include m.mobile-only {
     /* Top: the stamp sits in the top margin — keep clear of it without
-       pushing the hero below the fold. Bottom: the theme-picker disc
-       floats in the corner — give the page text room to end above it. */
-    padding: m.space(16) m.space(4) m.space(20);
+       pushing the hero below the fold. Sides: text (the tagline especially)
+       needs breathing room off the screen edges in every theme. Bottom:
+       the theme-picker disc floats in the corner — end above it. */
+    padding: m.space(16) m.space(7) m.space(20);
   }
 }
 .wordmark {
