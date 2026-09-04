@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.4.0...v1.5.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* **themes:** spacing aliases in all 24 themes; picker highlight contained ([6d02e9f](https://github.com/Jerry2d3d/css-is-awesome/commit/6d02e9f8d9176ebc1401639e22b23706a3d652fa))
+
+
+### Features
+
+* **mobile:** the mobile toolkit - dock + sheet mixins, bottom-nav recipe, /docs/mobile ([a983bee](https://github.com/Jerry2d3d/css-is-awesome/commit/a983bee5b9e2b16e38b2fb26e316e7811359245f)), closes [#6](https://github.com/Jerry2d3d/css-is-awesome/issues/6)
+
 # [1.4.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.3.1...v1.4.0) (2026-09-04)
 
 

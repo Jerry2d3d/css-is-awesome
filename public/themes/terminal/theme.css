@@ -135,6 +135,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: 0;
   --radius-md: 0;
   --radius-lg: 0;

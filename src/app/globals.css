@@ -19,6 +19,27 @@
      toggle). One value so they can't drift apart — they were 30.4px and 36px
      because one was sized by padding and the other by a fixed square. */
   --control-h: 2.25rem;
+
+  /* Spacing t-shirt aliases — safety net for the theme bundle.
+     The theme contract requires only the numbered scale (--space-0 …
+     --space-9); the t-shirt names are optional, and 21 of the 24 bundled
+     themes don't declare them. Docs previews (recipes gallery, three-tiers)
+     read var(--space-sm|md|lg|xl) inline, and a declaration whose var() is
+     undefined is invalid at computed-value time — gap/padding/margin silently
+     collapse to 0, which is why previews looked cramped in Terminal (and
+     every other alias-less theme). Emit the aliases here exactly as the
+     library's generator does (scss/_generator.scss ↔ s.$spacing-aliases):
+     var() REFERENCES, so each alias follows the active theme's numbered
+     scale. Themes that declare their own literals still win via their
+     [data-theme] selector's higher specificity. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
 }
 
 * { box-sizing: border-box; }
