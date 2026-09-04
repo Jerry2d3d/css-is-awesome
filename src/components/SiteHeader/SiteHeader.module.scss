@@ -89,6 +89,12 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.8rem 1rem;
+    /* The scrim (z 8) is a sibling inside the header's stacking context —
+       lift the bar above it with its own paper backing so the open-menu
+       overlay darkens the page and footer but never the nav bar itself. */
+    position: relative;
+    z-index: 11;
+    background: var(--paper);
   }
   .brand {
     min-width: 0;
