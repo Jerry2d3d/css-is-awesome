@@ -1,0 +1,21 @@
+// ============================================================
+// Site shell — the control system every page (except the landing)
+// lives in: Nav / Main / Footer, declared once as named grid areas
+// via cia's own layout doctrine (AGENTS.md quick decision #7).
+// Mirrors the jhansenportfolio para-wrapper pattern: the wrapper is
+// the grid; regions claim their slots. Main holds <section>s;
+// sections hold their parts.
+// ============================================================
+@use 'layout' as l;
+
+.site {
+  // header / main / footer rows, sticky footer, 100dvh minimum.
+  @include l.page-layout;
+}
+
+.site-main {
+  @include l.page-main;
+  // A long code block or table inside a section must scroll itself,
+  // never widen the page.
+  min-width: 0;
+}

@@ -5,6 +5,7 @@
 // byte-for-byte identical in behavior.
 // ============================================================
 import type { ReactNode } from "react";
+import "./docs-shell.scss";
 import SiteHeader from "@/components/SiteHeader";
 import DocsNav from "./_components/DocsNav";
 import DocsTOC from "./_components/DocsTOC";

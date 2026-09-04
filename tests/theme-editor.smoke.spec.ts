@@ -60,12 +60,23 @@ test.describe("theme editor (/themes)", () => {
       .toMatch(/\[data-theme="[a-z-]+"\]\s*\{[\s\S]*--/);
   });
 
+  // The family switcher is a Popover-API menu now (the native <select> was
+  // retired — its open list can't be styled). Picking a family = click the
+  // trigger, then click the family button; the menu hides itself natively
+  // via popovertargetaction="hide", so it must be reopened per pick.
+  async function pickFamily(page: import("@playwright/test").Page, label: string) {
+    await page.getByRole("button", { name: "Choose theme family" }).click();
+    await page
+      .getByRole("group", { name: "Theme family" })
+      .getByRole("button", { name: label, exact: true })
+      .click();
+  }
+
   test("family switcher swaps the active theme", async ({ page }) => {
     await page.goto("/themes");
-    const select = page.getByRole("combobox", { name: "Choose theme family" });
-    await expect(select).toBeEnabled();
+    await expect(page.getByRole("button", { name: "Choose theme family" })).toBeEnabled();
 
-    await select.selectOption("prism");
+    await pickFamily(page, "Prism");
     await expect
       .poll(() => page.evaluate(() => document.documentElement.getAttribute("data-theme")))
       .toMatch(/^prism-(light|dark)$/);
@@ -73,20 +84,19 @@ test.describe("theme editor (/themes)", () => {
 
   test("every shipped family resolves to a styled theme", async ({ page }) => {
     await page.goto("/themes");
-    const select = page.getByRole("combobox", { name: "Choose theme family" });
-    await expect(select).toBeEnabled();
+    await expect(page.getByRole("button", { name: "Choose theme family" })).toBeEnabled();
 
-    for (const family of [
-      "boilerplate",
-      "sketchbook",
-      "press",
-      "graphite",
-      "glass",
-      "cupertino",
-      "terminal",
-      "prism",
-    ]) {
-      await select.selectOption(family);
+    for (const [family, label] of [
+      ["boilerplate", "Boilerplate"],
+      ["sketchbook", "Sketchbook"],
+      ["press", "Press"],
+      ["graphite", "Graphite"],
+      ["glass", "Glass"],
+      ["cupertino", "Cupertino"],
+      ["terminal", "Terminal"],
+      ["prism", "Prism"],
+    ] as const) {
+      await pickFamily(page, label);
       await expect
         .poll(() => page.evaluate(() => document.documentElement.getAttribute("data-theme")))
         .toContain(family);

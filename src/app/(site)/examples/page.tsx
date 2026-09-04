@@ -1,4 +1,4 @@
-import SiteHeader from "@/components/SiteHeader";
+import styles from "./page.module.scss";
 import Example from "@/components/Example";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
@@ -8,9 +8,8 @@ import LogoMark from "@/components/LogoMark";
 export default function ExamplesPage() {
   return (
     <>
-      <SiteHeader current="examples" />
 
-      <div className="docs-shell" style={{ gridTemplateColumns: "1fr", maxWidth: "900px" }}>
+      <div className={styles.shell}>
         <article className="docs-content">
           <h1>Examples</h1>
           <p className="lead">Small pages built with the system. Copy, fork, break, rebuild.</p>

@@ -1,5 +1,4 @@
 import styles from "./page.module.scss";
-import SiteHeader from "@/components/SiteHeader";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import Seal from "@/components/Seal";
@@ -9,8 +8,7 @@ import Post from "@/components/Post";
 export default function ShowcasePage() {
   return (
     <>
-      <SiteHeader current="showcase" />
-      <main className={styles.shell}>
+      <div className={styles.shell}>
         <section className={styles.hero}>
           <p className={styles.eyebrow}>what can I build with this?</p>
           <h1>Showcase</h1>
@@ -102,7 +100,7 @@ export default function ShowcasePage() {
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

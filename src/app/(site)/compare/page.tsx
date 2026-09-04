@@ -1,5 +1,4 @@
 import styles from "./page.module.scss";
-import SiteHeader from "@/components/SiteHeader";
 import Seal from "@/components/Seal";
 
 type Row = {
@@ -58,8 +57,7 @@ function Cell({ v }: { v: string | boolean }) {
 export default function ComparePage() {
   return (
     <>
-      <SiteHeader current="compare" />
-      <main className={styles.shell}>
+      <div className={styles.shell}>
         <section className={styles.hero}>
           <p className={styles.eyebrow}>honest comparison</p>
           <h1>css-is-awesome vs Tailwind vs Bootstrap</h1>
@@ -92,9 +90,9 @@ export default function ComparePage() {
                     {row.feature}
                     {row.note && <span className={styles.note}>{row.note}</span>}
                   </th>
-                  <td><Cell v={row.cia} /></td>
-                  <td><Cell v={row.tailwind} /></td>
-                  <td><Cell v={row.bootstrap} /></td>
+                  <td data-label="css-is-awesome"><Cell v={row.cia} /></td>
+                  <td data-label="Tailwind"><Cell v={row.tailwind} /></td>
+                  <td data-label="Bootstrap"><Cell v={row.bootstrap} /></td>
                 </tr>
               ))}
             </tbody>
@@ -120,8 +118,8 @@ export default function ComparePage() {
               {BUNDLE_TIERS.map((t) => (
                 <tr key={t.name}>
                   <th scope="row"><code>{t.name}</code></th>
-                  <td>{t.size}</td>
-                  <td>{t.contains}</td>
+                  <td data-label="Size">{t.size}</td>
+                  <td data-label="Contains">{t.contains}</td>
                 </tr>
               ))}
             </tbody>
@@ -146,7 +144,7 @@ export default function ComparePage() {
             </article>
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

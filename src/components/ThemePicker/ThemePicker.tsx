@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./ThemePicker.module.scss";
+import PaletteIcon from "@/components/PaletteIcon";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
 type Theme = { id: string; label: string };
@@ -69,11 +70,11 @@ export default function ThemePicker({
         aria-label="Choose a theme"
         onClick={() => setOpen((v) => !v)}
       >
-        <span aria-hidden="true">🎨</span>
+        <PaletteIcon className={styles.paletteIcon} />
       </button>
       <div id="theme-picker-panel" className={styles.panel}>
         <div className={styles.label}>
-          <span aria-hidden="true">🎨</span> Theme
+          <PaletteIcon className={styles.paletteIcon} /> Theme
         </div>
         <div className={styles.row}>
           {THEMES.map((t) => (

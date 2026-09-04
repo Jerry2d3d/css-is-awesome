@@ -1,4 +1,5 @@
 @use 'mixins' as m;
+@use 'layout' as l;
 
 /* ============================================================
    Landing page (/) — CSS Module styles.
@@ -47,10 +48,13 @@
    ============================================================ */
 .landing {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  /* The system's own page-shell doctrine: named areas declare the stack,
+     sections claim slots with m.area(). Sections keep their own margins,
+     so the grid gap stays 0. (The footer's "built with display: grid"
+     line is finally telling the truth.) */
+  @include l.layout(hero, moat, manifesto, footer, $gap: 0);
+  align-content: center;
+  justify-items: center;
   padding: 6rem 1.5rem 3rem;
   max-width: 1000px;
   margin: 0 auto;
@@ -105,6 +109,7 @@
   color: var(--shu);
 }
 .inner {
+  @include l.area(hero);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,6 +139,7 @@
 }
 
 .footer {
+  @include l.area(footer);
   margin-top: 5rem;
   font-family: var(--font-script);
   font-size: 1.2rem;
@@ -154,6 +160,7 @@
    MOAT — side-by-side LOC/JS comparison
    ============================================================ */
 .moat {
+  @include l.area(moat);
   max-width: 980px;
   margin: 3.5rem auto 1rem;
   padding: 2.5rem 1.5rem 0.5rem;
@@ -240,6 +247,7 @@
    MANIFESTO
    ============================================================ */
 .manifesto {
+  @include l.area(manifesto);
   max-width: 820px;
   margin: 4rem auto 2rem;
   padding: 3rem 1.5rem 2.5rem;

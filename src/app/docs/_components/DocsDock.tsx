@@ -14,14 +14,45 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./DocsDock.module.scss";
 import { docsNav } from "../nav.config";
-import ThemeSelect from "@/components/ThemeSelect";
 import LightDarkToggle from "@/components/LightDarkToggle";
+import { setTheme, useThemeAttribute } from "@/lib/themeState";
+
+// Theme families, listed directly in the sheet — no nested trigger, no
+// second tap. Mode (light/dark) is preserved when switching families.
+const FAMILIES: { id: string; label: string }[] = [
+  { id: "boilerplate", label: "Boilerplate" },
+  { id: "sketchbook",  label: "Sketchbook" },
+  { id: "press",       label: "Press" },
+  { id: "graphite",    label: "Graphite" },
+  { id: "glass",       label: "Glass" },
+  { id: "cupertino",   label: "Cupertino" },
+  { id: "terminal",    label: "Terminal" },
+  { id: "prism",       label: "Prism" },
+];
+
+const ALIAS_MODE: Record<string, "light" | "dark"> = {
+  boilerplate: "light", sketchbook: "light", press: "light", graphite: "dark",
+  glass: "light", cupertino: "light", terminal: "dark",
+};
+
+function familyOf(theme: string): string {
+  return theme.replace(/-(light|dark)$/, "");
+}
+
+function modeOf(theme: string): "light" | "dark" {
+  if (theme.endsWith("-dark")) return "dark";
+  if (theme.endsWith("-light")) return "light";
+  return ALIAS_MODE[theme] ?? "light";
+}
 
 type Sheet = "docs" | "toc" | "theme" | null;
 type Heading = { id: string; text: string; level: 2 | 3 };
 
 export default function DocsDock() {
   const pathname = usePathname();
+  const activeTheme = useThemeAttribute() ?? "sketchbook-light";
+  const activeFamily = familyOf(activeTheme);
+  const activeMode = modeOf(activeTheme);
   const [open, setOpen] = useState<Sheet>(null);
   const [headings, setHeadings] = useState<Heading[]>([]);
   const [mounted, setMounted] = useState(false);
@@ -132,9 +163,22 @@ export default function DocsDock() {
       >
         <span className={styles.grab} aria-hidden="true" />
         <h5 className={styles.sheetTitle}>theme</h5>
-        <div className={`${styles.sheetScroll} ${styles.themeRow}`}>
-          <ThemeSelect />
-          <LightDarkToggle />
+        <div className={styles.sheetScroll}>
+          <div className={styles.themeGrid}>
+            {FAMILIES.map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                aria-pressed={f.id === activeFamily}
+                onClick={() => setTheme(`${f.id}-${activeMode}`)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <div className={styles.themeRow}>
+            <LightDarkToggle />
+          </div>
         </div>
       </section>
 

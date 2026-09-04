@@ -1,3 +1,20 @@
+## [1.3.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.3.0...v1.3.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **mobile:** actually hide the docs left nav and TOC on phones ([ef2e37e](https://github.com/Jerry2d3d/css-is-awesome/commit/ef2e37e4e8e264caa5389b80884c8207f0bd4873))
+* **mobile:** header on CSS Grid - nothing can run off the edge ([82a1975](https://github.com/Jerry2d3d/css-is-awesome/commit/82a19759907281887746c8d78ffc1bd0fcf29a57))
+* **mobile:** readable theme dropdown options; menu panel padding + rules ([7ed56a9](https://github.com/Jerry2d3d/css-is-awesome/commit/7ed56a942b68f174d6feea7b23b4f11e635b14b1))
+* **mobile:** theme dropdown collapses to a palette icon below lg ([b267dc8](https://github.com/Jerry2d3d/css-is-awesome/commit/b267dc8cfe002b3cfe56daa74ad524978d6814ed))
+
+# [1.3.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.2.0...v1.3.0) (2026-09-04)
+
+
+### Features
+
+* **nav:** cia ships mobile navigation - hamburger + drawer, zero JS ([d58f8f1](https://github.com/Jerry2d3d/css-is-awesome/commit/d58f8f15d877b974b978e5b2b3d35122e3f0da0f))
+
 # [1.2.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.1.1...v1.2.0) (2026-09-04)
 
 

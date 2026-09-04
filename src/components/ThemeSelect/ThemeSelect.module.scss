@@ -1,51 +1,142 @@
+@use 'mixins' as m;
+
 /* ============================================================
-   ThemeSelect — compact theme-family dropdown for the global
-   header. Native <select> for accessibility + zero popover state.
+   ThemeSelect — theme-family picker for the global header.
+   Popover-API menu (see ThemeSelect.tsx for why the native
+   <select> was retired). Trigger keeps the old select's control
+   footprint; the menu is a card under the header on desktop and
+   a bottom sheet on phones. Token-driven throughout.
    ============================================================ */
 
-.select {
-  appearance: none;
-  -webkit-appearance: none;
+.wrap {
+  display: inline-flex;
+}
+
+.trigger {
+  @include m.button-reset;
+  @include m.flex($gap: m.space(1), $inline: true);
+  height: var(--control-h, 2.25rem);
+  padding-inline: 0.7rem;
   background: var(--paper);
   color: var(--ink);
   border: 1px solid var(--hair);
   border-radius: var(--r-md, 6px);
-  /* Height comes from the shared control token, not from padding — otherwise
-     it drifts out of line with the light/dark toggle beside it. Padding is
-     horizontal only; the native select centres its label vertically. */
-  height: var(--control-h, 2.25rem);
-  padding-block: 0;
-  padding-inline: 0.7rem 1.75rem;
   font-family: var(--font-sans);
   font-size: 0.875rem;
   line-height: 1;
   cursor: pointer;
-  transition:
-    background 180ms var(--ease),
-    border-color 180ms var(--ease),
-    color 180ms var(--ease);
+  @include m.transition(background-color, border-color, color);
+  @include m.focus-ring;
 
-  /* Custom dropdown chevron — uses currentColor so it follows ink */
+  &:hover {
+    background-color: var(--paper-sunk);
+    border-color: var(--ink-faint);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.triggerIcon {
+  width: 1.2em;
+  height: 1.2em;
+  display: block;
+  flex: none;
+}
+
+/* Chevron — two tiny gradient triangles, follows ink via currentColor. */
+.chevron {
+  width: 10px;
+  height: 5px;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
                     linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position:
-    calc(100% - 14px) 50%,
-    calc(100% - 9px) 50%;
+  background-position: 0 50%, 5px 50%;
   background-size: 5px 5px;
   background-repeat: no-repeat;
 }
 
-.select:hover {
-  background-color: var(--paper-sunk);
-  border-color: var(--ink-faint);
+/* Phones: icon-only trigger — the header needs its width for the brand. */
+@include m.media-down(lg) {
+  .trigger {
+    inline-size: var(--control-h, 2.25rem);
+    padding-inline: 0;
+    justify-content: center;
+  }
+  .triggerLabel,
+  .chevron {
+    display: none;
+  }
 }
 
-.select:focus-visible {
-  outline: 2px solid var(--ai);
-  outline-offset: 2px;
+/* ------------------------------------------------------------
+   The menu. [popover] handles open/close/top-layer; we only style
+   the box. Desktop: card pinned under the header's right corner.
+   Phones: bottom sheet in thumb reach, safe-area aware.
+   ------------------------------------------------------------ */
+.menu {
+  position: fixed;
+  margin: 0;
+  border: 1px solid var(--hair);
+  background: var(--paper-raised);
+  color: var(--ink);
+  box-shadow: var(--shadow-md, 0 6px 20px rgba(0, 0, 0, 0.12));
+  padding: m.space(2);
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+
+  /* A dropdown, not a popup: it opens just under the header where the
+     trigger lives, right-aligned, on every screen size. No backdrop dim —
+     light-dismiss still closes it on any outside tap. */
+  inset: auto;
+  top: 4.25rem;             /* just under the sticky header bar */
+  right: m.space(4);
+  min-width: 13rem;
+  border-radius: var(--r-md, 8px);
+
+  &:popover-open {
+    display: flex;
+  }
+
+  @include m.media-down(lg) {
+    top: 3.8rem;            /* the mobile bar is a touch shorter */
+    right: m.space(2);
+  }
 }
 
-.select:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.menuTitle {
+  font-family: var(--font-script);
+  font-size: 1.05rem;
+  color: var(--shu);
+  padding: m.space(1) m.space(3);
+}
+
+.menu button {
+  @include m.button-reset;
+  @include m.focus-ring;
+  cursor: pointer;
+  text-align: start;
+  /* The whole point of the rewrite: real, reliable side padding. */
+  padding: m.space(2) m.space(5);
+  border-radius: var(--r-sm, 4px);
+  border: 1px solid transparent;
+  color: var(--ink-soft);
+  min-height: 44px;
+  @include m.transition(background-color, border-color, color);
+
+  &:hover {
+    background: var(--paper-sunk);
+    color: var(--ink);
+  }
+
+  &[aria-pressed="true"] {
+    background: var(--ai-wash, rgba(0, 0, 0, 0.08));
+    border-color: var(--ai);
+    color: var(--ai);
+    font-weight: 600;
+  }
 }

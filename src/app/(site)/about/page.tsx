@@ -1,5 +1,4 @@
 import styles from "./page.module.scss";
-import SiteHeader from "@/components/SiteHeader";
 import Principle from "@/components/Principle";
 import TimelineItem from "@/components/TimelineItem";
 import Seal from "@/components/Seal";
@@ -7,7 +6,6 @@ import Seal from "@/components/Seal";
 export default function AboutPage() {
   return (
     <>
-      <SiteHeader current="about" />
 
       <section className={styles.hero}>
         <p className={styles.eyebrow}>a short history</p>

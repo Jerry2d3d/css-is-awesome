@@ -1,12 +1,18 @@
+"use client";
 // ============================================================
-// SiteHeader — full replacement for src/components/SiteHeader/SiteHeader.tsx
+// SiteHeader — the Nav region of the site shell ((site)/layout.tsx).
 //
-// Desktop (≥1025px): unchanged — inline nav row + theme controls.
+// Rendered once by the shell, so the active link derives from the
+// pathname (mounted-gated like DocsDock, safe under static export)
+// instead of a per-page `current` prop.
+//
+// Desktop (≥1025px): inline nav row + theme controls.
 // Mobile (≤1024px): the 8-link nav row hides; a hamburger appears
-// and drops the site menu down from under the header as a
-// two-column paper panel. Checkbox-driven, so this component stays
-// a SERVER component — no "use client", no hydration cost.
+// and drops the site menu down from under the header. The hamburger
+// stays checkbox-driven (works before hydration).
 // ============================================================
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import styles from "./SiteHeader.module.scss";
 import Link from "next/link";
 import LogoMark from "@/components/LogoMark";
@@ -26,10 +32,24 @@ const NAV: { id: NavId; label: string; href: string }[] = [
   { id: "about",    label: "About",    href: "/about" },
 ];
 
-export default function SiteHeader({ current }: { current: NavId }) {
+function currentFromPath(path: string): NavId | null {
+  if (path === "/") return "home";
+  const seg = path.split("/").filter(Boolean)[0];
+  return NAV.some((n) => n.id === seg) ? (seg as NavId) : null;
+}
+
+// `current` is legacy — the shell renders the header once and the active
+// link derives from the pathname. Accepted and ignored so routes not yet
+// moved into the (site) group keep compiling; remove after the migration.
+export default function SiteHeader(_props: { current?: string } = {}) {
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const current = mounted ? currentFromPath(pathname) : null;
+
   return (
     <header className={styles.header}>
-      {/* hamburger state — checkbox keeps this a server component */}
+      {/* hamburger state — checkbox, so open/close works pre-hydration */}
       <input type="checkbox" id="site-menu" className={styles.menuCheck} />
 
       <div className={styles.inner}>
@@ -52,6 +72,7 @@ export default function SiteHeader({ current }: { current: NavId }) {
               key={item.id}
               href={item.href}
               className={item.id === current ? styles.isActive : undefined}
+              aria-current={item.id === current ? "page" : undefined}
             >
               {item.label}
             </Link>

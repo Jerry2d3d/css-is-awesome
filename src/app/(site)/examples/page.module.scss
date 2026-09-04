@@ -3,3 +3,17 @@
    Currently shares all classes with globals (docs-shell, example*, btn, card).
    Add examples-unique rules here if the page grows its own design.
    ============================================================ */
+
+@use 'mixins' as m;
+
+/* The page's own shell - it previously borrowed .docs-shell from globals,
+   which now lives with the docs layout. Same rhythm as the other pages. */
+.shell {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+
+  @include m.mobile-only {
+    padding: m.space(6) m.space(5) m.space(8);
+  }
+}

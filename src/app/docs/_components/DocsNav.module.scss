@@ -1,8 +1,19 @@
+@use 'mixins' as m;
+@use 'layout' as l;
+
 .sidebar {
+  @include l.area(sidebar);
   font-size: 0.9rem;
   align-self: start;
   position: sticky;
   top: 5rem;
+
+  /* Below lg (1024px) the DocsDock's Docs sheet takes over — without this
+     the sidebar stacked full-length above the article on phones. (The old
+     globals rule hid `.docs-sidebar`, a class this component never renders.) */
+  @include m.media-down(lg) {
+    display: none;
+  }
 }
 .sidebar h4 {
   font-family: var(--font-script);

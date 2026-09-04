@@ -116,6 +116,39 @@
 .tocList .empty { color: var(--muted); padding: 0.55rem 0.4rem; }
 
 /* theme sheet */
+/* Theme families directly in the sheet — one tap switches. */
+.themeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding-top: 0.4rem;
+
+  button {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-md, 8px);
+    background: var(--paper);
+    color: var(--ink-soft);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    transition: border-color 120ms ease, background 120ms ease;
+
+    &:hover { border-color: var(--ai); }
+
+    &[aria-pressed="true"] {
+      background: var(--ai-wash, rgba(0, 0, 0, 0.08));
+      border-color: var(--ai);
+      color: var(--ai);
+      font-weight: 600;
+    }
+  }
+}
+
 .themeRow {
   display: flex;
   align-items: center;
