@@ -49,14 +49,16 @@ export default function ThemeSelect() {
 
   if (theme === null) {
     return (
-      <select
-        className={styles.select}
-        aria-hidden="true"
-        tabIndex={-1}
-        disabled
-      >
-        <option>—</option>
-      </select>
+      <span className={styles.wrap}>
+        <select
+          className={styles.select}
+          aria-hidden="true"
+          tabIndex={-1}
+          disabled
+        >
+          <option>—</option>
+        </select>
+      </span>
     );
   }
 
@@ -70,18 +72,20 @@ export default function ThemeSelect() {
   }
 
   return (
-    <select
-      className={styles.select}
-      value={family}
-      onChange={(e) => choose(e.target.value)}
-      aria-label="Choose theme family"
-      title="Choose theme family"
-    >
-      {FAMILIES.map((f) => (
-        <option key={f.id} value={f.id}>
-          {f.label}
-        </option>
-      ))}
-    </select>
+    <span className={styles.wrap}>
+      <select
+        className={styles.select}
+        value={family}
+        onChange={(e) => choose(e.target.value)}
+        aria-label="Choose theme family"
+        title="Choose theme family"
+      >
+        {FAMILIES.map((f) => (
+          <option key={f.id} value={f.id}>
+            {f.label}
+          </option>
+        ))}
+      </select>
+    </span>
   );
 }
