@@ -76,8 +76,8 @@
         position-anchor: --dash-nav-trigger;
         /* Same width as the selection box. */
         inset-inline: anchor(start) anchor(end);
-        /* Just a line between the box and the menu, not a gap. */
-        inset-block-start: calc(anchor(end) + 2px);
+        /* Exactly one pixel between the box and the menu — a single line. */
+        inset-block-start: calc(anchor(end) + 1px);
         /* Always right under the box — unless that would run off the
            bottom of the screen, then flip to open above it. */
         position-try-fallbacks: flip-block;
