@@ -1,7 +1,8 @@
 @use 'mixins' as m;
+@use 'layout' as l;
 
 .sidebar {
-  grid-area: sidebar;
+  @include l.area(sidebar);
   font-size: 0.9rem;
   align-self: start;
   position: sticky;

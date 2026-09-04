@@ -211,33 +211,10 @@ hr,
    DOCS SHELL — shared layout for /docs and /examples
    (Page-specific sidebars/content live in each page.scss.)
    ============================================================ */
-.docs-shell {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 6rem;
-  display: grid;
-  /* Named areas are the single source of truth for the shell; each child
-     claims its slot via grid-area (sidebar/toc set theirs in their own
-     CSS Modules, the article right below). */
-  grid-template-areas: "sidebar content toc";
-  grid-template-columns: 220px minmax(0, 1fr) 200px;
-  gap: 3rem;
-}
-.docs-content { grid-area: content; }
-@media (max-width: 1024px) {
-  .docs-shell {
-    grid-template-areas: "content";
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2rem;
-  }
-  /* The sidebar/TOC hide themselves in their own CSS Modules (DocsNav /
-     DocsTOC) — a `.docs-sidebar` rule here matched nothing they render. */
-  /* Clear the fixed DocsDock (bottom bar) so it never covers the last
-     lines or the prev/next cards; safe-area for home-indicator phones. */
-  .docs-shell {
-    padding-bottom: calc(7rem + env(safe-area-inset-bottom));
-  }
-}
+/* The docs shell (grid areas, tracks, mobile collapse) lives in
+   src/app/docs/docs-shell.scss — a Sass global, so it can use cia's
+   layout mixins (m.layout / m.area). The sidebar and TOC hide
+   themselves and claim their areas in their own CSS Modules. */
 
 .docs-content { max-width: 680px; }
 .docs-content h1:first-child { margin-top: 0; }

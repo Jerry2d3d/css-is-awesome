@@ -1,0 +1,29 @@
+// ============================================================
+// Docs shell — the three-column docs page layout, expressed with
+// cia's own layout doctrine: named areas via m.layout(), children
+// claiming slots via m.area() (sidebar/TOC do so from their own
+// CSS Modules). Global stylesheet (not a module) because
+// .docs-shell / .docs-content are shared, layout-owned classes.
+// ============================================================
+@use 'mixins' as m;
+@use 'layout' as l;
+
+.docs-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+  @include l.layout((sidebar content toc), $tracks: 220px minmax(0, 1fr) 200px, $gap: 7);
+
+  @include m.media-down(lg) {
+    grid-template-areas: 'content';
+    grid-template-columns: minmax(0, 1fr);
+    gap: m.space(6);
+    /* Clear the fixed DocsDock (bottom bar) so it never covers the last
+       lines or the prev/next cards; safe-area for home-indicator phones. */
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom));
+  }
+}
+
+.docs-content {
+  @include l.area(content);
+}
