@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.2.0...v1.3.0) (2026-09-04)
+
+
+### Features
+
+* **nav:** cia ships mobile navigation - hamburger + drawer, zero JS ([d58f8f1](https://github.com/Jerry2d3d/css-is-awesome/commit/d58f8f15d877b974b978e5b2b3d35122e3f0da0f))
+
 # [1.2.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.1.1...v1.2.0) (2026-09-04)
 
 
