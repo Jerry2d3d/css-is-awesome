@@ -264,7 +264,16 @@ export default function RecipesGallery({ recipes }: { recipes: RecipeCard[] }) {
               <button type="button" className={styles.dashNavTrigger} popoverTarget="dash-nav-menu">
                 Overview <span aria-hidden="true">▾</span>
               </button>
-              <div id="dash-nav-menu" popover="auto" className={styles.dashNavMenu}>
+              <div
+                id="dash-nav-menu"
+                popover="auto"
+                className={styles.dashNavMenu}
+                // Picking a selection closes the menu. Real nav links close it
+                // by navigating; these demo links go nowhere, so hide on click.
+                onClick={(e) => {
+                  if ((e.target as HTMLElement).closest("a")) e.currentTarget.hidePopover();
+                }}
+              >
                 <a href="#" aria-current="page">Overview</a>
                 <a href="#">Projects</a>
                 <a href="#">Team</a>
