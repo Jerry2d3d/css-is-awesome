@@ -71,6 +71,9 @@
     &[popover] {
       inset-inline: m.space(4);        /* fallback: gutters off the viewport */
       min-width: 0;
+      /* The UA's [popover] { width: fit-content } beats the two inset
+         edges — width: auto hands control back to them: full width. */
+      width: auto;
 
       @supports (anchor-name: --a) {
         position-anchor: --dash-nav-trigger;
