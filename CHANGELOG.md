@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.7.0...v1.8.0) (2026-09-04)
+
+
+### Features
+
+* **site:** DataTable restacks into cards on phones ([b114156](https://github.com/Jerry2d3d/css-is-awesome/commit/b11415635c5fdd2f4bf56d44b612ff86d7b1d0c3))
+
 # [1.7.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.6.2...v1.7.0) (2026-09-04)
 
 
