@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.6.1...v1.6.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* **mobile:** width: auto on the dash-nav menu - UA fit-content was ([faafe88](https://github.com/Jerry2d3d/css-is-awesome/commit/faafe88d19fc7df4a600633fcfc249cf0b4815d4))
+
 ## [1.6.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.6.0...v1.6.1) (2026-09-04)
 
 
