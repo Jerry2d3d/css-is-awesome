@@ -1,6 +1,7 @@
 "use client";
 import styles from "./page.module.scss";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import ThemeTile from "@/components/ThemeTile";
 import type { ThemeTileProps } from "@/components/ThemeTile";
 import Link from "next/link";
@@ -96,6 +97,8 @@ export default function ThemeGalleryPage() {
           <Link href="/themes">← Back to theme editor</Link>
         </p>
       </main>
+      {/* Interim: this route still lives outside the (site) shell (dev-server file locks block the move) - the shell provides the footer once it moves in; remove this then. */}
+      <SiteFooter />
     </>
   );
 }

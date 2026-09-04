@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import { getPost, getPostSlugs } from "@/lib/blog";
 import styles from "./page.module.scss";
 
@@ -105,6 +106,8 @@ export default async function BlogPostPage({
           <Link href="/blog">← All posts</Link>
         </p>
       </main>
+      {/* Interim: this route still lives outside the (site) shell (dev-server file locks block the move) - the shell provides the footer once it moves in; remove this then. */}
+      <SiteFooter />
     </>
   );
 }
