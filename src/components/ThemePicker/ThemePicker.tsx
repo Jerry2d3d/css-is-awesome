@@ -40,7 +40,13 @@ function mode(theme: string): "light" | "dark" {
   return ALIAS_MODE[theme] ?? "light";
 }
 
-export default function ThemePicker() {
+export default function ThemePicker({
+  hideAtDockWidths = false,
+}: {
+  // Docs routes ship the DocsDock below 1024px, whose Theme sheet covers
+  // theme switching there — the floating picker bows out at those widths.
+  hideAtDockWidths?: boolean;
+} = {}) {
   const active = useThemeAttribute() ?? "sketchbook-light";
   const activeFamily = family(active);
   const activeMode = mode(active);
@@ -51,7 +57,10 @@ export default function ThemePicker() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={styles.picker} aria-label="Theme picker">
+    <div
+      className={hideAtDockWidths ? `${styles.picker} ${styles.yieldToDock}` : styles.picker}
+      aria-label="Theme picker"
+    >
       <button
         type="button"
         className={styles.toggle}

@@ -58,3 +58,116 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+/* ============================================================
+   SiteHeader — MOBILE ADDITIONS.
+   Append this whole block to the END of
+   src/components/SiteHeader/SiteHeader.module.scss
+   (everything already in that file stays as-is).
+   ============================================================ */
+
+/* hidden state checkbox for the hamburger */
+.menuCheck { display: none; }
+
+/* burger + panel + scrim exist only below the docs breakpoint */
+.burger { display: none; }
+.menuPanel { display: none; }
+.menuScrim { display: none; }
+
+@media (max-width: 1024px) {
+  /* the 8-link row goes away; theme controls stay */
+  .nav { display: none; }
+  .inner { gap: 0.9rem; padding: 0.8rem 1rem; }
+
+  .burger {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-lg);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .burger svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+  .menuCheck:checked ~ .inner .burger {
+    color: var(--ai);
+    border-color: var(--ai);
+  }
+
+  /* brand takes the leftover space */
+  .brand { margin-right: auto; }
+
+  /* scrim under the panel, over the page */
+  .menuScrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 8;             /* under .header's z-index: 10 */
+    background: color-mix(in srgb, var(--ink) 38%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-normal) var(--ease);
+  }
+  .menuCheck:checked ~ .menuScrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* the drop-down site menu — slides out from under the header */
+  .menuPanel {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 9;             /* under the header bar, over the scrim */
+    background: var(--paper-raised);
+    border-bottom: 1px solid var(--hair);
+    box-shadow: var(--shadow-md);
+    padding: 0.9rem 1rem 1.1rem;
+    transform: translateY(-110%);
+    transition: transform var(--duration-normal) var(--ease);
+    visibility: hidden;
+  }
+  .menuCheck:checked ~ .menuPanel {
+    transform: translateY(0);
+    visibility: visible;
+  }
+  .menuPanel ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+  }
+  .menuPanel a {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--hair);
+    border-radius: var(--r-lg);
+    padding: 0.55rem 0.75rem;
+    transition: border-color var(--duration-fast) var(--ease);
+  }
+  .menuPanel a:hover { border-color: var(--ai); }
+  .menuPanel a.isHere {
+    color: var(--paper);
+    background: var(--ai);
+    border-color: var(--ai);
+  }
+
+  /* clip the slide so the panel truly comes from "under" the bar */
+  .header { overflow: visible; }
+}

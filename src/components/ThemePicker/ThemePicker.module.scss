@@ -99,3 +99,11 @@
   .picker { right: m.space(2); bottom: m.space(2); }
   .panel { padding: m.space(2); }
 }
+
+/* Docs routes: below lg (1024px) the DocsDock owns the bottom edge and its
+   Theme sheet replaces this picker — bow out entirely so they never stack. */
+.yieldToDock {
+  @include m.media-down(lg) {
+    display: none;
+  }
+}

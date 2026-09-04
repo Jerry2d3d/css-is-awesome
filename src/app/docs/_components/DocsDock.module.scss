@@ -1,0 +1,171 @@
+/* ============================================================
+   DocsDock — CSS Module (scoped, camelCase classes).
+   Target: src/app/docs/_components/DocsDock.module.scss
+   Mobile-only: the whole component is display:none above 1024px,
+   mirroring the breakpoint where .docs-shell hides the sidebar/TOC.
+   Tokens only — every theme restyles it for free.
+   ============================================================ */
+@use 'mixins' as m;
+
+.root {
+  @include m.print-hidden;
+  display: none;
+}
+@media (max-width: 1024px) {
+  .root { display: contents; }
+}
+
+/* ---- scrim ---------------------------------------------------- */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  background: color-mix(in srgb, var(--ink) 38%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal) var(--ease);
+}
+.scrim.isOpen { opacity: 1; pointer-events: auto; }
+
+/* ---- bottom sheets -------------------------------------------- */
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 59;
+  max-height: 72dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper-raised);
+  border-top: 1px solid var(--hair);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(105%);
+  transition: transform var(--duration-normal) var(--ease);
+  padding-bottom: calc(58px + env(safe-area-inset-bottom)); /* clear the dock */
+}
+.sheet.isOpen { transform: translateY(0); }
+
+.grab {
+  width: 40px;
+  height: 4px;
+  flex: none;
+  margin: 0.55rem auto 0.2rem;
+  border-radius: 999px;
+  background: var(--hair);
+}
+.sheetTitle {
+  flex: none;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-script);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--shu);
+}
+.sheetScroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.2rem 1.2rem 1rem;
+}
+
+/* docs tree inside the sheet — same voice as DocsNav */
+.sheetScroll h4 {
+  font-family: var(--font-script);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--shu);
+  margin: 1.1rem 0 0.3rem;
+  line-height: 1;
+}
+.sheetScroll ul {
+  list-style: none;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  border-left: 1px solid var(--hair-soft);
+  font-family: var(--font-serif);
+}
+.sheetScroll ul a {
+  display: block;
+  padding: 0.5rem 0.9rem;   /* taller than desktop: touch targets */
+  color: var(--ink-soft);
+  border: 0;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  line-height: 1.5;
+}
+.sheetScroll ul a.isActive,
+.sheetScroll ul a[aria-current="page"] {
+  color: var(--ink);
+  border-left-color: var(--ai);
+  font-weight: 600;
+}
+
+/* on-this-page list — flat rows, no rail */
+.tocList {
+  border-left: 0 !important;
+}
+.tocList a {
+  border-left: 0 !important;
+  margin-left: 0 !important;
+  border-bottom: 1px solid var(--hair-soft);
+  padding: 0.55rem 0.4rem;
+}
+.tocList .sub a { padding-left: 1.4rem; font-size: 0.9em; }
+.tocList .empty { color: var(--muted); padding: 0.55rem 0.4rem; }
+
+/* theme sheet */
+.themeRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-top: 0.8rem;
+  padding-bottom: 1.4rem;
+}
+
+/* ---- the dock -------------------------------------------------- */
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: flex;
+  align-items: stretch;
+  background: var(--paper-raised);
+  border-top: 1px solid var(--hair);
+  box-shadow: 0 -4px 18px color-mix(in srgb, var(--ink) 8%, transparent);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.dock button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.55rem 0 0.6rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  transition: color var(--duration-fast) var(--ease);
+}
+.dock button svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.dock button span { font-size: 1.05rem; line-height: 1; }
+.dock button.isActive,
+.dock button[aria-expanded="true"] {
+  color: var(--ai);
+  font-weight: 600;
+}

@@ -33,6 +33,10 @@ export default function LaunchGate({ children }: { children: ReactNode }) {
   // "/themes/" — match both forms to be safe.
   const editorRoute = pathname === "/themes" || pathname === "/themes/";
   const showThemePicker = !editorRoute;
+  // Docs pages ship the DocsDock below 1024px, whose Theme sheet replaces
+  // the floating picker there — hide the picker on those routes at dock
+  // widths so the two never stack in the same corner.
+  const docsRoute = pathname === "/docs" || pathname.startsWith("/docs/");
 
   useEffect(() => {
     let cancelled = false;
@@ -88,7 +92,7 @@ export default function LaunchGate({ children }: { children: ReactNode }) {
             Try the theme picker — the system works even while we're still building the site.
           </p>
         </div>
-        {showThemePicker && <ThemePicker />}
+        {showThemePicker && <ThemePicker hideAtDockWidths={docsRoute} />}
       </div>
     );
   }
@@ -135,7 +139,7 @@ export default function LaunchGate({ children }: { children: ReactNode }) {
         </div>
       )}
       {children}
-      {showThemePicker && <ThemePicker />}
+      {showThemePicker && <ThemePicker hideAtDockWidths={docsRoute} />}
     </>
   );
 }
