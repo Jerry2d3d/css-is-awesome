@@ -1,5 +1,5 @@
 // ============================================================================
-// NAVIGATION — Navbar, Nav, Breadcrumb, Tabs, Pagination
+// NAVIGATION — Navbar, Nav, Breadcrumb, Tabs, Pagination, Hamburger, Drawer
 // ============================================================================
 @use 'sass:map';
 @use '../theme' as t;
@@ -183,4 +183,140 @@
   }
 
   &:disabled, &[disabled] { @include m.disabled; }
+}
+
+// ----------------------------------------------------------------------------
+// HAMBURGER — three-bar menu icon button that morphs into an X when open.
+// ----------------------------------------------------------------------------
+// Zero JavaScript. Pair with a popover drawer: the browser manages
+// aria-expanded on any <button popovertarget="..."> invoker, and the morph
+// keys off that attribute (semantic state lives in ARIA, never a class).
+//
+// Usage (mixin — the primary API):
+//   .menu-button { @include hamburger; }
+//   <button class="menu-button" popovertarget="site-menu" aria-label="Menu">
+//     <span></span><span></span><span></span>
+//   </button>
+//
+// Checkbox fallback (no popover): apply the open-state morph yourself —
+//   .menu-check:checked + .menu-button { @include hamburger-open; }
+//
+// A11y: a real <button>, so focus/Enter/Space are native. Tap target
+// defaults to 44px (WCAG 2.5.8 AAA; the 24px minimum is SC-level).
+
+@mixin hamburger-open {
+  > span:nth-child(1) { translate: 0 var(--cia-bar-shift); rotate: 45deg; }
+  > span:nth-child(2) { opacity: 0; }
+  > span:nth-child(3) { translate: 0 calc(var(--cia-bar-shift) * -1); rotate: -45deg; }
+}
+
+@mixin hamburger(
+  $color: text-primary,
+  $bar-width: 1.375rem,
+  $bar-height: 2px,
+  $gap: 5px,
+  $target: 44px
+) {
+  @include m.button-reset;
+  // Distance each outer bar travels to meet the middle one for the X.
+  --cia-bar-shift: calc(#{$bar-height} + #{$gap});
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $gap;
+  min-width: var(--touch-target-min, #{$target});
+  min-height: var(--touch-target-min, #{$target});
+  border-radius: m.radius(sm);
+  // button-reset strips the outline; a keyboard user must still see focus.
+  @include m.focus-ring;
+
+  > span {
+    display: block;
+    width: $bar-width;
+    height: $bar-height;
+    border-radius: m.radius(full);
+    background: m.color($color);
+    @include m.transition(translate, rotate, opacity);
+  }
+
+  &[aria-expanded="true"] { @include hamburger-open; }
+}
+
+// ----------------------------------------------------------------------------
+// DRAWER — slide-in navigation panel on the native Popover API.
+// ----------------------------------------------------------------------------
+// Zero JavaScript. The element carries the `popover` attribute; any
+// <button popovertarget="..."> opens it. The browser gives light-dismiss
+// (tap outside), Esc-to-close, top-layer stacking, and focus handling —
+// no script tag, no hydration. Popover is Baseline 2024 (Chrome 114,
+// Firefox 125, Safari 17). The slide-in animation rides @starting-style +
+// allow-discrete and degrades to an instant open on older engines.
+//
+// Usage (mixin — the primary API):
+//   .site-drawer { @include drawer; }                    // slides from end
+//   .site-drawer { @include drawer($side: start); }      // nav sidebar
+//   .site-drawer { @include drawer($side: top, $size: auto); }  // menu sheet
+//
+//   <nav id="site-menu" class="site-drawer" popover aria-label="Site menu">
+//     ...links...
+//   </nav>
+//
+// $side is logical (start/end follow reading direction), so RTL works free.
+
+@mixin drawer(
+  $side: end,               // start | end | top | bottom
+  $size: 20rem,             // inline-size (start/end) or block-size (top/bottom)
+  $bg: surface-default,
+  $backdrop: rgba(0, 0, 0, 0.4),
+  $p: 5,
+  $shadow: lg
+) {
+  position: fixed;
+  margin: 0;
+  border: 0;
+  padding: m.space($p);
+  background: m.color($bg);
+  color: m.color(text-primary);
+  box-shadow: m.shadow($shadow);
+  overscroll-behavior: contain;
+  overflow: auto;
+
+  @if $side == start or $side == end {
+    inset-block: 0;
+    block-size: 100%;
+    inline-size: min(#{$size}, 85vw);
+    @if $side == start { inset-inline: 0 auto; --cia-drawer-slide: -100% 0; } @else               { inset-inline: auto 0; --cia-drawer-slide: 100% 0; }
+  } @else {
+    inset-inline: 0;
+    inline-size: 100%;
+    block-size: $size;
+    max-block-size: 85dvh;
+    @if $side == top { inset-block: 0 auto; --cia-drawer-slide: 0 -100%; } @else            { inset-block: auto 0; --cia-drawer-slide: 0 100%; }
+  }
+
+  // Closed state (display:none via popover) exits with a slide; entry
+  // animates from @starting-style. allow-discrete lets `display` wait for
+  // the transition — engines without it simply open/close instantly.
+  translate: var(--cia-drawer-slide);
+  transition:
+    translate 240ms ease,
+    display 240ms ease allow-discrete,
+    overlay 240ms ease allow-discrete;
+
+  &:popover-open {
+    translate: 0 0;
+    @starting-style {
+      translate: var(--cia-drawer-slide);
+    }
+  }
+
+  &::backdrop {
+    background: $backdrop;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
