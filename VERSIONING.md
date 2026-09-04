@@ -114,6 +114,22 @@ A deprecated contract token:
 - `Features` — from `feat:` commits.
 - `Bug Fixes` — from `fix:` commits.
 - `Performance Improvements` — from `perf:` commits.
+
+**Version pace — the number belongs to the PACKAGE, not the website.**
+The docs site lives in this repo but ships nowhere in the npm tarball, so
+site-only work must not spend minor versions. The rules (enforced by a
+`releaseRules` override in `.releaserc.json`, adopted 2026-09-04 after
+site `feat` commits marched 1.1 → 1.8 in a week):
+
+- Library API work (new/changed mixins, tokens, recipes, packaged docs) —
+  normal Conventional Commits semantics: `feat` → minor, `fix` → patch.
+- Site-only work — scope it `(site)` or `(docs-site)`: `feat(site)` is
+  demoted to a **patch**, `fix(site)` patches, `chore`/`docs` don't
+  release at all. Prefer `chore(site)` when nothing packaged changed and
+  no npm release is needed — production deploys come from the
+  `prod-css-is-awesome` branch, not from npm.
+- MAJOR (2.0.0) is reserved for real breaking changes to the public
+  surfaces above — nothing else may reach it.
 - `BREAKING CHANGES` — from `feat!:` / `fix!:` or a `BREAKING CHANGE:` footer.
 
 Each entry links the commit (and any referenced issue / PR numbers) automatically. There is no hand-maintained `Unreleased` section — in-flight changes are simply the commits on `main` that no tag covers yet.
