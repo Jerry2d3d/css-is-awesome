@@ -250,18 +250,35 @@ export default function RecipesGallery({ recipes }: { recipes: RecipeCard[] }) {
       <p>
         A two-column app shell: sidebar nav plus a main content region with a
         KPI row and a stack of cards. Below the <code>md</code> breakpoint the
-        shell restacks to one column and the nav becomes a wrap row above the
-        content — mobile is a different grid, not a squeezed sidebar.
+        shell restacks to one column and the sidebar folds into a dropdown
+        menu (<code>cia.dropdown</code> — zero-JS, browser-managed) — mobile
+        is a different grid, not a squeezed sidebar.
       </p>
       <Example>
         <Example.Preview>
           <div className={styles.dashShell}>
             <nav className={styles.dashNav} aria-label="Dashboard">
-              <a href="#" style={navLinkActiveStyle}>Overview</a>
-              <a href="#" style={navLinkStyle}>Projects</a>
-              <a href="#" style={navLinkStyle}>Team</a>
-              <a href="#" style={navLinkStyle}>Billing</a>
-              <a href="#" style={navLinkStyle}>Settings</a>
+              {/* Mobile: the sidebar folds into a cia.dropdown menu. The
+                  browser manages open state / Esc / outside-tap via the
+                  popover attributes — zero JS. */}
+              <button type="button" className={styles.dashNavTrigger} popoverTarget="dash-nav-menu">
+                Overview <span aria-hidden="true">▾</span>
+              </button>
+              <div id="dash-nav-menu" popover="auto" className={styles.dashNavMenu}>
+                <a href="#" aria-current="page">Overview</a>
+                <a href="#">Projects</a>
+                <a href="#">Team</a>
+                <a href="#">Billing</a>
+                <a href="#">Settings</a>
+              </div>
+              {/* Desktop: the plain vertical list. */}
+              <div className={styles.dashNavList}>
+                <a href="#" style={navLinkActiveStyle}>Overview</a>
+                <a href="#" style={navLinkStyle}>Projects</a>
+                <a href="#" style={navLinkStyle}>Team</a>
+                <a href="#" style={navLinkStyle}>Billing</a>
+                <a href="#" style={navLinkStyle}>Settings</a>
+              </div>
             </nav>
             <div style={{ display: "grid", gap: "var(--space-md)" }}>
               <div style={{ display: "flex", gap: "var(--space-sm)", flexWrap: "wrap" }}>

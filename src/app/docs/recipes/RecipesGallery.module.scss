@@ -1,4 +1,5 @@
 @use 'mixins' as m;
+@use 'components/overlay' as o;
 
 /* Dashboard shell preview — the parts that need a real breakpoint
    (inline styles can't carry media queries). Below md the shell
@@ -20,14 +21,48 @@
 }
 
 .dashNav {
+  @include m.media-down(md) {
+    padding-block-end: m.space(2);
+    border-block-end: 1px solid var(--hair-soft);
+  }
+}
+
+/* Desktop: the plain vertical sidebar list. */
+.dashNavList {
   display: grid;
   gap: 2px;
 
   @include m.media-down(md) {
-    display: flex;
-    flex-wrap: wrap;
+    display: none;
+  }
+}
+
+/* Mobile: a dropdown menu — trigger + cia.dropdown, dogfooding the
+   zero-JS popover dropdown the system ships. */
+.dashNavTrigger {
+  display: none;
+
+  @include m.media-down(md) {
+    @include m.button-reset;
+    @include m.focus-ring;
+    display: inline-flex;
+    align-items: center;
     gap: m.space(1);
-    padding-block-end: m.space(2);
-    border-block-end: 1px solid var(--hair-soft);
+    cursor: pointer;
+    padding: m.space(1) m.space(3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--r-md, 6px);
+    background: var(--paper);
+    color: var(--ink);
+  }
+}
+
+.dashNavMenu {
+  @include m.media-down(md) {
+    @include o.dropdown;
+
+    a {
+      @include o.dropdown-item;
+    }
   }
 }
