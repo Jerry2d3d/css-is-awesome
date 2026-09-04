@@ -318,6 +318,9 @@ export function DataTable<T>(props: DataTableProps<T>) {
                     {columns.map((col) => (
                       <td
                         key={col.id}
+                        // Card view on phones prints this via ::before —
+                        // string headers only; node headers get no label.
+                        data-label={typeof col.header === "string" ? col.header : undefined}
                         className={[col.align && styles[`align-${col.align}`]]
                           .filter(Boolean)
                           .join(" ")}
