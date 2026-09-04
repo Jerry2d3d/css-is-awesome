@@ -1,3 +1,17 @@
+## [1.8.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.8.0...v1.8.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **docs:** full documentation currency sweep - root markdown, site pages, three theme sources ([d64642a](https://github.com/Jerry2d3d/css-is-awesome/commit/d64642ab58c8dbeffb1c205df181115a9a5864d9))
+* **mobile:** docs footer yields to the dock below lg ([65eb664](https://github.com/Jerry2d3d/css-is-awesome/commit/65eb66465a7c5c193bd4f6a0eb5c3b8296ebbbda))
+* **site:** footer on the blog, themes, and docs routes ([1bd98b2](https://github.com/Jerry2d3d/css-is-awesome/commit/1bd98b2356b49a2b8da60abcd4a8d3222fd23c21))
+
+
+### Features
+
+* **site:** GitHub and npm links in the landing nav ([b797625](https://github.com/Jerry2d3d/css-is-awesome/commit/b79762514844ad703c5894a7e32485a9d90b0753))
+
 # [1.8.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.7.0...v1.8.0) (2026-09-04)
 
 
