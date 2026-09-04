@@ -1,0 +1,68 @@
+@use 'mixins' as m;
+@use 'layout' as l;
+
+/* SiteFooter — the shell's footer region. Mirrors the header nav so every
+   page ends with wayfinding (the portfolio pattern: header and footer frame
+   the page). Token-driven throughout; all 24 themes restyle it free. */
+.footer {
+  @include l.page-footer;
+  @include m.print-hidden;
+  border-top: 1px solid m.color(border-default);
+  background: var(--paper);
+  padding: m.space(6) m.space(4) m.space(7);
+}
+
+.inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  @include m.flex($direction: column, $gap: m.space(4));
+}
+
+.nav {
+  @include m.flex($gap: m.space(2) m.space(5), $justify: center, $wrap: wrap);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+}
+
+.nav a {
+  color: var(--ink-faint);
+  border: 0;
+  @include m.transition(color);
+
+  &:hover,
+  &[aria-current="page"] {
+    color: var(--ink);
+  }
+}
+
+.meta {
+  @include m.flex($gap: m.space(3), $justify: center, $wrap: wrap);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+
+  a {
+    color: var(--ink-faint);
+    border: 0;
+    &:hover { color: var(--ai); }
+  }
+}
+
+.signoff {
+  text-align: center;
+  font-family: var(--font-script);
+  font-size: 1.05rem;
+  color: var(--ink-faint);
+  margin: 0;
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ai);
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+}
