@@ -76,6 +76,9 @@
         position-anchor: --dash-nav-trigger;
         inset-inline: anchor(start) anchor(end);  /* = the trigger's width */
         inset-block-start: calc(anchor(end) + #{m.space(1)});
+        /* Always right under the box — unless that would run off the
+           bottom of the screen, then flip to open above it. */
+        position-try-fallbacks: flip-block;
       }
     }
 
