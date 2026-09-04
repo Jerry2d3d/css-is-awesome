@@ -43,9 +43,11 @@
   @include m.media-down(md) {
     @include m.button-reset;
     @include m.focus-ring;
-    /* House rule: on phones, controls take the FULL WIDTH. */
+    /* House rule: things take the space they're in — 100% of the column,
+       inside the page's existing padding. */
     display: flex;
     inline-size: 100%;
+    anchor-name: --dash-nav-trigger;
     align-items: center;
     justify-content: space-between;
     gap: m.space(1);
@@ -61,13 +63,20 @@
 .dashNavMenu {
   @include m.media-down(md) {
     @include o.dropdown;
-    /* Full width on phones (the house rule): the popover is fixed-position
-       (top-layer), so span the viewport with small gutters — its block
-       position still comes from the trigger's flow position. Must match
+    /* House rule: the menu takes the space it's IN — the width of its
+       trigger's column, not the viewport. The popover is top-layer
+       (fixed), so container width comes from CSS anchor positioning;
+       engines without it fall back to viewport-minus-gutters. Must match
        the mixin's &[popover] specificity or its inset: unset wins. */
     &[popover] {
-      inset-inline: m.space(4);
+      inset-inline: m.space(4);        /* fallback: gutters off the viewport */
       min-width: 0;
+
+      @supports (anchor-name: --a) {
+        position-anchor: --dash-nav-trigger;
+        inset-inline: anchor(start) anchor(end);  /* = the trigger's width */
+        inset-block-start: calc(anchor(end) + #{m.space(1)});
+      }
     }
 
     a {
