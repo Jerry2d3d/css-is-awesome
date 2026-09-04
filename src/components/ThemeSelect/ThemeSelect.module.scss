@@ -86,6 +86,9 @@
   font-family: var(--font-sans);
   font-size: 0.9rem;
 
+  /* A dropdown, not a popup: it opens just under the header where the
+     trigger lives, right-aligned, on every screen size. No backdrop dim —
+     light-dismiss still closes it on any outside tap. */
   inset: auto;
   top: 4.25rem;             /* just under the sticky header bar */
   right: m.space(4);
@@ -96,21 +99,9 @@
     display: flex;
   }
 
-  &::backdrop {
-    background: color-mix(in srgb, var(--ink) 25%, transparent);
-  }
-
   @include m.media-down(lg) {
-    /* Bottom sheet: full width, thumb reach, safe-area padding. */
-    top: auto;
-    inset-inline: 0;
-    bottom: 0;
-    min-width: 0;
-    border-radius: var(--r-lg, 12px) var(--r-lg, 12px) 0 0;
-    border-inline: 0;
-    border-bottom: 0;
-    padding: m.space(3) m.space(4) calc(#{m.space(4)} + env(safe-area-inset-bottom));
-    gap: m.space(1);
+    top: 3.8rem;            /* the mobile bar is a touch shorter */
+    right: m.space(2);
   }
 }
 
