@@ -40,7 +40,10 @@
 }
 
 .triggerIcon {
-  font-size: 1rem;
+  width: 1.2em;
+  height: 1.2em;
+  display: block;
+  flex: none;
 }
 
 /* Chevron — two tiny gradient triangles, follows ink via currentColor. */

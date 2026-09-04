@@ -70,6 +70,21 @@
   grid-template-columns: 1fr 1fr;
   gap: 4px;
 }
+/* The palette icon: sized by context — larger in the disc, inline in
+   the panel label. */
+.paletteIcon {
+  width: 1.35em;
+  height: 1.35em;
+  display: block;
+  flex: none;
+}
+.label .paletteIcon {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.25em;
+}
+
 /* Scoped to the theme buttons only — `.picker button` also caught the
    collapse toggle, and its `all: unset` outranked the toggle's own
    `display: none` (class+element beats lone class), leaking the disc

@@ -1,6 +1,7 @@
 "use client";
 import { useId } from "react";
 import styles from "./ThemeSelect.module.scss";
+import PaletteIcon from "@/components/PaletteIcon";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
 // Compact theme-family picker for the global header. Pairs with
@@ -61,7 +62,7 @@ export default function ThemeSelect() {
     return (
       <span className={styles.wrap}>
         <button type="button" className={styles.trigger} disabled aria-hidden="true" tabIndex={-1}>
-          <span className={styles.triggerIcon} aria-hidden="true">🎨</span>
+          <PaletteIcon className={styles.triggerIcon} />
           <span className={styles.triggerLabel}>Theme</span>
           <span className={styles.chevron} aria-hidden="true" />
         </button>
@@ -88,7 +89,7 @@ export default function ThemeSelect() {
         aria-label="Choose theme family"
         title="Choose theme family"
       >
-        <span className={styles.triggerIcon} aria-hidden="true">🎨</span>
+        <PaletteIcon className={styles.triggerIcon} />
         <span className={styles.triggerLabel}>{currentLabel}</span>
         <span className={styles.chevron} aria-hidden="true" />
       </button>
