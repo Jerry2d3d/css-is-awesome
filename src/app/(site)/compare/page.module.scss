@@ -1,3 +1,5 @@
+@use 'mixins' as m;
+
 /* Compare page (/compare) — co-located styles. */
 .shell {
   max-width: 1100px;
@@ -39,6 +41,51 @@
 .tableWrap {
   overflow-x: auto;
   margin-bottom: 4rem;
+}
+
+/* ------------------------------------------------------------
+   Phones: the 4-column table restacks into cards — one card per
+   feature, with each library as a labeled line. The labels come
+   from data-label on the cells; the thead goes away entirely.
+   ------------------------------------------------------------ */
+@include m.media-down(md) {
+  .table thead {
+    display: none;
+  }
+  .table,
+  .table tbody {
+    display: block;
+  }
+  .table tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-md, 8px);
+    background: var(--paper-raised);
+    padding: 0.9rem 1rem;
+  }
+  .table tbody th {
+    display: block;
+    border-bottom: 1px solid var(--hair-soft);
+    padding: 0 0 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+  .table tbody td {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: baseline;
+    border-bottom: 0;
+    padding: 0.35rem 0;
+  }
+  .table tbody td::before {
+    content: attr(data-label);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
 }
 .subhead {
   font-family: var(--font-display);
