@@ -24,14 +24,20 @@ function sectionOf(path: string): string {
   return path.split("/").filter(Boolean)[0] ?? "";
 }
 
-export default function SiteFooter() {
+export default function SiteFooter({
+  hideAtDockWidths = false,
+}: {
+  // Docs routes ship the DocsDock below 1024px — the dock owns the bottom
+  // edge there, so the footer bows out at those widths.
+  hideAtDockWidths?: boolean;
+} = {}) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const current = mounted ? sectionOf(pathname) : "";
 
   return (
-    <footer className={styles.footer}>
+    <footer className={hideAtDockWidths ? `${styles.footer} ${styles.yieldToDock}` : styles.footer}>
       <div className={styles.inner}>
         <nav className={styles.nav} aria-label="Footer">
           {NAV.map((item) => (

@@ -4,6 +4,14 @@
 /* SiteFooter — the shell's footer region. Mirrors the header nav so every
    page ends with wayfinding (the portfolio pattern: header and footer frame
    the page). Token-driven throughout; all 24 themes restyle it free. */
+/* Docs routes: below lg the DocsDock owns the bottom edge — the footer
+   bows out entirely at those widths. */
+.yieldToDock {
+  @include m.media-down(lg) {
+    display: none;
+  }
+}
+
 .footer {
   @include l.page-footer;
   @include m.print-hidden;

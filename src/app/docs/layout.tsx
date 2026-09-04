@@ -26,8 +26,8 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         <DocsTOC />
       </div>
       <DocsDock />
-      {/* Interim: this route still lives outside the (site) shell (dev-server file locks block the move) - the shell provides the footer once it moves in; remove this then. */}
-      <SiteFooter />
+      {/* Interim: this route still lives outside the (site) shell (dev-server file locks block the move) - the shell provides the footer once it moves in; remove this then. Below lg the DocsDock owns the bottom edge, so the footer hides there. */}
+      <SiteFooter hideAtDockWidths />
     </>
   );
 }
