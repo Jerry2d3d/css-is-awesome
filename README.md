@@ -8,7 +8,7 @@
 
 **Docs:** [jerry2d3d.github.io/css-is-awesome](https://jerry2d3d.github.io/css-is-awesome/) · **Install:** `npm install css-is-awesome`
 
-> **Shipped in 1.0.0:** a **recipes book** for building any component in any framework using cia mixins — `dialog`, `combobox` and `print-to-pdf` today, with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://jerry2d3d.github.io/css-is-awesome/docs/recipes/).
+> **Shipped in 1.0.0:** a **recipes book** for building any component in any framework using cia mixins — five recipes today (`dialog`, `combobox`, `print-to-pdf`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://jerry2d3d.github.io/css-is-awesome/docs/recipes/).
 
 ## For AI agents — start here
 
@@ -59,7 +59,7 @@ npm install -D sass
 <link rel="stylesheet" href="/cia/themes/boilerplate/theme.css">
 ```
 
-Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button` — plus print-to-PDF via a pure-CSS `@media print` layer. Full reference at [`/docs/mixins`](https://jerry2d3d.github.io/css-is-awesome/docs/mixins/).
+Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button` — plus the mobile navigation family (`hamburger`, `drawer`, `sheet`, `dock`) and print-to-PDF via a pure-CSS `@media print` layer. Full reference at [`/docs/mixins`](https://jerry2d3d.github.io/css-is-awesome/docs/mixins/).
 
 **Two imports, two jobs.** Emit the tokens once from your root/global stylesheet (`@use 'css-is-awesome';` or `<link>` a theme file), then import the **zero-emit authoring barrel** in each component stylesheet:
 
@@ -202,7 +202,9 @@ Missing font files don't error, so a silent tofu box is the failure mode. If you
 
 cia ships **no component library** — deliberately. Interactive patterns arrive as *recipes*: portable markdown files at [`scss/recipes/`](./scss/recipes/) that give you the correct HTML, the `cia.X` mixin calls to style it, and an a11y checklist graded against WCAG 2.2 AA. Copy the pattern into your own framework; you own the component, cia owns the styling and the accessibility homework.
 
-**Shipped:** `dialog`, `combobox`, `print-to-pdf`. Queued next: `datepicker`, `data-table`, `command-palette`.
+**Shipped:** `dialog`, `combobox`, `print-to-pdf`, `mobile-nav`, `bottom-nav`. Queued next: `datepicker`, `data-table`, `command-palette`.
+
+**Mobile navigation is system API, not an exercise for the reader.** Four mixins — `cia.hamburger`, `cia.drawer`, `cia.sheet`, `cia.dock` — cover both phone layouts: the **flex layout** (one fluid nav/main/footer shell that reshapes with the screen, hamburger opening a slide-in drawer — recipe [`mobile-nav`](./scss/recipes/mobile-nav.md)) and the **app layout** (a fixed bottom dock whose slots open slide-up sheets — recipe [`bottom-nav`](./scss/recipes/bottom-nav.md)). Zero JavaScript: everything rides CSS Grid and the native Popover API — the browser owns open state, `aria-expanded`, Esc and light dismiss. The docs site dogfoods the app layout on phones.
 
 Humans read them at [`/docs/recipes`](https://jerry2d3d.github.io/css-is-awesome/docs/recipes/); AI agents pull them over MCP with `list_recipes` / `get_recipe`.
 

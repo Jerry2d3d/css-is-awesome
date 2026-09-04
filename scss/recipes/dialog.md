@@ -251,6 +251,26 @@ Override `.my-dialog` with `inset-inline-end: 0; margin-inline: auto 0; block-si
 
 cia's built-in keyframes are small entrance nudges, so a full-width drawer needs its own `@keyframes`. If an 8px slide is enough, skip the custom keyframe and use `@include cia.animate(slide-left);` — it reads the same duration/easing tokens and handles `prefers-reduced-motion` for you.
 
+### Bottom sheet on phones
+
+At phone widths a centered modal can feel cramped; the mobile-app convention is a bottom sheet. `cia.sheet` gives `<dialog>` the sheet's **box styling** — full-width at the bottom edge, 72dvh height cap, rounded shoulders, home-indicator safe-area padding — but its slide-up motion is built for `[popover]` elements: both the entry transition and the closed-state off-screen offset key on `:popover-open`, which a `<dialog>` never matches. So on `<dialog>` you must reset that offset for the `[open]` state, and the sheet opens in place instead of sliding:
+
+```scss
+.my-dialog {
+  @include cia.modal;
+
+  @include cia.media-down(md) {
+    @include cia.sheet;          // box styles only on <dialog> — see note above
+
+    &[open] {
+      translate: 0 0;            // undo the sheet's :popover-open-keyed offset
+    }
+  }
+}
+```
+
+If the slide-up entrance matters to you, use a `[popover]` element with the `bottom-nav` recipe's sheet pattern instead of `<dialog>` — you trade `.showModal()`'s focus trap for light dismiss and the full animation.
+
 ## Pitfalls
 
 - **Form inside dialog with another method:** Setting `<form method="get">` etc. inside a `<dialog>` breaks the native close-on-submit. Either nest a separate `<form method="dialog">` around the close buttons OR handle submission explicitly with `event.preventDefault()` + `dialogEl.close()`.
@@ -261,5 +281,6 @@ cia's built-in keyframes are small entrance nudges, so a full-width drawer needs
 ## Related recipes
 
 - [`bare-tags`](./_bare-tags.scss) — base bare `<dialog>` styling that applies if you skip a custom class name
+- `bottom-nav` — slide-up sheets on `[popover]` with the full animation; the alternative named in the bottom-sheet variant above
 - (planned v1.1) `command-palette.md` — Cmd+K palette built on `<dialog>` + combobox pattern
 - (planned v1.1) `toast.md` — non-modal transient notifications (`[popover]` based)

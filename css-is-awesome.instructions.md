@@ -467,8 +467,8 @@ Components call `cia.space(4)` → `var(--space-4)`. The t-shirt names previousl
 ## Recipes — build a component without a component library
 
 cia ships **no component library on purpose**. When you need an interactive
-pattern (dialog, combobox, print-to-PDF), read the matching *recipe* instead of
-inventing markup or reaching for a dependency.
+pattern (dialog, combobox, print-to-PDF, mobile navigation), read the matching
+*recipe* instead of inventing markup or reaching for a dependency.
 
 A recipe is a markdown file at `scss/recipes/<name>.md` carrying:
 
@@ -477,8 +477,13 @@ A recipe is a markdown file at `scss/recipes/<name>.md` carrying:
 - an a11y checklist graded against WCAG 2.2 AA
 - framework-neutral notes so it ports to React / Vue / Svelte / vanilla
 
-**Shipped today:** `dialog`, `combobox`, `print-to-pdf`. Queued next:
-`datepicker`, `data-table`, `command-palette`.
+**Shipped today:** `dialog`, `combobox`, `print-to-pdf`, `mobile-nav`,
+`bottom-nav`. Queued next: `datepicker`, `data-table`, `command-palette`.
+
+The two mobile recipes ride the `hamburger` / `drawer` / `sheet` / `dock`
+mixin family — zero JS on the native Popover API. `mobile-nav` is the flex
+layout (fluid shell + hamburger drawer); `bottom-nav` is the app layout
+(bottom dock + slide-up sheets).
 
 How to reach them:
 
