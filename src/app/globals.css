@@ -221,7 +221,8 @@ hr,
 }
 @media (max-width: 1024px) {
   .docs-shell { grid-template-columns: 1fr; gap: 2rem; }
-  .docs-sidebar, .docs-toc { display: none; }
+  /* The sidebar/TOC hide themselves in their own CSS Modules (DocsNav /
+     DocsTOC) — a `.docs-sidebar` rule here matched nothing they render. */
   /* Clear the fixed DocsDock (bottom bar) so it never covers the last
      lines or the prev/next cards; safe-area for home-indicator phones. */
   .docs-shell {

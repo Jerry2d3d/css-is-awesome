@@ -1,8 +1,16 @@
+@use 'mixins' as m;
+
 .toc {
   font-size: 0.9rem;
   align-self: start;
   position: sticky;
   top: 5rem;
+
+  /* Below lg the DocsDock's "This page" sheet takes over — the old globals
+     rule targeted `.docs-toc`, a class this component never renders. */
+  @include m.media-down(lg) {
+    display: none;
+  }
 }
 .toc h5 {
   font-family: var(--font-script);
