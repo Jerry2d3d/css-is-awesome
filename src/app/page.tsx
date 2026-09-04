@@ -30,6 +30,8 @@ export default function Home() {
             <Link href="/examples">Examples</Link>
             <Link href="/blog">Blog</Link>
             <Link href="/about">About</Link>
+            <a href="https://github.com/Jerry2d3d/css-is-awesome">GitHub</a>
+            <a href="https://www.npmjs.com/package/css-is-awesome">npm</a>
           </nav>
 
           <p className={styles.tagline}>Bring your own selectors. We bring the design system.</p>
