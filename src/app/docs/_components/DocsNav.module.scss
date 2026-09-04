@@ -1,21 +1,61 @@
 @use 'mixins' as m;
 @use 'layout' as l;
 
+/* The selections rail. A control-dense region, so it's a grid of its
+   own (the doctrine scales inward): filter row + scrollable list row.
+   Sticky under the top nav — the sticky math reads the one source of
+   truth for the nav's height (--nav-height, globals.css). */
 .sidebar {
   @include l.area(sidebar);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: m.space(3);
   font-size: 0.9rem;
   align-self: start;
   position: sticky;
-  top: 5rem;
+  top: calc(var(--nav-height, 4rem) + m.space(4));
+  /* The rail never exceeds the viewport under the nav; long lists
+     scroll INSIDE the rail (the page scrolls, the rail stays put). */
+  max-block-size: calc(100dvh - var(--nav-height, 4rem) - #{m.space(4)} * 2);
 
   /* Below lg (1024px) the DocsDock's Docs sheet takes over — without this
-     the sidebar stacked full-length above the article on phones. (The old
-     globals rule hid `.docs-sidebar`, a class this component never renders.) */
+     the sidebar stacked full-length above the article on phones. */
   @include m.media-down(lg) {
     display: none;
   }
 }
-.sidebar h4 {
+
+.filter {
+  inline-size: 100%;
+  height: var(--control-h, 2.25rem);
+  padding-inline: 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 6px);
+  @include m.transition(border-color);
+
+  &:focus-visible {
+    outline: 2px solid var(--ai);
+    outline-offset: 2px;
+  }
+
+  &::placeholder {
+    color: var(--ink-faint);
+  }
+}
+
+.scroll {
+  overflow-y: auto;
+  min-block-size: 0;
+  overscroll-behavior: contain;
+}
+
+/* Category headings — h2 for real landmark semantics; the script-font
+   look is unchanged from the old h4s. */
+.sidebar h2 {
   font-family: var(--font-script);
   font-size: 1.25rem;
   font-weight: 600;
@@ -25,7 +65,7 @@
   text-transform: none;
   line-height: 1;
 }
-.sidebar h4 + ul { margin-bottom: 1.75rem; }
+.sidebar h2 + ul { margin-bottom: 1.75rem; }
 .sidebar ul {
   list-style: none;
   padding: 0;
@@ -45,8 +85,17 @@
   text-decoration: none;
 }
 .sidebar a:hover { color: var(--ink); }
-.sidebar a.isActive {
+/* State lives on attributes — the active link is [aria-current="page"]
+   (+ data-active), never a class. */
+.sidebar a[aria-current='page'] {
   color: var(--ink);
   border-left-color: var(--ai);
   font-weight: 600;
+}
+
+.empty {
+  margin: 0;
+  color: var(--ink-faint);
+  font-family: var(--font-serif);
+  font-style: italic;
 }

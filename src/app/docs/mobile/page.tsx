@@ -25,14 +25,39 @@ export default function DocsMobilePage() {
         covers both, plus the doctrine and lessons behind them.
       </p>
 
-      <h2 id="doctrine">The doctrine: named grid areas</h2>
+      <h2 id="doctrine">The doctrine: Grid is the skeleton, Flex is the quick moves</h2>
       <p>
-        Pages in cia stack by <code>grid-template-areas</code>.{" "}
-        <strong>Mobile is a different area map, not margin overrides.</strong>{" "}
-        Instead of fighting each region with per-breakpoint margins, widths
-        and floats, you declare where every region sits at each width — the
-        browser does the rest. <code>cia.page-layout()</code> gives you the
-        full-viewport shell with one include:
+        Three levels, strictly:
+      </p>
+      <ol>
+        <li>
+          <strong>The page shell is CSS Grid with landmark-named areas</strong> —
+          the body&apos;s areas <em>are</em> the document&apos;s landmarks
+          (<code>nav</code>, <code>main</code>, <code>footer</code>), so the
+          area map reads like the page and screen readers get the structure
+          for free.
+        </li>
+        <li>
+          <strong>The doctrine scales inward</strong> — any control-dense
+          region (a docs article, a selections rail, a dashboard) gets its own
+          named-area grid, and that grid&apos;s <code>gap</code> is the
+          region&apos;s entire vertical rhythm. No child carries rhythm
+          margins.
+        </li>
+        <li>
+          <strong>Flex lives at the leaves</strong> — simple rows you flip
+          with one command
+          (<code>{"@include cia.flex($direction: column)"}</code>). Flex
+          arranges the contents of a slot the grid gave it; it never builds
+          the page.
+        </li>
+      </ol>
+      <p>
+        And the mobile consequence:{" "}
+        <strong>mobile is a different area map, not margin overrides.</strong>{" "}
+        You declare where every region sits at each width — the browser does
+        the rest. <code>cia.page-layout()</code> gives you the full-viewport
+        shell with one include:
       </p>
       <Example>
         <Example.Code>{`@use 'css-is-awesome/api' as cia;

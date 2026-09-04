@@ -20,6 +20,12 @@
      because one was sized by padding and the other by a fixed square. */
   --control-h: 2.25rem;
 
+  /* The top nav's height — ONE source of truth. The docs rail's and TOC's
+     sticky math read it (top: calc(--nav-height + gap); max-block-size:
+     calc(100dvh - --nav-height - gaps)); anything else that offsets
+     against the header must read it too, never a hand-typed 64px. */
+  --nav-height: 4rem;
+
   /* Spacing t-shirt aliases — safety net for the theme bundle.
      The theme contract requires only the numbered scale (--space-0 …
      --space-9); the t-shirt names are optional, and 21 of the 24 bundled
