@@ -1,3 +1,16 @@
+## [1.1.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.1.0...v1.1.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **mobile:** breathing room for page text on phones ([c22bf77](https://github.com/Jerry2d3d/css-is-awesome/commit/c22bf7769784bb5ac3a746e93783b29c90161f69))
+* **mobile:** clear the theme-picker disc at the foot of the landing page ([800e3dc](https://github.com/Jerry2d3d/css-is-awesome/commit/800e3dc2050ca4ba4a7fcee137c53f6e3f9abb45))
+* **mobile:** collapse the theme picker below sm, not md ([01383d8](https://github.com/Jerry2d3d/css-is-awesome/commit/01383d8e131b34c733eb240b36fd5ef26165942a))
+* **mobile:** front page - stamp anchored, stats stacked, nav wraps ([04d85fc](https://github.com/Jerry2d3d/css-is-awesome/commit/04d85fc725c2b395c0a9d8f57db8e9dbea297049))
+* **mobile:** theme picker collapses to a corner disc on phones ([6338c11](https://github.com/Jerry2d3d/css-is-awesome/commit/6338c11e4b62863c2f63b6de08ecb8ca4274ae75))
+* **mobile:** toggle no longer leaks into desktop - scope button reset to the row ([4e9e439](https://github.com/Jerry2d3d/css-is-awesome/commit/4e9e439839e104a779708a2e66e978562ea7ee72))
+* **mobile:** use real spacing-scale keys; palette icon joins the theme box ([1c7a331](https://github.com/Jerry2d3d/css-is-awesome/commit/1c7a331d9bd6cd702bb60de060654eb563ac3191))
+
 # [1.1.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.0.0...v1.1.0) (2026-09-01)
 
 
