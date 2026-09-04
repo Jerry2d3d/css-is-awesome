@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import { getPostIndex } from "@/lib/blog";
 import styles from "./page.module.scss";
 
@@ -76,6 +77,8 @@ export default function BlogPage() {
           </section>
         )}
       </main>
+      {/* Interim: this route still lives outside the (site) shell (dev-server file locks block the move) - the shell provides the footer once it moves in; remove this then. */}
+      <SiteFooter />
     </>
   );
 }

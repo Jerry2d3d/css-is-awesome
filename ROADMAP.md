@@ -138,7 +138,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [ ] Sections: Tokens (color/spacing/type grids — DONE), Utilities (searchable table — TODO), Mixins API (TODO), Migration from Bootstrap (started; needs polish).
 - [x] Live color swatches, spacing visualizers, type scale preview — `/docs/tokens` reads `getComputedStyle` after mount and re-resolves on theme swap via `useThemeAttribute`.
 - [x] Copy-to-clipboard code snippets — every `<Example.Code>` has a Copy button (CopyButton client island, secure-context fallback to execCommand).
-- [ ] Deploy to the external host + link from README + `package.json` `homepage` (Pages workflow exists; live URL not yet linked from README).
+- [x] Deploy to the external host + link from README — done: GitHub Pages mirror live and linked, and production at https://cssisawesome.com on Vercel since 2026-09-04 (deploys from the `prod-css-is-awesome` branch).
 
 ### New pages
 - [x] **`/themes` gallery** — all 6 themes with live-swap preview + download per tile. Uses `ThemeTile` component. (Now at `/themes/gallery`; `/themes` is the editor.)
@@ -265,9 +265,10 @@ out-of-date copy that contradicts the rest of the site. Fix the
 content before doing any CSS work on these files so the dogfood
 pass doesn't restyle copy that's about to be replaced.
 
-**`/blog`** — All 7 posts are fiction with `href="#"`. Dates run
-Feb–Apr 2026 and excerpts read like real posts that don't exist.
-Decide:
+**`/blog`** — *Resolved 2026-08-17: a real markdown-driven `/blog` +
+`/blog/[slug]` shipped with 7 posts written from the commit history
+(see Phase 5.95) — effectively Path A, all seven.* Original decision
+for the record:
 - [ ] **Path A — Ship a subset for real.** Pick 2-3 of the 7 drafted
   topics ("Why the overflow stays", "Five voices, one system",
   "Planning a CLI and an MCP server" are the strongest hooks) and
@@ -341,7 +342,7 @@ docs-site quality only.
 
 ## Phase 5.95 — Post-1.0 hardening (2026-08-17 → 08-18)
 
-**v1.0.0 was cut 2026-08-17** (`253610a`, tagged) at 24 of 42 stories, deliberately: no external users yet, so the SemVer commitment cost nothing. **Not published to npm** — the `@1` CDN URLs will 404 until it is.
+**v1.0.0 was cut 2026-08-17** (`253610a`, tagged) at 24 of 42 stories, deliberately: no external users yet, so the SemVer commitment cost nothing. **First published to npm 2026-09-01**; semantic-release has cut every version since (the current one is always the `version` field of `package.json` — never hand-type it).
 
 What the cut surfaced, in the order it hurt:
 
@@ -353,13 +354,15 @@ What the cut surfaced, in the order it hurt:
 - [x] **Visual baselines stale since 2026-05-03**, keeping CI red. Keyed by `{platform}`, win32 set regenerated. **Linux set still needs one manual run of the "Update visual snapshots" workflow.**
 - [x] Release friction: `pack:consumer` collapses the three-step pack → re-pin → install dance into one command.
 
-**Still open:** publish to npm; run the snapshot workflow once to green CI; the 18 remaining v1.0 stories (Playground is 0/7).
+**Still open:** run the snapshot workflow once to create the linux baseline set; the remaining v1.0 stories (Playground is 0/7). ~~Publish to npm~~ — done 2026-09-01.
 
 ---
 
 ## Phase 5.9 — v1.0 Lockdown (recipes-first)
 
 **Locked 2026-05-23** after long architecture synthesis (panel review + Gemini external read + Jerry instinct refinement).
+
+> **Status 2026-09-04:** v1.0.0 cut 2026-08-17, first npm publish 2026-09-01; releases continue via semantic-release. The sprint checklist below is preserved as written — unchecked items are genuinely still open (see the "Definition of the best" list for per-item status).
 
 **Goal:** Ship v1.0 as a humans-first design system whose AI-friendliness is the bonus. Five tracks, ~42 user stories, ~18-26 working days.
 
@@ -412,11 +415,11 @@ See [`roadmap/epics/v1-0/post-v1-ideas.md`](./roadmap/epics/v1-0/post-v1-ideas.m
 
 ### Definition of "the best out there" after this sprint
 
-- [ ] Migration CLI handles real Tailwind + Bootstrap configs end-to-end
-- [ ] 11+ recipes shipped across overlay / input / data / navigation / feedback
+- [x] Migration CLI handles real Tailwind + Bootstrap configs end-to-end (`npx cia migrate` shipped)
+- [ ] 11+ recipes shipped across overlay / input / data / navigation / feedback (5 shipped as of 2026-09-04: dialog, combobox, print-to-pdf, mobile-nav, bottom-nav)
 - [ ] `/playground` functional in-browser; every recipe page links to a starter URL
 - [ ] Inline contrast validator runs live in the theme editor
-- [ ] First 3 blog posts published with citations + dated decision receipts
+- [x] Blog shipped for real — markdown-driven `/blog` with 7 posts written from the commit history (2026-08-17)
 - [ ] boilerplate-slim ships React + Angular + HTML (34 each)
 - [ ] `/showcase` rebuilt + `/docs/migrate-from-shadcn` guide published
 - [ ] Boiler dogfoods cia + ≥5 external testers have built something real
@@ -483,7 +486,7 @@ The original Phase 6 ("Ecosystem v1.1+") below describes legacy items some of wh
 - [x] GitHub Action: CI (build + lint), Release (semver + npm publish + changelog) — semantic-release wired up since v0.7.
 - [x] Badge suite in README (npm version, license, semantic-release) — shipped.
 - [x] Contribution guide + issue templates — `CONTRIBUTING.md` + `CONTRIBUTING-THEMES.md` shipped.
-- [ ] TypeScript token definitions (`tokens.d.ts`) — type-safe token access from JS
+- [x] TypeScript token definitions (`tokens.d.ts`) — shipped; generated from the contract via `npm run build:token-types`, exported as `css-is-awesome/tokens.d.ts`
 - [ ] PostCSS plugin for tree-shaking unused utilities
 - [ ] Starter templates: plain HTML, Vite, Next.js, Astro
 - [ ] Storybook or Ladle instance — lives in Gremlin UI's repo, not here (see Phase 8).
@@ -494,11 +497,11 @@ The original Phase 6 ("Ecosystem v1.1+") below describes legacy items some of wh
 
 **Goal:** Move from "another design system" to "the obvious choice for SCSS-first teams who want zero-JS theming." Items from the Gemini critique that widen the moat once the foundations are stable.
 
-- [ ] **Zero-JS interactive components** — tabs, accordion, modal, popover, tooltip built on `:has()`, the popover API, and `@container`. Biggest moat vs shadcn — they need a runtime, we don't.
+- [x] **Zero-JS interactive components** — shipped in v0.8/v1.0: accordion, modal, tooltip, dropdown, tabs, copy-button on `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`; plus the mobile navigation family (hamburger / drawer / sheet / dock, 2026-08). Biggest moat vs shadcn — they need a runtime, we don't.
 - [x] **A11y linter inside `theme-validator.js`** — WCAG 2.2 AA contrast checks on 17 token pairs per theme. **FAIL-by-default as of v0.7** (commit `4e1bbf1`, 2026-05-11) after triaging every theme; zero FAILs across all 22 theme blocks. `--allow-a11y-fail` opts out; `--strict` is retained as a no-op alias for backwards compat. `--border-default` is treated as decorative (informational only) per WCAG 2.2 SC 1.4.11.
-- [ ] **SCSS↔TS token bridge** — generate `tokens.d.ts` from the contract so consumers get type-safe token access in JS/TS.
-- [ ] **Intrinsic layout mixins** — stack/cluster/switcher (Every Layout patterns) as first-class mixins so consumers stop hand-rolling flex utilities.
-- [ ] **Tailwind→Awesome migration CLI** — parses Tailwind class strings in a project and suggests `cia-*` utility or mixin equivalents; lowest-friction path for migrants.
+- [x] **SCSS↔TS token bridge** — shipped: `npm run build:token-types` generates `dist/tokens.d.ts` from the contract.
+- [x] **Intrinsic layout mixins** — shipped in the v1.0 surface: `stack` / `cluster` / `switcher` / `sidebar` as first-class mixins.
+- [x] **Tailwind→Awesome migration CLI** — shipped as `npx cia migrate tailwind` (config-level conversion into a cia theme; the class-string-scanning variant described here was not built).
 - [ ] **Component depth audit** — catalog gaps vs Bootstrap (modal, toast, popover, tooltip, accordion, breadcrumb, pagination, badge, avatar, dropdown, offcanvas) and prioritize zero-JS implementations.
 
 ---
@@ -541,9 +544,9 @@ Naming "Gremlin UI" / "Gremlin Components" / "Companion Boilerplate" — all ret
 
 1. ~~**Utility naming:** stay close to Bootstrap (`.p-3`) or Tailwind-like (`.p-md`)?~~ **Decided:** Tailwind-style (`.cia-p-md`) with `cia-` prefix.
 2. ~~**Namespace:** should utilities be prefixed?~~ **Decided:** yes, `cia-` on everything.
-3. **Default CSS output:** include utilities by default or opt-in? Still open.
-4. **Browser support target:** modern evergreen only, or include a legacy build? Still open.
-5. **Sizing scale:** refactor `xs/sm/md/lg/xl/2xl/3xl/4xl` → numbered `1–9` with aliases? **Pending — blocks the theme token contract.**
+3. ~~**Default CSS output:** include utilities by default or opt-in?~~ **Decided (v0.8):** opt-in on the Sass path (`$utilities: true`); pre-built CDN bundles still ship every utility.
+4. **Browser support target:** modern evergreen only, or include a legacy build? Still open (in practice: modern evergreen — the system leans on `light-dark()`, `:has()`, `[popover]`).
+5. ~~**Sizing scale:** refactor `xs/sm/md/lg/xl/2xl/3xl/4xl` → numbered `1–9` with aliases?~~ **Decided (locked 2026-05-04):** numbered scale is the source of truth; t-shirt names are optional aliases.
 
 ---
 
@@ -567,12 +570,12 @@ Items 1-13, 15, 16, the a11y linter triage, and the theme-editor import round-tr
 19. ~~A11y linter triage~~ — done 2026-05-11 (commit `4e1bbf1`). Zero FAILs across all 22 theme blocks. `--border-default` reclassified as decorative (info status) per WCAG 2.2 SC 1.4.11. Validator now FAILs by default; `--allow-a11y-fail` opts out; `--strict` retained as a no-op alias.
 20. ~~Theme-editor import~~ — upload `.css` to keep editing landed 2026-05-12 (uncommitted on `main`; round-trips a previously-downloaded theme file).
 
-### Open / next up — Phase 5 is the live gate
+### Open / next up — Phase 5 was the live gate (since resolved)
 
-**Phase 5 (publish v0.7) is the correct next step.** A11y is at zero FAILs, validator is FAIL-by-default, tarball is clean, boilerplate theme + Lucide icons ship, theme editor round-trips. Only the publish command itself + a downstream smoke install remain.
+**Phase 5 (publish v0.7) was the correct next step at the time.** A11y is at zero FAILs, validator is FAIL-by-default, tarball is clean, boilerplate theme + Lucide icons ship, theme editor round-trips. Only the publish command itself + a downstream smoke install remain.
 
-8. **`npm publish` 0.7.0** — bump version, `npm publish --access public`. Awaiting explicit user go.
-9. **Boilerplate consumer install from registry** — depends on #8.
+8. ~~**`npm publish`**~~ — done. The package shipped via semantic-release through the 0.7/0.8 line; the 1.x line first published to the public registry 2026-09-01.
+9. ~~**Boilerplate consumer install**~~ — done. boiler-project-ai consumes cia (all components + app pages migrated to the `cia` import, 2026-07-11).
 
 ### After v0.7 ships
 
@@ -583,9 +586,9 @@ Items 1-13, 15, 16, the a11y linter triage, and the theme-editor import round-tr
 
 ### Smaller items still on the board
 
-- **Utilities searchable table** at `/docs/utilities` (placeholder content currently). Last big docs gap before launch.
-- **Mixins API reference** at `/docs/mixins`. Last big docs gap before launch.
-- **README homepage URL** + Pages-deploy verification.
+- ~~**Utilities searchable table** at `/docs/utilities`~~ — shipped (route live on the docs site).
+- ~~**Mixins API reference** at `/docs/mixins`~~ — shipped (README links it as the full reference).
+- ~~**README homepage URL** + Pages-deploy verification~~ — done; Pages mirror + cssisawesome.com production both live.
 - **Icon index page** listing every glyph in every pack.
 - **Pull Sketchbook docs-flourishes** (seal, draft stamp, brush rules) out of any future "base system" port.
 
@@ -599,7 +602,7 @@ Items 1-13, 15, 16, the a11y linter triage, and the theme-editor import round-tr
 
 All of the following must be true before Season 1 production begins:
 
-- [ ] cia v1.0.0 published to npm
+- [x] cia published to npm (first publish 2026-09-01; 1.x line live)
 - [ ] All v1.0 epic acceptance criteria met (42 stories shipped or explicitly punted)
 - [ ] No planned mixin renames or API changes within the next 6 months
 - [ ] Recipes book stable — at least 11 recipes shipped and not changing

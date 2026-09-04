@@ -275,11 +275,11 @@ self-contained and needs no setup.
 
 ## Where to read deeper
 
-Live docs site: **https://jerry2d3d.github.io/css-is-awesome/** — mixin reference, recipes, theme authoring, MCP setup.
+Live docs site: **https://cssisawesome.com** (mirror: https://jerry2d3d.github.io/css-is-awesome/) — mixin reference, recipes, theme authoring, MCP setup, mobile playbook.
 
 Inside this package (all whitelisted in `files`):
 
-- **`css-is-awesome.instructions.md`** — full authoring rules (~14 KB, Cursor/Copilot pick up via `applyTo: "**"` frontmatter)
+- **`css-is-awesome.instructions.md`** — full authoring rules (~25 KB, Cursor/Copilot pick up via `applyTo: "**"` frontmatter)
 - **`README.md`** — install, scripts, links
 - **`THREE-TIERS.md`** — full tier explanation with examples
 - **`THEMING.md`** — theme contract and dark-mode pattern
@@ -344,4 +344,4 @@ The markdown files above, the `cia` CLI, and the MCP server are the source of tr
 
 ---
 
-If you're a human reading this and want full developer docs, start at `README.md` or the docs site: https://jerry2d3d.github.io/css-is-awesome/.
+If you're a human reading this and want full developer docs, start at `README.md` or the docs site: https://cssisawesome.com.

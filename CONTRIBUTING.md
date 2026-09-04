@@ -1,6 +1,6 @@
 # Contributing to css-is-awesome
 
-Thanks for the interest. This project is a small, mixin-first SCSS design system with a one-file theme swap and a Next.js docs site that dogfoods the library. It is pre-1.0 and moves fast. See [README.md](./README.md) for what it is today and [ROADMAP.md](./ROADMAP.md) for what ships next. Epics and user stories live in [roadmap/epics/](./roadmap/epics/README.md).
+Thanks for the interest. This project is a small, mixin-first SCSS design system with a one-file theme swap and a Next.js docs site that dogfoods the library. It is published on npm under strict SemVer and moves fast. See [README.md](./README.md) for what it is today and [ROADMAP.md](./ROADMAP.md) for what ships next. Epics and user stories live in [roadmap/epics/](./roadmap/epics/README.md).
 
 This guide is the single entry point for contributors. It covers setup, workflow, component and mixin authoring, PRs, and where to find the other contribution-adjacent docs.
 
@@ -61,12 +61,12 @@ Every script below is defined in [`package.json`](./package.json).
 | `dist/`                  | Compiled CSS bundles — generated, do not edit by hand             |
 | `public/`                | Static assets served by Next.js — `theme.css`, `themes/`, `icons/` |
 | `public/icons/`          | Shared icon SVGs (see `public/icons/README.md`)                   |
-| `src/app/`               | Next.js 15 App Router routes for the docs site                    |
+| `src/app/`               | Next.js 16 App Router routes for the docs site                    |
 | `src/components/`        | React components used by the docs site (folder per component)     |
 | `figma-tokens/`          | Figma Tokens JSON export, kept in sync with the SCSS tokens       |
 | `roadmap/epics/`         | Epic + user-story backlog (work-item view of the roadmap)         |
 | `scripts/`               | Tooling — theme validator, build helpers                          |
-| `.github/workflows/`     | CI — runs lint, validate-themes, and build on every PR            |
+| `.github/workflows/`     | CI (lint, validators, coverage, build, Playwright), release, Pages, prod mirror |
 
 ## Development workflow
 
@@ -89,7 +89,7 @@ Every script below is defined in [`package.json`](./package.json).
 
 ### Before you push
 
-Run these locally. CI runs the same set.
+Run these locally. CI runs these plus the full validator / coverage gate (see "What CI runs" below).
 
 ```bash
 npm run lint
@@ -149,11 +149,11 @@ Rules:
 
 ## Adding a theme
 
-Read [CONTRIBUTING-THEMES.md](./CONTRIBUTING-THEMES.md) first. A theme is a single CSS file of custom properties on `:root`; no SCSS, no JS, no component rules. Copy `public/theme.css`, replace values, register the theme in `src/components/ThemePicker/ThemePicker.tsx`, run `npm run validate-themes`, open a PR with screenshots. Every slot in the [token contract](./CONTRACT.md) is required.
+Read [CONTRIBUTING-THEMES.md](./CONTRIBUTING-THEMES.md) first. A theme is a single SCSS source at `scss/themes/<name>.scss` — tokens only, wrapped in `@include cia.theme('<name>')`, no component rules. Copy an existing family as a starting point, edit tokens, run `npm run build:css:themes` (the CSS under `public/themes/` is generated — never hand-edit it), register the theme in `src/components/ThemePicker/ThemePicker.tsx`, run `npm run validate-themes`, open a PR with screenshots. Every required slot in the [token contract](./CONTRACT.md) must be declared.
 
 ## Adding an icon
 
-See [`public/icons/README.md`](./public/icons/README.md) for the authoritative guide. Short version: drop an SVG into `public/icons/`, reference it via `@include m.svg(<name>);`. No registry update needed. Per-theme packs live in `public/themes/<theme>/icons/`.
+See [`public/icons/README.md`](./public/icons/README.md) for the authoritative guide. Short version: drop an SVG into `public/icons/core/`, reference it via `@include cia.icon-svg(<name>);` (or `i.svg(<name>)` from `scss/icons`). No registry update needed. Per-theme packs live in `public/themes/<theme>/icons/`.
 
 ## Pull requests
 
@@ -170,14 +170,22 @@ See [`public/icons/README.md`](./public/icons/README.md) for the authoritative g
 
 ### What CI runs
 
-Every PR triggers `.github/workflows/ci.yml`. All four must pass.
+Every PR triggers `.github/workflows/ci.yml`. All of these must pass.
 
 | Check             | Command                      |
 | ----------------- | ---------------------------- |
 | ESLint            | `npm run lint`               |
 | Stylelint         | `npm run lint:scss`          |
+| Theme drift       | `npm run check:theme-drift`  |
 | Theme validator   | `npm run validate-themes`    |
+| Icon pack         | `npm run validate-icons`     |
+| `/api` barrel stays zero-emit | `npm run validate-api` |
+| Published-package imports | `npm run validate-package` |
+| API + MCP coverage (≥ 98%) | `npm run coverage:api` / `npm run coverage:mcp` |
+| Size budget       | `npm run size-budget`        |
+| Recipes           | `npm run validate-recipes`   |
 | Library + docs build | `npm run build:css:all` then `npm run build` |
+| Playwright (3 engines) | `npm test`              |
 
 ### Review + merge
 
@@ -232,13 +240,13 @@ Every component the library ships must:
 - Forward `ref` so callers can move focus.
 - Accept and merge `className` so callers can extend without forking.
 - Use semantic HTML first — `<button>` for buttons, `<a href>` for links.
-- Pass axe-core smoke checks (target: Epic 5, Quality + Delivery).
+- Pass axe-core smoke checks (run in the Playwright suite in CI).
 
 If a pattern cannot be made accessible, do not ship it.
 
 ## Releases + versioning
 
-See [./VERSIONING.md](./VERSIONING.md) for the SemVer policy, release cadence, and changelog rules. The short version: 1.0 and under strict SemVer — breaking changes require a MAJOR bump. Every release cuts a GitHub tag + entry in [CHANGELOG.md](./CHANGELOG.md).
+See [./VERSIONING.md](./VERSIONING.md) for the SemVer policy and changelog rules. The short version: post-1.0 strict SemVer — breaking changes require a MAJOR bump. Releases are fully automated by semantic-release from Conventional Commits on `main`: it computes the version, generates [CHANGELOG.md](./CHANGELOG.md) (never edit it by hand), tags, and publishes to npm. Never hand-type a version number anywhere — everything reads it from `package.json`.
 
 ## Code of Conduct
 

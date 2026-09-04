@@ -7,6 +7,7 @@
 import type { ReactNode } from "react";
 import "./docs-shell.scss";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import DocsNav from "./_components/DocsNav";
 import DocsTOC from "./_components/DocsTOC";
 import DocsPrevNext from "./_components/DocsPrevNext";
@@ -25,6 +26,8 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         <DocsTOC />
       </div>
       <DocsDock />
+      {/* Interim: this route still lives outside the (site) shell (dev-server file locks block the move) - the shell provides the footer once it moves in; remove this then. */}
+      <SiteFooter />
     </>
   );
 }

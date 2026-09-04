@@ -81,12 +81,12 @@ export default function DocsPage() {
           system; bring your own components.
         </li>
         <li>
-          <strong>utilities</strong> — <strong>11.5 KB gzipped</strong>. Every{" "}
+          <strong>utilities</strong> — <strong>4.1 KB gzipped</strong>. Every{" "}
           <code>cia-*</code> utility class — spacing, typography, layout,
           color, flex/grid helpers. Composes with your own component CSS.
         </li>
         <li>
-          <strong>full</strong> — <strong>15.2 KB gzipped</strong>. Core +
+          <strong>full</strong> — <strong>7.3 KB gzipped</strong>. Core +
           utilities + every component recipe (<code>cia-btn-primary</code>,{" "}
           <code>cia-card</code>, <code>cia-alert</code>, …) in one file. The
           drop-in default; what the CDN snippet above ships.
