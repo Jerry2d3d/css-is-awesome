@@ -4,8 +4,10 @@
    .logo-sm (the mark inside the brand link) is shared and stays in globals.
    ============================================================ */
 @use 'mixins' as m;
+@use 'layout' as l;
 
 .header {
+  @include l.page-header;
   // Site nav is wayfinding for a browser, not content. Off on paper.
   @include m.print-hidden;
   border-bottom: 1px solid var(--hair);
@@ -128,13 +130,13 @@
     position: fixed;
     inset: 0;
     z-index: 8;             /* under .header's z-index: 10 */
-    background: color-mix(in srgb, var(--ink) 38%, transparent);
-    opacity: 0;
+    /* Invisible on purpose: the scrim exists only as the tap-outside-
+       to-close hit area. No darkening — the page stays fully visible
+       behind the open menu. */
+    background: transparent;
     pointer-events: none;
-    transition: opacity var(--duration-normal) var(--ease);
   }
   .menuCheck:checked ~ .menuScrim {
-    opacity: 1;
     pointer-events: auto;
   }
 
