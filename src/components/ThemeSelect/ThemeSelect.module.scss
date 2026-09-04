@@ -70,7 +70,8 @@
 .select option {
   color: var(--ink);
   background: var(--paper);
-  padding: 0.5rem 0.75rem;
+  /* Roomy side padding so option text doesn't hug the list edges. */
+  padding: 0.5rem 1.25rem;
 }
 
 @include m.media-down(lg) {
