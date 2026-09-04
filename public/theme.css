@@ -163,6 +163,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
@@ -659,6 +669,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
@@ -834,6 +854,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias */
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
@@ -1021,6 +1051,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias — mirrors --r-* with standard names so
      `m.radius(size)` in the library finds --radius-<size>. */
   --radius-sm: var(--r-sm);
@@ -1211,6 +1251,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
@@ -1388,6 +1438,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias */
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
@@ -1578,6 +1638,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias — mirrors --r-* with standard names so
      `m.radius(size)` in the library finds --radius-<size>. */
   --radius-sm: var(--r-sm);
@@ -1735,6 +1805,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
@@ -1912,6 +1992,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias — mirrors --r-* with standard names so
      `m.radius(size)` in the library finds --radius-<size>. */
   --radius-sm: var(--r-sm);
@@ -2084,6 +2174,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias */
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
@@ -2265,6 +2365,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
@@ -2442,6 +2552,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias — Press is editorial, xl stays tight (6px) */
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
@@ -2633,6 +2753,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias — mirrors --r-* with standard names so
      `m.radius(size)` in the library finds --radius-<size>.
      Press is editorial and angular: xl stays tight (4px). */
@@ -2803,6 +2933,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
@@ -2972,6 +3112,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias */
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
@@ -3144,6 +3294,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias */
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
@@ -3304,6 +3464,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
@@ -3472,6 +3642,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias */
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
@@ -3813,6 +3993,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: 0;
   --radius-md: 0;
   --radius-lg: 0;
@@ -3996,6 +4186,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   /* Radius alias — CRT has hard pixel corners, so every slot is 0 */
   --radius-sm: 0;
   --radius-md: 0;
@@ -4161,6 +4361,16 @@
   --space-7: 3rem; /* major gap        */
   --space-8: 4rem; /* page section     */
   --space-9: 6rem; /* hero rhythm      */
+  /* T-shirt aliases - var() references into this theme's numbered scale,
+     so re-tuning a numbered step re-tunes its alias automatically. */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --space-3xl: var(--space-8);
+  --space-4xl: var(--space-9);
   --radius-sm: 0;
   --radius-md: 0;
   --radius-lg: 0;

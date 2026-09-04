@@ -91,6 +91,12 @@
    into desktop view as bare text. */
 .row button {
   all: unset;
+  /* `all: unset` wipes the global border-box reset back to content-box, so
+     the 8px side padding + 1px border rode OUTSIDE each 1fr grid track and
+     the pressed highlight spilled past the panel's right edge (invisible at
+     rest — background and border are transparent until aria-pressed). Same
+     re-add as Accordion/Dropdown/List/MenuItem. */
+  box-sizing: border-box;
   cursor: pointer;
   padding: 5px 8px;
   border-radius: var(--r-sm, 4px);
