@@ -1,3 +1,24 @@
+# [1.4.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.3.1...v1.4.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* **mobile:** compare tables restack into cards on phones ([da6ae93](https://github.com/Jerry2d3d/css-is-awesome/commit/da6ae93114d198ce8b3f96e30ad3d74d2b0309ce))
+* **mobile:** dock theme sheet lists families directly - one tap switches ([aa9d1ae](https://github.com/Jerry2d3d/css-is-awesome/commit/aa9d1aea358f65a0b7d05fe1c9b5b1f4304fd586))
+* **mobile:** opening the hamburger no longer darkens the page ([c097cb4](https://github.com/Jerry2d3d/css-is-awesome/commit/c097cb42f7c56bf1773a272c408e71a516f817ac))
+* **mobile:** overlay dims the page, never the nav bar ([2466dc4](https://github.com/Jerry2d3d/css-is-awesome/commit/2466dc491bbfdfd45ea8a4bfb253b5b0dd06f508))
+* **mobile:** restore the menu overlay - page and footer darken behind it ([5fad125](https://github.com/Jerry2d3d/css-is-awesome/commit/5fad12554230ce4360d6a294c02bae675eead92a))
+* **mobile:** side padding for theme dropdown option text ([3c4b341](https://github.com/Jerry2d3d/css-is-awesome/commit/3c4b341f312d0454d1274ad80ea60447f65fe940))
+* **site:** examples page gets its own shell - and its padding back ([69ce408](https://github.com/Jerry2d3d/css-is-awesome/commit/69ce40874ab6721f6ede6cc4083de88cf94abe52))
+* **site:** theme menu is a dropdown, not a popup ([886cf67](https://github.com/Jerry2d3d/css-is-awesome/commit/886cf676bf07e243543aa98371b03d07020cd251))
+
+
+### Features
+
+* **site:** painter-palette SVG replaces the theme emoji everywhere ([f11fa7a](https://github.com/Jerry2d3d/css-is-awesome/commit/f11fa7a7f8be5b657e2ae4714f43723ba02d30d7))
+* **site:** rewrite the theme dropdown as a popover menu ([da8216a](https://github.com/Jerry2d3d/css-is-awesome/commit/da8216a75b93db60e55dc9a692df9dfa549fb3c8))
+* **site:** the page control system - Nav / Main / Footer shell ([77f5a98](https://github.com/Jerry2d3d/css-is-awesome/commit/77f5a98adb51f4fc082557e450e5bc3dc6cfaa49))
+
 ## [1.3.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.3.0...v1.3.1) (2026-09-04)
 
 

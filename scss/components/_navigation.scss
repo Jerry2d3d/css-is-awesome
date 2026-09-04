@@ -320,3 +320,86 @@
     transition: none;
   }
 }
+
+// ----------------------------------------------------------------------------
+// SHEET — bottom drawer with rounded shoulders; the mobile-app panel.
+// ----------------------------------------------------------------------------
+// A preset of drawer($side: bottom): slides up from the bottom edge,
+// caps its height so the page stays visible behind it (dvh survives
+// mobile URL-bar resizing), rounds the top corners, and pads for the
+// home-indicator safe area. Same zero-JS popover mechanics as drawer.
+//
+// Usage:
+//   .docs-sheet { @include sheet; }
+//   <section id="docs-sheet" class="docs-sheet" popover aria-label="Docs">…</section>
+
+@mixin sheet(
+  $size: auto,
+  $max: 72dvh,
+  $bg: surface-default,
+  $backdrop: rgba(0, 0, 0, 0.4),
+  $p: 5,
+  $r: xl
+) {
+  @include drawer($side: bottom, $size: $size, $bg: $bg, $backdrop: $backdrop, $p: $p);
+  max-block-size: $max;
+  border-start-start-radius: m.radius($r);
+  border-start-end-radius: m.radius($r);
+  padding-block-end: calc(#{m.space($p)} + env(safe-area-inset-bottom));
+}
+
+// ----------------------------------------------------------------------------
+// DOCK — fixed bottom bar; the mobile-app layout's navigation.
+// ----------------------------------------------------------------------------
+// The pattern the cia docs site runs on phones: a thumb-reach bar whose
+// slots open popover sheets (pair dock-item buttons with sheet() panels
+// via popovertarget — the browser manages aria-expanded, Esc, and light
+// dismiss; zero JavaScript). CSS Grid gives every slot an equal track.
+//
+// Usage:
+//   .dock       { @include dock(3); }
+//   .dock button { @include dock-item; }
+//   <nav class="dock" aria-label="Quick menu">
+//     <button popovertarget="docs-sheet">Docs</button>
+//     …
+//   </nav>
+
+@mixin dock($slots: 3, $bg: surface-default) {
+  @include m.print-hidden;
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: m.z(fixed);
+  display: grid;
+  grid-template-columns: repeat($slots, minmax(0, 1fr));
+  background: m.color($bg);
+  border-block-start: 1px solid m.color(border-default);
+  padding-block-end: env(safe-area-inset-bottom);
+}
+
+@mixin dock-item($accent: action-primary-default) {
+  @include m.button-reset;
+  @include m.focus-ring;
+  cursor: pointer;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: m.space(1);
+  min-height: 3.5rem;                    /* 56px — comfortable thumb target */
+  padding: m.space(1) m.space(2);
+  color: m.color(text-secondary);
+  @include m.font(medium, 1);
+  @include m.transition(color, background-color);
+
+  > svg {
+    width: 1.35em;
+    height: 1.35em;
+  }
+
+  // Semantic state lives in ARIA: the browser sets aria-expanded on
+  // popovertarget invokers; aria-current marks a routed slot.
+  &[aria-expanded="true"],
+  &[aria-current] {
+    color: m.color($accent);
+  }
+}

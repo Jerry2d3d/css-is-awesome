@@ -26,6 +26,7 @@ export const docsNav: DocsNavSection[] = [
     title: "Patterns",
     items: [
       { label: "Composition", href: "/docs/composition" },
+      { label: "Mobile", href: "/docs/mobile" },
       { label: "Recipes", href: "/docs/recipes" },
     ],
   },

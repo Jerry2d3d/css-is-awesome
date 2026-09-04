@@ -226,6 +226,9 @@ standalone mixin, so state can come from `:checked` instead of
 
 ## Related recipes
 
+- `bottom-nav` — bottom dock + slide-up sheets for pages that are tools on
+  mobile (the "app layout"; this recipe is the "flex layout": one fluid
+  shell that reshapes with the screen).
 - `dialog` — modal overlays for content (native `<dialog>`, same zero-JS
   philosophy).
 - `combobox` — another browser-native disclosure pattern.

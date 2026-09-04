@@ -501,6 +501,15 @@ Committed values render as removable chips before the input; the input clears af
 - **`<datalist>` styling is a dead end.** No browser lets you style the native popup. Don't burn time on it — if the design needs styled options, that's the signal to move to the custom variant.
 - **Filtering resets the active index.** After re-filtering, old indices point at different options. Reset `active` to `-1` on every `input` event (all examples above do).
 - **Scroll the active option into view** when the list overflows: `option.scrollIntoView({ block: "nearest" })` after moving the active index — omitted from the examples for brevity, needed in production with long lists.
+- **Phones: cap the listbox, thumb-size the options.** The `max-block-size: 16rem; overflow-y: auto` in the Styling section is what keeps a long list from running past the bottom of a small viewport — don't delete it when trimming. And `cia.dropdown-item` is padded for pointers (≥24px, the WCAG minimum); at touch widths, bump options to a comfortable 44px thumb target:
+
+  ```scss
+  [role="option"] {
+    @include cia.media-down(md) {
+      min-block-size: 44px;
+    }
+  }
+  ```
 
 ## Related recipes
 
