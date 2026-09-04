@@ -1,4 +1,5 @@
 "use client";
+import { useId } from "react";
 import styles from "./ThemeSelect.module.scss";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
@@ -7,6 +8,14 @@ import { setTheme, useThemeAttribute } from "@/lib/themeState";
 // while the toggle flips light/dark within that family. The user's
 // current mode is preserved when they switch families — Prism Dark
 // → Sketchbook lands on Sketchbook Dark, not Sketchbook Light.
+//
+// Rewritten from a native <select>: browsers own a select's open list
+// (padding/colors are unreliable, and DevTools device mode renders the
+// desktop list), so this is now a Popover-API menu — the same zero-JS
+// open/close machinery as cia's mobile-nav recipe. The browser manages
+// aria-expanded on the trigger, Esc and outside-tap close, and each
+// option hides the popover natively via popovertargetaction="hide".
+// The only JavaScript is the theme write itself.
 //
 // For the bigger row-of-buttons picker used inside docs pages, see
 // src/components/ThemePicker/.
@@ -46,24 +55,23 @@ function getMode(theme: string): "light" | "dark" {
 
 export default function ThemeSelect() {
   const theme = useThemeAttribute();
+  const menuId = useId();
 
   if (theme === null) {
     return (
       <span className={styles.wrap}>
-        <select
-          className={styles.select}
-          aria-hidden="true"
-          tabIndex={-1}
-          disabled
-        >
-          <option>—</option>
-        </select>
+        <button type="button" className={styles.trigger} disabled aria-hidden="true" tabIndex={-1}>
+          <span className={styles.triggerIcon} aria-hidden="true">🎨</span>
+          <span className={styles.triggerLabel}>Theme</span>
+          <span className={styles.chevron} aria-hidden="true" />
+        </button>
       </span>
     );
   }
 
   const family = getFamily(theme);
   const mode = getMode(theme);
+  const currentLabel = FAMILIES.find((f) => f.id === family)?.label ?? "Theme";
 
   function choose(nextFamily: string) {
     // Preserve current mode when switching families. Every shipped theme
@@ -73,19 +81,39 @@ export default function ThemeSelect() {
 
   return (
     <span className={styles.wrap}>
-      <select
-        className={styles.select}
-        value={family}
-        onChange={(e) => choose(e.target.value)}
+      <button
+        type="button"
+        className={styles.trigger}
+        popoverTarget={menuId}
         aria-label="Choose theme family"
         title="Choose theme family"
       >
+        <span className={styles.triggerIcon} aria-hidden="true">🎨</span>
+        <span className={styles.triggerLabel}>{currentLabel}</span>
+        <span className={styles.chevron} aria-hidden="true" />
+      </button>
+
+      <div
+        id={menuId}
+        popover="auto"
+        className={styles.menu}
+        role="group"
+        aria-label="Theme family"
+      >
+        <div className={styles.menuTitle} aria-hidden="true">theme</div>
         {FAMILIES.map((f) => (
-          <option key={f.id} value={f.id}>
+          <button
+            key={f.id}
+            type="button"
+            popoverTarget={menuId}
+            popoverTargetAction="hide"
+            aria-pressed={f.id === family}
+            onClick={() => choose(f.id)}
+          >
             {f.label}
-          </option>
+          </button>
         ))}
-      </select>
+      </div>
     </span>
   );
 }
