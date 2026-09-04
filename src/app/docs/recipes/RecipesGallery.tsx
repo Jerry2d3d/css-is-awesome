@@ -6,7 +6,6 @@
 // handed in as the serializable `recipes` prop, so the build-time fs/markdown
 // read never reaches the client bundle.
 import Link from "next/link";
-import styles from "./RecipesGallery.module.scss";
 import Example from "@/components/Example";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
@@ -248,15 +247,25 @@ export default function RecipesGallery({ recipes }: { recipes: RecipeCard[] }) {
 
       <h2 id="dashboard-shell">Dashboard shell</h2>
       <p>
-        A two-column app shell: sidebar nav plus a main content region with a
-        KPI row and a stack of cards. Below the <code>md</code> breakpoint the
-        shell restacks to one column and the nav becomes a wrap row above the
-        content — mobile is a different grid, not a squeezed sidebar.
+        A two-column app shell: sticky sidebar nav plus a main content region
+        with a KPI row and a stack of cards. The grid collapses to one column
+        on narrow viewports via <code>auto-fit</code>.
       </p>
       <Example>
         <Example.Preview>
-          <div className={styles.dashShell}>
-            <nav className={styles.dashNav} aria-label="Dashboard">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 200px) 1fr",
+              gap: "var(--space-md)",
+              alignItems: "start",
+              border: "1px solid var(--border-default)",
+              borderRadius: "8px",
+              padding: "var(--space-md)",
+              background: "var(--paper-raised)",
+            }}
+          >
+            <nav style={{ display: "grid", gap: "2px" }} aria-label="Dashboard">
               <a href="#" style={navLinkActiveStyle}>Overview</a>
               <a href="#" style={navLinkStyle}>Projects</a>
               <a href="#" style={navLinkStyle}>Team</a>
