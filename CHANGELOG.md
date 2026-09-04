@@ -1,3 +1,22 @@
+# [1.7.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.6.2...v1.7.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* **site:** drop the Mobile app shell example - too heavy for the page ([bafd688](https://github.com/Jerry2d3d/css-is-awesome/commit/bafd688436e574721dd94f0dd94befe102cee701))
+
+
+### Features
+
+* **site:** mobile controls on the examples page; docs currency sweep ([84bc504](https://github.com/Jerry2d3d/css-is-awesome/commit/84bc504bf66f96762d4566966846b98a66f994e7)), closes [#8](https://github.com/Jerry2d3d/css-is-awesome/issues/8) [7-#8](https://github.com/7-/issues/8)
+
+## [1.6.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.6.1...v1.6.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* **mobile:** width: auto on the dash-nav menu - UA fit-content was ([faafe88](https://github.com/Jerry2d3d/css-is-awesome/commit/faafe88d19fc7df4a600633fcfc249cf0b4815d4))
+
 ## [1.6.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.6.0...v1.6.1) (2026-09-04)
 
 

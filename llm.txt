@@ -45,9 +45,10 @@ silent.
 
 ## What cia provides (one-line each)
 
-- **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.stepper`, `cia.progress`, `cia.wizard-shell`, `cia.sidebar`, `cia.toolbar`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.print`, `cia.print-base`, `cia.print-hidden`, `cia.print-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more.
+- **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.hamburger`, `cia.drawer`, `cia.sheet`, `cia.dock`, `cia.stepper`, `cia.progress`, `cia.wizard-shell`, `cia.sidebar`, `cia.toolbar`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.print`, `cia.print-base`, `cia.print-hidden`, `cia.print-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more.
 - **24 themes / 8 families** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal. Each family ships three files: an unsuffixed dual-mode base (both modes via `light-dark()`) plus pinned `-light` and `-dark` single-mode variants for `<link media>` pairing. Every one has exactly one SCSS source under `scss/themes/`; `public/themes/<name>/theme.css` is BUILD OUTPUT and is gated against its source by `npm run check:theme-drift` — never hand-edit it. MCP `list_themes` returns **24**. Say **24 themes across 8 families** when you need one number.
-- **6 zero-JS interactive components** — accordion (`<details name>`), modal (`<dialog>`), tooltip (`popover="hint"`), dropdown (`[popover]`), tabs (radio + `:has()`), copy-button (Clipboard API via consumer-wired JS).
+- **6 zero-JS interactive components** — accordion (`<details name>`), modal (`<dialog>`), tooltip (`popover="hint"`), dropdown (`[popover]` — the mixin re-asserts the UA's closed state and restores `display: flex` only under `:popover-open`, so menus never render permanently open on popover markup), tabs (radio + `:has()`), copy-button (Clipboard API via consumer-wired JS).
+- **Mobile navigation family** — `cia.hamburger` / `cia.drawer` / `cia.sheet` / `cia.dock` ride `[popover]` + CSS Grid, zero JS; recipes `mobile-nav` (hamburger + drawer) and `bottom-nav` (dock + sheets). House rule: **on phones things take the space they're in** — a `cia.dropdown` menu opens 1px under its full-width trigger at the trigger's exact width via CSS anchor positioning (`position-try-fallbacks: flip-block` flips it above at the screen bottom; set `width: auto` at `&[popover]` specificity or the UA's `[popover] { width: fit-content }` and the mixin's inset reset win). Full spec: AGENTS.md quick decision #8 and `/docs/mobile`.
 - **163 contract tokens — 127 required + 36 optional** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
 - **Spacing is themeable, and the numbered scale is the knob.** Themes declare `--space-0` … `--space-9` (contract-required). The t-shirt names (`--space-md`, `--space-lg` …) are contract-OPTIONAL and emitted by the library as `var()` aliases onto the numbered steps. `space(4)` compiles to `var(--space-4)`, so **theme the numbered step, never the alias** — setting `--space-md` alone leaves every component untouched. Library defaults emit under `:where(:root)` (specificity 0,0,0) so any theme declaration outranks them regardless of load order.
 - **Per-component shape knobs are `--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius`** — they cascade from the generic radii (`--btn-radius: var(--radius-md, 0.25rem)`). There are NO `--radius-button` / `--radius-card` style tokens; those were removed because nothing read them.
@@ -99,6 +100,7 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 | Install steps + every consumption path | `README.md` |
 | Mixin reference (every public mixin) | `src/app/docs/mixins/page.tsx` |
 | Component examples | `src/app/docs/components/*/page.tsx` (6 components) |
+| Mobile playbook (layouts, dropdown doctrine, lessons) | `src/app/docs/mobile/page.tsx` |
 | Theme authoring (full walkthrough) | `src/app/docs/authoring/themes/page.tsx` |
 | Theme contract (127 required + 36 optional, machine-readable) | `scripts/theme-contract.json` |
 | Theme pairing (`<link media>` recipe) | `src/app/docs/themes/pairing/page.tsx` |
@@ -155,9 +157,9 @@ Do NOT suggest `npx css-is-awesome-mcp` as a shortcut. `npx` fetches the package
 but not its optional peers, so it hits the same error. Run it from an install
 that has both, using the config above.
 
-## Recipes (v1.0 preview — landing in 1.0.0)
+## Recipes (shipped in 1.0.0)
 
-cia v1.0 ships a **recipes book**: portable patterns for building accessible components in any framework. Each recipe is a markdown file at `scss/recipes/<name>.md` with:
+cia ships a **recipes book**: portable patterns for building accessible components in any framework. Each recipe is a markdown file at `scss/recipes/<name>.md` with:
 
 - raw HTML structure
 - `cia.X` mixin calls for styling
@@ -166,7 +168,7 @@ cia v1.0 ships a **recipes book**: portable patterns for building accessible com
 
 AI agents read recipes via MCP `list_recipes` / `get_recipe(name)` and generate consumer components in any framework. Humans read them at `/docs/recipes` and copy patterns directly.
 
-**Shipped today: dialog, combobox, print-to-pdf.** Still queued for 1.0.0: datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `roadmap/epics/v1-0/EPIC-01-recipes-book.md` for the schema + roadmap.
+**Shipped today — 5 recipes: dialog, combobox, print-to-pdf, mobile-nav, bottom-nav.** Queued next: datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `scss/recipes/README.md` for the schema.
 
 ## Priority ladder (the v1.0 pitch order)
 
@@ -180,4 +182,4 @@ Humans first. AI's role is to compose, not to lead the pitch.
 
 ---
 
-*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for the v1.0 architecture lock, and 2026-08-30 for the theme single-source rework (24 themes, 127+36 contract, themeable spacing, `:root, :root[data-theme]` selector). Update when the API surface changes.*
+*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for the v1.0 architecture lock, 2026-08-30 for the theme single-source rework (24 themes, 127+36 contract, themeable spacing, `:root, :root[data-theme]` selector), and 2026-09-04 for the shipped recipes count (5), the mobile-nav mixin family, and the dropdown popover guard. Update when the API surface changes.*

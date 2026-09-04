@@ -5,7 +5,7 @@ import Example from "@/components/Example";
 export const metadata: Metadata = {
   title: "Mobile — css-is-awesome",
   description:
-    "The cia mobile playbook: two zero-JS layouts (app layout with a bottom dock + sheets, flex layout with a fluid grid shell + hamburger drawer), named grid areas, breakpoint helpers, and the practical lessons — tap targets, safe areas, table restacking.",
+    "The cia mobile playbook: two zero-JS layouts (app layout with a bottom dock + sheets, flex layout with a fluid grid shell + hamburger drawer), named grid areas, anchored dropdowns, breakpoint helpers, and the practical lessons — tap targets, safe areas, table restacking.",
 };
 
 export default function DocsMobilePage() {
@@ -209,6 +209,96 @@ body > footer { @include cia.page-footer; }
       <p>
         The full pattern is the{" "}
         <Link href="/docs/recipes/mobile-nav">mobile-nav recipe</Link>.
+      </p>
+
+      <h2 id="dropdowns">Dropdowns — things take the space they&apos;re in</h2>
+      <p>
+        The house rule for every interactive surface on a phone:{" "}
+        <strong>it fills the container it lives in</strong> — 100% of its
+        column, inside the page&apos;s existing padding and formatting.
+        Never edge-to-edge past the gutters, never a floating mid-width
+        popup. For a dropdown that means the trigger stretches to 100%
+        with <code>justify-content: space-between</code> (label left,
+        affordance right), and the menu opens{" "}
+        <strong>1px under the trigger, at the trigger&apos;s exact
+        width</strong> — flipping above it when it would run off the
+        bottom of the screen.
+      </p>
+      <p>
+        One wrinkle: a popover menu lives in the top layer, so it
+        can&apos;t size to its container directly —{" "}
+        <code>width: 100%</code> means nothing up there. CSS anchor
+        positioning closes the gap: name the trigger an anchor, pin the
+        menu&apos;s inline edges to it, and keep viewport-minus-gutters as
+        the fallback for engines without anchors:
+      </p>
+      <Example>
+        <Example.Code>{`@use 'css-is-awesome/api' as cia;
+
+.nav-trigger {
+  @include cia.mobile-only {
+    display: flex;
+    inline-size: 100%;               // the space it's in: the whole column
+    justify-content: space-between;  // label left, affordance right
+    anchor-name: --nav-trigger;
+  }
+}
+
+.nav-menu {
+  @include cia.mobile-only {
+    @include cia.dropdown;           // zero-JS popover menu
+
+    // Must match the mixin's &[popover] specificity — its inset reset
+    // wins over a bare class otherwise.
+    &[popover] {
+      inset-inline: cia.space(4);    // no-anchor fallback: viewport minus gutters
+      min-width: 0;
+      width: auto;                   // the UA's [popover] { width: fit-content }
+                                     // otherwise beats both inline edges
+
+      @supports (anchor-name: --a) {
+        position-anchor: --nav-trigger;
+        inset-inline: anchor(start) anchor(end);     // the trigger's width
+        inset-block-start: calc(anchor(end) + 1px);  // 1px below the trigger
+        position-try-fallbacks: flip-block;          // flip above at screen bottom
+      }
+
+      a { white-space: normal; overflow-wrap: anywhere; }  // long labels wrap
+    }
+
+    a { @include cia.dropdown-item; }
+  }
+}`}</Example.Code>
+      </Example>
+      <p>
+        Two of those lines are load-bearing in ways that aren&apos;t
+        obvious. The <code>&amp;[popover]</code> nesting isn&apos;t style —{" "}
+        <code>cia.dropdown</code> resets the UA popover defaults
+        (<code>inset: unset</code>) at that specificity, so a bare class
+        loses to it. And <code>width: auto</code> looks redundant but
+        isn&apos;t: the UA stylesheet says{" "}
+        <code>[popover] {"{"} width: fit-content {"}"}</code>, which beats
+        both inline insets — without the override the menu hugs its
+        content instead of matching the trigger. <code>cia.dropdown</code>{" "}
+        also guards its own closed state (the menu&apos;s{" "}
+        <code>display: flex</code> is re-asserted only under{" "}
+        <code>:popover-open</code>), so it never renders permanently open
+        on popover markup.
+      </p>
+      <p>
+        Inside the menu, long labels <strong>wrap</strong> — never clip,
+        never scroll sideways. The one deliberate exception to the
+        take-the-space rule is <strong>code</strong>: on phones a code
+        block may run off into a horizontal scroll <em>inside its own
+        box</em> (<code>white-space: pre; overflow-x: auto</code>) — never
+        wrapped or shrunk to fit, and never widening the page; the copy
+        button carries usability for long lines. And a consumer-level JS
+        nicety is allowed: real links close the popover by navigating, so
+        if yours don&apos;t (soft navigation, demo links), one delegated
+        click handler calling <code>hidePopover()</code> is all it takes.
+        The Dashboard shell demo in the{" "}
+        <Link href="/docs/recipes">recipes gallery</Link> is the reference
+        implementation of the whole pattern.
       </p>
 
       <h2 id="breakpoints">Breakpoint helpers</h2>

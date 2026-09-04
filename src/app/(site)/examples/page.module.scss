@@ -5,6 +5,8 @@
    ============================================================ */
 
 @use 'mixins' as m;
+@use 'components/overlay' as o;
+@use 'components/navigation' as n;
 
 /* The page's own shell - it previously borrowed .docs-shell from globals,
    which now lives with the docs layout. Same rhythm as the other pages. */
@@ -15,5 +17,95 @@
 
   @include m.mobile-only {
     padding: m.space(6) m.space(5) m.space(8);
+  }
+}
+
+/* ============================================================
+   Dropdown — house spec (AGENTS.md quick decision #8).
+   ============================================================ */
+
+/* Trigger fills its column: 100% wide, label left, affordance right. */
+.menuTrigger {
+  @include m.button-reset;
+  @include m.focus-ring;
+  anchor-name: --examples-menu;
+  display: flex;
+  inline-size: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: m.space(1);
+  cursor: pointer;
+  padding: m.space(1) m.space(3);
+  border: 1px solid var(--border-default);
+  border-radius: m.radius(md);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.menu {
+  @include o.dropdown;
+
+  /* The menu takes the space it's IN — the trigger's column, not the
+     viewport. A top-layer popover can't size to its container directly,
+     so anchor positioning matches the trigger's edges; engines without
+     anchors fall back to viewport-minus-gutters. Must sit at &[popover]
+     specificity or the mixin's inset: unset reset wins. */
+  &[popover] {
+    inset-inline: m.space(4);          /* fallback: gutters off the viewport */
+    min-width: 0;
+    /* The UA's [popover] { width: fit-content } beats the two inset
+       edges — width: auto hands control back to them: full width. */
+    width: auto;
+
+    @supports (anchor-name: --a) {
+      position-anchor: --examples-menu;
+      /* Same width as the trigger. */
+      inset-inline: anchor(start) anchor(end);
+      /* Exactly one pixel between trigger and menu — a single line. */
+      inset-block-start: calc(anchor(end) + 1px);
+      /* Right under the trigger, unless that runs off the bottom of the
+         screen — then flip to open above it. */
+      position-try-fallbacks: flip-block;
+    }
+
+    /* Long labels wrap inside the trigger-width menu instead of clipping. */
+    a {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  a {
+    @include o.dropdown-item;
+
+    /* Selection state lives in ARIA, never a class. */
+    &[aria-current] {
+      color: var(--ai);
+    }
+  }
+}
+
+/* ============================================================
+   Hamburger + drawer.
+   ============================================================ */
+
+.hamburger {
+  @include n.hamburger;
+}
+
+/* drawer() is fixed to the real viewport edge — the demo doesn't fake
+   that; opening it slides over YOUR screen's end edge, as shipped. */
+.drawer {
+  @include n.drawer($side: end, $size: 18rem);
+
+  /* Grid lives on a wrapper, not the drawer itself — display on the
+     popover element would overpower the UA's [popover] closed state. */
+  > div {
+    display: grid;
+    gap: m.space(1);
+  }
+
+  a {
+    @include n.navbar-link;
   }
 }

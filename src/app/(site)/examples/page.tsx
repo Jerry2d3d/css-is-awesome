@@ -59,6 +59,51 @@ export default function ExamplesPage() {
             </Example.Preview>
           </Example>
 
+          <h2>Dropdown</h2>
+          <p>
+            The house dropdown: the trigger fills its column, label left, affordance right; the
+            menu opens one pixel under it at the trigger&apos;s exact width via CSS anchor
+            positioning, flipping above when the bottom of the screen is close. Engines without
+            anchors fall back to viewport-minus-gutters.
+          </p>
+          <Example>
+            <Example.Preview>
+              <div style={{ maxWidth: "320px", margin: "0 auto" }}>
+                <button type="button" className={styles.menuTrigger} popoverTarget="examples-menu">
+                  Overview <span aria-hidden="true">▾</span>
+                </button>
+                <div id="examples-menu" popover="auto" className={styles.menu}>
+                  <a href="#" aria-current="page">Overview</a>
+                  <a href="#">Projects</a>
+                  <a href="#">Team</a>
+                  <a href="#">Settings</a>
+                </div>
+              </div>
+            </Example.Preview>
+          </Example>
+
+          <h2>Hamburger + drawer</h2>
+          <p>
+            Three bars, zero JS: the browser sets <code>aria-expanded</code> on the popover
+            invoker and the bars morph into an X off that attribute. The drawer is honest too —
+            it slides over the real end edge of your viewport, exactly as shipped.
+          </p>
+          <Example>
+            <Example.Preview style={{ textAlign: "center" }}>
+              <button type="button" className={styles.hamburger} popoverTarget="examples-drawer" aria-label="Menu">
+                <span></span><span></span><span></span>
+              </button>
+              <nav id="examples-drawer" popover="auto" className={styles.drawer} aria-label="Site menu">
+                <div>
+                  <a href="#" aria-current="page">Home</a>
+                  <a href="#">Docs</a>
+                  <a href="#">Examples</a>
+                  <a href="#">GitHub</a>
+                </div>
+              </nav>
+            </Example.Preview>
+          </Example>
+
           <h2>Footer</h2>
           <Example>
             <Example.Preview style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
