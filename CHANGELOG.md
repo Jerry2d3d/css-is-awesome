@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.1.1...v1.2.0) (2026-09-04)
+
+
+### Features
+
+* **mobile:** docs bottom dock + hamburger site menu (Concept B pack) ([71f915d](https://github.com/Jerry2d3d/css-is-awesome/commit/71f915de63eb6c1b92f2cd0fe76d272823d94c0c))
+
 ## [1.1.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.1.0...v1.1.1) (2026-09-04)
 
 
