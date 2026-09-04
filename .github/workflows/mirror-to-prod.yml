@@ -1,8 +1,14 @@
 # Manual gate — promote main to prod-css-is-awesome.
 #
 # Trigger: ONLY runs when you click "Run workflow" in the Actions tab.
-# Pushes to main do NOT auto-mirror to prod anymore. This is the deploy
-# button — click it when you're ready for cssisawesome.com to move.
+# Pushes to main do NOT auto-mirror to prod. This is the deploy button —
+# click it when you're ready for cssisawesome.com to move.
+#
+# Hosting (since 2026-09-04): Vercel, with prod-css-is-awesome as the
+# project's Production Branch. Vercel auto-builds and deploys as soon as
+# this workflow pushes the branch — there is no further manual step.
+# (Do NOT set NEXT_BASE_PATH on Vercel; that env is only for the GitHub
+# Pages mirror, which serves under /css-is-awesome/.)
 #
 # By default the workflow mirrors origin/main. Pass a different ref or
 # SHA via the input box if you want to ship from an earlier point.
