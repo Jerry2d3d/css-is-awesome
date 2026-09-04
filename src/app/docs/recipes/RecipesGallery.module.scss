@@ -1,0 +1,33 @@
+@use 'mixins' as m;
+
+/* Dashboard shell preview — the parts that need a real breakpoint
+   (inline styles can't carry media queries). Below md the shell
+   restacks to one column and the sidebar nav becomes a wrap row
+   above the content — the doctrine: mobile is a different map. */
+.dashShell {
+  display: grid;
+  grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
+  gap: var(--space-md);
+  align-items: start;
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-md, 8px);
+  padding: var(--space-md);
+  background: var(--paper-raised);
+
+  @include m.media-down(md) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.dashNav {
+  display: grid;
+  gap: 2px;
+
+  @include m.media-down(md) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: m.space(1);
+    padding-block-end: m.space(2);
+    border-block-end: 1px solid var(--hair-soft);
+  }
+}
