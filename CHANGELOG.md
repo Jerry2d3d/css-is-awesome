@@ -1,3 +1,15 @@
+# [1.6.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.5.0...v1.6.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* **mobile:** dashboard shell preview actually restacks on phones ([985a380](https://github.com/Jerry2d3d/css-is-awesome/commit/985a38045f1e82b517fc4a552a6f8ede969f9f7d))
+
+
+### Features
+
+* **site:** dashboard shell mobile nav folds into a cia.dropdown ([4a0888f](https://github.com/Jerry2d3d/css-is-awesome/commit/4a0888f8855f563d106bbec56258323ff61445c8))
+
 # [1.5.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.4.0...v1.5.0) (2026-09-04)
 
 

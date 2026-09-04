@@ -6,6 +6,7 @@
 // handed in as the serializable `recipes` prop, so the build-time fs/markdown
 // read never reaches the client bundle.
 import Link from "next/link";
+import styles from "./RecipesGallery.module.scss";
 import Example from "@/components/Example";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
@@ -247,30 +248,37 @@ export default function RecipesGallery({ recipes }: { recipes: RecipeCard[] }) {
 
       <h2 id="dashboard-shell">Dashboard shell</h2>
       <p>
-        A two-column app shell: sticky sidebar nav plus a main content region
-        with a KPI row and a stack of cards. The grid collapses to one column
-        on narrow viewports via <code>auto-fit</code>.
+        A two-column app shell: sidebar nav plus a main content region with a
+        KPI row and a stack of cards. Below the <code>md</code> breakpoint the
+        shell restacks to one column and the sidebar folds into a dropdown
+        menu (<code>cia.dropdown</code> — zero-JS, browser-managed) — mobile
+        is a different grid, not a squeezed sidebar.
       </p>
       <Example>
         <Example.Preview>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(0, 200px) 1fr",
-              gap: "var(--space-md)",
-              alignItems: "start",
-              border: "1px solid var(--border-default)",
-              borderRadius: "8px",
-              padding: "var(--space-md)",
-              background: "var(--paper-raised)",
-            }}
-          >
-            <nav style={{ display: "grid", gap: "2px" }} aria-label="Dashboard">
-              <a href="#" style={navLinkActiveStyle}>Overview</a>
-              <a href="#" style={navLinkStyle}>Projects</a>
-              <a href="#" style={navLinkStyle}>Team</a>
-              <a href="#" style={navLinkStyle}>Billing</a>
-              <a href="#" style={navLinkStyle}>Settings</a>
+          <div className={styles.dashShell}>
+            <nav className={styles.dashNav} aria-label="Dashboard">
+              {/* Mobile: the sidebar folds into a cia.dropdown menu. The
+                  browser manages open state / Esc / outside-tap via the
+                  popover attributes — zero JS. */}
+              <button type="button" className={styles.dashNavTrigger} popoverTarget="dash-nav-menu">
+                Overview <span aria-hidden="true">▾</span>
+              </button>
+              <div id="dash-nav-menu" popover="auto" className={styles.dashNavMenu}>
+                <a href="#" aria-current="page">Overview</a>
+                <a href="#">Projects</a>
+                <a href="#">Team</a>
+                <a href="#">Billing</a>
+                <a href="#">Settings</a>
+              </div>
+              {/* Desktop: the plain vertical list. */}
+              <div className={styles.dashNavList}>
+                <a href="#" style={navLinkActiveStyle}>Overview</a>
+                <a href="#" style={navLinkStyle}>Projects</a>
+                <a href="#" style={navLinkStyle}>Team</a>
+                <a href="#" style={navLinkStyle}>Billing</a>
+                <a href="#" style={navLinkStyle}>Settings</a>
+              </div>
             </nav>
             <div style={{ display: "grid", gap: "var(--space-md)" }}>
               <div style={{ display: "flex", gap: "var(--space-sm)", flexWrap: "wrap" }}>
