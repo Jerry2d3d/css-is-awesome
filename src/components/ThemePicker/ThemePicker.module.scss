@@ -5,9 +5,40 @@
   // A theme switcher is a screen affordance — it means nothing on paper.
   @include m.print-hidden;
   position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 9999;
+  right: m.space(4);
+  bottom: m.space(4);
+  z-index: m.z(toast);
+  @include m.flex($direction: column, $gap: m.space(2), $align: end);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Collapsed-mode disc — true phone widths only (below sm/640px);
+   mobile-only (md/768px) was catching narrow desktop windows too. */
+.toggle {
+  display: none;
+
+  @include m.media-down(sm) {
+    @include m.flex($justify: center, $inline: true);
+    cursor: pointer;
+    /* 44px tap target — m.grid(11) = 11 × 4px; the space() scale tops out at 9. */
+    width: m.grid(11);
+    height: m.grid(11);
+    border-radius: 50%;
+    border: 1px solid var(--hair, rgba(0, 0, 0, 0.12));
+    background: var(--paper-raised, #fff);
+    box-shadow: var(--shadow-md, 0 6px 20px rgba(0, 0, 0, 0.12));
+    font-size: 1.15rem;
+    @include m.transition(box-shadow, transform);
+  }
+
+  &[aria-expanded="true"] {
+    transform: scale(0.94);
+  }
+}
+
+.panel {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -17,10 +48,15 @@
   border: 1px solid var(--hair, rgba(0,0,0,0.12));
   border-radius: var(--r-md, 8px);
   box-shadow: var(--shadow-md, 0 6px 20px rgba(0,0,0,0.12));
-  font-family: var(--font-sans, system-ui, sans-serif);
-  font-size: 12px;
-  line-height: 1.4;
   max-width: 200px;
+
+  /* Phones: the panel exists only while the disc says it's expanded —
+     semantic state hangs off the ARIA attribute, not a class. */
+  @include m.media-down(sm) {
+    .toggle[aria-expanded="false"] + & {
+      display: none;
+    }
+  }
 }
 .picker .label {
   font-size: 10px;
@@ -34,7 +70,11 @@
   grid-template-columns: 1fr 1fr;
   gap: 4px;
 }
-.picker button {
+/* Scoped to the theme buttons only — `.picker button` also caught the
+   collapse toggle, and its `all: unset` outranked the toggle's own
+   `display: none` (class+element beats lone class), leaking the disc
+   into desktop view as bare text. */
+.row button {
   all: unset;
   cursor: pointer;
   padding: 5px 8px;
@@ -46,15 +86,24 @@
   font: inherit;
   transition: background 120ms ease, border-color 120ms ease;
 }
-.picker button:hover {
+.row button:hover {
   background: var(--paper-sunk, rgba(0,0,0,0.05));
 }
-.picker button[aria-pressed="true"] {
+.row button[aria-pressed="true"] {
   background: var(--ai-wash, rgba(0,0,0,0.08));
   border-color: var(--ai, currentColor);
   color: var(--ai, currentColor);
   font-weight: 600;
 }
-@media (max-width: 560px) {
-  .picker { right: 8px; bottom: 8px; padding: 8px; }
+@include m.mobile-only {
+  .picker { right: m.space(2); bottom: m.space(2); }
+  .panel { padding: m.space(2); }
+}
+
+/* Docs routes: below lg (1024px) the DocsDock owns the bottom edge and its
+   Theme sheet replaces this picker — bow out entirely so they never stack. */
+.yieldToDock {
+  @include m.media-down(lg) {
+    display: none;
+  }
 }

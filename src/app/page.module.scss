@@ -1,3 +1,5 @@
+@use 'mixins' as m;
+
 /* ============================================================
    Landing page (/) — CSS Module styles.
    Imported from page.tsx via `import styles from "./page.module.scss"`.
@@ -8,12 +10,14 @@
    NAVIGATION
    ============================================================ */
 .mainNav {
-  display: inline-flex;
-  align-items: center;
-  gap: 2rem;
+  @include m.flex($gap: m.space(6), $justify: center, $wrap: wrap, $inline: true);
   font-family: var(--font-serif);
   font-size: 0.95rem;
   letter-spacing: 0.04em;
+
+  @include m.mobile-only {
+    gap: m.space(2) m.space(5);
+  }
 }
 .mainNav a {
   color: var(--ink-faint);
@@ -52,6 +56,16 @@
   margin: 0 auto;
   text-align: center;
   position: relative;
+
+  @include m.mobile-only {
+    /* Top: the stamp sits in the top margin — keep clear of it without
+       pushing the hero below the fold. Sides: text (the tagline especially)
+       needs breathing room off the screen edges in every theme. Bottom:
+       the theme-picker disc floats in the corner — end above it.
+       (Scale note: cia's numbered spacing scale is 1–9; 5 = 24px,
+       8 = 64px. Unknown keys pass through raw and invalidate the rule.) */
+    padding: m.space(8) m.space(5) m.space(8);
+  }
 }
 .wordmark {
   display: flex;
@@ -106,9 +120,17 @@
   margin: 0;
 }
 .stats {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 1rem;
+  @include m.flex($gap: m.space(5), $justify: center, $wrap: wrap);
+  margin-top: m.space(4);
+
+  /* Phones: chips stack one per row instead of fighting for one line. */
+  @include m.mobile-only {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: m.space(2);
+    width: 100%;
+    max-width: 18rem;
+  }
 }
 
 .footer {

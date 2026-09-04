@@ -6,16 +6,25 @@
    warning-text so it clears WCAG AA 4.5:1 against --ochre-wash while
    the ochre border still carries the marginalia colour. */
 .stamp {
-  position: fixed;
-  top: m.space(6);
-  right: m.space(6);
-  padding: m.space(1) m.space(4);
+  /* absolute, not fixed: the stamp is marginalia inked at the top of the
+     page — it scrolls away with the sheet instead of chasing the viewport. */
+  position: absolute;
+  top: m.space(4);
+  right: m.space(4);
+  padding: m.space(1) m.space(3);
   border: 2px solid var(--ochre);
   background: var(--ochre-wash);
   color: m.color(warning-text);
-  @include m.font(bold, xs, none, $ls: 0.22em, $family: m.font-family(mono));
+  @include m.font(bold, xs, none, $ls: 0.18em, $family: m.font-family(mono));
   text-transform: uppercase;
   transform: rotate(-4deg);
-  z-index: 60;
+  z-index: m.z(sticky);
   pointer-events: none;
+
+  @include m.mobile-only {
+    top: m.space(3);
+    right: m.space(3);
+    padding: m.space(1) m.space(2);
+    letter-spacing: 0.1em;
+  }
 }

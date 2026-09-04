@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import styles from "./ThemePicker.module.scss";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 
@@ -39,25 +40,53 @@ function mode(theme: string): "light" | "dark" {
   return ALIAS_MODE[theme] ?? "light";
 }
 
-export default function ThemePicker() {
+export default function ThemePicker({
+  hideAtDockWidths = false,
+}: {
+  // Docs routes ship the DocsDock below 1024px, whose Theme sheet covers
+  // theme switching there — the floating picker bows out at those widths.
+  hideAtDockWidths?: boolean;
+} = {}) {
   const active = useThemeAttribute() ?? "sketchbook-light";
   const activeFamily = family(active);
   const activeMode = mode(active);
 
+  // Phones: the panel starts collapsed behind a small corner disc so it
+  // doesn't sit over the content. Desktop ignores the toggle entirely
+  // (it's display:none there and the panel is always open).
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className={styles.picker} aria-label="Theme picker">
-      <div className={styles.label}>Theme</div>
-      <div className={styles.row}>
-        {THEMES.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            aria-pressed={family(t.id) === activeFamily}
-            onClick={() => setTheme(`${family(t.id)}-${activeMode}`)}
-          >
-            {t.label}
-          </button>
-        ))}
+    <div
+      className={hideAtDockWidths ? `${styles.picker} ${styles.yieldToDock}` : styles.picker}
+      aria-label="Theme picker"
+    >
+      <button
+        type="button"
+        className={styles.toggle}
+        aria-expanded={open}
+        aria-controls="theme-picker-panel"
+        aria-label="Choose a theme"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span aria-hidden="true">🎨</span>
+      </button>
+      <div id="theme-picker-panel" className={styles.panel}>
+        <div className={styles.label}>
+          <span aria-hidden="true">🎨</span> Theme
+        </div>
+        <div className={styles.row}>
+          {THEMES.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              aria-pressed={family(t.id) === activeFamily}
+              onClick={() => setTheme(`${family(t.id)}-${activeMode}`)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
