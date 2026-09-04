@@ -131,9 +131,12 @@
     right: 0;
     z-index: 9;             /* under the header bar, over the scrim */
     background: var(--paper-raised);
+    /* Hairline rules top and bottom frame the panel against the bar
+       above and the page below. */
+    border-top: 1px solid var(--hair);
     border-bottom: 1px solid var(--hair);
     box-shadow: var(--shadow-md);
-    padding: 0.9rem 1rem 1.1rem;
+    padding: 1.1rem 1.25rem 1.35rem;
     transform: translateY(-110%);
     transition: transform var(--duration-normal) var(--ease);
     visibility: hidden;
@@ -148,17 +151,19 @@
     padding: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.35rem;
+    gap: 0.5rem;
   }
   .menuPanel a {
-    display: block;
+    display: flex;
+    align-items: center;
+    min-height: 44px;       /* comfortable tap target (WCAG 2.5.8 AAA) */
     font-family: var(--font-display);
     font-size: 0.95rem;
     color: var(--ink);
     background: var(--paper);
     border: 1px solid var(--hair);
     border-radius: var(--r-lg);
-    padding: 0.55rem 0.75rem;
+    padding: 0.6rem 0.9rem;
     transition: border-color var(--duration-fast) var(--ease);
   }
   .menuPanel a:hover { border-color: var(--ai); }

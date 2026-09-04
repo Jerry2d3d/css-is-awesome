@@ -63,12 +63,22 @@
   display: inline-flex;
 }
 
+/* The open dropdown list must never inherit tricks played on the closed
+   control — desktop-style pickers (and DevTools device mode) render options
+   with the select's inherited color, which the icon-only mode below sets
+   to transparent. Pin readable ink + paper and give rows breathing room. */
+.select option {
+  color: var(--ink);
+  background: var(--paper);
+  padding: 0.5rem 0.75rem;
+}
+
 @include m.media-down(lg) {
   .select {
     inline-size: var(--control-h, 2.25rem);
     padding-inline: 0;
     /* Hides the selected label AND the currentColor chevron in one go;
-       the OS option sheet is unaffected. */
+       the open list re-pins its own color above. */
     color: transparent;
   }
   .wrap::before {
