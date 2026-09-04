@@ -74,11 +74,19 @@
 
       @supports (anchor-name: --a) {
         position-anchor: --dash-nav-trigger;
-        inset-inline: anchor(start) anchor(end);  /* = the trigger's width */
-        inset-block-start: calc(anchor(end) + #{m.space(1)});
+        /* Same width as the selection box. */
+        inset-inline: anchor(start) anchor(end);
+        /* Just a line between the box and the menu, not a gap. */
+        inset-block-start: calc(anchor(end) + 2px);
         /* Always right under the box — unless that would run off the
            bottom of the screen, then flip to open above it. */
         position-try-fallbacks: flip-block;
+      }
+
+      /* Long labels wrap inside the box-width menu instead of clipping. */
+      a {
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
     }
 
