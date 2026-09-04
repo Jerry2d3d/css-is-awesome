@@ -240,6 +240,16 @@
   &[popover] {
     margin: 0;
     inset: unset;
+
+    /* dropdown-menu's author-level `display: flex` outranks the UA's
+       `[popover] { display: none }` closed state — without this guard the
+       menu renders permanently open, in flow. Re-assert closed, and
+       restore flex only while actually open. */
+    display: none;
+
+    &:popover-open {
+      display: flex;
+    }
   }
 
   &:popover-open {

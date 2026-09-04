@@ -1,3 +1,16 @@
+## [1.6.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.6.0...v1.6.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **dropdown:** cia.dropdown no longer renders permanently open on [popover] ([4f3a325](https://github.com/Jerry2d3d/css-is-awesome/commit/4f3a325f0e267917bc4422e2f7e2c724c585e708))
+* **mobile:** dashboard dropdown opens under the box, flips above at screen bottom ([e29fd6a](https://github.com/Jerry2d3d/css-is-awesome/commit/e29fd6a60166135f2cce2182ca93e30551e7dc5e)), closes [#8](https://github.com/Jerry2d3d/css-is-awesome/issues/8)
+* **mobile:** dropdown sits a line under its box; long links wrap ([3955ea8](https://github.com/Jerry2d3d/css-is-awesome/commit/3955ea8aa30dc8d0570737807cd2ad8c9b373c34))
+* **mobile:** exactly 1px between the dropdown button and its menu ([95bb067](https://github.com/Jerry2d3d/css-is-awesome/commit/95bb0673e7c7a582b06272563604c584cc04e226))
+* **mobile:** full-width rule - dashboard dropdown spans, shell loses double frame ([3c2a5ee](https://github.com/Jerry2d3d/css-is-awesome/commit/3c2a5eeff78ca236b14f93ef60bb7e2665889da5)), closes [#8](https://github.com/Jerry2d3d/css-is-awesome/issues/8)
+* **mobile:** picking a dropdown selection closes the dashboard menu ([3a8fbd6](https://github.com/Jerry2d3d/css-is-awesome/commit/3a8fbd67e742774e4ac1f8fe8082a4008d0b20e8))
+* **mobile:** the rule is take-the-space-you-are-in, not span-the-viewport ([6698aaa](https://github.com/Jerry2d3d/css-is-awesome/commit/6698aaa4d65fd88298b51df6dae19212dd37cb2d)), closes [#8](https://github.com/Jerry2d3d/css-is-awesome/issues/8)
+
 # [1.6.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.5.0...v1.6.0) (2026-09-04)
 
 
