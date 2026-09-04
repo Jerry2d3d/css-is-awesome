@@ -17,6 +17,55 @@
   border-collapse: collapse;
 }
 
+/* ------------------------------------------------------------
+   Phones: the table restacks into cards — one card per row, each
+   cell a labeled line (labels come from data-label + ::before).
+   The thead disappears; sorting/selection still work, they just
+   read as card controls.
+   ------------------------------------------------------------ */
+@include m.media-down(md) {
+  .table thead {
+    display: none;
+  }
+
+  .table,
+  .table tbody {
+    display: block;
+  }
+
+  .table tbody tr {
+    display: block;
+    border: 1px solid m.color(border-default);
+    border-radius: m.radius(md);
+    background: m.color(surface-default);
+    padding: m.space(3) m.space(4);
+    margin-block-end: m.space(3);
+  }
+
+  .table tbody td {
+    display: block;
+    border: 0;
+    padding: m.space(1) 0;
+    text-align: start; /* align-end columns read left in a card */
+  }
+
+  /* Cells with a label become label + value lines. */
+  .table tbody td[data-label] {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: m.space(3);
+    align-items: baseline;
+
+    &::before {
+      content: attr(data-label);
+      @include m.font(medium, 1);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: m.color(text-secondary);
+    }
+  }
+}
+
 .striped tbody tr:nth-child(even) {
   background: m.color(surface-muted);
 }
