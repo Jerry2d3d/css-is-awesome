@@ -77,7 +77,24 @@
 @media (max-width: 1024px) {
   /* the 8-link row goes away; theme controls stay */
   .nav { display: none; }
-  .inner { gap: 0.9rem; padding: 0.8rem 1rem; }
+
+  /* CSS Grid: three tracks — burger | brand | controls. The brand owns
+     the only flexible track (minmax(0, 1fr)), so it shrinks and clips
+     instead of pushing the controls off the right edge. */
+  .inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+  }
+  .brand {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
 
   .burger {
     display: grid;
@@ -103,8 +120,7 @@
     border-color: var(--ai);
   }
 
-  /* brand takes the leftover space */
-  .brand { margin-right: auto; }
+  /* (brand sizing now handled by the grid track above) */
 
   /* scrim under the panel, over the page */
   .menuScrim {
