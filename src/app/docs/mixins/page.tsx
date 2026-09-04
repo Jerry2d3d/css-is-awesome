@@ -343,12 +343,12 @@ export default function DocsMixinsPage() {
         <code>container</code> to make components respond to their own width.
       </p>
 
-      <h3 id="bp"><code>bp</code>, <code>bp-down</code>, <code>bp-between</code></h3>
+      <h3 id="bp"><code>media</code>, <code>media-down</code>, <code>media-between</code></h3>
       <p>Viewport media queries — <code>min-width</code>, <code>max-width</code>, and ranged.</p>
       <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">bp</span>(<span className="tok-val">$size</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">bp-down</span>(<span className="tok-val">$size</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">bp-between</span>(<span className="tok-val">$min, $max</span>);
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">media</span>(<span className="tok-val">$size</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">media-down</span>(<span className="tok-val">$size</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">media-between</span>(<span className="tok-val">$min, $max</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">.hero</span> {"{"}
 {"\n"}  <span className="tok-prop">font-size</span>: <span className="tok-val">2rem</span>;
@@ -836,8 +836,14 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">form-error</span>;</Example.Code>
       </Example>
 
-      <h3 id="nav-mixins">Navigation — navbar, nav, breadcrumb, tabs, pagination</h3>
-      <p>From <code>components/navigation</code>.</p>
+      <h3 id="nav-mixins">Navigation — navbar, nav, breadcrumb, tabs, pagination, mobile toolkit</h3>
+      <p>
+        From <code>components/navigation</code>. The mobile toolkit —{" "}
+        <code>hamburger</code>, <code>drawer</code>, <code>sheet</code>,{" "}
+        <code>dock</code> — is zero-JS on the native Popover API: the browser
+        manages <code>aria-expanded</code>, Esc and light-dismiss. The full
+        playbook is <Link href="/docs/mobile">/docs/mobile</Link>.
+      </p>
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">navbar-base</span>(<span className="tok-val">...</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">navbar-brand</span>(<span className="tok-val">$gap: 2</span>);
@@ -851,11 +857,28 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">tab-item</span>(<span className="tok-val">$py: 2, $px: 4, $active-color: action-primary-default</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">pagination</span>(<span className="tok-val">$gap: 2xs</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">pagination-item</span>(<span className="tok-val">$size: 2.25rem, $r: md</span>);</Example.Code>
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">pagination-item</span>(<span className="tok-val">$size: 2.25rem, $r: md</span>);
+{"\n"}
+{"\n"}<span className="tok-com">{"// mobile toolkit — zero-JS, native Popover API"}</span>
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">hamburger</span>(<span className="tok-val">$color: text-primary, $bar-width: 1.375rem, $bar-height: 2px, $gap: 5px, $target: 44px</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">hamburger-open</span>;
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">drawer</span>(<span className="tok-val">$side: end, $size: 20rem, $bg: surface-default, $backdrop: rgba(0, 0, 0, 0.4), $p: 5, $shadow: lg</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">sheet</span>(<span className="tok-val">$size: auto, $max: 72dvh, $bg: surface-default, $backdrop: rgba(0, 0, 0, 0.4), $p: 5, $r: xl</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dock</span>(<span className="tok-val">$slots: 3, $bg: surface-default</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dock-item</span>(<span className="tok-val">$accent: action-primary-default</span>);</Example.Code>
       </Example>
 
       <h3 id="overlay-mixins">Overlays — modals, tooltips, popovers, dropdowns</h3>
-      <p>From <code>components/overlay</code>.</p>
+      <p>
+        From <code>components/overlay</code>. <code>tooltip</code> and{" "}
+        <code>dropdown</code> wrap their base mixins with native{" "}
+        <code>[popover]</code> semantics — pair with a{" "}
+        <code>popovertarget</code> trigger and the browser handles open,
+        light-dismiss and Escape with zero JS. <code>dropdown</code> also
+        guards its own closed state, re-asserting <code>display: flex</code>{" "}
+        only under <code>:popover-open</code> so the menu never renders
+        permanently open.
+      </p>
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">modal-backdrop</span>(<span className="tok-val">$bg: rgba(0, 0, 0, 0.5)</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">modal-base</span>(<span className="tok-val">$p: 5, $r: xl, $shadow: 5, $max-width: 500px</span>);
@@ -863,11 +886,13 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">modal-footer</span>(<span className="tok-val">$pt: 2</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">tooltip-base</span>(<span className="tok-val">$py, $px, $r: md, $bg, $color</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">tooltip</span>;   <span className="tok-com">{"// tooltip-base + [popover] semantics"}</span>
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">popover-base</span>(<span className="tok-val">$p: 4, $r: lg, $shadow: 3, $max-width: 320px</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown-menu</span>(<span className="tok-val">$py: 1, $r: md, $shadow: 2, $min-width: 12rem</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown-item</span>(<span className="tok-val">$py: 1, $px: 4</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown-divider</span>(<span className="tok-val">$spacing: 1</span>);</Example.Code>
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown-divider</span>(<span className="tok-val">$spacing: 1</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown</span>;  <span className="tok-com">{"// dropdown-menu + [popover] semantics + closed-state guard"}</span></Example.Code>
       </Example>
 
       <h2 id="writing-your-own">Writing your own mixins</h2>
@@ -918,8 +943,8 @@ export default function DocsMixinsPage() {
         <li><strong>Feedback:</strong> <code>alert-base</code>, <code>alert</code>, <code>toast-base</code>, <code>tag</code>, <code>progress</code>, <code>progress-track-base</code>, <code>progress-fill-base</code>, <code>spinner</code>, <code>skeleton</code></li>
         <li><strong>Data:</strong> <code>table-base</code>, <code>card-base</code>, <code>badge-base</code>, <code>badge</code></li>
         <li><strong>Forms:</strong> <code>input-base</code>, <code>select-base</code>, <code>textarea-base</code>, <code>check-base</code>, <code>radio-base</code>, <code>switch-base</code>, <code>slider-base</code>, <code>label-base</code>, <code>form-layout</code>, <code>form-group</code>, <code>form-row</code>, <code>form-help</code>, <code>form-error</code></li>
-        <li><strong>Navigation:</strong> <code>navbar-base</code>, <code>navbar-brand</code>, <code>navbar-nav</code>, <code>navbar-link</code>, <code>nav-base</code>, <code>breadcrumb</code>, <code>tabs-base</code>, <code>tab-item</code>, <code>pagination</code>, <code>pagination-item</code></li>
-        <li><strong>Overlays:</strong> <code>modal-backdrop</code>, <code>modal-base</code>, <code>modal-header</code>, <code>modal-footer</code>, <code>tooltip-base</code>, <code>popover-base</code>, <code>dropdown-menu</code>, <code>dropdown-item</code>, <code>dropdown-divider</code></li>
+        <li><strong>Navigation:</strong> <code>navbar-base</code>, <code>navbar-brand</code>, <code>navbar-nav</code>, <code>navbar-link</code>, <code>nav-base</code>, <code>breadcrumb</code>, <code>tabs-base</code>, <code>tab-item</code>, <code>pagination</code>, <code>pagination-item</code>, <code>hamburger</code>, <code>hamburger-open</code>, <code>drawer</code>, <code>sheet</code>, <code>dock</code>, <code>dock-item</code></li>
+        <li><strong>Overlays:</strong> <code>modal-backdrop</code>, <code>modal-base</code>, <code>modal-header</code>, <code>modal-footer</code>, <code>tooltip-base</code>, <code>tooltip</code>, <code>popover-base</code>, <code>dropdown-menu</code>, <code>dropdown-item</code>, <code>dropdown-divider</code>, <code>dropdown</code></li>
       </ul>
     </>
   );

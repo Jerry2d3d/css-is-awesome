@@ -3,11 +3,11 @@
 Every theme declares these tokens. The [theme validator](./scripts/theme-validator.js) enforces completeness on every PR against the machine-readable companion at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
 
 - **Source of truth:** this document.
-- **Reference implementation:** [`public/theme.css`](./public/theme.css) (Sketchbook).
+- **Reference implementation:** [`public/themes/sketchbook/theme.css`](./public/themes/sketchbook/theme.css) (Sketchbook). (`public/theme.css` is the all-theme bundle.)
 - **Validate a theme:** `node scripts/theme-validator.js <path-to-theme.css>`
 - **Validate every theme in the repo:** `npm run validate-themes`
 
-A theme file is a single `:root { … }` block plus (optionally) an `@import` for fonts. No component CSS lives in a theme file. Tokens only.
+A theme file is a single token block plus (optionally) an `@import` for fonts — authored via `cia.theme()`, which emits it as `:root, :root[data-theme="<name>"]`. No component CSS lives in a theme file. Tokens only.
 
 ---
 
@@ -18,7 +18,7 @@ Library mixins resolve every token through a `var(--token, fallback)` pattern, s
 | Mixin call                       | Emitted CSS                              | Required token       |
 | -------------------------------- | ---------------------------------------- | -------------------- |
 | `m.color(surface-default)`       | `var(--surface-default, #fff)`           | `--surface-default`  |
-| `m.space(md)`                    | `var(--space-md, 1rem)`                  | `--space-md`         |
+| `m.space(4)`                     | `var(--space-4, 1rem)`                   | `--space-4`          |
 | `m.radius(lg)`                   | `var(--radius-lg, 0.5rem)`               | `--radius-lg`        |
 | `m.shadow(md)`                   | `var(--shadow-md, …)`                    | `--shadow-md`        |
 | `m.font-family(primary)`         | `var(--font-primary, sans-serif)`        | `--font-primary`     |
@@ -218,14 +218,22 @@ These are the raw pigment tokens. Semantic aliases below reference them. In othe
 
 ## Space scale
 
-| Token         | Type   | Example   | Purpose                     |
-| ------------- | ------ | --------- | --------------------------- |
-| `--space-2xs` | length | `0.25rem` | Hairline gap / 2xs padding  |
-| `--space-xs`  | length | `0.5rem`  | Tight gap / xs padding      |
-| `--space-sm`  | length | `0.75rem` | Compact gap / sm padding    |
-| `--space-md`  | length | `1rem`    | Default gap / md padding    |
-| `--space-lg`  | length | `1.5rem`  | Comfortable gap / lg padding |
-| `--space-xl`  | length | `2rem`    | Section gap / xl padding    |
+The **numbered scale is the source of truth and is contract-required**: a theme declares `--space-0` … `--space-9`, and `cia.space(N)` compiles to `var(--space-N)` — so a theme can re-proportion the page, not just recolor it.
+
+| Token                       | Type   | Example (default rhythm)          | Purpose                          |
+| --------------------------- | ------ | --------------------------------- | -------------------------------- |
+| `--space-0` … `--space-9`   | length | `0`, `0.25rem`, `0.5rem`, … `6rem` | The numbered scale — **required** |
+
+The t-shirt names are **optional aliases**. The library emits `xs`–`xl` as `var()` references into the numbered scale, so they follow it automatically; `--space-2xs` sits outside the numbered scale and emits as a literal:
+
+| Token         | Type   | Emitted as         | Purpose                     |
+| ------------- | ------ | ------------------ | --------------------------- |
+| `--space-2xs` | length | `0.25rem` (literal) | Hairline gap / 2xs padding  |
+| `--space-xs`  | length | `var(--space-1)`   | Tight gap / xs padding      |
+| `--space-sm`  | length | `var(--space-2)`   | Compact gap / sm padding    |
+| `--space-md`  | length | `var(--space-4)`   | Default gap / md padding    |
+| `--space-lg`  | length | `var(--space-5)`   | Comfortable gap / lg padding |
+| `--space-xl`  | length | `var(--space-6)`   | Section gap / xl padding    |
 
 ---
 
@@ -425,9 +433,20 @@ onto `--paper` so the math reflects what users actually see.
 | `--warning-text` on `--warning-subtle`                | 4.5 : 1  | text     |
 | `--error-text` on `--error-subtle`                    | 4.5 : 1  | text     |
 | `--info-text` on `--info-subtle`                      | 4.5 : 1  | text     |
-| `--border-default` on `--paper`                       | 3.0 : 1  | non-text |
+| `--border-default` on `--paper`                       | 3.0 : 1  | non-text (decorative — reported as info, never FAIL) |
 | `--border-focus` on `--paper`                         | 3.0 : 1  | non-text |
 | `--shu` on `--paper`                                  | 3.0 : 1  | non-text |
+| `--code-ink` on `--code-bg`                           | 4.5 : 1  | text     |
+| `--code-muted` on `--code-bg`                         | 4.5 : 1  | text     |
+| `--code-accent` on `--code-bg`                        | 4.5 : 1  | text     |
+| `--code-blue` on `--code-bg`                          | 4.5 : 1  | text     |
+| `--code-green` on `--code-bg`                         | 4.5 : 1  | text     |
+
+That's **22 audited pairs per theme**, the five `--code-*` pairs included —
+syntax highlighting is body text, so it carries the full 4.5:1 requirement.
+For dual-mode themes the audit evaluates **both** `light-dark()` branches and
+keeps the worse result. `--border-default` is treated as decorative per WCAG
+2.2 SC 1.4.11 and reports as info, not FAIL.
 
 Each pair is reported as **PASS**, **WARN** (close to threshold; `--text-tertiary`
 and `--ink-faint` warn when they pass the 3:1 large-text bar but fall below the
@@ -450,7 +469,7 @@ The contract is versioned via `scripts/theme-contract.json` (`version: "1"`).
 - **Minor bump** (`"1" → "1.1"`): adds OPTIONAL tokens. Existing themes remain valid.
 - **Major bump** (`"1" → "2"`): renames or removes REQUIRED tokens. Existing themes must migrate.
 
-Any PR that adds a new `m.color(X)` / `m.space(X)` / `m.radius(X)` reference in the library must add `--X` to both this document and `scripts/theme-contract.json`, and add a declaration to every theme in `public/theme.css` and `public/themes/*/theme.css`. The `npm run validate-themes` check in CI will block the merge otherwise.
+Any PR that adds a new `m.color(X)` / `m.space(X)` / `m.radius(X)` reference in the library must add `--X` to both this document and `scripts/theme-contract.json`, and add a declaration to every theme source in `scss/themes/*.scss` (then `npm run build:css:themes` — the CSS under `public/` is generated, never hand-edited). The `npm run validate-themes` check in CI will block the merge otherwise.
 
 ---
 

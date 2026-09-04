@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Example from "@/components/Example";
 
 export default function CompositionPage() {
@@ -14,8 +15,8 @@ export default function CompositionPage() {
       <p>
         Written equally for two audiences: humans authoring components and AI
         agents generating cia code via the{" "}
-        <a href="/docs/mcp">MCP server</a>. The decision tree is identical for
-        both.
+        <Link href="/docs/mcp">MCP server</Link>. The decision tree is
+        identical for both.
       </p>
 
       <h2 id="tree">The decision tree</h2>
@@ -46,11 +47,17 @@ export default function CompositionPage() {
     │       Extend via @content: cia.btn(primary) { letter-spacing: 0.05em; }
     │
     ├─ Does a recipe show the pattern? → follow scss/recipes/<name>.md
-    │       (dialog, combobox, datepicker, etc.)
+    │       (dialog, combobox, mobile-nav, bottom-nav, print-to-pdf)
     │
     └─ Otherwise: compose from cia primitives
             (m.flex / m.stack / m.cluster / m.btn-base / m.focus-ring / m.transition)`}</Example.Code>
       </Example>
+      <p>
+        Page-level structure — shells, named grid areas, the mobile toolkit —
+        has its own decision path: <code>m.page-layout()</code> /{" "}
+        <code>m.layout()</code>, covered in the{" "}
+        <Link href="/docs/mobile">mobile playbook</Link>.
+      </p>
 
       <h2 id="tokens">Branch 1 — Themed tokens (color, type, radius, shadow, motion)</h2>
       <p>
@@ -153,8 +160,8 @@ export default function CompositionPage() {
       <h2 id="recipes">Branch 5b — Recipes for higher-level patterns</h2>
       <p>
         When a single mixin isn&apos;t enough, cia ships recipes — full
-        framework-agnostic patterns for components like dialog, combobox,
-        datepicker, command palette. Each recipe is a markdown file at{" "}
+        framework-agnostic patterns: dialog, combobox, print-to-PDF,
+        mobile-nav, bottom-nav. Each recipe is a markdown file at{" "}
         <code>scss/recipes/&lt;name&gt;.md</code> with structure, styling,
         a11y, and framework examples.
       </p>

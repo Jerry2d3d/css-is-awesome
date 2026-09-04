@@ -70,9 +70,14 @@ export default function RoadmapPage() {
           <Link href="/docs/mcp">Tool reference</Link>.
         </li>
         <li>
-          <strong>A recipes book</strong> &mdash; framework-agnostic patterns
-          for dialog, combobox and print-to-PDF.{" "}
+          <strong>A recipes book</strong> &mdash; five framework-agnostic
+          patterns: dialog, combobox, print-to-PDF, mobile-nav and bottom-nav.{" "}
           <Link href="/docs/recipes">Browse them</Link>.
+        </li>
+        <li>
+          <strong>A zero-JS mobile toolkit</strong> &mdash; hamburger, drawer,
+          sheet and dock mixins on the native Popover API, plus the playbook
+          that ties them together. <Link href="/docs/mobile">Mobile</Link>.
         </li>
         <li>
           <strong>A theme editor</strong> on this site, with a download that

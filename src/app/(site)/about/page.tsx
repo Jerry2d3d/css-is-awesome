@@ -1,4 +1,6 @@
 import styles from "./page.module.scss";
+// Version comes from package.json — a hand-typed stamp drifts silently.
+import { version } from "../../../../package.json";
 import Principle from "@/components/Principle";
 import TimelineItem from "@/components/TimelineItem";
 import Seal from "@/components/Seal";
@@ -43,7 +45,7 @@ export default function AboutPage() {
           <TimelineItem date="2025 — the package" title="v0.1.0 is cut.">A token-driven SCSS design system takes shape. Light and dark themes, semantic tokens, an ~800-LOC mixin API, Figma tokens auto-generated from Tokens Studio.</TimelineItem>
           <TimelineItem date="2026 — the themes" title="Five voices, one system.">Zen, Bricks, Brutalist, Terminal, Blueprint — each a full skin, each honoring the overflow. Sketchbook arrives later in the year.</TimelineItem>
           <TimelineItem date="now — for agents" title="An MCP server, shipped.">The MCP server is live — it ships inside the npm package and hands agents like Claude, Cursor, and Gemini a set of tools to reason about the system directly, no repo grep-walking required. Still on the way: a companion CLI for scaffolding, and custom bots that speak it fluently.</TimelineItem>
-          <TimelineItem date="2026 — the launch" title="Published, public, live.">The first release lands on npm — <code>npm install css-is-awesome</code> is real, jsDelivr and unpkg mirror it, the GitHub repo is public, and this docs site is live on GitHub Pages.</TimelineItem>
+          <TimelineItem date="2026 — the launch" title="Published, public, live.">The first release lands on npm — <code>npm install css-is-awesome</code> is real, jsDelivr and unpkg mirror it, the GitHub repo is public, and this docs site is live at cssisawesome.com.</TimelineItem>
         </ol>
 
         <hr className="brush-rule" />
@@ -52,7 +54,7 @@ export default function AboutPage() {
         <p>This isn't Tailwind. It isn't Bootstrap. It isn't a component library with 80 prebuilt headers. It's a box of primitives — bricks, if you prefer — that hand you a palette, a grid, and the honest freedom to build the rest yourself.</p>
         <p>If you want a system that looks like every other site, reach for something else. If you want one that gives you the tools and gets out of the way, this is it.</p>
 
-        <p style={{ marginTop: '3rem' }}><Seal>Approved · v0.1</Seal></p>
+        <p style={{ marginTop: '3rem' }}><Seal>Approved · v{version}</Seal></p>
       </article>
     </>
   );

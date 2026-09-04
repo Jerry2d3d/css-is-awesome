@@ -6,9 +6,9 @@
 
 **Bring your own selectors. We bring the design system.** One CSS file per theme — drop it in and the page restyles, no markup change. 24 themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
 
-**Docs:** [jerry2d3d.github.io/css-is-awesome](https://jerry2d3d.github.io/css-is-awesome/) · **Install:** `npm install css-is-awesome`
+**Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
-> **Shipped in 1.0.0:** a **recipes book** for building any component in any framework using cia mixins — five recipes today (`dialog`, `combobox`, `print-to-pdf`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://jerry2d3d.github.io/css-is-awesome/docs/recipes/).
+> **Shipped in 1.0.0:** a **recipes book** for building any component in any framework using cia mixins — five recipes today (`dialog`, `combobox`, `print-to-pdf`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
 
 ## For AI agents — start here
 
@@ -33,7 +33,7 @@ npm install -D @modelcontextprotocol/sdk zod   # required — npm will NOT insta
 
 The SDK and `zod` are declared as *optional* peer dependencies, so a plain `npm install css-is-awesome` skips them and the server exits with `@modelcontextprotocol/sdk is not installed`. Install both. `npx css-is-awesome-mcp` does **not** work around this — npx fetches the package but not its optional peers.
 
-Why it matters more here than for older frameworks: no model has memorised cia's API the way it has memorised Tailwind's class names. Without `llm.txt` or MCP, an agent will confidently invent a Tailwind-shaped API. With them, it reads the real thing. Details at [`/docs/mcp`](https://jerry2d3d.github.io/css-is-awesome/docs/mcp/).
+Why it matters more here than for older frameworks: no model has memorised cia's API the way it has memorised Tailwind's class names. Without `llm.txt` or MCP, an agent will confidently invent a Tailwind-shaped API. With them, it reads the real thing. Details at [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
 ## Three ways to use it
 
@@ -59,7 +59,7 @@ npm install -D sass
 <link rel="stylesheet" href="/cia/themes/boilerplate/theme.css">
 ```
 
-Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button` — plus the mobile navigation family (`hamburger`, `drawer`, `sheet`, `dock`) and print-to-PDF via a pure-CSS `@media print` layer. Full reference at [`/docs/mixins`](https://jerry2d3d.github.io/css-is-awesome/docs/mixins/).
+Author your own class names; the mixin handles the styling. Mixins for buttons, forms, layout, typography, color, motion, plus the six zero-JS components: `accordion`, `modal`, `tooltip`, `dropdown`, `tabs`, `copy-button` — plus the mobile navigation family (`hamburger`, `drawer`, `sheet`, `dock`) and print-to-PDF via a pure-CSS `@media print` layer. Full reference at [`/docs/mixins`](https://cssisawesome.com/docs/mixins/).
 
 **Two imports, two jobs.** Emit the tokens once from your root/global stylesheet (`@use 'css-is-awesome';` or `<link>` a theme file), then import the **zero-emit authoring barrel** in each component stylesheet:
 
@@ -122,7 +122,7 @@ One line styles the whole site. Zero classes. Wrapped in `:where()` (specificity
 <link rel="stylesheet" href="/themes/terminal-dark/theme.css"    media="(prefers-color-scheme: dark)">
 ```
 
-Newspaper by day, hacker terminal by night. No JS, no mixin — pure browser behavior. Most design systems give you dark mode; cia lets you ship a second brand at night. See [`/docs/themes/pairing`](https://jerry2d3d.github.io/css-is-awesome/docs/themes/pairing/).
+Newspaper by day, hacker terminal by night. No JS, no mixin — pure browser behavior. Most design systems give you dark mode; cia lets you ship a second brand at night. See [`/docs/themes/pairing`](https://cssisawesome.com/docs/themes/pairing/).
 
 Each theme is one file of CSS custom properties. Tokens only — no component rules. See `public/themes/<name>/theme.css` for the compiled output and `scss/themes/<name>.scss` for the sources. Full contract documented in [THEMING.md](./THEMING.md).
 
@@ -149,7 +149,7 @@ node scripts/theme-validator.js public/themes/midnight/theme.css
 #    <link rel="stylesheet" href="/themes/midnight/theme.css">
 ```
 
-Full authoring walkthrough: [`/docs/authoring/themes`](https://jerry2d3d.github.io/css-is-awesome/docs/authoring/themes/). The contract (127 required + 36 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
+Full authoring walkthrough: [`/docs/authoring/themes`](https://cssisawesome.com/docs/authoring/themes/). The contract (127 required + 36 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
 
 ## Token contract
 
@@ -204,9 +204,9 @@ cia ships **no component library** — deliberately. Interactive patterns arrive
 
 **Shipped:** `dialog`, `combobox`, `print-to-pdf`, `mobile-nav`, `bottom-nav`. Queued next: `datepicker`, `data-table`, `command-palette`.
 
-**Mobile navigation is system API, not an exercise for the reader.** Four mixins — `cia.hamburger`, `cia.drawer`, `cia.sheet`, `cia.dock` — cover both phone layouts: the **flex layout** (one fluid nav/main/footer shell that reshapes with the screen, hamburger opening a slide-in drawer — recipe [`mobile-nav`](./scss/recipes/mobile-nav.md)) and the **app layout** (a fixed bottom dock whose slots open slide-up sheets — recipe [`bottom-nav`](./scss/recipes/bottom-nav.md)). Zero JavaScript: everything rides CSS Grid and the native Popover API — the browser owns open state, `aria-expanded`, Esc and light dismiss. The docs site dogfoods the app layout on phones. The same doctrine extends to dropdowns: on phones an interactive surface takes the space it's in, so a `cia.dropdown` menu opens 1px under its full-width trigger at the trigger's exact width — CSS anchor positioning, flipping above when the screen bottom would clip it. The full spec is the [mobile playbook](https://jerry2d3d.github.io/css-is-awesome/docs/mobile/).
+**Mobile navigation is system API, not an exercise for the reader.** Four mixins — `cia.hamburger`, `cia.drawer`, `cia.sheet`, `cia.dock` — cover both phone layouts: the **flex layout** (one fluid nav/main/footer shell that reshapes with the screen, hamburger opening a slide-in drawer — recipe [`mobile-nav`](./scss/recipes/mobile-nav.md)) and the **app layout** (a fixed bottom dock whose slots open slide-up sheets — recipe [`bottom-nav`](./scss/recipes/bottom-nav.md)). Zero JavaScript: everything rides CSS Grid and the native Popover API — the browser owns open state, `aria-expanded`, Esc and light dismiss. The docs site dogfoods the app layout on phones. The same doctrine extends to dropdowns: on phones an interactive surface takes the space it's in, so a `cia.dropdown` menu opens 1px under its full-width trigger at the trigger's exact width — CSS anchor positioning, flipping above when the screen bottom would clip it. The full spec is the [mobile playbook](https://cssisawesome.com/docs/mobile/).
 
-Humans read them at [`/docs/recipes`](https://jerry2d3d.github.io/css-is-awesome/docs/recipes/); AI agents pull them over MCP with `list_recipes` / `get_recipe`.
+Humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/); AI agents pull them over MCP with `list_recipes` / `get_recipe`.
 
 ## Migrating from Tailwind or Bootstrap
 
@@ -217,7 +217,7 @@ npx cia migrate tailwind ./tailwind.config.js   # auto-detects tailwind.config.*
 npx cia migrate bootstrap ./scss/_variables.scss
 ```
 
-Both accept `--help` for the full option list. Prose walkthroughs live at [`/docs/migration-tailwind`](https://jerry2d3d.github.io/css-is-awesome/docs/migration-tailwind/) and [`/docs/migration-bootstrap`](https://jerry2d3d.github.io/css-is-awesome/docs/migration-bootstrap/).
+Both accept `--help` for the full option list. Prose walkthroughs live at [`/docs/migration-tailwind`](https://cssisawesome.com/docs/migration-tailwind/) and [`/docs/migration-bootstrap`](https://cssisawesome.com/docs/migration-bootstrap/).
 
 ## Print / PDF (zero JS)
 
@@ -256,7 +256,7 @@ The scope is kept narrow: 8 `!important` declarations, all inside `@media print`
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **30 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](https://jerry2d3d.github.io/css-is-awesome/docs/mcp/).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **30 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
 **Setup is two steps — do both, or the server won't start.**
 
@@ -283,7 +283,7 @@ cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `
 
 ## Docs site
 
-The docs site is live at **https://jerry2d3d.github.io/css-is-awesome/** — it auto-deploys from `main` via GitHub Pages. To run it locally:
+The docs site is live at **https://cssisawesome.com** (production — Vercel, deployed from the `prod-css-is-awesome` branch), with a GitHub Pages mirror at **https://jerry2d3d.github.io/css-is-awesome/** that auto-deploys from `main`. To run it locally:
 
 ```bash
 git clone https://github.com/Jerry2d3d/css-is-awesome.git
@@ -292,7 +292,7 @@ npm install
 npm run dev          # http://localhost:5173
 ```
 
-The docs site is a Next.js 15 app at `src/` that dogfoods the library — every page uses CSS Modules composed from the same tokens and mixins the library ships.
+The docs site is a Next.js 16 app at `src/` that dogfoods the library — every page uses CSS Modules composed from the same tokens and mixins the library ships.
 
 ## Scripts
 
@@ -317,7 +317,7 @@ The docs site is a Next.js 15 app at `src/` that dogfoods the library — every 
 
 ## Testing
 
-Eleven checks, all gated in CI on every PR. Each one exists because the failure it catches actually happened.
+Twelve checks, all gated in CI on every PR. Each one exists because the failure it catches actually happened.
 
 | Check | What it proves |
 |---|---|
@@ -327,11 +327,12 @@ Eleven checks, all gated in CI on every PR. Each one exists because the failure 
 | `validate-icons` | the 49-glyph core pack is intact (extras allowed) |
 | `validate-api` | the `/api` barrel still emits zero CSS until a mixin is called |
 | `validate-package` | packs → installs into a temp project → compiles all **10** documented `@use` specifiers |
-| `coverage:api` | calls **174/174** public mixins + functions and asserts the output |
+| `coverage:api` | calls **183/183** public mixins + functions and asserts the output |
 | `coverage:mcp` | calls **30/30** MCP tools over stdio |
-| `test` | Playwright — 50 tests: route smoke, axe a11y, per-theme visual snapshots, theme-editor behaviour |
+| `validate-recipes` | every recipe's SCSS compiles and its documented mixin calls resolve |
+| `test` | Playwright — route smoke, axe a11y, per-theme visual snapshots, theme-editor behaviour, across three engines |
 
-**Call-and-assert coverage.** SCSS has no line-coverage tooling, so cia measures whether every part of the public API is actually callable: parse every public `@mixin`/`@function`, generate a fixture that calls it, compile, and assert it works — no `null` leaking into CSS, functions return a value, mixins emit. **174/174 SCSS units and 30/30 MCP tools**, with CI failing below 98%. A unit with no fixture counts as uncovered, so skipping a test lowers the number rather than hiding.
+**Call-and-assert coverage.** SCSS has no line-coverage tooling, so cia measures whether every part of the public API is actually callable: parse every public `@mixin`/`@function`, generate a fixture that calls it, compile, and assert it works — no `null` leaking into CSS, functions return a value, mixins emit. **183/183 SCSS units and 30/30 MCP tools**, with CI failing below 98%. A unit with no fixture counts as uncovered, so skipping a test lowers the number rather than hiding.
 
 **What 100% means here:** every public mixin and function is invoked and produces sane output. It catches renames, broken signatures and undefined variables — it found one on its first run, an undefined `$icon-size` that broke four icon mixins. It does **not** prove the CSS is visually correct; that's a deliberate trade against golden-file snapshots, which would churn dozens of files on any token change. Page-level visual correctness is covered by the Playwright snapshots instead.
 
@@ -339,7 +340,7 @@ Eleven checks, all gated in CI on every PR. Each one exists because the failure 
 
 **Known gaps**, stated plainly: **a11y runs on routes, not component states** — axe checks a set of pages; individual component states are not swept. (Cross-engine coverage used to be the gap here; the suite now runs chromium, firefox and webkit, which matters because cia leans on `light-dark()`, `:has()`, `[popover]` and `mask`.)
 
-Full detail: [`/docs/testing`](https://jerry2d3d.github.io/css-is-awesome/docs/testing/).
+Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 ## Size (gzipped)
 

@@ -204,9 +204,13 @@ export default function FaqPage() {
         and the whole utility layer.
       </p>
       <p>
-        JavaScript is only required for the React components that
-        manage focus or state — Dropdown, Modal, Tabs, and friends. A
-        zero-JS page works great; you just skip the React library.
+        Not for interaction either. Accordion, modal, tooltip, dropdown and
+        tabs ride native primitives — <code>&lt;details name&gt;</code>,{" "}
+        <code>&lt;dialog&gt;</code>, <code>[popover]</code> — so the browser
+        manages open/close state, Escape and light-dismiss. The same goes for
+        the mobile toolkit (hamburger, drawer, sheet, dock): see{" "}
+        <Link href="/docs/mobile">/docs/mobile</Link>. A zero-JS page works
+        great.
       </p>
 
       <h2 id="typescript-support">Does it have TypeScript types?</h2>

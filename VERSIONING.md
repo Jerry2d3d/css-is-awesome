@@ -9,7 +9,7 @@ How `css-is-awesome` versions its public surfaces, deprecates old APIs, and reco
 | Surface             | Lives in                                   | Consumed as                                |
 | ------------------- | ------------------------------------------ | ------------------------------------------ |
 | CSS class names     | `dist/*.css`                               | HTML / SCSS / React class strings          |
-| SCSS mixin API      | `scss/` (`_mixins.scss`, `_layout.scss`, …) | Authors who `@use "css-is-awesome/scss/main"` |
+| SCSS mixin API      | `scss/` (`_mixins.scss`, `_layout.scss`, …) | Authors who `@use 'css-is-awesome'` / `@use 'css-is-awesome/api'` |
 | Token contract      | [`CONTRACT.md`](./CONTRACT.md) + [`scripts/theme-contract.json`](./scripts/theme-contract.json) | Themes declared in a `:root { … }` block   |
 
 The **library version** lives in [`package.json`](./package.json). The **contract version** lives in the `version` field of `scripts/theme-contract.json`. They move together on most MAJOR bumps but are independent: a library MINOR can ship without bumping the contract.
@@ -31,8 +31,7 @@ Any change that can break a consumer upgrading blindly.
 | SCSS mixin default changes rendered output                                | `m.card()` default radius flips from `md` → `lg`       |
 | Contract: required token renamed or removed                               | `--surface-default` → `--surface-base`                 |
 | Contract: `version` field bumps to a new major (`"1"` → `"2"`)            | Required-token removal in `scripts/theme-contract.json` |
-| React component removed, renamed, or incompatible prop change             | `<Button variant>` values narrowed                     |
-| Peer-dependency floor rises                                               | `react: >=18` → `react: >=19`                          |
+| Optional-peer floor rises                                                 | `@modelcontextprotocol/sdk` minimum raised             |
 
 ### MINOR — `0.x.0`
 
@@ -43,8 +42,7 @@ Additive, non-breaking changes.
 | New public CSS class                                         | `.cia-grid-auto-fit` added                        |
 | New public SCSS mixin                                        | `m.cluster($gap)` added                           |
 | New optional token added to contract (`"1"` → `"1.1"`)       | `--dropdown-offset-y` added to component section  |
-| New React component                                          | `<DataTable>` added                               |
-| Additive component prop with a sensible default              | `<Button loading>` added, defaults to `false`     |
+| New theme or recipe shipped                                  | `prism` family added; `mobile-nav` recipe added   |
 | New utility class (`.cia-*`)                                 | `.cia-text-balance` added                         |
 
 ### PATCH — `0.0.x`
@@ -61,14 +59,14 @@ Internal-only or visually-identical changes.
 
 ---
 
-## 2. Pre-1.0 rules
+## 2. Pre-1.0 rules (historical)
 
-While the library is pre-1.0 (`0.x.x`), the rules above apply with one carve-out: we reserve the right to ship a genuinely-breaking change as a **MINOR** bump if it is the right call for the system's long-term shape. Every such change is:
+While the library was pre-1.0 (`0.x.x`), the rules above applied with one carve-out: we reserved the right to ship a genuinely-breaking change as a **MINOR** bump when it was the right call for the system's long-term shape (the v0.7 theme renames and the v0.8 mixin-first reframe both used it). Every such change was:
 
-1. Called out loudly in the `CHANGELOG.md` entry under `### Changed` with a **BREAKING** prefix.
+1. Called out loudly in the `CHANGELOG.md` entry with a **BREAKING** prefix.
 2. Called out again in the release notes with a migration snippet.
 
-**`1.0.0` locks the contract.** After 1.0, breaking changes require a MAJOR bump, no exceptions.
+**`1.0.0` locked the contract** (cut 2026-08-17). Breaking changes now require a MAJOR bump, no exceptions.
 
 ---
 
@@ -80,9 +78,8 @@ Every public symbol — CSS class, SCSS mixin, React prop, contract token — fo
 
 1. **Mark** the symbol with an inline `@deprecated` comment citing the replacement and the intended removal version.
 2. **Warn** at use-time:
-    - React components / hooks → `console.warn(…)` once per session (dedupe by symbol name).
-    - SCSS mixins → `@warn "m.old-name is deprecated, use m.new-name (removed in 1.0)";`.
-    - CSS classes / tokens → no runtime warning possible; rely on the `@deprecated` JSDoc and changelog.
+    - SCSS mixins → `@warn "m.old-name is deprecated, use m.new-name (removed in 2.0)";`.
+    - CSS classes / tokens → no runtime warning possible; rely on the `@deprecated` comment and changelog.
 3. **Announce** in the next MINOR release's `CHANGELOG.md` under `### Deprecated`.
 4. **Keep functional** for **at least one full MINOR release cycle** after the deprecation lands.
 5. **Remove** only in a MAJOR bump.
@@ -92,9 +89,9 @@ Every public symbol — CSS class, SCSS mixin, React prop, contract token — fo
 ```scss
 // scss/_mixins.scss
 /// @deprecated Use `m.btn-primary` with `$bg: action-secondary-default` override.
-///             Removed in 1.0.
+///             Removed in 2.0.
 @mixin btn-secondary($size: md) {
-  @warn "m.btn-secondary is deprecated; use m.btn-primary with $bg: action-secondary-default. Removed in 1.0.";
+  @warn "m.btn-secondary is deprecated; use m.btn-primary with $bg: action-secondary-default. Removed in 2.0.";
   @include btn-primary($size, $bg: action-secondary-default);
 }
 ```
@@ -112,70 +109,47 @@ A deprecated contract token:
 
 ## 4. Changelog format
 
-Changelog follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/) verbatim. Each release entry uses these sections, in this order, omitting any that are empty:
+**[`CHANGELOG.md`](./CHANGELOG.md) is GENERATED — never edit it by hand.** [semantic-release](https://github.com/semantic-release/semantic-release) writes each release entry from the Conventional Commits that landed since the previous tag, grouped under the conventional-changelog headings:
 
-- `Added` — new features.
-- `Changed` — changes to existing functionality.
-- `Deprecated` — soon-to-be-removed features.
-- `Removed` — removed features.
-- `Fixed` — bug fixes.
-- `Security` — vulnerabilities and mitigations.
+- `Features` — from `feat:` commits.
+- `Bug Fixes` — from `fix:` commits.
+- `Performance Improvements` — from `perf:` commits.
+- `BREAKING CHANGES` — from `feat!:` / `fix!:` or a `BREAKING CHANGE:` footer.
 
-Entries are written in past tense, grouped by section, and link issue / PR numbers. The top of [`CHANGELOG.md`](./CHANGELOG.md) always carries an `## [Unreleased]` section where in-flight changes accumulate between releases.
-
-### Example release block
-
-```md
-## [0.6.0] - 2026-05-12
-
-### Added
-- `<DataTable>` component with generic row typing and optional pagination (#142).
-- Theme validator now supports `--watch` mode (#138).
-
-### Changed
-- `Pagination` props: native `HTMLAttributes.onChange` is `Omit`ped so the custom `onChange(page)` stops colliding. Non-breaking for existing consumers (#140).
-
-### Deprecated
-- `m.btn-secondary` — use `m.btn-primary` with `$bg: action-secondary-default` override. Removed in 1.0 (#143).
-
-### Fixed
-- Theme picker no longer injected duplicate `<link>` elements on first paint (#145).
-```
+Each entry links the commit (and any referenced issue / PR numbers) automatically. There is no hand-maintained `Unreleased` section — in-flight changes are simply the commits on `main` that no tag covers yet.
 
 ---
 
-## 5. Conventional Commits → Changelog
+## 5. Conventional Commits → Release
 
-Commits follow [Conventional Commits](https://www.conventionalcommits.org/). The prefix maps to a changelog section:
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/). The prefix decides both the version bump and the changelog section:
 
-| Commit prefix                             | Changelog section               |
-| ----------------------------------------- | ------------------------------- |
-| `feat:`                                   | `Added`                         |
-| `feat!:` or `BREAKING CHANGE:` footer     | `Changed` (breaking — MAJOR)    |
-| `fix:`                                    | `Fixed`                         |
-| `perf:`                                   | `Changed`                       |
-| `docs:`                                   | *omit*                          |
-| `refactor:`                               | *omit*                          |
-| `test:`                                   | *omit*                          |
-| `chore:`                                  | *omit*                          |
-| `build:` / `ci:`                          | *omit*                          |
+| Commit prefix                             | Bump    | Changelog section          |
+| ----------------------------------------- | ------- | -------------------------- |
+| `feat:`                                   | MINOR   | `Features`                 |
+| `feat!:` or `BREAKING CHANGE:` footer     | MAJOR   | `BREAKING CHANGES`         |
+| `fix:`                                    | PATCH   | `Bug Fixes`                |
+| `perf:`                                   | PATCH   | `Performance Improvements` |
+| `docs:`                                   | *no release* | *omit*                |
+| `refactor:`                               | *no release* | *omit*                |
+| `test:`                                   | *no release* | *omit*                |
+| `chore:`                                  | *no release* | *omit*                |
+| `build:` / `ci:`                          | *no release* | *omit*                |
 
-A commit can carry a `Deprecates:` footer to force an entry under `### Deprecated`, or a `Security:` footer to force `### Security`, regardless of prefix.
+Deprecations are announced in the deprecating commit's body (and land in the release notes through it), plus an inline `@deprecated` comment per §3.
 
 ---
 
 ## 6. Release process
 
-The policy in this document tells you **what** a version number means. The mechanics of cutting a release — tagging, building `dist/*.css`, validating themes, publishing to npm — live in [`CONTRIBUTING.md`](./CONTRIBUTING.md) and are automated per Epic 5.
+The policy in this document tells you **what** a version number means. The mechanics are automated: on every push to `main` that contains a releasable commit, semantic-release computes the next version from the commit messages, regenerates `CHANGELOG.md`, builds the bundles (`prepublishOnly` runs `build:css:all`), tags `vX.Y.Z`, and publishes to npm. Nobody hand-types a version number anywhere — the hero, the MCP server, and the docs all read it from `package.json`.
 
-Every release, at minimum:
+What remains manual:
 
-1. Promotes `## [Unreleased]` to `## [x.y.z] - YYYY-MM-DD` in `CHANGELOG.md`.
-2. Bumps `version` in `package.json` per the rules in §1.
-3. Bumps `version` in `scripts/theme-contract.json` if the contract changed.
-4. Runs `npm run validate-themes` — must pass.
-5. Rebuilds `dist/*.css` via `npm run build:css:all`.
-6. Tags the commit `vX.Y.Z` and pushes.
+1. Bumping `version` in `scripts/theme-contract.json` when the contract itself changes (§7).
+2. The CI gates (lint, validators, coverage, size budget, Playwright) — a red PR never reaches `main`, so a release is never cut from a failing tree.
+
+Contributor-facing workflow detail lives in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ---
 
@@ -185,7 +159,7 @@ Two version numbers, two files:
 
 | Version             | Source                                                        | Bumps on                                                                  |
 | ------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Library version     | `version` field of [`package.json`](./package.json)           | Any change to CSS / SCSS / React public surfaces per §1.                  |
+| Library version     | `version` field of [`package.json`](./package.json)           | Any change to the CSS / SCSS / contract public surfaces per §1.           |
 | Contract version    | `version` field of [`scripts/theme-contract.json`](./scripts/theme-contract.json) | Contract-only changes (new optional token → minor; required token renamed or removed → major). |
 
 They usually move together on a library MAJOR. They move independently on MINOR and PATCH.
@@ -197,4 +171,4 @@ They usually move together on a library MAJOR. They move independently on MINOR 
 - [`CHANGELOG.md`](./CHANGELOG.md) — the actual change log.
 - [`CONTRACT.md`](./CONTRACT.md) — the token contract.
 - [`CONTRIBUTING.md`](./CONTRIBUTING.md) — release mechanics and contributor workflow.
-- [`ROADMAP.md`](./ROADMAP.md) — where the library is headed toward `1.0.0`.
+- [`ROADMAP.md`](./ROADMAP.md) — where the library is headed.

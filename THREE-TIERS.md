@@ -9,8 +9,8 @@ css-is-awesome ships three authoring surfaces for the same components. Pick the 
 ## Tier 1 — Drop-in CSS + HTML (no build)
 
 ```html
+<link rel="stylesheet" href="themes/sketchbook/theme.css">
 <link rel="stylesheet" href="css-is-awesome.min.css">
-<link rel="stylesheet" href="theme-sketchbook.css">
 
 <main class="cia-container">
   <h1>Welcome</h1>
@@ -100,7 +100,7 @@ The split to hold in your head: **cia owns the system values — colour, spacing
 ```
 
 **Audience:** content-heavy sites, blog posts, READMEs rendered as HTML, anywhere the author doesn't want to think about classes.
-**Rules:** zero classes required. The recipe styles every common bare tag at specificity `0,0,1` — no `@layer`, no `:where()`. Any class-based selector you add wins automatically.
+**Rules:** zero classes required. The recipe styles every common bare tag wrapped in `:where()` (specificity `0,0,0`) — no `@layer`. Any selector you add — even another bare tag — wins automatically.
 
 ---
 
