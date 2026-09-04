@@ -130,13 +130,15 @@
     position: fixed;
     inset: 0;
     z-index: 8;             /* under .header's z-index: 10 */
-    /* Invisible on purpose: the scrim exists only as the tap-outside-
-       to-close hit area. No darkening — the page stays fully visible
-       behind the open menu. */
-    background: transparent;
+    /* Overlay: darkens the page and footer behind the open menu, and
+       doubles as the tap-outside-to-close hit area. */
+    background: color-mix(in srgb, var(--ink) 38%, transparent);
+    opacity: 0;
     pointer-events: none;
+    transition: opacity var(--duration-normal) var(--ease);
   }
   .menuCheck:checked ~ .menuScrim {
+    opacity: 1;
     pointer-events: auto;
   }
 
