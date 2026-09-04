@@ -59,62 +59,6 @@ export default function ExamplesPage() {
             </Example.Preview>
           </Example>
 
-          <h2>Mobile app shell</h2>
-          <p>
-            The dock is <code>position: fixed</code> for real — here it&apos;s un-pinned into a
-            phone frame so it doesn&apos;t bolt itself over this page. The sheets are not tamed:
-            they slide up over the real bottom of your viewport, exactly where they land on a
-            phone. Zero JS — the popover attributes carry open, Esc, and tap-outside.
-          </p>
-          <Example>
-            <Example.Preview>
-              <div className={styles.phone}>
-                <div className={styles.phoneScreen}>
-                  <div style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", marginBottom: "8px" }}>Inbox</div>
-                  <p style={{ color: "var(--ink-soft)", fontFamily: "var(--font-serif)", fontSize: "0.9rem", margin: 0 }}>
-                    Three thumb-reach slots. The first is the routed page
-                    (<code>aria-current</code>); the other two open sheets.
-                  </p>
-                </div>
-                <nav className={styles.phoneDock} aria-label="App">
-                  <button type="button" className={styles.phoneDockButton} aria-current="page">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />
-                    </svg>
-                    Home
-                  </button>
-                  <button type="button" className={styles.phoneDockButton} popoverTarget="examples-sheet-search">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                      <circle cx="11" cy="11" r="7" />
-                      <path d="m21 21-4.3-4.3" />
-                    </svg>
-                    Search
-                  </button>
-                  <button type="button" className={styles.phoneDockButton} popoverTarget="examples-sheet-menu">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                      <path d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    Menu
-                  </button>
-                </nav>
-              </div>
-              <section id="examples-sheet-search" popover="auto" className={styles.phoneSheet} aria-label="Search">
-                <h3 style={{ margin: "0 0 8px" }}>Search</h3>
-                <p style={{ margin: 0, color: "var(--ink-soft)" }}>
-                  A real <code>cia.sheet</code>, pinned to your actual viewport. Tap outside or
-                  press Esc to close.
-                </p>
-              </section>
-              <section id="examples-sheet-menu" popover="auto" className={styles.phoneSheet} aria-label="Menu">
-                <h3 style={{ margin: "0 0 8px" }}>Menu</h3>
-                <p style={{ margin: 0, color: "var(--ink-soft)" }}>
-                  Same mixin, second slot. The browser manages <code>aria-expanded</code> on the
-                  dock button that opened it.
-                </p>
-              </section>
-            </Example.Preview>
-          </Example>
-
           <h2>Dropdown</h2>
           <p>
             The house dropdown: the trigger fills its column, label left, affordance right; the

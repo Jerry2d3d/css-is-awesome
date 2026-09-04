@@ -21,50 +21,6 @@
 }
 
 /* ============================================================
-   Mobile app shell — dock inside a phone frame.
-   ============================================================ */
-
-/* The frame poses as the phone's viewport: rounded, bordered, its own
-   grid with a content row and a bar row pinned to its bottom edge. */
-.phone {
-  inline-size: min(320px, 100%);
-  block-size: 26rem;
-  margin-inline: auto;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  overflow: hidden;
-  border: 1px solid var(--border-default);
-  border-radius: m.radius(xl);
-  background: var(--paper);
-  box-shadow: m.shadow(1);
-}
-
-.phoneScreen {
-  padding: m.space(4);
-  overflow: auto;
-}
-
-.phoneDock {
-  @include n.dock(3);
-  /* dock() emits position: fixed on purpose — on a phone the bar pins to
-     the real viewport. Inline in a docs page that would bolt this demo
-     over YOUR screen bottom, so we un-pin it: static drops the mixin's
-     inset/z-index on the floor and the frame's grid seats the bar on the
-     frame's own bottom row instead. Everything else is the real mixin. */
-  position: static;
-}
-
-.phoneDockButton {
-  @include n.dock-item;
-}
-
-/* The sheets are NOT tamed: sheet() is fixed to the real viewport bottom,
-   and that's true-to-life — it's exactly where they open on a phone. */
-.phoneSheet {
-  @include n.sheet;
-}
-
-/* ============================================================
    Dropdown — house spec (AGENTS.md quick decision #8).
    ============================================================ */
 
