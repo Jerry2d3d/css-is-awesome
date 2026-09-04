@@ -1,6 +1,7 @@
 @use 'mixins' as m;
 
 .toc {
+  grid-area: toc;
   font-size: 0.9rem;
   align-self: start;
   position: sticky;

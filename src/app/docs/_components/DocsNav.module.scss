@@ -1,6 +1,7 @@
 @use 'mixins' as m;
 
 .sidebar {
+  grid-area: sidebar;
   font-size: 0.9rem;
   align-self: start;
   position: sticky;
