@@ -80,6 +80,20 @@ export default function RoadmapPage() {
           that ties them together. <Link href="/docs/mobile">Mobile</Link>.
         </li>
         <li>
+          <strong>A recipe registry and a health check in the CLI</strong>{" "}
+          &mdash; <code>npx cia add &lt;recipe&gt;</code> copies a pattern from
+          the book into your project so you own it, and{" "}
+          <code>npx cia analyze</code> audits your stylesheets against the
+          installed API (dead symbols, the spacing-scale trap, hard-coded
+          colors, BEM creep) with CI-ready exit codes.
+        </li>
+        <li>
+          <strong>A dated browser-support matrix</strong> &mdash; the Baseline
+          floor the native primitives set, and every progressive enhancement
+          with its exact fallback.{" "}
+          <Link href="/docs/browser-support">Browser support</Link>.
+        </li>
+        <li>
           <strong>A theme editor</strong> on this site, with a download that
           drops straight into a project.
         </li>
