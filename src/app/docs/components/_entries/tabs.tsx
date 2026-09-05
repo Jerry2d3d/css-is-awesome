@@ -1,12 +1,12 @@
 import Example from "@/components/Example";
-import Tabs from "@/components/Tabs";
+import demos from "../_registry/demos.module.scss";
 import type { DocEntry } from "../_registry/types";
 
 // Tabs — content ported verbatim from the former hand-written page. The
-// live demo uses the site's own React Tabs wrapper (the docs UI ships one
-// tabs implementation for every page, including this template's reference
-// tabs below); the zero-JS radio + :has() markup the cia.tabs mixin styles
-// is shown verbatim under Usage.
+// live demo is the REAL cia.tabs mixin on real radio + :has() markup —
+// possible since the 2026-09-04 contract fix (the tab list is a <nav>,
+// so :nth-of-type() panel counting aligns; a <div> list shifted every
+// panel index by one).
 export const tabsEntry: DocEntry = {
   slug: "tabs",
   name: "Tabs",
@@ -22,24 +22,27 @@ export const tabsEntry: DocEntry = {
   badges: ["0 KB JS for core", ":has() Baseline Dec 2023", "Up to 12 tabs default"],
 
   demo: (
-    <>
-      <Tabs defaultValue="Overview">
-        <Tabs.List>
-          <Tabs.Trigger value="Overview">Overview</Tabs.Trigger>
-          <Tabs.Trigger value="Specs">Specs</Tabs.Trigger>
-          <Tabs.Trigger value="Reviews">Reviews</Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Panel value="Overview">Overview content</Tabs.Panel>
-        <Tabs.Panel value="Specs">Specs content</Tabs.Panel>
-        <Tabs.Panel value="Reviews">Reviews content</Tabs.Panel>
-      </Tabs>
-      <p>
-        Honest note: this demo is the site&rsquo;s own React Tabs wrapper — the
-        docs UI ships one tabs implementation for every page. The zero-JS radio
-        + <code>:has()</code> markup the <code>cia.tabs</code> mixin styles is
-        the code under Usage.
-      </p>
-    </>
+    <div className={demos.tabs}>
+      <input type="radio" name="doc-demo-tabs" id="doc-demo-tabs-1" defaultChecked readOnly />
+      <input type="radio" name="doc-demo-tabs" id="doc-demo-tabs-2" readOnly />
+      <input type="radio" name="doc-demo-tabs" id="doc-demo-tabs-3" readOnly />
+      <nav className="cia-tab-list" role="tablist">
+        <label htmlFor="doc-demo-tabs-1" role="tab">Overview</label>
+        <label htmlFor="doc-demo-tabs-2" role="tab">Specs</label>
+        <label htmlFor="doc-demo-tabs-3" role="tab">Reviews</label>
+      </nav>
+      <div className="cia-tab-panel" role="tabpanel">
+        Overview content — this demo is the real <code>cia.tabs</code> output on
+        real radios. Zero JavaScript: the browser tracks the checked radio,
+        CSS shows the matching panel.
+      </div>
+      <div className="cia-tab-panel" role="tabpanel">
+        Specs content — the tab list is a <code>{`<nav>`}</code> on purpose:
+        panel switching counts panels with <code>:nth-of-type()</code>, so the
+        list must not share their element type.
+      </div>
+      <div className="cia-tab-panel" role="tabpanel">Reviews content.</div>
+    </div>
   ),
 
   usage: (
@@ -57,11 +60,11 @@ export const tabsEntry: DocEntry = {
 {"\n"}  <span className="tok-sel">{"<input"}</span> <span className="tok-prop">type</span>=<span className="tok-val">"radio"</span> <span className="tok-prop">name</span>=<span className="tok-val">"t"</span> <span className="tok-prop">id</span>=<span className="tok-val">"t2"</span><span className="tok-sel">{">"}</span>
 {"\n"}  <span className="tok-sel">{"<input"}</span> <span className="tok-prop">type</span>=<span className="tok-val">"radio"</span> <span className="tok-prop">name</span>=<span className="tok-val">"t"</span> <span className="tok-prop">id</span>=<span className="tok-val">"t3"</span><span className="tok-sel">{">"}</span>
 {"\n"}
-{"\n"}  <span className="tok-sel">{"<div"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-tab-list"</span> <span className="tok-prop">role</span>=<span className="tok-val">"tablist"</span><span className="tok-sel">{">"}</span>
+{"\n"}  <span className="tok-sel">{"<nav"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-tab-list"</span> <span className="tok-prop">role</span>=<span className="tok-val">"tablist"</span><span className="tok-sel">{">"}</span>
 {"\n"}    <span className="tok-sel">{"<label"}</span> <span className="tok-prop">for</span>=<span className="tok-val">"t1"</span> <span className="tok-prop">role</span>=<span className="tok-val">"tab"</span><span className="tok-sel">{">"}</span>Overview<span className="tok-sel">{"</label>"}</span>
 {"\n"}    <span className="tok-sel">{"<label"}</span> <span className="tok-prop">for</span>=<span className="tok-val">"t2"</span> <span className="tok-prop">role</span>=<span className="tok-val">"tab"</span><span className="tok-sel">{">"}</span>Specs<span className="tok-sel">{"</label>"}</span>
 {"\n"}    <span className="tok-sel">{"<label"}</span> <span className="tok-prop">for</span>=<span className="tok-val">"t3"</span> <span className="tok-prop">role</span>=<span className="tok-val">"tab"</span><span className="tok-sel">{">"}</span>Reviews<span className="tok-sel">{"</label>"}</span>
-{"\n"}  <span className="tok-sel">{"</div>"}</span>
+{"\n"}  <span className="tok-sel">{"</nav>"}</span>
 {"\n"}
 {"\n"}  <span className="tok-sel">{"<div"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-tab-panel"</span> <span className="tok-prop">role</span>=<span className="tok-val">"tabpanel"</span><span className="tok-sel">{">"}</span>Overview content<span className="tok-sel">{"</div>"}</span>
 {"\n"}  <span className="tok-sel">{"<div"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-tab-panel"</span> <span className="tok-prop">role</span>=<span className="tok-val">"tabpanel"</span><span className="tok-sel">{">"}</span>Specs content<span className="tok-sel">{"</div>"}</span>

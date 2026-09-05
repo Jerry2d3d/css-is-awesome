@@ -41,3 +41,7 @@
 .tooltip {
   @include o.tooltip;
 }
+
+.tabs {
+  @include tb.tabs;
+}
