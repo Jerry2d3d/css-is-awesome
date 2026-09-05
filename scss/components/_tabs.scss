@@ -8,13 +8,21 @@
 //   <div class="cia-tabs">
 //     <input type="radio" name="t" id="t1" checked>
 //     <input type="radio" name="t" id="t2">
-//     <div class="cia-tab-list" role="tablist">
+//     <nav class="cia-tab-list" role="tablist">
 //       <label for="t1" role="tab">Tab 1</label>
 //       <label for="t2" role="tab">Tab 2</label>
-//     </div>
+//     </nav>
 //     <div class="cia-tab-panel" role="tabpanel">Content 1</div>
 //     <div class="cia-tab-panel" role="tabpanel">Content 2</div>
 //   </div>
+//
+// ⚠️ CONTRACT: the tab list must NOT share the panels' element type.
+// Panel switching indexes panels with :nth-of-type(), which counts by
+// ELEMENT TYPE among siblings — a <div> tab list would be div #1, every
+// panel's index would shift by one, and tab 1 would show no panel while
+// the labels still highlighted correctly (we shipped exactly that; fixed
+// 2026-09-04 by making the documented list a <nav>). CSS has no
+// nth-of-class, so the markup carries this rule instead of the selector.
 //
 // A11y baseline: keyboard nav (Tab + arrows + Space) and screen-reader text
 // are native. For full aria-selected sync ship the tiny opt-in JS shim

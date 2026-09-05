@@ -6,7 +6,12 @@
   font-size: 0.9rem;
   align-self: start;
   position: sticky;
-  top: 5rem;
+  top: calc(var(--nav-height, 4rem) + m.space(4));
+  /* Same containment as the rail: a long heading list scrolls inside
+     the TOC, never stretches the page. */
+  max-block-size: calc(100dvh - var(--nav-height, 4rem) - #{m.space(4)} * 2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 
   /* Below lg the DocsDock's "This page" sheet takes over — the old globals
      rule targeted `.docs-toc`, a class this component never renders. */

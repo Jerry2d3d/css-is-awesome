@@ -1,0 +1,47 @@
+@use 'components/accordion' as acc;
+@use 'components/overlay' as o;
+@use 'components/tabs' as tb;
+@use 'mixins' as m;
+
+/* Live-demo styling — the REAL cia component mixins applied to native
+   markup, so what the stage shows is the mixin's actual output (not a
+   lookalike). One class per component demo; entries compose these with
+   plain HTML primitives. */
+
+.accordion {
+  @include acc.accordion;
+}
+
+.dropdownMenu {
+  @include o.dropdown;
+
+  a {
+    @include o.dropdown-item;
+  }
+}
+
+.dropdownTrigger {
+  @include m.button-reset;
+  @include m.focus-ring;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: m.space(1);
+  padding: m.space(1) m.space(3);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 6px);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.modal {
+  @include o.modal;
+}
+
+.tooltip {
+  @include o.tooltip;
+}
+
+.tabs {
+  @include tb.tabs;
+}

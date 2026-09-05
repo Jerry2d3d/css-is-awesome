@@ -6,48 +6,74 @@ import styles from "./DocsNav.module.scss";
 import { docsNav } from "../nav.config";
 
 /**
- * Sidebar nav for the docs section.
+ * The selections rail for the docs section — a real <nav> landmark:
+ * filter <input type="search"> → category groups (<h2> + <ul> of links).
+ * Sticky under the top nav with its own internal scroll (the page
+ * scrolls; the rail stays; a long list scrolls inside the rail).
  *
- * Why the `mounted` gate: with `output: "export"` + a shared layout, Next 15
+ * State lives on attributes, never class names: the active link carries
+ * data-active + aria-current="page" and the stylesheet keys off
+ * [aria-current] (accessible-by-construction).
+ *
+ * Why the `mounted` gate: with `output: "export"` + a shared layout, Next
  * pre-renders this client component once at build time and `usePathname()`
  * returns a route-segment value that doesn't match the per-page active item.
- * The static HTML therefore has *no* active link, but on the client
- * `usePathname()` resolves to the real path and we'd add an `isActive` class
- * + `aria-current="page"` to one anchor — that single-attribute delta is
- * exactly what produces React #418 ("Hydration failed... HTML didn't match")
- * on every /docs/* route.
- *
- * The fix is to render the SSR-equivalent (no active link) on the first
- * client render, then resolve the active item in an effect. The visible
- * delay is a single frame; no FOUC, no layout shift.
+ * The static HTML therefore has *no* active link; resolving it in an effect
+ * keeps the first client render SSR-identical and avoids React #418.
  */
 export default function DocsNav({ label = "Docs navigation" }: { label?: string }) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const [filter, setFilter] = useState("");
   useEffect(() => setMounted(true), []);
+
+  const needle = filter.trim().toLowerCase();
+  const sections = docsNav
+    .map((section) => ({
+      ...section,
+      items: needle
+        ? section.items.filter((i) => i.label.toLowerCase().includes(needle))
+        : section.items,
+    }))
+    // Empty categories unrender rather than showing empty headings.
+    .filter((section) => section.items.length > 0);
+
   return (
-    <aside className={styles.sidebar} aria-label={label}>
-      {docsNav.map((section) => (
-        <div key={section.title}>
-          <h4>{section.title}</h4>
-          <ul>
-            {section.items.map((item) => {
-              const active = mounted && pathname === item.href;
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={active ? styles.isActive : undefined}
-                    aria-current={active ? "page" : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
-    </aside>
+    <nav className={styles.sidebar} aria-label={label}>
+      <input
+        type="search"
+        className={styles.filter}
+        placeholder="Filter pages…"
+        aria-label="Filter documentation pages"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+      />
+      <div className={styles.scroll}>
+        {sections.map((section) => (
+          <div key={section.title}>
+            <h2>{section.title}</h2>
+            <ul>
+              {section.items.map((item) => {
+                const active = mounted && pathname === item.href;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      data-active={active || undefined}
+                      aria-current={active ? "page" : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+        {sections.length === 0 && (
+          <p className={styles.empty}>No pages match “{filter}”.</p>
+        )}
+      </div>
+    </nav>
   );
 }
