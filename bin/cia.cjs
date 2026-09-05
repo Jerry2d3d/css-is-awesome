@@ -27,11 +27,17 @@ Usage:
 
 Commands:
   migrate <tool> [path]   Convert another design system's config to a cia
-                          theme. Tools: tailwind | bootstrap (planned).
+                          theme. Tools: tailwind | bootstrap.
+  add <recipe>            Copy a recipe from the book into your project
+                          (own the pattern). \`cia add --list\` to browse.
+  analyze [path]          Design-system health check: dead cia.* symbols,
+                          the space() scale trap, hard-coded colors, BEM,
+                          hand-written area maps.
 
 Examples:
   cia migrate tailwind ./tailwind.config.js
-  cia migrate tailwind                       # auto-detect tailwind.config.*
+  cia add bottom-nav
+  cia analyze src/styles
 
 Run \`cia <command> --help\` for command-specific help.
 `;
@@ -104,6 +110,18 @@ async function main() {
       return;
     }
     fail(`unknown migrate tool '${tool}'. Available: tailwind, bootstrap.`);
+  }
+
+  if (command === 'add') {
+    const { run } = require('./add-recipe.cjs');
+    await run(rest);
+    return;
+  }
+
+  if (command === 'analyze') {
+    const { run } = require('./analyze.cjs');
+    await run(rest);
+    return;
   }
 
   fail(`unknown command '${command}'. Run \`cia --help\` for usage.`);
