@@ -1,3 +1,9 @@
+"use client";
+// Client component by necessity: the template renders the compound
+// Tabs.List/Trigger/Panel, and properties attached to a client
+// component are undefined through a server-side client-reference proxy
+// (the build's "Element type is invalid" prerender error). Entry fields
+// are ReactNodes and cross the boundary as props just fine.
 import Link from "next/link";
 import Badge from "@/components/Badge";
 import Tabs from "@/components/Tabs";
