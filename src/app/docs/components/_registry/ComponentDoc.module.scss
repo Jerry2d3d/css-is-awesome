@@ -1,0 +1,74 @@
+@use 'mixins' as m;
+@use 'layout' as l;
+
+/* The article is its own named-area grid — the doctrine scales inward.
+   The grid's gap is the ENTIRE vertical rhythm; children carry none. */
+.doc {
+  @include l.layout(header, demo, usage, tabs, footer, $gap: 7);
+
+  /* Gap-only rhythm: strip rhythm margins from the region's direct
+     structure (headings inside prose keep their own flow spacing). */
+  > * {
+    margin-block: 0;
+  }
+}
+
+.header {
+  @include l.area(header);
+
+  h1 {
+    margin-block: 0 0.35em;
+  }
+}
+
+.category {
+  margin: 0 0 m.space(2);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.badges {
+  margin: m.space(3) 0 0;
+  @include m.flex($gap: m.space(1), $wrap: wrap);
+}
+
+/* The live demo sits on a checkerboard so transparent AND solid surfaces
+   both read — mixed from theme ink over theme paper, so all 24 themes
+   keep the effect. */
+.demo {
+  @include l.area(demo);
+  padding: m.space(6);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 8px);
+  background:
+    repeating-conic-gradient(
+        color-mix(in srgb, var(--ink) 5%, var(--paper)) 0% 25%,
+        var(--paper) 0% 50%
+      )
+      0 0 / 20px 20px;
+}
+
+.usage {
+  @include l.area(usage);
+
+  h2 {
+    margin-block-start: 0;
+  }
+}
+
+.tabs {
+  @include l.area(tabs);
+  min-inline-size: 0; /* wide tables/code scroll inside, never widen the page */
+}
+
+.footer {
+  @include l.area(footer);
+  @include m.flex($gap: m.space(4), $wrap: wrap);
+  padding-block-start: m.space(4);
+  border-block-start: 1px solid var(--hair-soft);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+}

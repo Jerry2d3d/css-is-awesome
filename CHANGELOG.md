@@ -1,3 +1,17 @@
+## [1.8.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.8.1...v1.8.2) (2026-09-05)
+
+
+### Bug Fixes
+
+* **site:** ComponentDoc must be a client component ([fd6ab31](https://github.com/Jerry2d3d/css-is-awesome/commit/fd6ab3117fb06d37c9ee1da4d1071324cae87338))
+* **tabs:** tab list is a <nav> - the div list shifted every panel index ([5099145](https://github.com/Jerry2d3d/css-is-awesome/commit/50991455c0646ffa7ec468166d29d239cbc4c235)), closes [#1](https://github.com/Jerry2d3d/css-is-awesome/issues/1)
+
+
+### Features
+
+* **site:** component docs are data - DocEntry registry + article grid (phase 3) ([98d2419](https://github.com/Jerry2d3d/css-is-awesome/commit/98d2419af9b543a6d09888d54a4f1d4b1ca757f6))
+* **site:** docs rail anatomy (Boiler handoff, phases 1+2) + the full layout doctrine written down ([fa1fa8b](https://github.com/Jerry2d3d/css-is-awesome/commit/fa1fa8b4e182793f1806d4e13af051394ad7cf8b)), closes [#7](https://github.com/Jerry2d3d/css-is-awesome/issues/7)
+
 ## [1.8.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.8.0...v1.8.1) (2026-09-04)
 
 

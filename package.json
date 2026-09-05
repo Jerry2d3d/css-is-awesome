@@ -1,6 +1,6 @@
 {
   "name": "css-is-awesome",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "A token-driven SCSS design system with light/dark theming, semantic color tokens, and a 800+ LOC mixin API.",
   "homepage": "https://github.com/Jerry2d3d/css-is-awesome#readme",
   "bugs": {
