@@ -337,10 +337,14 @@ The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zo
 
 ## Other tooling (shipped)
 
-- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. The migration
-  on-ramp is live: `npx cia migrate tailwind [path]` and `npx cia migrate bootstrap [path]`
-  parse another system's config and dump a cia theme. Run either with `--help` for
-  full options. (`cia init` / `cia add` remain post-1.0.)
+- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. Three verbs:
+  `npx cia migrate tailwind|bootstrap [path]` parses another system's config and
+  dumps a cia theme; `npx cia add <recipe>` (`--list` to browse) copies a recipe
+  from the book into the project — own the pattern; `npx cia analyze [path]`
+  audits a project's stylesheets against the installed API — dead `cia.*` symbols,
+  the `space()` 1–9 scale trap, hard-coded hex colors, BEM chains — with a health
+  score and CI-ready exit codes. Run any verb with `--help`. (`cia init` remains
+  planned.)
 - **JSON token export** — DTCG-format token list in `figma-tokens/`.
 - **`llm.txt`** — at the repo root and served from the docs site; single-fetch
   summary for any AI agent. Also readable over MCP via `read_llm_txt`.

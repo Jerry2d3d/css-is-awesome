@@ -7,7 +7,7 @@ cia's CLI entry points. **These are the only JavaScript files cia ships** — th
 | Bin | File | What it does |
 |---|---|---|
 | `css-is-awesome-mcp` | `../mcp/server.cjs` | MCP stdio server for AI agents (themes, mixins, recipes, etc.) |
-| `cia` | `./cia.cjs` | The CLI — currently supports `migrate tailwind`; more subcommands planned |
+| `cia` | `./cia.cjs` | The CLI router — `migrate` (tailwind/bootstrap), `add` (recipe registry), `analyze` (design-system health) |
 
 Invoke either via `npx` from a consumer project that has cia installed:
 
@@ -15,6 +15,8 @@ Invoke either via `npx` from a consumer project that has cia installed:
 npx css-is-awesome-mcp        # MCP server (stdio; configure via .mcp.json)
 npx cia --help                # CLI help
 npx cia migrate tailwind ./tailwind.config.js
+npx cia add bottom-nav        # copy a recipe into the project — own the pattern
+npx cia analyze src/styles    # health check: dead symbols, space() trap, hex, BEM
 ```
 
 ## Subcommand files
