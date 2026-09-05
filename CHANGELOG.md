@@ -1,3 +1,11 @@
+# [1.9.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.8.2...v1.9.0) (2026-09-05)
+
+
+### Features
+
+* **cli:** cia add (recipe registry) + cia analyze (design-system health) ([194c253](https://github.com/Jerry2d3d/css-is-awesome/commit/194c253a35eec68c68e2f2ca7402fd4e72a4d6ad))
+* **site:** /docs/browser-support - the dated two-tier support matrix ([d2e4604](https://github.com/Jerry2d3d/css-is-awesome/commit/d2e4604c6a331b467bdcd71b30ba2b7f7fe90f68))
+
 ## [1.8.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.8.1...v1.8.2) (2026-09-05)
 
 

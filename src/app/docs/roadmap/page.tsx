@@ -102,6 +102,15 @@ export default function RoadmapPage() {
       <h2 id="next">Next up</h2>
       <ul>
         <li>
+          <strong>The Figma pipeline</strong> &mdash; Figma → DEV → Output on
+          one token vocabulary: export the theme contract as Figma variables
+          (each cia theme a variable <em>mode</em>), import a designer&apos;s
+          variables back through the validator, a published cia Figma Library
+          whose component names mirror the mixins, and a machine-readable
+          mapping served over MCP so AI agents translate Figma frames into
+          cia calls directly.
+        </li>
+        <li>
           <strong>More recipes</strong> &mdash; datepicker, data table,
           command palette, multiselect combobox, breadcrumb, pagination, file
           upload, toast, sortable list, colour picker.

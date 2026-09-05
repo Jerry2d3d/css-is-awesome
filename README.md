@@ -221,6 +221,17 @@ npx cia migrate bootstrap ./scss/_variables.scss
 
 Both accept `--help` for the full option list. Prose walkthroughs live at [`/docs/migration-tailwind`](https://cssisawesome.com/docs/migration-tailwind/) and [`/docs/migration-bootstrap`](https://cssisawesome.com/docs/migration-bootstrap/).
 
+The CLI also carries the registry and the health check:
+
+```bash
+npx cia add --list          # browse the recipe book
+npx cia add bottom-nav      # copy a recipe into your project — you own the pattern
+npx cia analyze src/styles  # design-system health: dead cia.* symbols, the
+                            # space() scale trap, hard-coded colors, BEM creep
+```
+
+`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI.
+
 ## Print / PDF (zero JS)
 
 Print support is a pure-CSS layer — the browser's native **Print → Save as PDF** is the generator, and cia ships no JavaScript for it:
