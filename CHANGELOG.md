@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.0...v1.9.1) (2026-09-06)
+
+
+### Features
+
+* **site:** the blog becomes two tracks - engineering + CSS discoveries (EPIC-06) ([dc4319f](https://github.com/Jerry2d3d/css-is-awesome/commit/dc4319ff106b6885247a67c738752a79d7228022))
+
 # [1.9.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.8.2...v1.9.0) (2026-09-05)
 
 
