@@ -40,9 +40,6 @@ export default function DocsNav({ label = "Docs navigation" }: { label?: string 
 
   return (
     <nav className={styles.sidebar} aria-label={label}>
-      {/* Print only: the left nav becomes a Table index on paper, the
-          same idea as the theme editor's. */}
-      <h2 className={styles.printTitle}>Table index</h2>
       <input
         type="search"
         className={styles.filter}
