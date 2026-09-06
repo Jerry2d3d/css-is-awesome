@@ -1,4 +1,8 @@
+@use 'mixins' as m;
+
 .prevNext {
+  /* Wayfinding for a browser, not for paper. */
+  @include m.print-hidden;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;

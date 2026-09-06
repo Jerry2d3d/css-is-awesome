@@ -27,3 +27,14 @@
 .docs-content {
   @include l.area(content);
 }
+
+/* Print: collapse the three-column grid to a single flow — the Table
+   index (left nav) stacks above the article; the screen TOC is
+   print-hidden in its own module. */
+@media print {
+  .docs-shell {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+}

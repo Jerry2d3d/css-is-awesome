@@ -1,0 +1,25 @@
+@use 'mixins' as m;
+
+/* Print-only "On this page" bullets at the top of a printed docs
+   article. Hidden on screen; the screen TOC lives in the right rail. */
+.printIndex {
+  @include m.print-only;
+  margin-block-end: 1.5rem;
+  padding-block-end: 1rem;
+  border-block-end: 1px solid var(--hair, #ccc);
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem;
+  }
+
+  ul {
+    margin: 0;
+    padding-inline-start: 1.2em;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
