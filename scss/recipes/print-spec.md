@@ -66,15 +66,21 @@ Four moves, all pure CSS: `print-base` once at the root, `print-only` on the ind
 // app/globals.scss (or your single root stylesheet) — included ONCE.
 @use 'css-is-awesome/api' as cia;
 
-// The control plane (--is-print / --print-hide / --print-show), the @page
-// box, and the animation freeze. Defaults are on; override the paper below.
-@include cia.print-base;                 // size: letter, margin: 0.5in
-
-// Dark themes print ink-on-white by landing every light-dark() token on
-// its light value once, instead of recolouring element by element.
-:root {
-  @include cia.print { color-scheme: light; }
-}
+// The control plane, the @page box, the animation freeze — plus the print
+// polish flags. Each defaults OFF except the two structural ones, so nothing
+// changes for existing callers until you opt in:
+//   $legible      — dark-only themes (literal light ink) print dark body text.
+//   $link-urls    — every link prints its destination, so paper is followable.
+//   $link-origin  — prepended to internal (/…) hrefs so they print as full URLs.
+//   $page-numbers — sheet numbers in the bottom-center margin box.
+// print-base also forces `color-scheme: light` in print for free, so PAIRED
+// themes (light-dark() tokens) land on their light branch automatically.
+@include cia.print-base(
+  $legible: true,
+  $link-urls: true,
+  $link-origin: 'https://example.com',
+  $page-numbers: true
+);
 
 // Hide site chrome on paper.
 .site-nav,
@@ -82,22 +88,13 @@ Four moves, all pure CSS: `print-base` once at the root, `print-only` on the ind
 .no-print {
   @include cia.print-hidden;
 }
-
-// Printed sheet numbers via a @page margin box. PROGRESSIVE: engines
-// without margin-box support simply print unnumbered sheets — the table
-// index carries its own numbers in the markup, so navigation survives
-// either way. Merges with print-base's @page size/margins via the cascade.
-@include cia.print {
-  @page {
-    @bottom-center {
-      content: counter(page);
-      font-family: var(--font-mono, monospace);
-      font-size: 9pt;
-      color: cia.color(text-muted);
-    }
-  }
-}
 ```
+
+`$legible` darkens only the body text tokens (`--ink`, `--ink-soft`,
+`--ink-faint`, `--muted`) — code blocks keep their own `--code-*` ink, and
+accents are left alone so links and headings keep the theme's voice.
+`$link-urls` prints external hrefs directly and internal ones prefixed with
+`$link-origin`; same-page `#anchor` links are skipped (the URL adds nothing).
 
 **2. In the page's COMPONENT stylesheet** — the index show/hide and the per-section page break emit nothing until called, so they are safe in a `.module.scss`.
 

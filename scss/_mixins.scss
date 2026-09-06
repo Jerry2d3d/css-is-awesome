@@ -598,7 +598,15 @@ $_type-scale: (
 // Override either locally for a per-element exception — no rule rewrite:
 //   .keep-this { --print-hide: revert; }   // stays on paper despite print-hidden
 //   .pdf-row   { --print-show: flex; }     // print-only block laid out as flex
-@mixin print-base($freeze-animations: true, $size: letter, $margin: 0.5in) {
+@mixin print-base(
+  $freeze-animations: true,
+  $size: letter,
+  $margin: 0.5in,
+  $legible: false,
+  $link-urls: false,
+  $link-origin: null,
+  $page-numbers: false
+) {
   :root {
     --is-print: 0;
     --print-hide: none;
@@ -606,9 +614,56 @@ $_type-scale: (
   }
 
   @media print {
-    :root { --is-print: 1; }
+    :root {
+      --is-print: 1;
+
+      // Paired themes build color as light-dark(): forcing the light scheme
+      // makes them print their light branch — light text becomes dark text
+      // on the (already white) sheet, for free. Dark-only themes use literal
+      // values and ignore this; $legible below covers them.
+      color-scheme: light;
+
+      @if $legible {
+        // Dark-only themes (e.g. Terminal) have literal LIGHT ink — unreadable
+        // once the background drops to white in print. Darken just the body
+        // text tokens; --code-* stay untouched so code blocks keep their ink,
+        // and accents are left alone so links/headings keep the theme's voice.
+        --ink:       CanvasText;
+        --ink-soft:  color-mix(in sRGB, CanvasText 78%, Canvas);
+        --ink-faint: color-mix(in sRGB, CanvasText 60%, Canvas);
+        --muted:     color-mix(in sRGB, CanvasText 70%, Canvas);
+      }
+    }
 
     @page { size: $size; margin: $margin; }
+
+    @if $page-numbers {
+      // Sheet numbers in the bottom-center margin box. Progressive: engines
+      // without margin-box support simply print unnumbered.
+      @page { @bottom-center { content: counter(page); font-size: 9pt; } }
+    }
+
+    @if $link-urls {
+      // Print each link's destination after it, so a paper copy is followable.
+      // External links print their href; internal links prepend $link-origin
+      // to become full URLs; same-page anchors are skipped (the URL adds
+      // nothing there).
+      a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.85em;
+        color: color-mix(in sRGB, CanvasText 60%, Canvas);
+        word-break: break-all;
+      }
+      @if $link-origin {
+        a[href^="/"]::after {
+          content: " (#{$link-origin}" attr(href) ")";
+          font-size: 0.85em;
+          color: color-mix(in sRGB, CanvasText 60%, Canvas);
+          word-break: break-all;
+        }
+      }
+      a[href^="#"]::after { content: none; }
+    }
 
     @if $freeze-animations {
       // The opacity:0 entrance-fade trap: a page snapshotted mid-animation

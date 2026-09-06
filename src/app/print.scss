@@ -15,7 +15,15 @@
 // Emits the control plane (--is-print / --print-hide / --print-show), the
 // @page box, and the animation freeze that stops a page snapshotted
 // mid-entrance-fade from printing as invisible text.
-@include m.print-base;
+// $legible: dark-only themes (Terminal) print with readable dark body text.
+// $link-urls + $link-origin: every link prints its full followable URL.
+// $page-numbers: sheet numbers in the footer.
+@include m.print-base(
+  $legible: true,
+  $link-urls: true,
+  $link-origin: 'https://cssisawesome.com',
+  $page-numbers: true
+);
 
 // Paper wants ink on white, not the theme's paper colour — a dark theme would
 // otherwise burn a whole cartridge. Themed surfaces are a screen affordance.
@@ -50,19 +58,4 @@
     display: none;
   }
 }
-
-/* Printed page numbers — @page margin boxes. Progressive: engines
-   without margin-box support simply print unnumbered sheets (the
-   theme-spec table index carries its own numbers in the markup, so
-   navigation survives either way). Merges with print-base's @page
-   size/margins via the cascade. */
-@media print {
-  @page {
-    @bottom-center {
-      content: counter(page);
-      font-family: var(--font-mono, monospace);
-      font-size: 9pt;
-      color: #666;
-    }
-  }
-}
+/* Sheet page numbers now come from print-base's $page-numbers flag above. */
