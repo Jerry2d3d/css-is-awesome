@@ -1,3 +1,12 @@
+## [1.9.5](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.4...v1.9.5) (2026-09-06)
+
+
+### Bug Fixes
+
+* **site:** docs print index harvests on beforeprint - was showing stale headings ([21a066b](https://github.com/Jerry2d3d/css-is-awesome/commit/21a066bdaa7b488f012333e5e07fa6fd34c57086))
+* **site:** docs screen TOC re-harvests per page - was frozen on page one ([e746ab4](https://github.com/Jerry2d3d/css-is-awesome/commit/e746ab47072b407c627e9f375819cad9c3d7abab))
+* **site:** print docs left nav hidden - the On this page bullets are the index ([8fb6b19](https://github.com/Jerry2d3d/css-is-awesome/commit/8fb6b19e656382d7d2c708ba8ef62466d03f4983))
+
 ## [1.9.4](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.3...v1.9.4) (2026-09-06)
 
 
