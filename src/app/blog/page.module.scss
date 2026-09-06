@@ -1,3 +1,5 @@
+@use 'mixins' as m;
+
 /* ============================================================
    Blog page (/blog) — co-located styles.
    Imported from page.tsx as a CSS Module.
@@ -112,5 +114,76 @@
     background: var(--surface-muted, var(--paper-sunk));
     color: var(--text-secondary, var(--ink-soft));
     border: 1px solid var(--border-default, var(--hair));
+  }
+}
+
+/* Explorer controls — grouping chips + search, docs-rail pattern.
+   Adding a subject later = one TRACKS row in BlogExplorer.tsx. */
+.controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: m.space(3);
+  align-items: center;
+  margin-block-end: m.space(6);
+
+  @include m.media-down(md) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.chips {
+  @include m.flex($gap: m.space(1), $wrap: wrap);
+
+  button {
+    @include m.button-reset;
+    @include m.focus-ring;
+    cursor: pointer;
+    padding: m.space(1) m.space(3);
+    border: 1px solid var(--hair);
+    border-radius: var(--r-full, 999px);
+    background: var(--paper);
+    color: var(--ink-soft);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    @include m.transition(background-color, border-color, color);
+
+    &:hover {
+      border-color: var(--ai);
+      color: var(--ink);
+    }
+
+    &[aria-pressed='true'] {
+      background: var(--ai-wash, rgba(0, 0, 0, 0.08));
+      border-color: var(--ai);
+      color: var(--ai);
+      font-weight: 600;
+    }
+  }
+}
+
+.filter {
+  inline-size: 16rem;
+  height: var(--control-h, 2.25rem);
+  padding-inline: 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 6px);
+  @include m.transition(border-color);
+
+  &:focus-visible {
+    outline: 2px solid var(--ai);
+    outline-offset: 2px;
+  }
+
+  &::placeholder {
+    color: var(--ink-faint);
+  }
+
+  /* Rule #8: on phones, take the space you're in. */
+  @include m.media-down(md) {
+    inline-size: 100%;
   }
 }

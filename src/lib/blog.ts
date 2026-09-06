@@ -26,10 +26,14 @@ function isPostFile(file: string): boolean {
  * (including a missing category) falls into engineering, so a typo can never
  * silently orphan a post out of the index.
  */
-export type PostTrack = "engineering" | "discovery";
+export type PostTrack = "engineering" | "discovery" | "ai";
 
 export function trackFor(category: string | null): PostTrack {
-  return category === "discovery" ? "discovery" : "engineering";
+  if (category === "discovery") return "discovery";
+  if (category === "ai") return "ai";
+  // Everything else — engineering, architecture, technique, missing —
+  // is a build story; a typo can never orphan a post.
+  return "engineering";
 }
 
 export type PostFrontmatter = {
