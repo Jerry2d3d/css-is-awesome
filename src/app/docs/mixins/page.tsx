@@ -386,11 +386,12 @@ export default function DocsMixinsPage() {
 
       <h3 id="m-print-base"><code>print-base</code></h3>
       <p>Page-level defaults, on by default. Include <strong>once at the stylesheet root</strong> (it emits <code>@page</code>, which is invalid nested in a selector). Sets the page box, collapses animations to their final frame so nothing prints invisible, and emits the print variable control plane. It does not force <code>opacity: 1</code> / <code>transform: none</code> — deliberate translucency and rotation survive.</p>
+      <p>In <code>@media print</code> it always sets <code>color-scheme: light</code>, so paired <code>light-dark()</code> themes print their light branch for free. Four opt-in flags (all default off) go further: <code>$legible</code> darkens the body-text tokens (<code>--ink</code>, <code>--muted</code>…) so dark-only themes like Terminal stay readable on white — code blocks and accents untouched; <code>$link-urls</code> prints each link&rsquo;s destination via <code>attr(href)</code>; <code>$link-origin</code> prepends an origin to internal links so they resolve to full URLs on paper; <code>$page-numbers</code> puts <code>counter(page)</code> in the <code>@page</code> bottom-center margin box.</p>
       <Example>
-        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">print-base</span>(<span className="tok-val">$freeze-animations: true, $size: letter, $margin: 0.5in</span>);
+        <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">print-base</span>(<span className="tok-val">$freeze-animations: true, $size: letter, $margin: 0.5in, $legible: false, $link-urls: false, $link-origin: null, $page-numbers: false</span>);
 {"\n"}
 {"\n"}<span className="tok-prop">@include</span> <span className="tok-val">m.print-base</span>;                                  <span className="tok-com">{"// at root"}</span>
-{"\n"}<span className="tok-prop">@include</span> <span className="tok-val">m.print-base($size: A4, $freeze-animations: false)</span>;</Example.Code>
+{"\n"}<span className="tok-prop">@include</span> <span className="tok-val">m.print-base($legible: true, $link-urls: true, $link-origin: &apos;https://example.com&apos;, $page-numbers: true)</span>;</Example.Code>
       </Example>
 
       <h3 id="m-print"><code>print</code>, <code>print-hidden</code>, <code>print-only</code></h3>

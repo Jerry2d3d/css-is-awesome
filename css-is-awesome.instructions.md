@@ -171,11 +171,18 @@ browser's native Print → Save as PDF is the generator; cia just supplies the
 
 - **`print`** — bare `@media print { @content }` wrapper. Co-locate it inside
   a selector to override that element on paper.
-- **`print-base($freeze-animations: true, $size: letter, $margin: 0.5in)`** —
+- **`print-base($freeze-animations: true, $size: letter, $margin: 0.5in, $legible: false, $link-urls: false, $link-origin: null, $page-numbers: false)`** —
   page-level defaults, ON by default. Include it **once at the stylesheet
   ROOT** — it emits `@page` (invalid when nested in a selector), freezes
   animations so nothing prints invisible, and emits the print variable
-  control plane.
+  control plane. In `@media print` it always forces `color-scheme: light`, so
+  paired `light-dark()` themes print their light branch for free. Four opt-in
+  flags (all default OFF): `$legible` darkens the body-text tokens (`--ink`,
+  `--muted`…) so dark-only themes (Terminal) stay readable on white — code
+  blocks and accents untouched; `$link-urls` prints each link's destination via
+  `attr(href)`; `$link-origin` prepends an origin to internal `/…` links so they
+  resolve to full URLs; `$page-numbers` puts `counter(page)` in the `@page`
+  bottom-center margin box.
 - **`print-hidden`** — hide an element on paper (the "hide the nav" case).
 - **`print-only`** — show an element only on paper (e.g. an inline URL
   footer); hidden on screen.
@@ -477,8 +484,9 @@ A recipe is a markdown file at `scss/recipes/<name>.md` carrying:
 - an a11y checklist graded against WCAG 2.2 AA
 - framework-neutral notes so it ports to React / Vue / Svelte / vanilla
 
-**Shipped today:** `dialog`, `combobox`, `print-to-pdf`, `mobile-nav`,
-`bottom-nav`. Queued next: `datepicker`, `data-table`, `command-palette`.
+**Shipped today:** `dialog`, `combobox`, `print-to-pdf`, `print-spec`,
+`mobile-nav`, `bottom-nav`. Queued next: `datepicker`, `data-table`,
+`command-palette`.
 
 The two mobile recipes ride the `hamburger` / `drawer` / `sheet` / `dock`
 mixin family — zero JS on the native Popover API. `mobile-nav` is the flex

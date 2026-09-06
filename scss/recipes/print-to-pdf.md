@@ -260,4 +260,5 @@ These are the bugs that *will* bite — each one cost real debugging time. This 
 
 ## Related recipes
 
+- [`print-spec`](./print-spec.md) — the paginated-spec companion (cover + table index, one page per section, printed sheet numbers). It builds on this recipe and leans on `print-base`'s opt-in flags — `$legible` (readable dark themes on paper), `$link-urls` / `$link-origin` (full followable URLs), `$page-numbers` (sheet numbers) — which automate the manual URL-and-page-break handling shown above.
 - [`dialog`](./dialog.md) — a print-only summary often lives inside a confirmation dialog before export
