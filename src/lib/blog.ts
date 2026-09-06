@@ -19,6 +19,19 @@ function isPostFile(file: string): boolean {
   return file.endsWith(".md") && !file.startsWith("_") && file !== "README.md";
 }
 
+/**
+ * The two editorial tracks (EPIC-06). `category` stays free-form in
+ * frontmatter — `engineering`, `architecture`, `technique`, … all belong to
+ * Track A. Only the literal `discovery` selects Track B; anything else
+ * (including a missing category) falls into engineering, so a typo can never
+ * silently orphan a post out of the index.
+ */
+export type PostTrack = "engineering" | "discovery";
+
+export function trackFor(category: string | null): PostTrack {
+  return category === "discovery" ? "discovery" : "engineering";
+}
+
 export type PostFrontmatter = {
   title: string;
   category: string | null;
