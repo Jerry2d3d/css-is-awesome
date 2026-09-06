@@ -1,3 +1,17 @@
+# [1.10.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.5...v1.10.0) (2026-09-06)
+
+
+### Bug Fixes
+
+* **a11y:** TOC summary is not a nested interactive control ([5c65f8e](https://github.com/Jerry2d3d/css-is-awesome/commit/5c65f8e8d9c3318cfe89c9e623fec5a9994127ef))
+* **site:** TOC group carets sit at the right end of the summary ([6186a20](https://github.com/Jerry2d3d/css-is-awesome/commit/6186a20de6158541f2a9743f83b48b112789bf95))
+
+
+### Features
+
+* **print:** legible dark themes, full URLs, and sheet numbers via print-base flags ([213c8bd](https://github.com/Jerry2d3d/css-is-awesome/commit/213c8bdf76454b3ac0c0cfcc13bae7c5224f37aa)), closes [#anchors](https://github.com/Jerry2d3d/css-is-awesome/issues/anchors)
+* **site:** docs TOC collapses into groups - open one, the others close ([0c2ab84](https://github.com/Jerry2d3d/css-is-awesome/commit/0c2ab84e02e5e49ef11c204c67107c047135bf41))
+
 ## [1.9.5](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.4...v1.9.5) (2026-09-06)
 
 
