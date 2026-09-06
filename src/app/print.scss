@@ -50,3 +50,19 @@
     display: none;
   }
 }
+
+/* Printed page numbers — @page margin boxes. Progressive: engines
+   without margin-box support simply print unnumbered sheets (the
+   theme-spec table index carries its own numbers in the markup, so
+   navigation survives either way). Merges with print-base's @page
+   size/margins via the cascade. */
+@media print {
+  @page {
+    @bottom-center {
+      content: counter(page);
+      font-family: var(--font-mono, monospace);
+      font-size: 9pt;
+      color: #666;
+    }
+  }
+}

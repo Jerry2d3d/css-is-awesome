@@ -46,6 +46,39 @@ export default function ThemesPage() {
           </p>
         </section>
 
+        {/* Table index — PRINT ONLY. The page numbers live here in the
+            markup, hidden on screen and revealed by @media print (all
+            CSS, zero JS). They're honest because every section forces
+            break-before: page in print — section k is always page k+1. */}
+        <nav className={styles.printIndex} aria-label="Table index">
+          <h2>Table index</h2>
+          <ol>
+            {[
+              ["Cover & index", 1],
+              ["Button", 2],
+              ["Badge & Tag", 3],
+              ["Inputs", 4],
+              ["Choices", 5],
+              ["Alerts", 6],
+              ["Cards", 7],
+              ["Tabs", 8],
+              ["Avatars", 9],
+              ["Progress", 10],
+            ].map(([label, page]) => (
+              <li key={String(label)}>
+                <span>{label}</span>
+                <span className={styles.printLeader} aria-hidden="true" />
+                <span className={styles.printPage}>{page}</span>
+              </li>
+            ))}
+          </ol>
+          <p className={styles.printNote}>
+            Printed from the css-is-awesome theme editor — every swatch and
+            component on the following pages renders the active theme&apos;s
+            tokens.
+          </p>
+        </nav>
+
         <div className={styles.layout}>
           <aside className={styles.sidebar} aria-label="Components nav">
             <h5>Live components</h5>
