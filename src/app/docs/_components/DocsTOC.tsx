@@ -91,11 +91,7 @@ export default function DocsTOC() {
       {groups.map((g) =>
         g.children.length === 0 ? (
           // No children — a plain top-level link, no disclosure.
-          <a
-            key={g.h2.id}
-            href={`#${g.h2.id}`}
-            className={`${styles.groupLink} ${linkClass(g.h2.id) ?? ""}`}
-          >
+          <a key={g.h2.id} href={`#${g.h2.id}`} className={linkClass(g.h2.id)}>
             {g.h2.text}
           </a>
         ) : (

@@ -69,13 +69,13 @@
 
     &::-webkit-details-marker { display: none; }
 
-    /* Our own caret, rotating on open. */
-    &::before {
+    /* Our own caret at the RIGHT end, rotating on open. */
+    &::after {
       content: '';
       flex: none;
       width: 0.5em;
       height: 0.5em;
-      margin-inline: 0.4rem -0.2rem;
+      margin-inline-end: 0.9rem;
       border-right: 1.5px solid var(--ink-faint);
       border-bottom: 1.5px solid var(--ink-faint);
       transform: rotate(-45deg);
@@ -85,13 +85,8 @@
     > a { flex: 1; }
   }
 
-  &[open] > summary::before { transform: rotate(45deg); }
+  &[open] > summary::after { transform: rotate(45deg); }
 
   > ul { margin-bottom: 0.25rem; }
 }
 
-.groupLink {
-  /* A childless top-level heading: align with the group summaries by
-     reserving the caret's width. */
-  margin-inline-start: 0.9rem;
-}
