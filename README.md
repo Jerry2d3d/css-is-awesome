@@ -8,7 +8,7 @@
 
 **Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
-> **Shipped in 1.0.0:** a **recipes book** for building any component in any framework using cia mixins — five recipes today (`dialog`, `combobox`, `print-to-pdf`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
+> **The recipes book:** build any component in any framework using cia mixins — six recipes today (`dialog`, `combobox`, `print-to-pdf`, `print-spec`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
 
 ## For AI agents — start here
 
@@ -241,14 +241,16 @@ Print support is a pure-CSS layer — the browser's native **Print → Save as P
 
 // Once, in a GLOBAL stylesheet — never inside a component module.
 // It emits its own :root block plus @page, so don't wrap it in a selector.
-@include cia.print-base;                   // optional: ($size, $margin, $freeze-animations)
+@include cia.print-base;                   // optional flags: ($size, $margin, $freeze-animations, $legible, $link-urls, $link-origin, $page-numbers)
 
 .site-nav   { @include cia.print-hidden; } // drop chrome on paper
 .print-note { @include cia.print-only; }   // reveal paper-only content
 .invoice    { @include cia.print { border: 1px solid; } } // bare @media print wrapper
 ```
 
-`print-base` also collapses animations to zero duration and pins them to their final frame, so a page snapshotted mid-entrance-fade doesn't print as invisible text. It deliberately does **not** force `opacity: 1` or `transform: none` — that would fix the fade while flattening every intentional use of the same properties (a 0.15 watermark, a 0.4 disabled control, a stamp rotated `-4deg`). Elements that were never animating are left untouched. Read `--is-print` (`0` on screen, `1` on paper) for custom effects. Full walkthrough: the [`print-to-pdf`](./scss/recipes/print-to-pdf.md) recipe.
+`print-base` also collapses animations to zero duration and pins them to their final frame, so a page snapshotted mid-entrance-fade doesn't print as invisible text. It deliberately does **not** force `opacity: 1` or `transform: none` — that would fix the fade while flattening every intentional use of the same properties (a 0.15 watermark, a 0.4 disabled control, a stamp rotated `-4deg`). Elements that were never animating are left untouched. Read `--is-print` (`0` on screen, `1` on paper) for custom effects.
+
+Inside `@media print`, `print-base` always forces `color-scheme: light`, so paired `light-dark()` themes print their light branch for free. Four opt-in flags (all default off) take it further: `$legible` darkens the body-text tokens so dark-only themes (Terminal) stay readable as ink on white; `$link-urls` prints every link's destination via `attr(href)`; `$link-origin` prepends an origin so internal `/…` links resolve to full URLs on paper; `$page-numbers` numbers the sheets in the `@page` footer. The docs site and the theme editor at `/themes` turn those flags on to print themselves as paginated spec documents. Full walkthroughs: the [`print-to-pdf`](./scss/recipes/print-to-pdf.md) and [`print-spec`](./scss/recipes/print-spec.md) recipes.
 
 ### Why the print mixins use `!important`
 
