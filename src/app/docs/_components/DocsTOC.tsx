@@ -101,12 +101,19 @@ export default function DocsTOC() {
             data-group={g.h2.id}
             className={styles.group}
           >
-            <summary>
-              <a href={`#${g.h2.id}`} className={linkClass(g.h2.id)}>
-                {g.h2.text}
-              </a>
+            {/* Summary is a plain toggle — NO link inside it. A <summary> is
+                itself a button, so an <a> within it is a nested interactive
+                control (axe "nested-interactive", serious). The h2's own
+                section link lives as the first list item instead. */}
+            <summary className={g.h2.id === activeId ? styles.summaryActive : undefined}>
+              <span>{g.h2.text}</span>
             </summary>
             <ul>
+              <li>
+                <a href={`#${g.h2.id}`} className={linkClass(g.h2.id)}>
+                  {g.h2.text}
+                </a>
+              </li>
               {g.children.map((c) => (
                 <li key={c.id} className={styles.sub}>
                   <a href={`#${c.id}`} className={linkClass(c.id)}>

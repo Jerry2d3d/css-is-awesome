@@ -66,8 +66,15 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    padding: 0.3rem 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    transition: color 180ms var(--ease);
 
+    &:hover { color: var(--ink); }
     &::-webkit-details-marker { display: none; }
+
+    > span { flex: 1; }
 
     /* Our own caret at the RIGHT end, rotating on open. */
     &::after {
@@ -75,15 +82,15 @@
       flex: none;
       width: 0.5em;
       height: 0.5em;
-      margin-inline-end: 0.9rem;
       border-right: 1.5px solid var(--ink-faint);
       border-bottom: 1.5px solid var(--ink-faint);
       transform: rotate(-45deg);
       transition: transform 180ms var(--ease);
     }
-
-    > a { flex: 1; }
   }
+
+  /* The summary's own text goes bold when its section is the active one. */
+  > summary.summaryActive { color: var(--ink); font-weight: 600; }
 
   &[open] > summary::after { transform: rotate(45deg); }
 
