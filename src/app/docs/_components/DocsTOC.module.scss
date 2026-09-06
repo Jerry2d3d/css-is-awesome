@@ -30,7 +30,6 @@
   text-transform: none;
   line-height: 1;
 }
-.toc h5 + ul { margin-bottom: 1.75rem; }
 .toc ul {
   list-style: none;
   padding: 0;
@@ -56,3 +55,45 @@
   font-weight: 600;
 }
 .toc .sub a { padding-left: 1.5rem; font-size: 0.85rem; }
+
+/* Collapsible h2 groups — native <details name="docs-toc"> gives
+   mutual exclusion (open one, the others close) with zero JS. */
+.group {
+  font-family: var(--font-serif);
+
+  > summary {
+    list-style: none;                 /* drop the default disclosure marker */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    transition: color 180ms var(--ease);
+
+    &:hover { color: var(--ink); }
+    &::-webkit-details-marker { display: none; }
+
+    > span { flex: 1; }
+
+    /* Our own caret at the RIGHT end, rotating on open. */
+    &::after {
+      content: '';
+      flex: none;
+      width: 0.5em;
+      height: 0.5em;
+      border-right: 1.5px solid var(--ink-faint);
+      border-bottom: 1.5px solid var(--ink-faint);
+      transform: rotate(-45deg);
+      transition: transform 180ms var(--ease);
+    }
+  }
+
+  /* The summary's own text goes bold when its section is the active one. */
+  > summary.summaryActive { color: var(--ink); font-weight: 600; }
+
+  &[open] > summary::after { transform: rotate(45deg); }
+
+  > ul { margin-bottom: 0.25rem; }
+}
+
