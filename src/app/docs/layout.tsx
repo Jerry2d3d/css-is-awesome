@@ -12,6 +12,7 @@ import DocsNav from "./_components/DocsNav";
 import DocsTOC from "./_components/DocsTOC";
 import DocsPrevNext from "./_components/DocsPrevNext";
 import DocsDock from "./_components/DocsDock";
+import DocsPrintIndex from "./_components/DocsPrintIndex";
 
 export default function DocsLayout({ children }: { children: ReactNode }) {
   return (
@@ -20,6 +21,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
       <div className="docs-shell">
         <DocsNav />
         <article className="docs-content">
+          <DocsPrintIndex />
           {children}
           <DocsPrevNext />
         </article>
