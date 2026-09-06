@@ -13,6 +13,7 @@
 | [02](./EPIC-02-install-wizard.md) | **`npm create cia` wizard** | Guided install: framework? theme? a11y add-on? Wires SCSS entry + theme attr in one command. | ~3-5 days | 7 |
 | [03](./EPIC-03-cia-a11y-recipes.md) | **`@cia/a11y-recipes` add-on** | Separate npm package: WCAG-strict variants of the v1.0 recipes (combobox with announcements, datepicker with screen-reader month nav, command-palette with focus trap). Recipes-first; tiny JS shims only where unavoidable. | ~5-7 days | 10 |
 | [04](./EPIC-04-framework-pack-react.md) | **`@cia/react` v0.1 (POC)** | Prove the codegen pipeline: parse recipes → emit React components. First batch of generated components. Sync mechanism for recipe updates. | ~2 weeks | 12 |
+| [06](./EPIC-06-blog.md) | **The blog: two tracks** | Engineering-the-system posts + NEW CSS-discoveries track; index split, feed.xml, 3 seed posts | S | 5 |
 | [05](./EPIC-05-density-knob.md) | **The density knob (`--space-unit`)** | One variable rescales the whole spacing system. `--space-0..9` become `calc()` over a master unit; set it once and the UI tightens or opens up. Density changes a page's character more than colour does. | ~1-2 days | 4 |
 
 **Total v1.1 effort:** ~26-37 working days. **Total stories:** 47.
