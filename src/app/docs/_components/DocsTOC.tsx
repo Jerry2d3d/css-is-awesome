@@ -1,13 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import styles from "./DocsTOC.module.scss";
 
 type Heading = { id: string; text: string; level: 2 | 3 };
 
 export default function DocsTOC() {
+  const pathname = usePathname();
   const [headings, setHeadings] = useState<Heading[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  // Keyed on pathname: the docs layout (and this component) persist across
+  // client-side navigation, so a run-once harvest froze on the first page's
+  // headings — the TOC showed the same list on install, mixins, everywhere.
   useEffect(() => {
     const article = document.querySelector<HTMLElement>("article.docs-content");
     if (!article) return;
@@ -35,7 +40,7 @@ export default function DocsTOC() {
 
     nodes.forEach((n) => observer.observe(n));
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   if (headings.length === 0) return null;
 

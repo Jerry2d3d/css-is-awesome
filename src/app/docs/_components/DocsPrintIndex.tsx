@@ -16,10 +16,20 @@ export default function DocsPrintIndex() {
   const [headings, setHeadings] = useState<{ id: string; text: string }[]>([]);
 
   useEffect(() => {
-    const article = document.querySelector<HTMLElement>("article.docs-content");
-    if (!article) return;
-    const nodes = Array.from(article.querySelectorAll<HTMLHeadingElement>("h2[id]"));
-    setHeadings(nodes.map((n) => ({ id: n.id, text: n.textContent ?? "" })));
+    const harvest = () => {
+      const article = document.querySelector<HTMLElement>("article.docs-content");
+      if (!article) return;
+      const nodes = Array.from(article.querySelectorAll<HTMLHeadingElement>("h2[id]"));
+      setHeadings(nodes.map((n) => ({ id: n.id, text: n.textContent ?? "" })));
+    };
+    // Harvest on navigation (pathname dep) AND — the guarantee — at the
+    // moment of printing. The shared docs layout persists across client
+    // navigations, so a pathname-only harvest can read a stale article;
+    // beforeprint reads the CURRENT DOM, so the bullets always match the
+    // page being printed.
+    harvest();
+    window.addEventListener("beforeprint", harvest);
+    return () => window.removeEventListener("beforeprint", harvest);
   }, [pathname]);
 
   if (headings.length === 0) return null;

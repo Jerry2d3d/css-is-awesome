@@ -7,6 +7,9 @@
    truth for the nav's height (--nav-height, globals.css). */
 .sidebar {
   @include l.area(sidebar);
+  // On paper the "On this page" bullets are the index; the whole
+  // section-tree rail is screen wayfinding, so it prints hidden.
+  @include m.print-hidden;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: m.space(3);
@@ -100,27 +103,3 @@
   font-style: italic;
 }
 
-/* "Table index" heading — print only (the screen rail has no title). */
-.printTitle {
-  @include m.print-only;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.4rem;
-  margin: 0 0 0.75rem;
-}
-
-/* On paper the rail is a Table index: no filter box, no sticky/scroll
-   containment, the full section tree laid out as a reference list. */
-@media print {
-  .sidebar {
-    position: static;
-    max-block-size: none;
-    display: block;
-  }
-  .filter {
-    display: none;
-  }
-  .scroll {
-    overflow: visible;
-  }
-}
