@@ -1,3 +1,10 @@
+## [1.9.4](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.3...v1.9.4) (2026-09-06)
+
+
+### Features
+
+* **site:** docs pages print as a spec - Table index + On-this-page ([16225f7](https://github.com/Jerry2d3d/css-is-awesome/commit/16225f7e3a03c1e68662552c4076f5419a314fd1))
+
 ## [1.9.3](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.2...v1.9.3) (2026-09-06)
 
 
