@@ -26,11 +26,9 @@ function isPostFile(file: string): boolean {
  * (including a missing category) falls into engineering, so a typo can never
  * silently orphan a post out of the index.
  */
-export type PostTrack = "engineering" | "discovery";
-
-export function trackFor(category: string | null): PostTrack {
-  return category === "discovery" ? "discovery" : "engineering";
-}
+// Track model lives in blog-tracks.ts (fs-free, client-importable);
+// re-exported here so server-side callers keep one import.
+export { trackFor, type PostTrack } from "./blog-tracks";
 
 export type PostFrontmatter = {
   title: string;

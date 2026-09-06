@@ -1,3 +1,15 @@
+## [1.9.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.1...v1.9.2) (2026-09-06)
+
+
+### Bug Fixes
+
+* **site:** fs-free track module - client import of blog.ts panicked Turbopack ([8017dec](https://github.com/Jerry2d3d/css-is-awesome/commit/8017dec6279bb37f936be5e3c11a13c46b4c6775))
+
+
+### Features
+
+* **site:** blog explorer - grouping chips + search, extensible tracks ([72ca3f5](https://github.com/Jerry2d3d/css-is-awesome/commit/72ca3f5ee6f9ff28de6cf12ccf5ff070c45691b6))
+
 ## [1.9.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.0...v1.9.1) (2026-09-06)
 
 
