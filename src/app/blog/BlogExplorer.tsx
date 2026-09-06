@@ -5,7 +5,8 @@
 // posts at build time and hands the serializable metas down.
 import { useState } from "react";
 import Link from "next/link";
-import { trackFor, type PostMeta, type PostTrack } from "@/lib/blog";
+import { trackFor, type PostTrack } from "@/lib/blog-tracks";
+import type { PostMeta } from "@/lib/blog"; // type-only: erased at compile, no fs reaches the client
 import styles from "./page.module.scss";
 
 const TRACKS: { id: PostTrack; chip: string; lede: string }[] = [
