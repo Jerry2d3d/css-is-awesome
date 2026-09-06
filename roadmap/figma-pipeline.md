@@ -18,12 +18,27 @@
 - DTCG migration is scheduled as v1.3 EPIC-03; a Figma plugin as v1.3
   EPIC-01. This plan supersedes/absorbs both.
 
-## Hard constraint to design around
+## Landscape (researched 2026-09-06) — and how it reshapes the plan
 
-Figma's Variables **REST** API is Enterprise-plan-only. The bridge
-therefore runs through a **Figma plugin** (plugins can read/write
-variables on every plan) plus file-based import/export — not through the
-REST API. This is why F2 (the plugin) is load-bearing, not cosmetic.
+- Figma's Variables **REST** API remains Enterprise-plan-only. Ruled out.
+- **Figma announced NATIVE variable import/export aligned to the W3C DTCG
+  token spec, rolling out ~Nov 2026** — drag a DTCG JSON in, export a
+  zip with one JSON per mode. This makes DTCG the interchange format and
+  removes most of the need for a custom sync plugin.
+- **Tokens Studio** (the standard Figma tokens plugin, free tier) reads/
+  writes DTCG and syncs to GitHub — the TODAY-bridge until native
+  import reaches every account.
+- **Figma ships an official Dev Mode MCP server** (remote variant works
+  on all plans): agents can call `get_variable_defs` / `get_code` /
+  `get_image` against a design. It tells an agent what the DESIGN says;
+  it does not know what cia's system means — that's our half.
+
+**Consequences:** F1 becomes DTCG-FIRST (`cia figma export` emits DTCG
+JSON, one mode per theme; `from-figma` accepts DTCG JSON/zip). The
+custom sync plugin drops out of F2 — Tokens Studio + native import cover
+sync; F2 narrows to the published cia Figma Library. F4's MCP work pairs
+our server with Figma's official one: Figma's MCP describes the design,
+cia's MCP translates it into the system.
 
 ## Phase F1 — the token bridge (files first, no plugin needed)
 

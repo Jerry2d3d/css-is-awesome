@@ -107,22 +107,35 @@ export default function RoadmapPage() {
       <h2 id="now">Working on now</h2>
       <ul>
         <li>
-          <strong>Shipping the MCP server as its own installable package</strong>{" "}
-          so it takes one line of config and no install step. Today it needs
-          dependencies added by hand, which nobody should have to discover.
+          <strong>The Figma pipeline, phase one</strong> &mdash; the token
+          bridge: export the theme contract as Figma variables (each cia theme
+          a variable <em>mode</em>) and import a designer&apos;s variables back
+          through the validator.
+        </li>
+        <li>
+          <strong>The dropdown recipe</strong> &mdash; recipe #6, from the
+          reference implementation the docs already run.
         </li>
       </ul>
 
       <h2 id="next">Next up</h2>
       <ul>
         <li>
-          <strong>The Figma pipeline</strong> &mdash; Figma → DEV → Output on
-          one token vocabulary: export the theme contract as Figma variables
-          (each cia theme a variable <em>mode</em>), import a designer&apos;s
-          variables back through the validator, a published cia Figma Library
-          whose component names mirror the mixins, and a machine-readable
-          mapping served over MCP so AI agents translate Figma frames into
-          cia calls directly.
+          <strong>The blog grows a second track</strong> &mdash; alongside the
+          engineering post-mortems, a <em>CSS discoveries</em> track: new and
+          cool platform CSS as we find it, with cia as the sponsor rather than
+          the subject. <Link href="/blog">Blog</Link>.
+        </li>
+        <li>
+          <strong>The MCP server as its own installable package</strong> so it
+          takes one line of config and no install step. Today it needs
+          dependencies added by hand, which nobody should have to discover.
+        </li>
+        <li>
+          <strong>The rest of the Figma pipeline</strong> &mdash; beyond the
+          token bridge above: a published cia Figma Library whose component
+          names mirror the mixins, and a machine-readable mapping served over
+          MCP so AI agents translate Figma frames into cia calls directly.
         </li>
         <li>
           <strong>More recipes</strong> &mdash; datepicker, data table,
