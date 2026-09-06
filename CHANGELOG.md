@@ -1,3 +1,10 @@
+## [1.9.3](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.2...v1.9.3) (2026-09-06)
+
+
+### Features
+
+* **site:** the theme editor prints as a Theme Specification ([e00539b](https://github.com/Jerry2d3d/css-is-awesome/commit/e00539b18359345b96eee8b6487614b767545b48))
+
 ## [1.9.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.1...v1.9.2) (2026-09-06)
 
 
