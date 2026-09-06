@@ -1,3 +1,5 @@
+@use 'mixins' as m;
+
 /* ============================================================
    Themes builder (/themes) — sidebar + sectioned component
    showcase. The editor dock mounts as a separate component.
@@ -188,5 +190,71 @@
   }
   a:hover {
     text-decoration: underline;
+  }
+}
+
+/* ------------------------------------------------------------
+   PRINT — the theme editor prints as a Theme Specification.
+   Cover (hero + table index) on page 1; every section forces its
+   own page so the index's hardcoded numbers are deterministic.
+   Screen chrome (sidebar, editor dock, site nav) is print-hidden
+   in its own modules. All CSS, zero JS.
+   ------------------------------------------------------------ */
+.printIndex {
+  @include m.print-only;
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    margin: 0 0 0.75rem;
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-serif);
+  }
+
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+  }
+}
+
+.printLeader {
+  flex: 1;
+  border-block-end: 1px dotted var(--ink-faint);
+}
+
+.printPage {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.printNote {
+  margin-block-start: 1rem;
+  font-family: var(--font-script);
+  font-size: 1.05rem;
+  color: var(--ink-faint);
+}
+
+@media print {
+  /* The editor's screen furniture goes; the spec stays. */
+  .sidebar,
+  .sidebarFoot {
+    display: none !important;
+  }
+
+  .layout {
+    display: block;
+  }
+
+  /* Each component section owns a page - this is what makes the
+     table index's numbers guaranteed rather than hopeful. */
+  .section {
+    break-before: page;
   }
 }
