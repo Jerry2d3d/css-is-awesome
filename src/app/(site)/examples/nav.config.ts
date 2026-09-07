@@ -37,6 +37,11 @@ export const examplesNav: ExampleNavItem[] = [
     label: "Footer",
     description: "A simple site footer — logo and copyright on the left, links on the right.",
   },
+  {
+    slug: "print-to-pdf",
+    label: "Print to PDF",
+    description: "A real invoice you can Ctrl+P — screen chrome drops, links become followable URLs, and the sheet numbers itself. Zero JS, no PDF library.",
+  },
 ];
 
 export const exampleHref = (slug: string): string => `/examples/${slug}`;

@@ -1,0 +1,140 @@
+@use 'mixins' as m;
+@use 'components/buttons' as b;
+
+/* The Print / Save-as-PDF example. On screen it's a demo document; the
+   print helpers (from the global cia.print-base layer) flip it into a
+   clean printable artifact. Consumer-named classes throughout. */
+
+.actions {
+  @include m.flex($gap: m.space(3), $wrap: wrap);
+  align-items: center;
+  // The button + hint are screen affordances — gone on paper.
+  @include m.print-hidden;
+}
+
+:global(.cia-btn-print) {
+  @include b.btn(primary);
+}
+
+.hint {
+  color: var(--ink-faint);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.watch {
+  color: var(--ink-soft);
+  font-family: var(--font-serif);
+  // Instructions about printing don't belong in the print.
+  @include m.print-hidden;
+}
+
+/* ---- the artifact ---- */
+.invoice {
+  margin-block-start: m.space(6);
+  padding: m.space(6);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 8px);
+  background: var(--paper-raised);
+
+  @include m.print {
+    // On paper it's the whole page — no card framing needed.
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+}
+
+.invoiceHead {
+  @include m.flex($justify: space-between, $wrap: wrap, $gap: m.space(4));
+  align-items: flex-start;
+  padding-block-end: m.space(4);
+  border-block-end: 2px solid var(--ink);
+}
+
+.brand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--ink);
+}
+
+.invoiceNo { text-align: end; }
+
+.metaLabel {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.big {
+  margin: 0.1rem 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--ink);
+}
+
+.meta {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+}
+
+.billTo {
+  margin-block: m.space(4);
+
+  p { margin: 0.1rem 0; font-family: var(--font-serif); }
+}
+
+.tableWrap { overflow-x: auto; }
+
+.lines {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-serif);
+
+  th, td {
+    padding: m.space(2) m.space(3);
+    text-align: start;
+    border-block-end: 1px solid var(--hair-soft);
+  }
+
+  thead th {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .num { text-align: end; font-variant-numeric: tabular-nums; }
+
+  tfoot th, tfoot td {
+    padding-block-start: m.space(3);
+    border-block: 0;
+    font-weight: 700;
+    color: var(--ink);
+  }
+}
+
+.terms {
+  margin-block-start: m.space(4);
+  color: var(--ink-soft);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+}
+
+/* Print-only marginalia — hidden on screen, revealed on paper. */
+.printStamp {
+  @include m.print-only;
+  margin-block-start: m.space(5);
+  font-family: var(--font-script);
+  font-size: 1.05rem;
+  color: var(--ink-faint);
+}
