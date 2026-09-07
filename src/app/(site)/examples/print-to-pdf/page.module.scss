@@ -41,11 +41,17 @@
   background: var(--paper-raised);
 
   @include m.print {
-    // On paper it's the whole page — no card framing needed.
+    // Take the whole sheet: fill the printable area (the @page 0.5in
+    // margins are the frame), keep the design, and lay it out as a
+    // column so the closing stamp sits at the foot of the page.
     margin: 0;
-    padding: 0;
-    border: 0;
+    min-block-size: calc(100dvh - 1.2in);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ink);
+    border-radius: 0;
     background: transparent;
+    padding: m.space(4);
   }
 }
 
@@ -132,10 +138,12 @@
   font-size: 0.9rem;
 }
 
-/* Print-only marginalia — hidden on screen, revealed on paper. */
+/* Print-only marginalia — hidden on screen, sits at the foot of the
+   full-page invoice on paper (margin-top:auto in the print flex column). */
 .printStamp {
   @include m.print-only;
-  margin-block-start: m.space(5);
+  margin-block-start: auto;
+  padding-block-start: m.space(5);
   font-family: var(--font-script);
   font-size: 1.05rem;
   color: var(--ink-faint);
