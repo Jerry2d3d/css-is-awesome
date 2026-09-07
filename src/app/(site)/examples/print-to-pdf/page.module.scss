@@ -1,0 +1,196 @@
+@use 'mixins' as m;
+@use 'components/buttons' as b;
+
+/* The Print / Save-as-PDF example. On screen it's a demo document; the
+   print helpers (from the global cia.print-base layer) flip it into a
+   clean printable artifact. Consumer-named classes throughout. */
+
+// The whole intro (title, lead, button, instructions) is screen-only —
+// print gives you just the invoice below it.
+.intro {
+  @include m.print-hidden;
+}
+
+.actions {
+  @include m.flex($gap: m.space(3), $wrap: wrap);
+  align-items: center;
+}
+
+:global(.cia-btn-print) {
+  @include b.btn(primary);
+}
+
+.hint {
+  color: var(--ink-faint);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.watch {
+  color: var(--ink-soft);
+  font-family: var(--font-serif);
+}
+
+/* ---- the artifact ---- */
+.invoice {
+  margin-block-start: m.space(6);
+  padding: m.space(6);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 8px);
+  background: var(--paper-raised);
+
+  @include m.print {
+    // Take the whole sheet: fill the printable area (the @page 0.5in
+    // margins are the frame), keep the design, and lay it out as a
+    // column so the closing stamp sits at the foot of the page.
+    margin: 0;
+    min-block-size: calc(100dvh - 1.2in);
+    display: flex;
+    flex-direction: column;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+  }
+}
+
+.invoiceHead {
+  @include m.flex($justify: space-between, $wrap: wrap, $gap: m.space(4));
+  align-items: flex-start;
+  padding-block-end: m.space(4);
+  border-block-end: 2px solid var(--ink);
+}
+
+.brand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--ink);
+}
+
+.invoiceNo { text-align: end; }
+
+.metaLabel {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.big {
+  margin: 0.1rem 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--ink);
+}
+
+.meta {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+}
+
+.billTo {
+  margin-block: m.space(4);
+
+  p { margin: 0.1rem 0; font-family: var(--font-serif); }
+}
+
+.tableWrap { overflow-x: auto; }
+
+.lines {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-serif);
+
+  th, td {
+    padding: m.space(2) m.space(3);
+    text-align: start;
+    border-block-end: 1px solid var(--hair-soft);
+  }
+
+  thead th {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .num { text-align: end; font-variant-numeric: tabular-nums; }
+
+  tfoot th, tfoot td {
+    padding-block-start: m.space(3);
+    border-block: 0;
+    font-weight: 700;
+    color: var(--ink);
+  }
+}
+
+.terms {
+  margin-block-start: m.space(4);
+  color: var(--ink-soft);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+}
+
+/* The foot of the printed page — hidden on screen, pinned to the bottom
+   of the full-page invoice on paper (margin-top:auto in the print flex
+   column). Holds the scan-to-open QR and the printed-from stamp. */
+.printFoot {
+  @include m.print-only;
+  margin-block-start: auto;
+  padding-block-start: m.space(5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: m.space(3);
+  text-align: center;
+}
+
+.qrBlock {
+  text-align: center;
+}
+
+.qr {
+  inline-size: 96px;
+  block-size: 96px;
+  // A fixed-width block: text-align on the parent won't move it, auto
+  // side margins center it above the wider caption.
+  margin-inline: auto;
+
+  :global(svg) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+}
+
+.qrCaption {
+  margin: m.space(1) 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.printStamp {
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: 1.05rem;
+  color: var(--ink-faint);
+}
+
+/* The online invoice page's "you got here from…" note — screen only. */
+.onlineNote {
+  @include m.print-hidden;
+  color: var(--ink-soft);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  margin-block-end: m.space(4);
+}

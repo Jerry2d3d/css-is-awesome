@@ -1,3 +1,22 @@
+## [1.10.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.10.1...v1.10.2) (2026-09-07)
+
+
+### Bug Fixes
+
+* **print:** center the QR and printed-from stamp at the foot ([9b285a0](https://github.com/Jerry2d3d/css-is-awesome/commit/9b285a09eb34f4c9f9ce1b2ffe0bae2f3af385cc))
+* **print:** center the QR block itself (auto side margins) ([ea27b0f](https://github.com/Jerry2d3d/css-is-awesome/commit/ea27b0fc0bb6de9ff5c84bc318f782e2f6097f9e))
+* **print:** drop the border around the printed invoice ([ac3291d](https://github.com/Jerry2d3d/css-is-awesome/commit/ac3291d21f135207e0354ca3dca2e4579de3af68))
+* **print:** examples shell collapses to full width in print ([381a992](https://github.com/Jerry2d3d/css-is-awesome/commit/381a992be3e33d0a05ff00f03ebb03f03c63a3cd))
+* **print:** the invoice takes the full page and keeps its design ([bf95c5a](https://github.com/Jerry2d3d/css-is-awesome/commit/bf95c5aaa21e638bf9928032fd12653cc92f187a))
+* **print:** the print-to-pdf example prints just the invoice ([4547ed7](https://github.com/Jerry2d3d/css-is-awesome/commit/4547ed7b2c1293f484318db04a1f95a90367b262))
+
+
+### Features
+
+* **site:** Examples becomes a docs-style section - left nav + one page per example ([e90a53c](https://github.com/Jerry2d3d/css-is-awesome/commit/e90a53ce87f5e345b62c2822a6d5cfb8a5ef1f51))
+* **site:** Print to PDF example - a real invoice you Ctrl+P ([cc4b56d](https://github.com/Jerry2d3d/css-is-awesome/commit/cc4b56dbfdfcae570f9e4c069b26f56d2dcd620c))
+* **site:** real online-invoice page + print-only QR to it ([ef08e49](https://github.com/Jerry2d3d/css-is-awesome/commit/ef08e4985abafbe116cd5d4ef8a78d3988c5d301))
+
 ## [1.10.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.10.0...v1.10.1) (2026-09-07)
 
 
