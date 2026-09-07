@@ -376,6 +376,23 @@ Pass the size through `print-base` at the root, and set orientation on `@page`:
 
 When a section legitimately spans several pages, drop the page-number column and print the harvested index as plain bullets — an honest "here's what's in this document" without a number that would be a guess. This is what the cia docs do for article prose.
 
+### A print-only QR back to the web (build-time SVG)
+
+A spec printed on paper is a dead end — a reader can't click anything. Close the loop with a QR code that appears **only** on the printed page and encodes the page's own online URL, so a scan jumps straight back to the live document. The cia `/examples/print-to-pdf` showcase does exactly this on an invoice.
+
+Two moves, both already in this recipe's toolkit:
+
+1. **Make the QR paper-only.** Wrap it in `cia.print-only` — hidden on screen, revealed in print — the same helper the cover/index uses.
+
+   ```scss
+   // Paper-only, like the cover/index — no new machinery.
+   .qr { @include cia.print-only; }
+   ```
+
+2. **Generate the QR at build time, as inline SVG.** cia ships no QR generator — that stays the consumer's choice. A build- or server-side library (for example the `qrcode` npm package, called in a server component or a build step) can emit an inline `<svg>` string you drop into the markup. Because the SVG is inlined at build time, **nothing runs in the browser and no image is fetched** — it stays true to cia's zero-JS-on-paper promise. Encode an **absolute** URL (`https://your-site.example/spec/online`) so a scan resolves anywhere, and mark the block `aria-hidden` when an adjacent link or caption already names the destination for a screen reader.
+
+Pair it with an ordinary internal `<a href="/spec/online">` (or your framework's link) inside the printed content: with `$link-urls` + `$link-origin` on (see Styling above), that link prints its **full followable URL** on paper, and the QR gives a phone a one-scan path to the same place. Same destination, two ways onto it — one for a human reading, one for a phone camera.
+
 ## Pitfalls
 
 - **`print-base` must be root/global.** It emits a `:root` block plus `@page`; inside a `.module.scss` that is a hard build error under Next.js CSS Modules pure mode, and wrapping it in a selector double-nests the `:root` it already writes. It belongs at the top level of a single global stylesheet, included once.
