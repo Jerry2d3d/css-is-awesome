@@ -321,6 +321,9 @@ try {
 let failures = 0;
 let warnings = 0;
 
+// Every recipe slug — the set a cross-link may legitimately point at.
+const knownSlugs = new Set(docs.map((d) => d.slug));
+
 function report(doc) {
   const out = [];
   const fail = (msg) => {
@@ -512,6 +515,22 @@ function report(doc) {
         pass(`frameworks — ${subs.length} subsection(s): ${subs.map((s) => s.text).join(", ")}`);
       }
     }
+  }
+
+  // ── 6.5 Cross-links resolve ───────────────────────────────────────────────
+  // Recipes link each other with relative `.md` paths (correct on GitHub and
+  // in the npm markdown); the website rewrites them to /docs/recipes/<slug>/
+  // at build time. Guard against a link to a recipe that doesn't exist — that
+  // would render as a dead route. `README.md` and `../…` paths are allowed.
+  const badLinks = [];
+  for (const m of doc.raw.matchAll(/\]\((?:\.\/)?([A-Za-z0-9_-]+)\.md(?:#[^)]*)?\)/g)) {
+    const target = m[1];
+    if (target !== "README" && !knownSlugs.has(target)) badLinks.push(target);
+  }
+  if (badLinks.length) {
+    fail(`links — points at recipe(s) that don't exist: ${[...new Set(badLinks)].map((s) => `${s}.md`).join(", ")}`);
+  } else {
+    pass(`links — all .md cross-links resolve to real recipes`);
   }
 
   // ── 7. Forbidden patterns (scss/recipes/README.md) ────────────────────────
