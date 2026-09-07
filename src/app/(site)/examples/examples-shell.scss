@@ -23,4 +23,14 @@
     grid-template-columns: minmax(0, 1fr);
     gap: m.space(6);
   }
+
+  // Print: collapse to a single full-width flow. The rail is
+  // print-hidden, but the grid still RESERVES its 220px column, which
+  // squeezes the printed content — block layout drops the phantom track
+  // so the article (and its full-page invoice) uses the whole sheet.
+  @media print {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
 }
