@@ -1,3 +1,10 @@
+## [1.10.3](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.10.2...v1.10.3) (2026-09-07)
+
+
+### Bug Fixes
+
+* **site:** recipe .md cross-links render as web routes, not 404s ([7c9ac3b](https://github.com/Jerry2d3d/css-is-awesome/commit/7c9ac3b1480a606020611c0ba946d4c0775bf16e)), closes [#hash](https://github.com/Jerry2d3d/css-is-awesome/issues/hash) [#hash](https://github.com/Jerry2d3d/css-is-awesome/issues/hash)
+
 ## [1.10.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.10.1...v1.10.2) (2026-09-07)
 
 
