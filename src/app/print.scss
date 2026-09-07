@@ -33,6 +33,10 @@
     color: #000;
   }
 
+  // On screen the article column is capped for readability; on paper it
+  // should use the whole sheet (the @page margins already frame it).
+  .docs-content { max-width: none; }
+
   // Links are useless as blue underlines on paper.
   a {
     color: #000;
