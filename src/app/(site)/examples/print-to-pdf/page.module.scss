@@ -159,6 +159,9 @@
 .qr {
   inline-size: 96px;
   block-size: 96px;
+  // A fixed-width block: text-align on the parent won't move it, auto
+  // side margins center it above the wider caption.
+  margin-inline: auto;
 
   :global(svg) {
     display: block;
