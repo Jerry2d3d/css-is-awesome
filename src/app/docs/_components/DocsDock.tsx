@@ -142,8 +142,10 @@ export default function DocsDock() {
         <h5 className={styles.sheetTitle}>on this page</h5>
         <div className={styles.sheetScroll}>
           <ul className={styles.tocList}>
-            {headings.map((h) => (
-              <li key={h.id} className={h.level === 3 ? styles.sub : undefined}>
+            {headings.map((h, i) => (
+              // key includes the index: a page with a duplicate heading id
+              // (invalid HTML, but real) must not crash React's reconciler.
+              <li key={`${h.id}-${i}`} className={h.level === 3 ? styles.sub : undefined}>
                 <a href={`#${h.id}`} onClick={() => setOpen(null)}>
                   {h.text}
                 </a>

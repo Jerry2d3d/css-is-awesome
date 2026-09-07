@@ -250,7 +250,7 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">footer</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.page-footer</span>; {"}"}</Example.Code>
       </Example>
 
-      <h3 id="layout"><code>layout</code></h3>
+      <h3 id="mixin-layout"><code>layout</code></h3>
       <p>Build any page layout from your own region names. Single-column stack or rows of columns — the engine guarantees a valid rectangular <code>grid-template-areas</code>. A row with fewer names than the widest row stretches its last region to fill (so a single-name row becomes a full-width band). Accepts <code>$gap</code>, <code>$tracks</code> for custom column tracks, and <code>$wire</code> to auto-place children by <code>[data-area]</code>.</p>
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">layout</span>(<span className="tok-val">$rows...</span>);
