@@ -78,6 +78,26 @@ function escapeAttr(s: string): string {
   return escapeHtml(s).replace(/"/g, "&quot;");
 }
 
+// Recipes cross-link each other with relative markdown paths —
+// `[print-to-pdf](./print-to-pdf.md)`. That is CORRECT on GitHub (the .md
+// files live there) and in the npm-shipped markdown, but the website
+// renders each recipe at /docs/recipes/<slug>/, so the browser would
+// resolve `./print-to-pdf.md` to /docs/recipes/<slug>/print-to-pdf.md —
+// a 404 (browsers don't serve .md). Rewrite those links to their rendered
+// routes at build time; the source stays dual-target correct.
+//   ./<slug>.md[#hash]  or  <slug>.md[#hash]  →  /docs/recipes/<slug>/[#hash]
+//   ./README.md                              →  /docs/recipes/   (the index)
+// `../…` paths, external URLs and bare #anchors are left untouched.
+function rewriteRecipeMdLinks(html: string): string {
+  return html.replace(
+    /href="(?:\.\/)?([A-Za-z0-9_-]+)\.md(#[^"]*)?"/g,
+    (_match, slug: string, hash: string | undefined) => {
+      if (slug === "README") return `href="/docs/recipes/"`;
+      return `href="/docs/recipes/${slug}/${hash ?? ""}"`;
+    },
+  );
+}
+
 // Split a leading `--- … ---` YAML-ish block from the body. We only need flat
 // `key: value` pairs (the recipe schema is flat), so a full YAML parser would
 // be overkill — this matches the same shape the MCP server reads.
@@ -139,6 +159,6 @@ export function getRecipe(slug: string): Recipe | null {
 
   const raw = fs.readFileSync(file, "utf8");
   const { data, body } = parseFrontmatter(raw);
-  const html = marked.parse(body) as string;
+  const html = rewriteRecipeMdLinks(marked.parse(body) as string);
   return { slug, ...toFrontmatter(data, slug), html };
 }
