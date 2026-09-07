@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.10.0...v1.10.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* **site:** duplicate heading id on /docs/mixins (and harden the harvesters) ([fee5140](https://github.com/Jerry2d3d/css-is-awesome/commit/fee5140d1049ff28d3b8f79c85641e2abaef8f56))
+
 # [1.10.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.9.5...v1.10.0) (2026-09-06)
 
 
