@@ -38,8 +38,9 @@ export default function DocsPrintIndex() {
     <nav className={styles.printIndex} aria-label="On this page">
       <h2>On this page</h2>
       <ul>
-        {headings.map((h) => (
-          <li key={h.id}>{h.text}</li>
+        {headings.map((h, i) => (
+          // Index in the key: resilient to a duplicate heading id on a page.
+          <li key={`${h.id}-${i}`}>{h.text}</li>
         ))}
       </ul>
     </nav>

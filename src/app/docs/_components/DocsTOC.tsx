@@ -114,8 +114,8 @@ export default function DocsTOC() {
                   {g.h2.text}
                 </a>
               </li>
-              {g.children.map((c) => (
-                <li key={c.id} className={styles.sub}>
+              {g.children.map((c, i) => (
+                <li key={`${c.id}-${i}`} className={styles.sub}>
                   <a href={`#${c.id}`} className={linkClass(c.id)}>
                     {c.text}
                   </a>
