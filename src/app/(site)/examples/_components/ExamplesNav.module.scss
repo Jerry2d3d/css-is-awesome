@@ -1,0 +1,68 @@
+@use 'mixins' as m;
+@use 'layout' as l;
+
+/* The examples rail. Sticky under the top nav with its own internal
+   scroll — the page scrolls, the rail stays put; a long list scrolls
+   inside the rail. The sticky math reads the one source of truth for
+   the nav's height (--nav-height, globals.css). */
+.sidebar {
+  @include l.area(sidebar);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: m.space(3);
+  font-size: 0.9rem;
+  align-self: start;
+  position: sticky;
+  top: calc(var(--nav-height, 4rem) + m.space(4));
+  max-block-size: calc(100dvh - var(--nav-height, 4rem) - #{m.space(4)} * 2);
+
+  /* Below lg the rail hides; the index page's links own wayfinding. */
+  @include m.media-down(lg) {
+    display: none;
+  }
+}
+
+.scroll {
+  overflow-y: auto;
+  min-block-size: 0;
+  overscroll-behavior: contain;
+}
+
+/* Section heading — h2 for real landmark semantics; the script-font
+   look matches the docs rail. */
+.sidebar h2 {
+  font-family: var(--font-script);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--shu);
+  margin: 0 0 0.5rem;
+  text-transform: none;
+  line-height: 1;
+}
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--hair-soft);
+  font-family: var(--font-serif);
+}
+.sidebar a {
+  display: block;
+  padding: 0.3rem 0.9rem;
+  color: var(--ink-soft);
+  border: 0;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  line-height: 1.5;
+  transition: color 180ms var(--ease), border-color 180ms var(--ease);
+  text-decoration: none;
+}
+.sidebar a:hover { color: var(--ink); }
+/* State lives on attributes — the active link is [aria-current="page"]
+   (+ data-active), never a class. */
+.sidebar a[aria-current='page'] {
+  color: var(--ink);
+  border-left-color: var(--ai);
+  font-weight: 600;
+}

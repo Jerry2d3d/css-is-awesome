@@ -1,0 +1,26 @@
+// ============================================================
+// Examples shell — the two-column examples layout (rail | content),
+// expressed with cia's own layout doctrine: named areas via
+// l.layout(), children claiming slots via l.area() (the rail does so
+// from its own CSS Module; the article reuses the global .docs-content
+// which already claims `content`). Global stylesheet (not a module)
+// because .examples-shell is a shared, layout-owned class.
+// ============================================================
+@use 'mixins' as m;
+@use 'layout' as l;
+
+.examples-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+  @include l.layout((sidebar content), $tracks: 220px minmax(0, 1fr), $gap: 7);
+
+  @include m.media-down(lg) {
+    // Below lg the rail hides itself (its own module); the article
+    // owns the single column. The example pages stay reachable via the
+    // index page's link list.
+    grid-template-areas: 'content';
+    grid-template-columns: minmax(0, 1fr);
+    gap: m.space(6);
+  }
+}

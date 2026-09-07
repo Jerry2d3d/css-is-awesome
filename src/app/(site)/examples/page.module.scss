@@ -1,24 +1,12 @@
 /* ============================================================
-   Examples page (/examples) — co-located module styles.
-   Currently shares all classes with globals (docs-shell, example*, btn, card).
-   Add examples-unique rules here if the page grows its own design.
+   Examples — shared demo module. Imported by the example pages that
+   need the house dropdown / hamburger / drawer classes (the examples
+   layout owns the shell; prose reuses the global .docs-content).
    ============================================================ */
 
 @use 'mixins' as m;
 @use 'components/overlay' as o;
 @use 'components/navigation' as n;
-
-/* The page's own shell - it previously borrowed .docs-shell from globals,
-   which now lives with the docs layout. Same rhythm as the other pages. */
-.shell {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 6rem;
-
-  @include m.mobile-only {
-    padding: m.space(6) m.space(5) m.space(8);
-  }
-}
 
 /* ============================================================
    Dropdown — house spec (AGENTS.md quick decision #8).
