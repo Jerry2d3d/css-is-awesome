@@ -8,30 +8,34 @@ import styles from "./page.module.scss";
 export default function PrintToPdfExample() {
   return (
     <>
-      <h1>Print to PDF</h1>
-      <p className="lead">
-        The browser&apos;s <strong>Print → Save as PDF</strong> is the
-        generator; cia is only the styling layer. Print this page (or click
-        the button) and compare it to the screen — that difference is the
-        whole feature, and it ships zero JavaScript.
-      </p>
+      {/* Everything above the invoice is screen-only framing — the whole
+          block is print-hidden, so a print gives you JUST the invoice. */}
+      <div className={styles.intro}>
+        <h1>Print to PDF</h1>
+        <p className="lead">
+          The browser&apos;s <strong>Print → Save as PDF</strong> is the
+          generator; cia is only the styling layer. Print this page (or click
+          the button) and compare it to the screen — that difference is the
+          whole feature, and it ships zero JavaScript.
+        </p>
 
-      <p className={styles.actions}>
-        <PrintButton />
-        <span className={styles.hint}>…or just press Ctrl/Cmd + P.</span>
-      </p>
+        <p className={styles.actions}>
+          <PrintButton />
+          <span className={styles.hint}>…or just press Ctrl/Cmd + P.</span>
+        </p>
 
-      <p className={styles.watch}>
-        What changes on paper: the site nav, this instruction text and the
-        button all disappear; a &ldquo;printed from&rdquo; stamp and the full
-        link URLs appear; the sheet numbers itself. Read how at{" "}
-        <a href="https://cssisawesome.com/docs/recipes/print-spec/">
-          the print-spec recipe
-        </a>
-        .
-      </p>
+        <p className={styles.watch}>
+          What changes on paper: everything on this page except the invoice
+          disappears; a &ldquo;printed from&rdquo; stamp and the full link URLs
+          appear; the sheet numbers itself. Read how at{" "}
+          <a href="https://cssisawesome.com/docs/recipes/print-spec/">
+            the print-spec recipe
+          </a>
+          .
+        </p>
+      </div>
 
-      {/* The artifact. `document` is the printable surface; the classes it
+      {/* The artifact — the ONLY thing that prints. The classes it
           uses are all cia print helpers behind consumer-named selectors. */}
       <article className={styles.invoice}>
         <header className={styles.invoiceHead}>

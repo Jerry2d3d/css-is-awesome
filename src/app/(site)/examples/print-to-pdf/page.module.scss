@@ -5,11 +5,15 @@
    print helpers (from the global cia.print-base layer) flip it into a
    clean printable artifact. Consumer-named classes throughout. */
 
+// The whole intro (title, lead, button, instructions) is screen-only —
+// print gives you just the invoice below it.
+.intro {
+  @include m.print-hidden;
+}
+
 .actions {
   @include m.flex($gap: m.space(3), $wrap: wrap);
   align-items: center;
-  // The button + hint are screen affordances — gone on paper.
-  @include m.print-hidden;
 }
 
 :global(.cia-btn-print) {
@@ -26,8 +30,6 @@
 .watch {
   color: var(--ink-soft);
   font-family: var(--font-serif);
-  // Instructions about printing don't belong in the print.
-  @include m.print-hidden;
 }
 
 /* ---- the artifact ---- */
