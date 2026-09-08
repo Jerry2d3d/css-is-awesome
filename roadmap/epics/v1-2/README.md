@@ -16,8 +16,9 @@
 | [05](./EPIC-05-migration-mui-chakra.md) | **Migration: MUI + Chakra** | Extend `npx cia migrate` to read MUI theme objects + Chakra theme objects. | ~1 week | 6 |
 | [06](./EPIC-06-analyzer-health-report.md) | **Analyzer health report** | Grade `cia analyze`: score header + categorized findings + a suggested fix on each. Enriches the existing `health %`; adds contract-token + off-scale-length rules. From the 2026-09-07 external review. | ~3-4 days | 6 |
 | [07](./EPIC-07-token-intelligence-editor.md) | **Token intelligence in the editor** | Theme editor shows where a token propagates ("Primary → buttons/tabs/links/focus-ring") and warns on WCAG contrast live. From the 2026-09-07 external review. | ~3-5 days | 5 |
+| [08](./EPIC-08-print-theme-tokens.md) | **Print theme + print tokens** | Print becomes a themeable surface: `--print-ink/-paper/-line/-muted` with a B/W + light-gray default every theme inherits, overridable per-theme or per-project (letterhead, newsprint). Collapses the current three-way print-color model. | ~3-5 days | 6 |
 
-**Total v1.2 effort:** ~22-31 working days. **Total stories:** 43.
+**Total v1.2 effort:** ~25-36 working days. **Total stories:** 49.
 
 ## Definition of done for v1.2
 
