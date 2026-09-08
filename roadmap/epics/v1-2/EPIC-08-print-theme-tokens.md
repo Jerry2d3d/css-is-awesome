@@ -6,12 +6,14 @@
 > consumer) *override* those tokens to restyle paper — a branded letterhead, a
 > newsprint look, a grayscale draft. "Swap tokens, get a new look" — for print.
 
-**Status:** In progress — **core shipped 2026-09-08** (F1 palette+rebind, F2
-`$legible` deprecation, F3.2 contract tokens, F4 docs) on branch
-`feature/print-theme-tokens`; remaining: F3.1 Press in-file print block, F3.3
-letterhead recipe + Coyote demo, F5 editor print mode.
-**Effort estimate:** ~4-6 working days (grew with the editor print mode)
-**Stories:** 9
+**Status:** Nearly complete — **shipped 2026-09-08** on branch
+`feature/print-theme-tokens`: F1 palette+rebind, F2 `$legible` deprecation,
+F3.1 Press newsprint, F3.2 contract tokens, F3.3 letterhead recipe + Coyote
+demo, F4 docs, F5 editor print mode. Remaining: F4's dedicated `/docs` print
+page and the optional F5.3 polish (persist per-family, seed from in-file
+overrides).
+**Effort estimate:** ~4-6 working days
+**Stories:** 10
 
 ## Mission
 
@@ -120,14 +122,17 @@ letterhead** is content you add, styled with cia — a recipe, not a theme.
 
 ### F5 — Theme editor: print mode
 
-- **US-V12.08.5.1** (L) — A "Print" toggle in the theme editor flips the live
-  preview to paper (white ground, ink palette) and edits the `--print-*`
-  tokens; they slot into the editor catalog as a Print group (already optional
-  contract tokens). Acceptance: toggling to Print shows the components as they'd
-  print, and editing a `--print-*` updates the preview.
-- **US-V12.08.5.2** (M) — A letterhead on/off toggle + a modal that previews the
-  printout with and without the letterhead. Acceptance: the modal shows the
-  paper preview and the toggle adds/removes the letterhead live.
+- **US-V12.08.5.1** (L) — ✅ DONE 2026-09-08. A "🖨 Print" button opens a
+  `PrintPreviewModal` (native `<dialog>`) whose `.paper` panel rebinds the
+  theme's colour tokens onto the `--print-*` palette on screen — simulating
+  `@media print` — with live Ink/Paper/Rules/Muted controls and a "Copy print
+  block" export.
+- **US-V12.08.5.2** (M) — ✅ DONE 2026-09-08. Letterhead on/off toggle renders
+  the letterhead recipe inside the paper preview; the modal is the preview.
+- **US-V12.08.5.3** (S) — Follow-ons if wanted: persist the print palette per
+  family (today it's modal-local), and read the theme's existing in-file print
+  overrides as the modal's starting values (today it starts from the B/W
+  default).
 
 ## What changes
 
