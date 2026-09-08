@@ -117,8 +117,10 @@ letterhead** is content you add, styled with cia — a recipe, not a theme.
 
 - **US-V12.08.4.1** (S) — ✅ DONE 2026-09-08. README / llm.txt / AGENTS.md /
   instructions / print-spec recipe document the themeable print palette, the
-  letterhead override, and the `$legible` deprecation. (Remaining: a dedicated
-  `/docs` print page with a before/after override screenshot.)
+  letterhead override, and the `$legible` deprecation, and a dedicated
+  **`/docs/print`** page (nav → Patterns → Print) is the holistic home:
+  palette, rebind, setup, per-theme override, letterhead, editor preview,
+  live example. The mixins page print section was refreshed to match.
 
 ### F5 — Theme editor: print mode
 
