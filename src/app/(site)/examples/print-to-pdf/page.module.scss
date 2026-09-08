@@ -55,11 +55,51 @@
   }
 }
 
+/* The letterhead recipe: a print-only branded band. It reads the --print-*
+   palette (defined by print-base inside @media print), so it always matches
+   the paper look and a print theme restyles it for free. */
+.letterhead {
+  @include m.print-only;
+  margin-block-end: m.space(4);
+  padding-block-end: m.space(3);
+  border-block-end: 3px double var(--print-line);
+  text-align: center;
+}
+
+.letterheadName {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  letter-spacing: 0.14em;
+  color: var(--print-ink);
+}
+
+.letterheadTag {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--print-muted);
+}
+
+.letterheadAddr {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--print-muted);
+}
+
 .invoiceHead {
   @include m.flex($justify: space-between, $wrap: wrap, $gap: m.space(4));
   align-items: flex-start;
   padding-block-end: m.space(4);
   border-block-end: 2px solid var(--ink);
+}
+
+// On paper the letterhead carries the wordmark, so the screen brand steps out.
+.brandScreen {
+  @include m.print-hidden;
 }
 
 .brand {
@@ -69,7 +109,10 @@
   color: var(--ink);
 }
 
-.invoiceNo { text-align: end; }
+// margin-inline-start:auto keeps the invoice number pinned right even when the
+// screen brand beside it is print-hidden (single flex child would otherwise
+// fall back to the start edge on paper).
+.invoiceNo { text-align: end; margin-inline-start: auto; }
 
 .metaLabel {
   margin: 0;
