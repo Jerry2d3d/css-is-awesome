@@ -342,8 +342,10 @@ The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zo
   dumps a cia theme; `npx cia add <recipe>` (`--list` to browse) copies a recipe
   from the book into the project — own the pattern; `npx cia analyze [path]`
   audits a project's stylesheets against the installed API — dead `cia.*` symbols,
-  the `space()` 1–9 scale trap, hard-coded hex colors, BEM chains — with a health
-  score and CI-ready exit codes. Run any verb with `--help`. (`cia init` remains
+  the `space()` 1–9 scale trap, off-contract tokens (near-miss typos only), hard-coded
+  hex colors, BEM chains — with a health score and CI-ready exit codes. Low-noise on
+  color: a hex in a `var(--token, #hex)` fallback is token-driven, and a literal inside
+  `@media print` is an intentional paper colour — neither is flagged. Run any verb with `--help`. (`cia init` remains
   planned.)
 - **JSON token export** — DTCG-format token list in `figma-tokens/`.
 - **`llm.txt`** — at the repo root and served from the docs site; single-fetch

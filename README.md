@@ -227,10 +227,11 @@ The CLI also carries the registry and the health check:
 npx cia add --list          # browse the recipe book
 npx cia add bottom-nav      # copy a recipe into your project — you own the pattern
 npx cia analyze src/styles  # design-system health: dead cia.* symbols, the
-                            # space() scale trap, hard-coded colors, BEM creep
+                            # space() scale trap, off-contract tokens (typos),
+                            # hard-coded colors, BEM creep
 ```
 
-`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI.
+`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens.
 
 ## Print / PDF (zero JS)
 
