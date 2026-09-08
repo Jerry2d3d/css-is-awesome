@@ -19,6 +19,32 @@ const fs = require('fs');
 const path = require('path');
 
 const PKG_SCSS = path.join(__dirname, '..', 'scss');
+const CONTRACT_PATH = path.join(__dirname, '..', 'scripts', 'theme-contract.json');
+
+// All contract token names (required + optional). Used to catch typo'd tokens —
+// a var(--x) that's a near-miss of a real token silently breaks the style.
+// The contract is optional; if it can't be read the rule simply goes quiet.
+function loadContractTokens() {
+  try {
+    const c = JSON.parse(fs.readFileSync(CONTRACT_PATH, 'utf8'));
+    return new Set([...(c.required || []), ...(c.optional || [])]);
+  } catch {
+    return new Set();
+  }
+}
+
+// Tiny Levenshtein (zero-dep). Only called on var(--x) misses, so cost is trivial.
+function editDistance(a, b) {
+  const m = a.length, n = b.length;
+  const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+  }
+  return d[m][n];
+}
 
 const HELP = `cia analyze — design-system health check
 
@@ -106,7 +132,47 @@ function stripComments(src) {
   return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
 }
 
-function analyzeFile(file, symbols, extraNs) {
+// A hex inside a `var(--token, #hex)` fallback is token-driven, not a hard-coded
+// color — that's the correct pattern (token first, literal only if unset).
+// Strip var() expressions innermost-first so nested fallbacks
+// (`var(--a, var(--b, #fff))`) collapse too, leaving only genuine literals.
+function stripVarExpr(src) {
+  let prev;
+  let s = src;
+  do {
+    prev = s;
+    s = s.replace(/var\([^()]*\)/g, '');
+  } while (s !== prev);
+  return s;
+}
+
+// Literals inside an @media print block are intentional: print deliberately
+// escapes theme colours (ink-on-white for legibility, grays for rules) so a
+// hard-coded #000/#fff there is correct, not a smell. Remove print @media
+// blocks — brace-balanced, so nested selectors are handled — before the
+// hard-coded-color scan. Non-print @media queries are kept and still scanned.
+function stripPrintBlocks(src) {
+  let out = '';
+  let i = 0;
+  while (i < src.length) {
+    const at = src.indexOf('@media', i);
+    if (at === -1) { out += src.slice(i); break; }
+    const braceOpen = src.indexOf('{', at);
+    if (braceOpen === -1) { out += src.slice(i); break; }
+    out += src.slice(i, at);
+    let depth = 0;
+    let j = braceOpen;
+    for (; j < src.length; j++) {
+      if (src[j] === '{') depth++;
+      else if (src[j] === '}' && --depth === 0) { j++; break; }
+    }
+    if (!/\bprint\b/.test(src.slice(at + 6, braceOpen))) out += src.slice(at, j);
+    i = j;
+  }
+  return out;
+}
+
+function analyzeFile(file, symbols, contractTokens, extraNs) {
   const raw = fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
   const src = stripComments(raw);
   const ns = detectNamespaces(src, extraNs);
@@ -130,7 +196,29 @@ function analyzeFile(file, symbols, extraNs) {
       }
     }
   }
-  for (const m of src.matchAll(/#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g)) {
+  // off-contract-token: a var(--x) that's a near-miss of a real contract token
+  // (a typo → the declaration silently fails). Pure custom tokens — not close to
+  // any contract token — are the consumer's own and are left alone.
+  if (contractTokens && contractTokens.size) {
+    const seen = new Set();
+    for (const m of src.matchAll(/var\(\s*(--[\w-]+)/g)) {
+      const tok = m[1];
+      if (contractTokens.has(tok) || seen.has(tok)) continue;
+      seen.add(tok);
+      let best = null;
+      let bestD = Infinity;
+      for (const known of contractTokens) {
+        const d = editDistance(tok, known);
+        if (d < bestD) { bestD = d; best = known; }
+      }
+      if (best && bestD > 0 && bestD <= 2) {
+        findings.push({ level: 'warn', rule: 'off-contract-token', detail: `${tok} — not a contract token; did you mean ${best}?` });
+      }
+    }
+  }
+  // Genuine literal colors only — a hex used as a var() fallback is token-driven,
+  // and a hex inside @media print is an intentional paper colour.
+  for (const m of stripVarExpr(stripPrintBlocks(src)).matchAll(/#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g)) {
     findings.push({ level: 'warn', rule: 'hard-coded-color', detail: `${m[0]} — values should come from tokens (cia.color(...) / var(--...))` });
   }
   for (const m of src.matchAll(/\.[a-zA-Z][\w]*(?:__|--)[\w-]+/g)) {
@@ -161,8 +249,9 @@ async function run(args) {
   }
 
   const symbols = collectSymbols();
+  const contractTokens = loadContractTokens();
   const files = walkScss(target);
-  const results = files.map((f) => analyzeFile(f, symbols, extraNs)).filter((r) => r.findings.length || r.namespaces.length);
+  const results = files.map((f) => analyzeFile(f, symbols, contractTokens, extraNs)).filter((r) => r.findings.length || r.namespaces.length);
 
   const counts = { error: 0, warn: 0, info: 0 };
   for (const r of results) for (const f of r.findings) counts[f.level]++;
