@@ -6,9 +6,12 @@
 > consumer) *override* those tokens to restyle paper — a branded letterhead, a
 > newsprint look, a grayscale draft. "Swap tokens, get a new look" — for print.
 
-**Status:** Planned (v1.2) — architecture change, plan-first
-**Effort estimate:** ~3-5 working days
-**Stories:** 6
+**Status:** In progress — **core shipped 2026-09-08** (F1 palette+rebind, F2
+`$legible` deprecation, F3.2 contract tokens, F4 docs) on branch
+`feature/print-theme-tokens`; remaining: F3.1 Press in-file print block, F3.3
+letterhead recipe + Coyote demo, F5 editor print mode.
+**Effort estimate:** ~4-6 working days (grew with the editor print mode)
+**Stories:** 9
 
 ## Mission
 
@@ -88,24 +91,43 @@ from the screen theme" coupling this epic removes.
   `--ink`-remap path. Acceptance: Terminal prints legibly with `$legible` unset;
   passing `$legible` still compiles and warns/notes deprecation.
 
-### F3 — Per-theme opt-in
+### F3 — Per-theme opt-in + the letterhead
 
-- **US-V12.08.3.1** (M) — Document + demonstrate the override mechanism: a theme
-  overrides print tokens via a `@media print` block in its file OR a paired
-  `<link media="print">`. Ship **one** reference (Press newsprint or a
-  letterhead example), not 24. Acceptance: the reference theme prints with its
-  own paper identity; all others inherit the global default.
-- **US-V12.08.3.2** (S) — Treat `--print-*` as **optional** contract tokens with
-  defaults so `theme-validator` / theme-drift don't demand them of every theme.
-  Acceptance: a theme without print overrides passes; one with them validates.
+Two distinct things, deliberately kept separate (decided 2026-09-08): a
+**theme's own paper look** lives IN its single theme file; a **shareable
+letterhead** is content you add, styled with cia — a recipe, not a theme.
+
+- **US-V12.08.3.1** (M) — In-file per-theme print look: a theme overrides
+  `--print-*` in a `@media print` block in its own file (one-file rule holds).
+  Ship **one** reference (Press → newsprint), not 24. Acceptance: the reference
+  theme prints its own paper identity; all others inherit the global default.
+- **US-V12.08.3.2** (S) — ✅ DONE 2026-09-08. `--print-*` are optional contract
+  tokens (contract now 40 optional), so `theme-validator` / theme-drift don't
+  demand them of every theme.
+- **US-V12.08.3.3** (M) — The `letterhead` recipe: a print-only header/footer
+  (name, address, rule) as **markup styled with `cia.print-only` + the print
+  tokens** — NOT a theme file. Because it reads `--print-*`, it matches any
+  print palette and composes onto any theme. Acceptance: a documented recipe +
+  a live demo (the ACME → Coyote joke invoice at `/examples/print-to-pdf`,
+  serial numbers filed off the trademarked character).
 
 ### F4 — Docs + analyzer note
 
-- **US-V12.08.4.1** (S) — Docs page + README: print is themeable; the default is
-  B/W + light grays; how to restyle (override the four tokens); and that
-  `cia analyze` already treats `@media print` literals as intentional (shipped
-  2026-09-08) so print overrides never read as "hard-coded color." Acceptance:
-  the print docs show a before/after override; the analyzer behavior is stated.
+- **US-V12.08.4.1** (S) — ✅ DONE 2026-09-08. README / llm.txt / AGENTS.md /
+  instructions / print-spec recipe document the themeable print palette, the
+  letterhead override, and the `$legible` deprecation. (Remaining: a dedicated
+  `/docs` print page with a before/after override screenshot.)
+
+### F5 — Theme editor: print mode
+
+- **US-V12.08.5.1** (L) — A "Print" toggle in the theme editor flips the live
+  preview to paper (white ground, ink palette) and edits the `--print-*`
+  tokens; they slot into the editor catalog as a Print group (already optional
+  contract tokens). Acceptance: toggling to Print shows the components as they'd
+  print, and editing a `--print-*` updates the preview.
+- **US-V12.08.5.2** (M) — A letterhead on/off toggle + a modal that previews the
+  printout with and without the letterhead. Acceptance: the modal shows the
+  paper preview and the toggle adds/removes the letterhead live.
 
 ## What changes
 
