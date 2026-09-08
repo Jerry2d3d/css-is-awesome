@@ -13,8 +13,9 @@
 | [02](./EPIC-02-theme-marketplace.md) | **Theme Marketplace** | `/themes/community` gallery. Submission via GitHub PR (no backend in v1.3). Moderation tooling for the maintainer. | ~1 week | 8 |
 | [03](./EPIC-03-dtcg-migration.md) | **DTCG / Style Dictionary CLI** | Surface the existing `scripts/dtcg-to-scss.mjs` as `npx cia migrate dtcg`. Docs page + integration test. | ~3 days | 4 |
 | [04](./EPIC-04-framework-pack-angular.md) | **`@cia/angular` v0.1** | Apply codegen pattern from v1.1 EPIC-04 to Angular. First batch of generated components. | ~2 weeks | 10 |
+| [05](./EPIC-05-ai-token-diff.md) | **AI-assisted token diff** | Prompt → a contract-limited, validator-checked, preview-before-accept token diff. No backend, no shipped key (MCP-agent path; optional BYOK dock). GATED on v1.2 EPIC-07. From the 2026-09-07 external review. | ~3-5 days | 4 |
 
-**Total v1.3 effort:** ~28-35 working days. **Total stories:** 34.
+**Total v1.3 effort:** ~31-40 working days. **Total stories:** 38.
 
 ## Definition of done for v1.3
 

@@ -15,8 +15,9 @@
 | [04](./EPIC-04-framework-pack-react.md) | **`@cia/react` v0.1 (POC)** | Prove the codegen pipeline: parse recipes → emit React components. First batch of generated components. Sync mechanism for recipe updates. | ~2 weeks | 12 |
 | [06](./EPIC-06-blog.md) | **The blog: two tracks** | Engineering-the-system posts + NEW CSS-discoveries track; index split, feed.xml, 3 seed posts | S | 5 |
 | [05](./EPIC-05-density-knob.md) | **The density knob (`--space-unit`)** | One variable rescales the whole spacing system. `--space-0..9` become `calc()` over a master unit; set it once and the UI tightens or opens up. Density changes a page's character more than colour does. | ~1-2 days | 4 |
+| [07](./EPIC-07-mcp-zero-install.md) | **MCP that just works** | `npx css-is-awesome-mcp` with no manual `sdk`+`zod` install — bundle into the server artifact or ship an add-on package, without adding JS deps to the core package. From the 2026-09-07 external review; pull-forward DX. | ~1-2 days | 4 |
 
-**Total v1.1 effort:** ~26-37 working days. **Total stories:** 47.
+**Total v1.1 effort:** ~27-39 working days. **Total stories:** 51.
 
 ## Definition of done for v1.1
 
