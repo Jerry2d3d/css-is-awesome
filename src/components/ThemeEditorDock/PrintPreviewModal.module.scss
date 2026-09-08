@@ -1,0 +1,264 @@
+@use 'mixins' as m;
+
+/* Print-preview modal for the theme editor. A native <dialog> so it gets a
+   focus trap and Esc-to-close for free. The .paper panel simulates @media
+   print by rebinding the theme's colour tokens onto the --print-* palette. */
+
+.dialog {
+  padding: 0;
+  border: 0;
+  inline-size: min(920px, 94vw);
+  max-block-size: 90vh;
+  border-radius: var(--radius-lg, 10px);
+  background: var(--surface-raised, var(--paper-raised));
+  color: var(--ink);
+  box-shadow: var(--shadow-xl);
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.wrap {
+  padding: m.space(5);
+  overflow-y: auto;
+  max-block-size: 90vh;
+}
+
+.head {
+  @include m.flex($justify: space-between);
+  align-items: center;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+
+.close {
+  @include m.button-reset;
+  inline-size: 2rem;
+  block-size: 2rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--ink-soft);
+  border-radius: var(--radius-sm, 4px);
+
+  &:hover {
+    background: var(--interactive-hover, rgba(0, 0, 0, 0.06));
+    color: var(--ink);
+  }
+}
+
+.sub {
+  margin: m.space(2) 0 m.space(4);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: m.space(5);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- controls ---- */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(3);
+}
+
+.ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ctrlLabel {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.ctrlInputs {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+
+  input[type="color"] {
+    inline-size: 2rem;
+    block-size: 2rem;
+    padding: 0;
+    border: 1px solid var(--border-default, var(--hair));
+    border-radius: var(--radius-sm, 4px);
+    background: none;
+    cursor: pointer;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    min-inline-size: 0;
+    padding: 0.35rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink);
+    background: var(--surface-default, var(--paper));
+    border: 1px solid var(--border-default, var(--hair));
+    border-radius: var(--radius-sm, 4px);
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin-block-start: m.space(1);
+}
+
+.ctrlBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block-start: m.space(2);
+}
+
+.btn {
+  @include m.button-reset;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--surface-default, var(--paper));
+  border: 1px solid var(--border-default, var(--hair));
+  border-radius: var(--radius-sm, 4px);
+
+  &:hover {
+    border-color: var(--ink-faint);
+  }
+}
+
+/* ---- the simulated sheet ---- */
+.paperWrap {
+  display: flex;
+  justify-content: center;
+  padding: m.space(4);
+  background: var(--surface-sunk, var(--paper-sunk));
+  border-radius: var(--radius-md, 8px);
+}
+
+.paper {
+  // Rebind the theme's tokens onto the --print-* palette — the same move
+  // print-base makes inside @media print, done here on screen so the preview
+  // reads like paper. The --print-* values come from the modal's inline style.
+  --ink: var(--print-ink);
+  --ink-soft: var(--print-muted);
+  --muted: var(--print-muted);
+  --border-default: var(--print-line);
+  --hair: var(--print-line);
+  --surface-raised: var(--print-paper);
+  --code-bg: var(--print-paper);
+  --code-ink: var(--print-ink);
+
+  inline-size: 100%;
+  max-inline-size: 460px;
+  padding: 1.5rem;
+  border-radius: 3px;
+  background: var(--print-paper);
+  color: var(--print-ink);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.2);
+  font-family: var(--font-serif);
+}
+
+.letterhead {
+  margin-block-end: 1rem;
+  padding-block-end: 0.5rem;
+  border-block-end: 3px double var(--print-line);
+  text-align: center;
+}
+
+.lhName {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.12em;
+  color: var(--print-ink);
+}
+
+.lhAddr {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--print-muted);
+}
+
+.h {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--print-ink);
+}
+
+.p {
+  margin: 0 0 0.9rem;
+  font-size: 0.85rem;
+  color: var(--print-muted);
+}
+
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  color: var(--print-ink);
+
+  td,
+  th {
+    padding: 0.35rem 0;
+    text-align: start;
+    border-block-end: 1px solid var(--print-line);
+  }
+
+  td:last-child,
+  th:last-child {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.code {
+  margin: 0.9rem 0 0;
+  padding: 0.5rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--print-ink);
+  background: var(--print-paper);
+  border: 1px solid var(--print-line);
+  border-radius: 2px;
+}
+
+.sampleBtn {
+  @include m.button-reset;
+  margin-block-start: 0.9rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  color: var(--print-ink);
+  background: transparent;
+  border: 1px solid var(--print-ink);
+  border-radius: 3px;
+}
