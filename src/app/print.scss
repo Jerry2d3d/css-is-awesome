@@ -19,43 +19,39 @@
 // $link-urls + $link-origin: every link prints its full followable URL.
 // $page-numbers: sheet numbers in the footer.
 @include m.print-base(
-  $legible: true,
   $link-urls: true,
   $link-origin: 'https://cssisawesome.com',
   $page-numbers: true
 );
 
-// Paper wants ink on white, not the theme's paper colour — a dark theme would
-// otherwise burn a whole cartridge. Themed surfaces are a screen affordance.
+// print-base now sets the paper floor (body background/colour) and rebinds the
+// theme's colour tokens onto the print palette, so the old hardcoded ink-on-
+// white lives in the mixin. What remains is docs-site layout plus a couple of
+// print-only affordances — all reading --print-* tokens, so a print theme
+// restyles them too.
 @media print {
-  body {
-    background: #fff;
-    color: #000;
-  }
-
   // On screen the article column is capped for readability; on paper it
   // should use the whole sheet (the @page margins already frame it).
   .docs-content { max-width: none; }
 
   // Links are useless as blue underlines on paper.
   a {
-    color: #000;
+    color: var(--print-ink);
     text-decoration: none;
   }
 
-  // Keep code blocks legible in ink rather than reversed-out white-on-black.
-  // Selector must match globals.css's `.recipe-body .recipe-codeblock pre`
-  // (0,2,0) — a bare `.recipe-codeblock` (0,1,0) loses, and overriding only
-  // the colour leaves dark text on the dark --code-bg. Worse than not trying.
+  // Code blocks print as ink-on-paper. The --code-* rebind in print-base
+  // already flips fill/text; this holds the hairline and matches globals.css's
+  // `.recipe-body .recipe-codeblock pre` (0,2,0) specificity.
   .recipe-body .recipe-codeblock pre {
-    background: #fff;
-    color: #000;
-    border: 1px solid #999;
+    background: var(--print-paper);
+    color: var(--print-ink);
+    border: 1px solid var(--print-line);
   }
 
   .recipe-body .recipe-codeblock code {
     background: transparent;
-    color: #000;
+    color: var(--print-ink);
   }
 
   .recipe-body .recipe-codeblock-lang {

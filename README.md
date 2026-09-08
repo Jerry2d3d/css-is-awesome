@@ -241,7 +241,7 @@ Print support is a pure-CSS layer — the browser's native **Print → Save as P
 
 // Once, in a GLOBAL stylesheet — never inside a component module.
 // It emits its own :root block plus @page, so don't wrap it in a selector.
-@include cia.print-base;                   // optional flags: ($size, $margin, $freeze-animations, $legible, $link-urls, $link-origin, $page-numbers)
+@include cia.print-base;                   // optional flags: ($size, $margin, $freeze-animations, $link-urls, $link-origin, $page-numbers)
 
 .site-nav   { @include cia.print-hidden; } // drop chrome on paper
 .print-note { @include cia.print-only; }   // reveal paper-only content
@@ -250,7 +250,30 @@ Print support is a pure-CSS layer — the browser's native **Print → Save as P
 
 `print-base` also collapses animations to zero duration and pins them to their final frame, so a page snapshotted mid-entrance-fade doesn't print as invisible text. It deliberately does **not** force `opacity: 1` or `transform: none` — that would fix the fade while flattening every intentional use of the same properties (a 0.15 watermark, a 0.4 disabled control, a stamp rotated `-4deg`). Elements that were never animating are left untouched. Read `--is-print` (`0` on screen, `1` on paper) for custom effects.
 
-Inside `@media print`, `print-base` always forces `color-scheme: light`, so paired `light-dark()` themes print their light branch for free. Four opt-in flags (all default off) take it further: `$legible` darkens the body-text tokens so dark-only themes (Terminal) stay readable as ink on white; `$link-urls` prints every link's destination via `attr(href)`; `$link-origin` prepends an origin so internal `/…` links resolve to full URLs on paper; `$page-numbers` numbers the sheets in the `@page` footer. The docs site and the theme editor at `/themes` turn those flags on to print themselves as paginated spec documents.
+Inside `@media print`, `print-base` always forces `color-scheme: light`, so paired `light-dark()` themes print their light branch for free. It also defines a **print palette** — `--print-ink`, `--print-paper`, `--print-line`, `--print-muted` (default ink-on-white with light grays) — and rebinds the theme's own colour tokens (`--ink`, `--surface-*`, `--border-*`, `--code-*`) onto it, so every theme prints as clean ink-on-paper and dark-only themes (Terminal) are legible with no flag. Three opt-in flags (all default off) take it further: `$link-urls` prints every link's destination via `attr(href)`; `$link-origin` prepends an origin so internal `/…` links resolve to full URLs on paper; `$page-numbers` numbers the sheets in the `@page` footer. (`$legible` is now a **deprecated no-op** — the token rebind supersedes it; passing it warns.) The docs site and the theme editor at `/themes` turn those flags on to print themselves as paginated spec documents.
+
+### A print theme
+
+Those four `--print-*` tokens are ordinary custom properties, so print is themeable like any other surface. The default every theme inherits is clean black-on-white with light grays; a theme (or a single project) opts into its own paper identity only if it wants one — override the tokens and every element re-inks, no component touched:
+
+```scss
+// A letterhead: navy ink, silver rules. Put this in a theme's own @media print
+// block, or ship it as a print-only stylesheet loaded with <link media="print">.
+@media print {
+  :root {
+    --print-ink:   #16233f; // deep navy
+    --print-muted: #5b6b86;
+    --print-line:  #c7ccd6; // silver hairlines
+    // --print-paper stays #fff
+  }
+}
+```
+
+Loading it as a paired print sheet is the same mechanism as paired light/dark themes:
+
+```html
+<link rel="stylesheet" href="/themes/letterhead/print.css" media="print">
+```
 
 **See it work.** Two live demonstrations back the walkthroughs. The [`print-spec`](./scss/recipes/print-spec.md) recipe paginates a page into a spec document (cover + table index, one page per section, honest sheet numbers). And [`/examples/print-to-pdf`](https://cssisawesome.com/examples/print-to-pdf/) is a real invoice you `Ctrl+P`: on paper the site chrome and the button vanish, the invoice fills the whole sheet, its links print as full followable URLs (`$link-urls` + `$link-origin`), a sheet number appears, and a **print-only QR code** — generated at build time as inline SVG, zero browser JS, no image fetch — links the paper back to the live [invoice-online](https://cssisawesome.com/examples/print-to-pdf/online) page. Full walkthroughs: the [`print-to-pdf`](./scss/recipes/print-to-pdf.md) and [`print-spec`](./scss/recipes/print-spec.md) recipes.
 

@@ -67,16 +67,16 @@ Four moves, all pure CSS: `print-base` once at the root, `print-only` on the ind
 @use 'css-is-awesome/api' as cia;
 
 // The control plane, the @page box, the animation freeze — plus the print
-// polish flags. Each defaults OFF except the two structural ones, so nothing
-// changes for existing callers until you opt in:
-//   $legible      — dark-only themes (literal light ink) print dark body text.
+// polish flags. Each defaults OFF, so nothing changes for existing callers
+// until you opt in:
 //   $link-urls    — every link prints its destination, so paper is followable.
 //   $link-origin  — prepended to internal (/…) hrefs so they print as full URLs.
 //   $page-numbers — sheet numbers in the bottom-center margin box.
-// print-base also forces `color-scheme: light` in print for free, so PAIRED
-// themes (light-dark() tokens) land on their light branch automatically.
+// print-base also forces `color-scheme: light` in print for free (PAIRED
+// light-dark() themes land on their light branch), and rebinds the theme's
+// colour tokens onto a print palette (--print-ink/-paper/-line/-muted, default
+// ink-on-white) so every theme — dark-only included — prints legible.
 @include cia.print-base(
-  $legible: true,
   $link-urls: true,
   $link-origin: 'https://example.com',
   $page-numbers: true
@@ -90,11 +90,14 @@ Four moves, all pure CSS: `print-base` once at the root, `print-only` on the ind
 }
 ```
 
-`$legible` darkens only the body text tokens (`--ink`, `--ink-soft`,
-`--ink-faint`, `--muted`) — code blocks keep their own `--code-*` ink, and
-accents are left alone so links and headings keep the theme's voice.
-`$link-urls` prints external hrefs directly and internal ones prefixed with
-`$link-origin`; same-page `#anchor` links are skipped (the URL adds nothing).
+Print colour is handled by the palette, not a flag: `print-base` rebinds the
+theme's `--ink`, `--surface-*`, `--border-*` and `--code-*` onto `--print-ink`,
+`--print-paper`, `--print-line` and `--print-muted` (default ink-on-white), so
+every theme — dark-only ones included — prints legible with no setting. Override
+a `--print-*` token to restyle paper (a navy letterhead, silver rules). The old
+`$legible` flag is a deprecated no-op. `$link-urls` prints external hrefs
+directly and internal ones prefixed with `$link-origin`; same-page `#anchor`
+links are skipped (the URL adds nothing).
 
 **2. In the page's COMPONENT stylesheet** — the index show/hide and the per-section page break emit nothing until called, so they are safe in a `.module.scss`.
 
