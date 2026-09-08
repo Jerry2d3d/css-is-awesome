@@ -8,7 +8,7 @@
 
 **Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
-> **The recipes book:** build any component in any framework using cia mixins — six recipes today (`dialog`, `combobox`, `print-to-pdf`, `print-spec`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
+> **The recipes book:** build any component in any framework using cia mixins — seven recipes today (`dialog`, `combobox`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
 
 ## For AI agents — start here
 
@@ -202,7 +202,7 @@ Missing font files don't error, so a silent tofu box is the failure mode. If you
 
 cia ships **no component library** — deliberately. Interactive patterns arrive as *recipes*: portable markdown files at [`scss/recipes/`](./scss/recipes/) that give you the correct HTML, the `cia.X` mixin calls to style it, and an a11y checklist graded against WCAG 2.2 AA. Copy the pattern into your own framework; you own the component, cia owns the styling and the accessibility homework.
 
-**Shipped:** `dialog`, `combobox`, `print-to-pdf`, `print-spec`, `mobile-nav`, `bottom-nav`. Queued next: `datepicker`, `data-table`, `command-palette`.
+**Shipped:** `dialog`, `combobox`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav`, `bottom-nav`. Queued next: `datepicker`, `data-table`, `command-palette`.
 
 **Layout doctrine: Grid is the skeleton, Flex is the quick moves.** The page shell is CSS Grid with landmark-named areas (`nav / main / footer` — the map reads like the page); any control-dense region inside gets its own named-area grid whose `gap` carries all vertical rhythm; flex lives at the leaves for one-command flips (`cia.flex($direction: column)`). `cia.page-layout()` and `cia.layout()` own the maps — mobile is a different area map, never margin overrides.
 

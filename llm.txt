@@ -170,7 +170,7 @@ cia ships a **recipes book**: portable patterns for building accessible componen
 
 AI agents read recipes via MCP `list_recipes` / `get_recipe(name)` and generate consumer components in any framework. Humans read them at `/docs/recipes` and copy patterns directly.
 
-**Shipped today — 6 recipes: dialog, combobox, print-to-pdf, print-spec, mobile-nav, bottom-nav.** Queued next: datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `scss/recipes/README.md` for the schema.
+**Shipped today — 7 recipes: dialog, combobox, print-to-pdf, print-spec, letterhead, mobile-nav, bottom-nav.** Queued next: datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `scss/recipes/README.md` for the schema.
 
 ## Priority ladder (the v1.0 pitch order)
 

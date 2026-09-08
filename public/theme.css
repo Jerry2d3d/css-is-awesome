@@ -2405,6 +2405,14 @@
   --card-border: 1px solid var(--hair); /* thin rule instead */
   --input-radius: var(--r-sm); /* 2px */
   --modal-radius: var(--r-md); /* 3px */
+  /* ----------------------------------------------------------------
+     PRINT — Press's own paper identity (opt-in per-theme override).
+     Sass hoists this @media out of the theme selector, so it emits as
+     `@media print { :root, :root[data-theme="press"] { … } }` and
+     overrides print-base's default palette on paper only. Newsprint:
+     a faint warm stock, warm near-black ink, press-red masthead rules.
+     Every other theme inherits print-base's plain ink-on-white.
+     ---------------------------------------------------------------- */
 }
 :root[data-theme=press-dark] {
   color-scheme: dark;
