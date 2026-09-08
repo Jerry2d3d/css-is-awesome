@@ -70,12 +70,12 @@ symbol discovery, per-file grouping, the `health` number, `--json`,
 
 ### F3 — The graded report
 
-- **US-V12.06.3.1** (M) — Reformat the human report into the review's shape:
-  a score header, findings grouped by **category** (Contract / Spacing /
-  Color / Accessibility / Naming) with ✓ for clean categories, and a
-  suggested fix line under each finding. Keep the current flat per-file view
-  available under `--verbose`. Acceptance: matches the review mock-up; the
-  `--json` shape gains `category` + `suggestion` per finding (additive).
+- **US-V12.06.3.1** (M) — ✅ DONE 2026-09-08. The default report is now graded:
+  a `health/100` header, a section per category (API / Contract / Spacing /
+  Color / Naming / Layout) with `✓` when clean, and each finding shown with its
+  file and a `→` suggested-fix line. `--verbose` keeps the flat per-file view;
+  `--json` gains `category` + `suggestion` per finding (additive). README
+  updated. (Accessibility category lights up when F2.1 lands.)
 - **US-V12.06.3.2** (S) — `/docs` page + README section documenting every
   rule, its level, and how the score is computed, so a number in CI is
   legible. Acceptance: each rule links to the doc anchor from `--help`.

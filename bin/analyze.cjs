@@ -59,6 +59,7 @@ Options:
                      Auto-detected per file from @use lines; use this when
                      imports are aliased through an intermediate file.
   --json             Machine-readable report on stdout.
+  --verbose          The per-file listing instead of the graded report.
   --strict           Exit 1 on warnings too (default: errors only).
 
 Examples:
@@ -232,6 +233,31 @@ function analyzeFile(file, symbols, contractTokens, extraNs) {
 
 // ── report ──────────────────────────────────────────────────────────────────
 
+// Every rule belongs to a category, so the default report reads as a graded
+// health check (a section per concern) rather than a flat dump. Categories with
+// no findings print a ✓.
+const RULE_CATEGORY = {
+  'unknown-symbol': 'API',
+  'space-scale': 'Spacing',
+  'off-contract-token': 'Contract',
+  'hard-coded-color': 'Color',
+  bem: 'Naming',
+  'hand-written-areas': 'Layout',
+};
+// The categories with rules implemented today — shown ✓ when clean so a passing
+// audit reads as coverage, not silence.
+const IMPLEMENTED_CATEGORIES = ['API', 'Contract', 'Spacing', 'Color', 'Naming', 'Layout'];
+
+// Details are authored as "claim — suggested fix"; split so the graded report
+// can put the fix on its own `→` line.
+function splitDetail(detail) {
+  const i = detail.indexOf(' — ');
+  if (i === -1) return { claim: detail, suggestion: '' };
+  return { claim: detail.slice(0, i), suggestion: detail.slice(i + 3) };
+}
+
+const LEVEL_MARK = { error: '✗', warn: '⚠', info: 'ℹ' };
+
 async function run(args) {
   if (args[0] === '-h' || args[0] === '--help' || args[0] === 'help') {
     process.stdout.write(HELP);
@@ -239,6 +265,7 @@ async function run(args) {
   }
   const json = args.includes('--json');
   const strict = args.includes('--strict');
+  const verbose = args.includes('--verbose');
   const nsFlag = args.indexOf('--namespace');
   const extraNs = nsFlag !== -1 && args[nsFlag + 1] ? args[nsFlag + 1].split(',') : [];
   const target = path.resolve(args.find((a) => !a.startsWith('--') && a !== extraNs.join(',')) || '.');
@@ -258,20 +285,63 @@ async function run(args) {
   const ciaFiles = results.filter((r) => r.namespaces.length).length;
   const health = Math.max(0, 100 - counts.error * 10 - counts.warn * 2 - counts.info);
 
+  // Enrich every finding with its category and a split-out suggestion — additive
+  // fields, so `--json` consumers of counts/health/results keep working.
+  for (const r of results) {
+    for (const f of r.findings) {
+      f.category = RULE_CATEGORY[f.rule] || 'Other';
+      const { suggestion } = splitDetail(f.detail);
+      if (suggestion) f.suggestion = suggestion;
+    }
+  }
+
+  const rel = path.relative(process.cwd(), target) || '.';
+  const out = (s) => process.stdout.write(s);
+
   if (json) {
-    process.stdout.write(JSON.stringify({ target, files: files.length, ciaFiles, apiSymbols: symbols.size, counts, health, results }, null, 2) + '\n');
-  } else {
-    process.stdout.write(`\ncia analyze — ${path.relative(process.cwd(), target) || '.'}\n`);
-    process.stdout.write(`${files.length} scss file(s), ${ciaFiles} using cia, ${symbols.size} API symbols known\n\n`);
+    out(JSON.stringify({ target, files: files.length, ciaFiles, apiSymbols: symbols.size, counts, health, results }, null, 2) + '\n');
+  } else if (verbose) {
+    // The per-file listing — every finding under its file, unabridged.
+    out(`\ncia analyze — ${rel}\n`);
+    out(`${files.length} scss file(s), ${ciaFiles} using cia, ${symbols.size} API symbols known\n\n`);
     for (const r of results) {
       if (!r.findings.length) continue;
-      process.stdout.write(`${path.relative(process.cwd(), r.file)}\n`);
+      out(`${path.relative(process.cwd(), r.file)}\n`);
       for (const f of r.findings) {
-        const mark = f.level === 'error' ? '✗' : f.level === 'warn' ? '⚠' : 'ℹ';
-        process.stdout.write(`  ${mark} [${f.rule}] ${f.detail}\n`);
+        out(`  ${LEVEL_MARK[f.level]} [${f.rule}] ${f.detail}\n`);
       }
     }
-    process.stdout.write(`\nDesign-system health: ${health}%  (${counts.error} error, ${counts.warn} warn, ${counts.info} info)\n`);
+    out(`\nDesign-system health: ${health}%  (${counts.error} error, ${counts.warn} warn, ${counts.info} info)\n`);
+  } else {
+    // The graded report — a section per category, ✓ when clean, each finding
+    // with its file and a suggested fix on its own line.
+    const all = [];
+    for (const r of results) {
+      for (const f of r.findings) all.push({ ...f, file: path.relative(process.cwd(), r.file) });
+    }
+    const extraCats = [...new Set(all.map((f) => f.category))].filter((c) => !IMPLEMENTED_CATEGORIES.includes(c));
+    const cats = [...IMPLEMENTED_CATEGORIES, ...extraCats];
+
+    out(`\ncia analyze — ${rel}\n`);
+    out(`${files.length} scss file(s) · ${ciaFiles} using cia · ${symbols.size} API symbols\n\n`);
+    out(`Design-system health: ${health}/100\n\n`);
+
+    for (const cat of cats) {
+      const items = all.filter((f) => f.category === cat);
+      if (!items.length) {
+        out(`  ${cat.padEnd(9)} ✓\n`);
+        continue;
+      }
+      const worst = items.some((i) => i.level === 'error') ? 'error' : items.some((i) => i.level === 'warn') ? 'warn' : 'info';
+      out(`  ${cat.padEnd(9)} ${LEVEL_MARK[worst]} ${items.length}\n`);
+      for (const it of items) {
+        out(`    ${LEVEL_MARK[it.level]} ${it.file}  ${it.suggestion ? it.claim ?? splitDetail(it.detail).claim : it.detail}\n`);
+        if (it.suggestion) out(`       → ${it.suggestion}\n`);
+      }
+    }
+
+    const tally = `${counts.error} error · ${counts.warn} warn · ${counts.info} info`;
+    out(`\n${tally}${counts.error || counts.warn || counts.info ? ' · run with --verbose for the per-file list' : ''}\n`);
   }
 
   if (counts.error > 0 || (strict && counts.warn > 0)) process.exit(1);

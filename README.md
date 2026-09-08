@@ -231,7 +231,7 @@ npx cia analyze src/styles  # design-system health: dead cia.* symbols, the
                             # hard-coded colors, BEM creep
 ```
 
-`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens.
+`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens. The default output is a **graded report** — a health score, a section per concern (Contract / Spacing / Color / Naming / Layout / API) with a `✓` when clean, and a suggested fix on each finding; add `--verbose` for the flat per-file list or `--json` for the machine shape.
 
 ## Print / PDF (zero JS)
 
