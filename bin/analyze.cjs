@@ -54,6 +54,10 @@ Usage:
 Scans [path] (default: current directory) for *.scss files and audits
 them against the installed css-is-awesome API.
 
+Rules: unknown-symbol, space-scale, off-contract-token, off-scale-length,
+hard-coded-color, bem, hand-written-areas, missing-focus-visible.
+Full reference: https://cssisawesome.com/docs/analyzer
+
 Options:
   --namespace <ns>   Extra namespace(s) to treat as cia (comma-separated).
                      Auto-detected per file from @use lines; use this when
@@ -173,6 +177,85 @@ function stripPrintBlocks(src) {
   return out;
 }
 
+// Reference-scale hints for the off-scale-length rule. Sourced from Sketchbook
+// (public/themes/sketchbook/theme.css) — CONTRACT.md's own designated
+// "reference implementation." These are HINTS, not a value guarantee: real
+// themes intentionally diverge (Terminal flattens every --radius-* to 0), so
+// a suggestion names the nearest named STEP, never asserts the consumer's
+// active theme actually holds this exact pixel value.
+const SCALE_HINTS = [
+  { token: '--radius-sm', px: 2 },
+  { token: '--radius-md', px: 3 },
+  { token: '--radius-lg', px: 6 },
+  { token: '--radius-xl', px: 12 },
+  { token: '--radius-full', px: 9999 },
+  { token: '--space-1', px: 8 },
+  { token: '--space-2', px: 12 },
+  { token: '--space-3', px: 14 },
+  { token: '--space-4', px: 16 },
+  { token: '--space-5', px: 24 },
+  { token: '--space-6', px: 32 },
+  { token: '--space-7', px: 48 },
+  { token: '--space-8', px: 64 },
+  { token: '--space-9', px: 96 },
+];
+const LENGTH_PROP_RE = /(?:^|[{;\s])(border-radius|padding|margin|gap)\s*:\s*([^;{}]+);/g;
+
+// "7px" / "0.75rem" -> px, or null if not a plain single-value length
+// (percentages, calc(), keywords like "auto" are left alone — out of scope).
+function parseLengthPx(raw) {
+  const m = /^(-?\d*\.?\d+)(px|rem)$/.exec(raw.trim());
+  if (!m) return null;
+  return m[2] === 'rem' ? parseFloat(m[1]) * 16 : parseFloat(m[1]);
+}
+
+// off-scale-length: a literal border-radius/padding/margin/gap value that's
+// close to a scale step — almost certainly meant to be that token. Values
+// already routed through var() (with or without a literal fallback) were
+// stripped by the caller, so only genuine literals reach here. `0` is never
+// flagged: it's unambiguous and a legitimate theme choice in its own right
+// (Terminal sets every --radius-* to 0) — flagging it would be a guaranteed
+// false positive for exactly that theme's consumers.
+function offScaleLength(varStrippedSrc) {
+  const findings = [];
+  for (const m of varStrippedSrc.matchAll(LENGTH_PROP_RE)) {
+    const prop = m[1];
+    for (const tok of m[2].trim().split(/\s+/)) {
+      if (tok === '0' || tok === '0px' || tok === '0rem') continue;
+      const px = parseLengthPx(tok);
+      if (px == null || px === 0) continue;
+      let best = null;
+      let bestDiff = Infinity;
+      for (const hint of SCALE_HINTS) {
+        const diff = Math.abs(hint.px - px);
+        if (diff < bestDiff) { bestDiff = diff; best = hint; }
+      }
+      if (best && bestDiff > 0 && bestDiff <= 2) {
+        findings.push({ level: 'warn', rule: 'off-scale-length', detail: `${prop}: ${tok} — close to the reference scale's ${best.token}; consider the token instead of a literal (exact px varies by theme)` });
+      }
+    }
+  }
+  return findings;
+}
+
+// missing-focus-visible: a file styles :hover/:active on something
+// button/link-shaped but never mentions :focus-visible or focus-ring
+// anywhere in the same file — keyboard users likely get no visible
+// feedback. File-level co-occurrence, not selector-pairing: SCSS commonly
+// nests hover/active under `&` while focus-ring is set once for the whole
+// component elsewhere in the file (see scss/components/_buttons.scss),
+// so per-selector adjacency would false-positive on that exact shape.
+const INTERACTIVE_SHAPE_RE = /(?:^|[^\w-])(?:button|a)(?:[.:#[\s{,]|$)|\[role\s*=\s*["']?button["']?\]|\.[\w-]*btn[\w-]*/i;
+const HOVER_ACTIVE_RE = /:(?:hover|active)\b/;
+const FOCUS_VISIBLE_RE = /:focus-visible\b|focus-ring/i;
+
+function missingFocusVisible(strippedSrc) {
+  if (!HOVER_ACTIVE_RE.test(strippedSrc)) return [];
+  if (!INTERACTIVE_SHAPE_RE.test(strippedSrc)) return [];
+  if (FOCUS_VISIBLE_RE.test(strippedSrc)) return [];
+  return [{ level: 'info', rule: 'missing-focus-visible', detail: 'interactive :hover/:active styling with no :focus-visible or focus-ring anywhere in this file — keyboard users may get no visible feedback' }];
+}
+
 function analyzeFile(file, symbols, contractTokens, extraNs) {
   const raw = fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
   const src = stripComments(raw);
@@ -222,6 +305,8 @@ function analyzeFile(file, symbols, contractTokens, extraNs) {
   for (const m of stripVarExpr(stripPrintBlocks(src)).matchAll(/#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g)) {
     findings.push({ level: 'warn', rule: 'hard-coded-color', detail: `${m[0]} — values should come from tokens (cia.color(...) / var(--...))` });
   }
+  findings.push(...offScaleLength(stripVarExpr(src)));
+  findings.push(...missingFocusVisible(src));
   for (const m of src.matchAll(/\.[a-zA-Z][\w]*(?:__|--)[\w-]+/g)) {
     findings.push({ level: 'warn', rule: 'bem', detail: `${m[0]} — BEM chains are forbidden; use semantic single-class names` });
   }
@@ -240,13 +325,15 @@ const RULE_CATEGORY = {
   'unknown-symbol': 'API',
   'space-scale': 'Spacing',
   'off-contract-token': 'Contract',
+  'off-scale-length': 'Spacing',
   'hard-coded-color': 'Color',
   bem: 'Naming',
   'hand-written-areas': 'Layout',
+  'missing-focus-visible': 'Accessibility',
 };
 // The categories with rules implemented today — shown ✓ when clean so a passing
 // audit reads as coverage, not silence.
-const IMPLEMENTED_CATEGORIES = ['API', 'Contract', 'Spacing', 'Color', 'Naming', 'Layout'];
+const IMPLEMENTED_CATEGORIES = ['API', 'Contract', 'Spacing', 'Color', 'Naming', 'Layout', 'Accessibility'];
 
 // Details are authored as "claim — suggested fix"; split so the graded report
 // can put the fix on its own `→` line.

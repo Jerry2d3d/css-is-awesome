@@ -21,6 +21,7 @@ export const docsNav: DocsNavSection[] = [
       { label: "Testing", href: "/docs/testing" },
       { label: "Browser support", href: "/docs/browser-support" },
       { label: "MCP server", href: "/docs/mcp" },
+      { label: "Analyzer", href: "/docs/analyzer" },
     ],
   },
   {
