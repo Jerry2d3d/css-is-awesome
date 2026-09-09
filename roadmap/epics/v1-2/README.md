@@ -3,13 +3,13 @@
 **Target release:** v1.2.0 (~3-5 weeks after v1.1)
 **Theme:** Close coverage gaps. RTL, form validation, i18n, print, and migration-on-ramp expansion to MUI + Chakra.
 
-> **Status: In progress.** This is a post-v1.0 version (v1.0 shipped: tagged 2026-08-17, launched 2026-09-01). Four of eight epics have shipped work: **EPIC-04** (Print Recipe) pulled forward into v1.0 as a pure-CSS, zero-JS layer — see [`scss/recipes/print-to-pdf.md`](../../../scss/recipes/print-to-pdf.md) and the `print` / `print-base` / `print-hidden` / `print-only` mixins (marked Superseded; its stories describe the original plan, not the delivered shape); **EPIC-06** (analyzer health report), **EPIC-07** (token intelligence in the editor), and **EPIC-08** (print theme + tokens) are all **Complete**. EPIC-01/02/03/05 are unstarted — see each epic file for current status.
+> **Status: In progress.** This is a post-v1.0 version (v1.0 shipped: tagged 2026-08-17, launched 2026-09-01). Five of eight epics have shipped work: **EPIC-04** (Print Recipe) pulled forward into v1.0 as a pure-CSS, zero-JS layer — see [`scss/recipes/print-to-pdf.md`](../../../scss/recipes/print-to-pdf.md) and the `print` / `print-base` / `print-hidden` / `print-only` mixins (marked Superseded; its stories describe the original plan, not the delivered shape); **EPIC-01** (RTL audit), **EPIC-06** (analyzer health report), **EPIC-07** (token intelligence in the editor), and **EPIC-08** (print theme + tokens) are all **Complete**. EPIC-02/03/05 are unstarted — see each epic file for current status. (EPIC-03's soft dependency on EPIC-01 is now clear.)
 
 ## Epics
 
 | # | Epic | Mission | Effort | Stories |
 |---|---|---|---|---|
-| [01](./EPIC-01-rtl-audit.md) | **RTL Audit + Recipe** | Audit cia source for non-logical properties. Ship `/docs/rtl` walkthrough + RTL recipe + Playwright test in Arabic/Hebrew. | ~3-5 days | 7 |
+| [01](./EPIC-01-rtl-audit.md) | **RTL Audit + Recipe** | Audit cia source for non-logical properties. Ship `/docs/rtl` walkthrough + RTL recipe + Playwright test in Arabic/Hebrew. **Complete 2026-09-09** — 18 violations found and fixed/annotated, a logical-property utility set added alongside the physical one, `/docs/rtl` + the recipe + the Playwright RTL/axe suite (win32+linux baselines) all shipped and verified live; also fixed two pre-existing a11y bugs the new axe scan surfaced in the shared recipe/blog markdown renderer. | ~3-5 days | 7 |
 | [02](./EPIC-02-form-validation-recipes.md) | **Form Validation Recipes** | 5 recipes: HTML5 validation, react-hook-form + cia, Zod + cia, async validation, success/error patterns. | ~1 week | 10 |
 | [03](./EPIC-03-i18n-recipes.md) | **i18n Recipes** | 4 recipes: Intl date formatting, number/currency, pluralization, RTL flip patterns. | ~3-5 days | 7 |
 | [04](./EPIC-04-print-recipe.md) | **Print Recipe** ⚠️ _delivered early in v1.0_ | Single recipe + docs page for `@media print` styled with cia tokens. Core shipped in v1.0 (`print-to-pdf.md`). | ~4 hours | 2 |
