@@ -109,8 +109,9 @@
     "build:css:utilities": "sass scss/utilities-only.scss dist/css-is-awesome.utilities.css --no-source-map",
     "build:css:min": "sass scss/main.scss dist/css-is-awesome.min.css --style=compressed --no-source-map && sass scss/core.scss dist/css-is-awesome.core.min.css --style=compressed --no-source-map && sass scss/tokens.scss dist/tokens.min.css --style=compressed --no-source-map && sass scss/utilities-only.scss dist/css-is-awesome.utilities.min.css --style=compressed --no-source-map",
     "build:token-types": "node scripts/generate-token-types.mjs",
+    "build:token-consumers": "node scripts/build-token-consumer-map.mjs",
     "dtcg-to-scss": "node scripts/dtcg-to-scss.mjs",
-    "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:tokens && npm run build:css:utilities && npm run build:css:themes && npm run build:css:min && npm run build:token-types",
+    "build:css:all": "npm run build:css && npm run build:css:core && npm run build:css:tokens && npm run build:css:utilities && npm run build:css:themes && npm run build:css:min && npm run build:token-types && npm run build:token-consumers",
     "watch:css": "sass scss/main.scss dist/css-is-awesome.css --watch",
     "validate-themes": "node scripts/theme-validator.js --all",
     "validate-icons": "node scripts/icon-validator.js",
@@ -128,7 +129,8 @@
     "playwright:install": "playwright install --with-deps",
     "prepare": "node scripts/prepare-dist.mjs",
     "prepublishOnly": "npm run build:css:all",
-    "check:theme-drift": "node scripts/check-theme-drift.mjs"
+    "check:theme-drift": "node scripts/check-theme-drift.mjs",
+    "check:token-consumers": "node scripts/check-token-consumer-map.mjs"
   },
   "keywords": [
     "css",

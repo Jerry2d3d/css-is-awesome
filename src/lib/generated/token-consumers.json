@@ -1,0 +1,407 @@
+{
+  "tokenCount": 100,
+  "consumers": {
+    "--action-primary-default": [
+      "pagination-item",
+      "stepper",
+      "tabs"
+    ],
+    "--alert-padding-x": [
+      "alert-base"
+    ],
+    "--alert-padding-y": [
+      "alert-base"
+    ],
+    "--alert-radius": [
+      "alert-base"
+    ],
+    "--badge-padding-x": [
+      "badge-base"
+    ],
+    "--badge-padding-y": [
+      "badge-base"
+    ],
+    "--badge-radius": [
+      "badge-base"
+    ],
+    "--border-default": [
+      "accordion",
+      "card-base",
+      "card-footer",
+      "card-header",
+      "check-base",
+      "copy-button",
+      "dock",
+      "dropdown-divider",
+      "dropdown-menu",
+      "list-base",
+      "modal-footer",
+      "modal-header",
+      "navbar-base",
+      "popover-base",
+      "spinner",
+      "stepper-circle",
+      "stepper-connector",
+      "switch-base",
+      "table-base",
+      "tabs",
+      "tabs-base",
+      "tag"
+    ],
+    "--border-emphasis": [
+      "copy-button"
+    ],
+    "--border-focus": [
+      "_btn-outline",
+      "input-base"
+    ],
+    "--border-subtle": [
+      "wizard-shell"
+    ],
+    "--brand-": [
+      "brand"
+    ],
+    "--btn-font-size": [
+      "btn-base"
+    ],
+    "--btn-font-weight": [
+      "btn-base"
+    ],
+    "--btn-padding-x": [
+      "btn-base"
+    ],
+    "--btn-padding-y": [
+      "btn-base"
+    ],
+    "--btn-radius": [
+      "btn-base"
+    ],
+    "--card-border": [
+      "card-base"
+    ],
+    "--card-padding": [
+      "card-base"
+    ],
+    "--card-radius": [
+      "card-base"
+    ],
+    "--card-shadow": [
+      "card-base"
+    ],
+    "--cia-bar-shift": [
+      "hamburger-open"
+    ],
+    "--dropdown-radius": [
+      "dropdown-menu"
+    ],
+    "--dropdown-shadow": [
+      "dropdown-menu"
+    ],
+    "--duration-fast": [
+      "accordion",
+      "dropdown",
+      "tooltip"
+    ],
+    "--duration-normal": [
+      "modal"
+    ],
+    "--ease": [
+      "accordion",
+      "dropdown",
+      "modal",
+      "tooltip"
+    ],
+    "--error-subtle": [
+      "stepper"
+    ],
+    "--error-text": [
+      "stepper"
+    ],
+    "--font-": [
+      "font",
+      "font-family"
+    ],
+    "--font-mono": [
+      "copy-button"
+    ],
+    "--font-primary": [
+      "copy-toast"
+    ],
+    "--font-size-": [
+      "font-size"
+    ],
+    "--font-size-2": [
+      "copy-button",
+      "copy-toast"
+    ],
+    "--font-weight-": [
+      "font-weight"
+    ],
+    "--font-weight-medium": [
+      "accordion"
+    ],
+    "--gap-": [
+      "gap"
+    ],
+    "--input-border-width": [
+      "input-base"
+    ],
+    "--input-padding-x": [
+      "input-base"
+    ],
+    "--input-padding-y": [
+      "input-base"
+    ],
+    "--input-radius": [
+      "input-base"
+    ],
+    "--interactive-active": [
+      "_btn-ghost",
+      "_btn-outline",
+      "dropdown-item",
+      "list-item"
+    ],
+    "--interactive-hover": [
+      "_btn-ghost",
+      "_btn-outline",
+      "accordion",
+      "dropdown-item",
+      "list-item",
+      "navbar-link",
+      "pagination-item",
+      "table-base"
+    ],
+    "--letter-spacing-": [
+      "letter-spacing"
+    ],
+    "--line-height-": [
+      "line-height"
+    ],
+    "--modal-padding": [
+      "modal-base"
+    ],
+    "--modal-radius": [
+      "modal-base"
+    ],
+    "--modal-shadow": [
+      "modal-base"
+    ],
+    "--padding-": [
+      "padding"
+    ],
+    "--popover-padding": [
+      "popover-base"
+    ],
+    "--popover-radius": [
+      "popover-base"
+    ],
+    "--popover-shadow": [
+      "popover-base"
+    ],
+    "--print-hide": [
+      "print-hidden"
+    ],
+    "--print-ink": [
+      "print-base"
+    ],
+    "--print-line": [
+      "print-base"
+    ],
+    "--print-muted": [
+      "print-base"
+    ],
+    "--print-paper": [
+      "print-base"
+    ],
+    "--print-show": [
+      "print-only"
+    ],
+    "--radius-": [
+      "radius"
+    ],
+    "--radius-full": [
+      "hamburger",
+      "slider-base",
+      "switch-base"
+    ],
+    "--radius-md": [
+      "accordion"
+    ],
+    "--radius-sm": [
+      "copy-button",
+      "hamburger"
+    ],
+    "--shadow-": [
+      "shadow"
+    ],
+    "--shadow-2": [
+      "card-interactive"
+    ],
+    "--space-": [
+      "space"
+    ],
+    "--space-1": [
+      "btn-base",
+      "copy-button",
+      "dock-item",
+      "tabs"
+    ],
+    "--space-2": [
+      "accordion",
+      "alert-base",
+      "copy-button",
+      "dock-item",
+      "dropdown-item",
+      "list-item",
+      "modal-footer",
+      "tabs",
+      "toast-base"
+    ],
+    "--space-2xs": [
+      "navbar-link",
+      "tag"
+    ],
+    "--space-3": [
+      "accordion",
+      "tabs"
+    ],
+    "--space-4": [
+      "accordion",
+      "card-footer",
+      "card-header",
+      "modal-footer",
+      "modal-header",
+      "tabs"
+    ],
+    "--space-5": [
+      "wrap"
+    ],
+    "--success-default": [
+      "copy-button",
+      "copy-toast",
+      "stepper"
+    ],
+    "--success-subtle": [
+      "copy-button"
+    ],
+    "--success-text": [
+      "copy-button",
+      "stepper"
+    ],
+    "--surface-default": [
+      "accordion",
+      "avatar-group",
+      "check-base",
+      "dropdown-menu",
+      "modal-base",
+      "popover-base",
+      "stepper-circle",
+      "switch-base",
+      "toast-base"
+    ],
+    "--surface-emphasis": [
+      "copy-button"
+    ],
+    "--surface-muted": [
+      "slider-base",
+      "switch-base",
+      "tag"
+    ],
+    "--surface-raised": [
+      "copy-button"
+    ],
+    "--surface-subtle": [
+      "table-base"
+    ],
+    "--tag-padding-x": [
+      "tag"
+    ],
+    "--tag-padding-y": [
+      "tag"
+    ],
+    "--tag-radius": [
+      "tag"
+    ],
+    "--text-inverse": [
+      "copy-toast",
+      "pagination-item",
+      "stepper"
+    ],
+    "--text-link": [
+      "breadcrumb",
+      "navbar-link"
+    ],
+    "--text-muted": [
+      "breadcrumb",
+      "input-base",
+      "stepper-circle"
+    ],
+    "--text-primary": [
+      "accordion",
+      "copy-button",
+      "dropdown-item",
+      "navbar-brand",
+      "navbar-link",
+      "pagination-item",
+      "stepper",
+      "tab-item",
+      "tabs",
+      "tag"
+    ],
+    "--text-secondary": [
+      "accordion",
+      "copy-button",
+      "dock-item",
+      "navbar-link",
+      "pagination-item",
+      "stepper",
+      "tab-item",
+      "table-base",
+      "tabs"
+    ],
+    "--tooltip-padding-x": [
+      "tooltip-base"
+    ],
+    "--tooltip-padding-y": [
+      "tooltip-base"
+    ],
+    "--tooltip-radius": [
+      "tooltip-base"
+    ],
+    "--touch-target-min": [
+      "accordion",
+      "btn-base",
+      "copy-button",
+      "hamburger",
+      "input-base",
+      "tabs"
+    ],
+    "--warning-subtle": [
+      "stepper"
+    ],
+    "--warning-text": [
+      "stepper"
+    ],
+    "--z-": [
+      "z"
+    ],
+    "--z-dropdown": [
+      "dropdown-menu"
+    ],
+    "--z-fixed": [
+      "dock"
+    ],
+    "--z-modal": [
+      "modal-base"
+    ],
+    "--z-popover": [
+      "popover-base"
+    ],
+    "--z-sticky": [
+      "navbar-base"
+    ],
+    "--z-tooltip": [
+      "tooltip-base"
+    ]
+  }
+}

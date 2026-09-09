@@ -369,6 +369,58 @@ $panel-width: 440px;
   overflow-wrap: anywhere;
 }
 
+// "used by N ▸" disclosure — token->consumer map (EPIC-07 F2.1).
+.usedByToggle {
+  align-self: flex-start;
+  margin-top: 0.1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.65rem;
+  color: var(--text-link, var(--ink-soft));
+  cursor: pointer;
+}
+.usedByToggle:hover {
+  text-decoration: underline;
+}
+.usedByList {
+  margin: 0.2rem 0 0;
+  padding-left: 1rem;
+  font-size: 0.65rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: var(--ink-faint, var(--text-muted));
+}
+.usedByList li {
+  overflow-wrap: anywhere;
+}
+
+// Live WCAG contrast readout (EPIC-07 F3.1) — spans the full row width,
+// below the label + control, regardless of .row's 2-column grid.
+.contrastReadout {
+  grid-column: 1 / -1;
+  margin: 0.15rem 0 0;
+  font-size: 0.68rem;
+}
+.contrastReadout[data-status="pass"] {
+  color: var(--success-text, var(--ink-faint));
+}
+.contrastReadout[data-status="fail"] {
+  color: var(--error-text, #b91c1c);
+}
+.contrastFix {
+  padding: 0.05rem 0.35rem;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: inherit;
+  font-size: 0.65rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  cursor: pointer;
+}
+.contrastFix:hover {
+  background: var(--error-subtle, rgba(185, 28, 28, 0.08));
+}
+
 .colorCtrl {
   display: inline-flex;
   align-items: center;

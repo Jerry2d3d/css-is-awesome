@@ -47,6 +47,14 @@ jobs:
       - name: Theme artifacts match their SCSS sources
         run: npm run check:theme-drift
 
+      # Unlike the theme-drift check above, this regenerates entirely in
+      # memory (no disk write, no restore step needed) and diffs against the
+      # committed src/lib/generated/token-consumers.json. Also prints an
+      # informational zero-consumer list — see the script's own header for
+      # why that list never fails the build.
+      - name: Token-consumer map matches its scss/ sources
+        run: npm run check:token-consumers
+
       # Now safe: the artifacts below are proven to match their sources.
       - name: Validate themes
         run: npm run validate-themes

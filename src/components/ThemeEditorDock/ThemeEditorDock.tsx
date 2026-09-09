@@ -8,8 +8,9 @@ import {
   type Category,
   type TokenSpec,
 } from "./catalog";
-import { ColorRow, FontRow, LengthRow, NumberRow, StringRow } from "./rows";
+import { ColorRow, FontRow, LengthRow, NumberRow, StringRow, type Contrast } from "./rows";
 import PrintPreviewModal from "./PrintPreviewModal";
+import { AUDIT_PAIRS, parseColor, contrastRatio, nearestPassingColor } from "@/lib/contrast";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 import {
   extractDataThemeBlocks,
@@ -28,6 +29,9 @@ import {
 } from "@/lib/theme-share";
 
 type Mode = "light" | "dark";
+// Readable label for a token, for the live-contrast readout's "vs Paper"
+// text. Built once at module scope — CATALOG doesn't change at runtime.
+const LABEL_BY_TOKEN = new Map(CATALOG.map((s) => [s.token, s.label]));
 const STYLE_TAG_ID = "cia-theme-overrides";
 const STORAGE_KEY = "cia-theme-overrides";
 // Paginate when a sub-page has more groups than this. Keeps the scroll
@@ -560,6 +564,63 @@ export default function ThemeEditorDock() {
     return map;
   }, []);
 
+  // The current live value of ANY color token (not just the one a row is
+  // rendering) — same override/default resolution rowFor() uses for its own
+  // spec, generalized so contrastFor() below can read a pair partner's value
+  // too (e.g. --paper while rendering the --text-primary row).
+  function resolveColorToken(token: string): string {
+    const spec = CATALOG.find((s) => s.token === token && s.type === "color");
+    if (!spec) return "";
+    const bucket = spec.mode === "shared" ? overrides.light : overrides[tabMode];
+    const defaultBucket = spec.mode === "shared" ? defaultsByMode.light : defaultsByMode[tabMode];
+    return bucket[spec.token] || defaultBucket[spec.token] || "";
+  }
+
+  // Live contrast for a color row: the worst AUDIT_PAIRS match involving this
+  // token (as fg primarily; as bg only if it has no fg role, capped to one,
+  // so --paper doesn't sprout a dozen readouts). Unparsable/unsupported
+  // colors (an in-progress draft, oklch, etc.) simply produce no readout —
+  // same "stay quiet rather than guess" stance as the rest of the dock.
+  function contrastFor(token: string): Contrast | undefined {
+    const asFg = AUDIT_PAIRS.filter((p) => p.fg === token);
+    const pairs = asFg.length ? asFg : AUDIT_PAIRS.filter((p) => p.bg === token).slice(0, 1);
+    if (!pairs.length) return undefined;
+
+    let worst: { ratio: number; required: number; bgToken: string; bgLabel: string; fgHex: string; bgHex: string } | null = null;
+    for (const pair of pairs) {
+      const isFg = pair.fg === token;
+      const otherToken = isFg ? pair.bg : pair.fg;
+      const fgHex = resolveColorToken(isFg ? token : otherToken);
+      const bgHex = resolveColorToken(isFg ? otherToken : token);
+      if (!fgHex || !bgHex) continue;
+      try {
+        const ratio = contrastRatio(parseColor(fgHex), parseColor(bgHex));
+        if (!worst || ratio < worst.ratio) {
+          worst = {
+            ratio,
+            required: pair.required,
+            bgToken: otherToken,
+            bgLabel: LABEL_BY_TOKEN.get(otherToken) ?? otherToken,
+            fgHex: isFg ? fgHex : bgHex,
+            bgHex: isFg ? bgHex : fgHex,
+          };
+        }
+      } catch {
+        // unsupported/unparsable color — no readout for this pair
+      }
+    }
+    if (!worst) return undefined;
+
+    const passes = worst.ratio + 1e-6 >= worst.required;
+    return {
+      ratio: worst.ratio,
+      required: worst.required,
+      passes,
+      bgLabel: worst.bgLabel,
+      suggestion: passes ? null : nearestPassingColor(worst.fgHex, worst.bgHex, worst.required),
+    };
+  }
+
   function rowFor(spec: TokenSpec) {
     const bucket = spec.mode === "shared" ? overrides.light : overrides[tabMode];
     const value = bucket[spec.token] ?? "";
@@ -574,7 +635,7 @@ export default function ThemeEditorDock() {
     };
 
     switch (spec.type) {
-      case "color":    return <ColorRow key={spec.token} {...props} />;
+      case "color":    return <ColorRow key={spec.token} {...props} contrast={contrastFor(spec.token)} />;
       case "length":   return <LengthRow key={spec.token} {...props} />;
       case "duration": return <LengthRow key={spec.token} {...props} />;
       case "number":   return <NumberRow key={spec.token} {...props} />;

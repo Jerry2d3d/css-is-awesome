@@ -1,37 +1,17 @@
 /* eslint-disable */
 'use strict';
 
-const AUDIT_PAIRS = [
-  { fg: '--text-primary',   bg: '--paper',                    required: 4.5, kind: 'text',       note: 'primary body text on the page background' },
-  { fg: '--text-secondary', bg: '--paper',                    required: 4.5, kind: 'text',       note: 'secondary body text on the page background' },
-  { fg: '--text-tertiary',  bg: '--paper',                    required: 3.0, kind: 'large-text', warnIfBelow: 4.5, note: 'tertiary text - legal at large sizes; warn if used as body' },
-  { fg: '--text-muted',     bg: '--paper',                    required: 4.5, kind: 'text',       note: 'muted UI text on the page background' },
-  { fg: '--ink',            bg: '--paper',                    required: 4.5, kind: 'text',       note: 'native ink on native paper' },
-  { fg: '--ink-soft',       bg: '--paper',                    required: 4.5, kind: 'text',       note: 'soft ink on native paper' },
-  { fg: '--ink-faint',      bg: '--paper',                    required: 3.0, kind: 'large-text', warnIfBelow: 4.5, note: 'faint ink - large/UI only; warn if used as body' },
-  { fg: '--text-link',      bg: '--paper',                    required: 4.5, kind: 'text',       note: 'inline link color on the page background' },
-  { fg: '--text-inverse',   bg: '--action-primary-default',   required: 4.5, kind: 'text',       note: 'button label on the primary action surface' },
-  { fg: '--text-inverse',   bg: '--ai',                       required: 4.5, kind: 'text',       note: 'inverse text on the AI/brand accent surface' },
-  { fg: '--success-text',   bg: '--success-subtle',           required: 4.5, kind: 'text',       note: 'success message text on its subtle background' },
-  { fg: '--warning-text',   bg: '--warning-subtle',           required: 4.5, kind: 'text',       note: 'warning message text on its subtle background' },
-  { fg: '--error-text',     bg: '--error-subtle',             required: 4.5, kind: 'text',       note: 'error message text on its subtle background' },
-  { fg: '--info-text',      bg: '--info-subtle',              required: 4.5, kind: 'text',       note: 'info message text on its subtle background' },
-  { fg: '--border-default', bg: '--paper',                    required: 3.0, kind: 'non-text',   decorative: true, note: 'default border against the page background - decorative; WCAG 2.2 SC 1.4.11 applies only to graphical objects essential for understanding content' },
-  { fg: '--border-focus',   bg: '--paper',                    required: 3.0, kind: 'non-text',   note: 'focus ring against the page background' },
-  { fg: '--shu',            bg: '--paper',                    required: 3.0, kind: 'non-text',   note: 'seal accent - must read as a UI mark on paper' },
-
-  // Code palette. Every one of these six tokens exists to put coloured text on
-  // --code-bg, which makes them the most obviously gradeable pairs in the
-  // contract — and they were ungraded until 2026-08-29. Syntax highlighting is
-  // body text: someone reads it, so 4.5:1 applies. A code block whose comments
-  // or string literals sit at 3.6:1 is a real legibility failure, and it hid
-  // here precisely because nobody thought of a token named "green" as text.
-  { fg: '--code-ink',       bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'default code text on the code surface' },
-  { fg: '--code-muted',     bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'code comments on the code surface - read as prose, so full text contrast' },
-  { fg: '--code-accent',    bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'keyword / accent token on the code surface' },
-  { fg: '--code-blue',      bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'blue syntax token on the code surface' },
-  { fg: '--code-green',     bg: '--code-bg',                  required: 4.5, kind: 'text',       note: 'green syntax token (strings) on the code surface' },
-];
+// The curated "key ink-on-surface pairs" — single source of truth, also read
+// directly (JSON import, no Node dependency) by the theme editor's live
+// contrast readout (v1.2 EPIC-07 F3.1), so CI and the browser grade against
+// exactly the same pairs. Code palette: every one of these six tokens exists
+// to put coloured text on --code-bg, which makes them the most obviously
+// gradeable pairs in the contract — and they were ungraded until 2026-08-29.
+// Syntax highlighting is body text: someone reads it, so 4.5:1 applies. A
+// code block whose comments or string literals sit at 3.6:1 is a real
+// legibility failure, and it hid here precisely because nobody thought of a
+// token named "green" as text.
+const AUDIT_PAIRS = require('./audit-pairs.json');
 
 const NAMED_COLORS = Object.freeze({
   aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],
