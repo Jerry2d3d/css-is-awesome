@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.11.0...v1.11.1) (2026-09-09)
+
+
+### Features
+
+* **site:** second print example — a letter with letterhead + footer ([4891391](https://github.com/Jerry2d3d/css-is-awesome/commit/4891391bf29aaa0489473318e7ad0face04a772e))
+
 # [1.11.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.10.3...v1.11.0) (2026-09-09)
 
 
