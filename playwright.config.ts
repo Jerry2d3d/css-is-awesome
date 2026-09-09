@@ -52,15 +52,19 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
     // Functional specs only — see the `visual.spec.ts` note in the header.
+    // rtl.spec.ts joins the exclusion for the same reason: it's screenshot
+    // snapshots (font rasterisation noise across engines) plus an axe scan
+    // that's just the a11y.spec.ts check with dir="rtl" added — the cross-
+    // engine a11y signal already exists there.
     {
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
-      testIgnore: /visual\.spec\.ts/,
+      testIgnore: /(visual|rtl)\.spec\.ts/,
     },
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
-      testIgnore: /visual\.spec\.ts/,
+      testIgnore: /(visual|rtl)\.spec\.ts/,
     },
   ],
 
