@@ -128,7 +128,17 @@ const marked = new Marked({
       const langLabel = lang
         ? `<span class="recipe-codeblock-lang" aria-hidden="true">${escapeHtml(lang)}</span>`
         : "";
-      return `<div class="recipe-codeblock" data-lang="${escapeAttr(lang ?? "")}">${langLabel}<pre><code${langClass}>${escapeHtml(text)}\n</code></pre></div>`;
+      // tabindex + role/label: <pre> is horizontally scrollable, so a
+      // keyboard-only user needs a focusable, named region to pan it
+      // (axe `scrollable-region-focusable`) — same fix as recipes.ts and
+      // the Example component's Code block.
+      return `<div class="recipe-codeblock" data-lang="${escapeAttr(lang ?? "")}">${langLabel}<pre tabindex="0" role="region" aria-label="Code sample"><code${langClass}>${escapeHtml(text)}\n</code></pre></div>`;
+    },
+    // GFM task-list checkboxes are disabled (non-interactive) and purely
+    // decorative — hide them from the accessibility tree rather than leave
+    // an unlabeled form control (axe `label`, critical). Mirrors recipes.ts.
+    checkbox({ checked }) {
+      return `<input ${checked ? "checked " : ""}disabled aria-hidden="true" type="checkbox">`;
     },
   },
 });
