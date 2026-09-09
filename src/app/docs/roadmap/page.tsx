@@ -70,9 +70,18 @@ export default function RoadmapPage() {
           <Link href="/docs/mcp">Tool reference</Link>.
         </li>
         <li>
-          <strong>A recipes book</strong> &mdash; five framework-agnostic
-          patterns: dialog, combobox, print-to-PDF, mobile-nav and bottom-nav.{" "}
-          <Link href="/docs/recipes">Browse them</Link>.
+          <strong>A recipes book</strong> &mdash; seven framework-agnostic
+          patterns: dialog, combobox, print-to-pdf, print-spec, letterhead,
+          mobile-nav and bottom-nav. <Link href="/docs/recipes">Browse them</Link>.
+        </li>
+        <li>
+          <strong>A themeable print surface.</strong> Four print tokens
+          (<code>--print-ink/-paper/-line/-muted</code>) give every theme a
+          clean ink-on-paper default and let a theme, or a letterhead recipe,
+          restyle paper without touching a component. The theme editor&rsquo;s
+          🖨 Print button previews it live, remembers your edits per theme, and
+          copies a ready-to-paste <code>@media print</code> block.{" "}
+          <Link href="/docs/print">Print</Link>.
         </li>
         <li>
           <strong>A zero-JS mobile toolkit</strong> &mdash; hamburger, drawer,
@@ -80,12 +89,13 @@ export default function RoadmapPage() {
           that ties them together. <Link href="/docs/mobile">Mobile</Link>.
         </li>
         <li>
-          <strong>A recipe registry and a health check in the CLI</strong>{" "}
+          <strong>A recipe registry and a graded health check in the CLI</strong>{" "}
           &mdash; <code>npx cia add &lt;recipe&gt;</code> copies a pattern from
           the book into your project so you own it, and{" "}
           <code>npx cia analyze</code> audits your stylesheets against the
           installed API (dead symbols, the spacing-scale trap, hard-coded
-          colors, BEM creep) with CI-ready exit codes.
+          colors, BEM creep) and prints a graded, categorized report with a
+          suggested fix on every finding, plus CI-ready exit codes.
         </li>
         <li>
           <strong>A dated browser-support matrix</strong> &mdash; the Baseline
@@ -141,6 +151,18 @@ export default function RoadmapPage() {
           <strong>More recipes</strong> &mdash; datepicker, data table,
           command palette, multiselect combobox, breadcrumb, pagination, file
           upload, toast, sortable list, colour picker.
+        </li>
+        <li>
+          <strong>A smarter analyzer</strong> &mdash; contract-token awareness
+          (flag a <code>var()</code> that isn&rsquo;t a real token, with the
+          nearest real one as the fix) and off-scale-length detection, on top
+          of the graded report shipped above.
+        </li>
+        <li>
+          <strong>Token intelligence in the theme editor</strong> &mdash; see
+          where a token propagates (&ldquo;Primary &rarr;
+          buttons/tabs/links/focus-ring&rdquo;) and a live WCAG contrast
+          warning as you edit.
         </li>
         <li>
           <strong>A guided installer.</strong> <code>npm create cia</code>{" "}

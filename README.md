@@ -228,10 +228,11 @@ npx cia add --list          # browse the recipe book
 npx cia add bottom-nav      # copy a recipe into your project — you own the pattern
 npx cia analyze src/styles  # design-system health: dead cia.* symbols, the
                             # space() scale trap, off-contract tokens (typos),
-                            # hard-coded colors, BEM creep
+                            # off-scale lengths, hard-coded colors, BEM creep,
+                            # missing focus-visible styling
 ```
 
-`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens. The default output is a **graded report** — a health score, a section per concern (Contract / Spacing / Color / Naming / Layout / API) with a `✓` when clean, and a suggested fix on each finding; add `--verbose` for the flat per-file list or `--json` for the machine shape.
+`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens. Off-scale-length findings suggest the nearest named step (e.g. `--radius-md`) for a literal `border-radius`/`padding`/`margin`/`gap` value, as a hint toward using a token — never a claim about your active theme's exact pixel value, since themes are free to set their own numbers (Terminal sets every `--radius-*` to `0`, deliberately). The default output is a **graded report** — a health score, a section per concern (Contract / Spacing / Color / Naming / Layout / API / Accessibility) with a `✓` when clean, and a suggested fix on each finding; add `--verbose` for the flat per-file list or `--json` for the machine shape. Full rule reference: [`/docs/analyzer`](https://cssisawesome.com/docs/analyzer/).
 
 ## Print / PDF (zero JS)
 

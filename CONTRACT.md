@@ -305,6 +305,21 @@ Paper themes declare these as `none` / `transparent` so a swap to a glass or pho
 
 ---
 
+## Print (optional)
+
+Four tokens describing the printed page. They're **optional** — `cia.print-base` (included once, at the stylesheet root) emits every one of them on `:root` inside `@media print` with a clean ink-on-white default, and every print rule reads them via `var(--print-*)`. A theme MAY override them in its own `@media print` block for a paper identity (Press does, for a newsprint look); a theme that sets none of them prints the plain default.
+
+| Token           | Type   | Default   | Purpose                              |
+| --------------- | ------ | --------- | ------------------------------------- |
+| `--print-ink`   | color  | `#000`    | Body text, links, code text on paper  |
+| `--print-paper` | color  | `#fff`    | Backgrounds on paper                  |
+| `--print-line`  | color  | `#999`    | Borders, rules, hairlines on paper    |
+| `--print-muted` | color  | `#666`    | Printed URLs, captions, secondary text |
+
+`print-base` also rebinds the theme's own colour tokens (`--ink`, `--surface-*`, `--border-*`, `--code-*`) onto this palette inside `@media print`, so every theme — dark-only ones included — prints legible ink-on-paper with no per-theme work required. See [`/docs/print`](https://cssisawesome.com/docs/print) and the [`letterhead` recipe](./scss/recipes/letterhead.md).
+
+---
+
 ## Component overrides (optional)
 
 These are per-component tokens a theme MAY override to change how a single family of components renders (buttons, cards, inputs, etc.) without touching the library or rebuilding SCSS. They are **optional** — the library emits every one of them on `:root` with a sensible default, and every component mixin reads them via `var(--<key>, <library-default>)`. A theme that sets none of them renders exactly the same as today.

@@ -130,8 +130,9 @@ export default function McpPage() {
             </td>
             <td>
               Recipes under <code>scss/recipes/</code> — both markdown pattern
-              recipes (dialog, combobox, print-to-pdf) and opt-in SCSS recipes
-              (e.g. bare-tags, consumed via <code>@use</code>)
+              recipes (dialog, combobox, print-to-pdf, print-spec, letterhead,
+              mobile-nav, bottom-nav) and opt-in SCSS recipes (e.g. bare-tags,
+              consumed via <code>@use</code>)
             </td>
           </tr>
           <tr>
