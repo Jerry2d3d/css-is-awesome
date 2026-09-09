@@ -193,6 +193,7 @@
     "qrcode": "^1.5.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.87.0",
     "sass": "^1.97.1",
     "semantic-release": "^25.0.9",
     "serve": "^14.2.6",
