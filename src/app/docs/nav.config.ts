@@ -30,6 +30,7 @@ export const docsNav: DocsNavSection[] = [
       { label: "Composition", href: "/docs/composition" },
       { label: "Mobile", href: "/docs/mobile" },
       { label: "Print", href: "/docs/print" },
+      { label: "RTL", href: "/docs/rtl" },
       { label: "Recipes", href: "/docs/recipes" },
     ],
   },
