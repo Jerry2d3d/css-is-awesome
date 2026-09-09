@@ -34,7 +34,7 @@ export type Recipe = RecipeMeta & { html: string };
 // Small acronyms that should stay upper-cased in a prettified title, and
 // joining words that stay lower-cased unless they lead. Shared by the recipe
 // index cards and the recipe page heading so both read identically.
-const ACRONYMS = new Set(["pdf", "css", "html", "aria", "url", "api", "ui"]);
+const ACRONYMS = new Set(["pdf", "css", "html", "html5", "aria", "url", "api", "ui"]);
 const SMALL_WORDS = new Set(["to", "of", "and", "a", "an", "the", "for", "from"]);
 
 /** "print-to-pdf" → "Print to PDF", "combobox" → "Combobox". */

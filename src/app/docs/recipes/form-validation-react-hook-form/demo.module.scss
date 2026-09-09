@@ -1,0 +1,31 @@
+@use 'components/forms' as forms;
+@use 'components/buttons' as buttons;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-block-end: 1rem;
+  max-width: 22rem;
+
+  input {
+    @include forms.input-base;
+  }
+
+  &[data-invalid="true"] input {
+    border-color: var(--error-default);
+  }
+  &[data-invalid="true"] .fieldError {
+    display: block;
+  }
+}
+
+.fieldError {
+  display: none;
+  color: var(--error-text);
+  font-size: 0.85em;
+}
+
+.submit {
+  @include buttons.btn(primary);
+}

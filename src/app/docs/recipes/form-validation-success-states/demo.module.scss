@@ -1,0 +1,57 @@
+@use 'components/forms' as forms;
+@use 'icons' as icons;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-block-end: 1.5rem;
+  max-width: 22rem;
+}
+
+.inputWrap {
+  position: relative;
+
+  input {
+    @include forms.input-base;
+    padding-inline-end: 2.5rem;
+  }
+}
+
+.check {
+  display: none;
+  position: absolute;
+  inset-inline-end: 0.75rem;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  color: var(--success-default);
+
+  .field[data-status="valid"] & {
+    display: block;
+    @include icons.svg(check, 1em);
+  }
+}
+
+.banner {
+  max-width: 22rem;
+  padding: 0.75rem 1rem;
+  margin-block-end: 1.5rem;
+  border-radius: var(--radius-md, 8px);
+
+  &[data-kind="success"] {
+    background: var(--success-subtle);
+    color: var(--success-text);
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 22rem;
+  margin-block-end: 1.5rem;
+
+  &[data-failed="true"] {
+    color: var(--error-text);
+  }
+}
