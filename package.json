@@ -130,7 +130,8 @@
     "prepare": "node scripts/prepare-dist.mjs",
     "prepublishOnly": "npm run build:css:all",
     "check:theme-drift": "node scripts/check-theme-drift.mjs",
-    "check:token-consumers": "node scripts/check-token-consumer-map.mjs"
+    "check:token-consumers": "node scripts/check-token-consumer-map.mjs",
+    "check:rtl": "node scripts/audit-logical-properties.mjs"
   },
   "keywords": [
     "css",

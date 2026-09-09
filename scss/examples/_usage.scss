@@ -195,13 +195,13 @@
   
   input {
     @include m.input-base;
-    padding-left: m.space(xl);
+    padding-inline-start: m.space(xl);
   }
-  
+
   &::before {
     content: '';
     position: absolute;
-    left: m.space(sm);
+    inset-inline-start: m.space(sm);
     top: 50%;
     transform: translateY(-50%);
     @include i.svg(search, 20px);

@@ -55,6 +55,11 @@ jobs:
       - name: Token-consumer map matches its scss/ sources
         run: npm run check:token-consumers
 
+      # v1.2 EPIC-01: fails on any un-annotated physical-direction CSS
+      # (margin-left, text-align: left, …) in scss/, excluding themes/.
+      - name: RTL — no unannotated physical-direction CSS
+        run: npm run check:rtl
+
       # Now safe: the artifacts below are proven to match their sources.
       - name: Validate themes
         run: npm run validate-themes
