@@ -598,6 +598,14 @@ $_type-scale: (
 // Override either locally for a per-element exception — no rule rewrite:
 //   .keep-this { --print-hide: revert; }   // stays on paper despite print-hidden
 //   .pdf-row   { --print-show: flex; }     // print-only block laid out as flex
+//
+// Also emits a themeable PRINT PALETTE — --print-ink / --print-paper /
+// --print-line / --print-muted (default ink-on-white) — and rebinds the theme's
+// colour tokens (--ink, --surface-*, --border-*, --code-*) onto it inside
+// @media print, so every theme (dark-only included) prints legible ink-on-paper.
+// Override a --print-* token (in a theme's @media print, or a <link media=print>
+// sheet) to restyle paper. $legible is a deprecated no-op — the rebind supersedes
+// it and passing it warns.
 @mixin print-base(
   $freeze-animations: true,
   $size: letter,
