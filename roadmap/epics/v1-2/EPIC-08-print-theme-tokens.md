@@ -6,12 +6,11 @@
 > consumer) *override* those tokens to restyle paper — a branded letterhead, a
 > newsprint look, a grayscale draft. "Swap tokens, get a new look" — for print.
 
-**Status:** Nearly complete — **shipped 2026-09-08** on branch
-`feature/print-theme-tokens`: F1 palette+rebind, F2 `$legible` deprecation,
-F3.1 Press newsprint, F3.2 contract tokens, F3.3 letterhead recipe + Coyote
-demo, F4 docs, F5 editor print mode. Remaining: F4's dedicated `/docs` print
-page and the optional F5.3 polish (persist per-family, seed from in-file
-overrides).
+**Status:** Complete — shipped 2026-09-08 on branch `feature/print-theme-tokens`:
+F1 palette+rebind, F2 `$legible` deprecation, F3.1 Press newsprint, F3.2
+contract tokens, F3.3 letterhead recipe + Coyote demo, F4 docs (including the
+dedicated `/docs/print` page), F5 editor print mode. F5.3 (persist per-family,
+seed from in-file overrides) landed 2026-09-09.
 **Effort estimate:** ~4-6 working days
 **Stories:** 10
 
@@ -131,10 +130,12 @@ letterhead** is content you add, styled with cia — a recipe, not a theme.
   block" export.
 - **US-V12.08.5.2** (M) — ✅ DONE 2026-09-08. Letterhead on/off toggle renders
   the letterhead recipe inside the paper preview; the modal is the preview.
-- **US-V12.08.5.3** (S) — Follow-ons if wanted: persist the print palette per
-  family (today it's modal-local), and read the theme's existing in-file print
-  overrides as the modal's starting values (today it starts from the B/W
-  default).
+- **US-V12.08.5.3** (S) — ✅ DONE 2026-09-09. Print palette persists per
+  family in `localStorage` (`cia-print-overrides`), and the modal seeds from
+  the theme's existing in-file `--print-*` override (read off the CSSOM's
+  `@media print` rules, since computed style can't see print-scoped
+  declarations on screen) — Press now opens straight into newsprint instead
+  of plain B/W.
 
 ## What changes
 
@@ -172,6 +173,24 @@ the tokens; `$legible` is a deprecated no-op; one reference theme demonstrates a
 per-theme print override; print tokens are optional contract tokens; docs
 explain themeable print and the analyzer's print-awareness; print output is
 verified across a light theme, a dark-only theme, and the override.
+
+## Follow-up fix (2026-09-09)
+
+Verifying F5.3 in a real browser (Playwright, not just a code read) surfaced
+a bug in `scripts/build-theme-bundle.mjs`: its block extractor walked each
+per-theme CSS file for `[data-theme]` rules but treated any `@media {…}`
+block as one opaque top-level rule whose "selector" was literally `@media
+print` — which never matches `data-theme`, so the whole block, including
+everything nested inside it, was silently dropped. Press's newsprint
+override — F3.1's reference implementation, the first (and so far only)
+theme to nest a rule inside an `@media print` block — never made it into
+`public/theme.css`, the consolidated bundle the docs site and every npm
+consumer actually load, even though the per-theme file
+`public/themes/press/theme.css` had it correctly. Fixed by having the
+extractor recurse into at-rules and re-wrap the matched inner rule in the
+same at-rule on the way out. Rebuilt the bundle; `check:theme-drift` and
+`validate-themes` both pass; re-verified live in a browser that Press's
+Print preview now shows newsprint, not plain B/W.
 
 ## Related
 
