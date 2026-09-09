@@ -41,17 +41,15 @@ if (names.length === 0) {
   process.exit(1);
 }
 
-const imports = new Set();
-const blocks = [];
-
-for (const name of names) {
-  const css = readFileSync(resolve(THEMES, name, 'theme.css'), 'utf8');
-
-  for (const m of css.matchAll(/^@import[^\n]+/gm)) imports.add(m[0].trim());
-
-  // Pull every rule that declares custom properties, rewriting the selector.
+// Walk `css` one top-level block at a time. A plain `[data-theme]` rule is
+// captured directly; an at-rule (e.g. `@media print { … }`) is recursed
+// into so a data-theme rule NESTED inside it (a theme's own print-palette
+// override, a container query, etc.) is still found — and re-wrapped in
+// that same at-rule on the way back out, so it keeps only applying under
+// that condition instead of leaking onto the screen.
+function extractBlocks(css) {
+  const out = [];
   let i = 0;
-  let found = 0;
   while (i < css.length) {
     const open = css.indexOf('{', i);
     if (open === -1) break;
@@ -66,19 +64,39 @@ for (const name of names) {
     const selector = css.slice(selStart, open).trim();
     const body = css.slice(open + 1, k);
 
-    if (/--[a-z0-9-]+\s*:/i.test(body) && selector.includes('data-theme')) {
+    if (selector.startsWith('@')) {
+      for (const inner of extractBlocks(body)) {
+        out.push({ ...inner, wrap: [selector, ...inner.wrap] });
+      }
+    } else if (/--[a-z0-9-]+\s*:/i.test(body) && selector.includes('data-theme')) {
       // Drop the standalone bare `:root,` — see header.
       const scoped = selector
         .split(',')
         .map((s) => s.trim())
         .filter((s) => s.includes('data-theme'))
         .join(', ');
-      blocks.push(`${scoped} {${body}}`);
-      found++;
+      out.push({ selector: scoped, body, wrap: [] });
     }
     i = k + 1;
   }
-  if (found === 0) console.warn(`  ! ${name}: no [data-theme] block found`);
+  return out;
+}
+
+const imports = new Set();
+const blocks = [];
+
+for (const name of names) {
+  const css = readFileSync(resolve(THEMES, name, 'theme.css'), 'utf8');
+
+  for (const m of css.matchAll(/^@import[^\n]+/gm)) imports.add(m[0].trim());
+
+  const found = extractBlocks(css);
+  for (const b of found) {
+    let rule = `${b.selector} {${b.body}}`;
+    for (let w = b.wrap.length - 1; w >= 0; w--) rule = `${b.wrap[w]} {\n${rule}\n}`;
+    blocks.push(rule);
+  }
+  if (found.length === 0) console.warn(`  ! ${name}: no [data-theme] block found`);
 }
 
 const header = `/* ============================================================

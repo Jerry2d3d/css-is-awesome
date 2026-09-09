@@ -1184,6 +1184,25 @@
    * the vars under the parent selector). */
   /* stylelint-disable no-invalid-position-declaration -- see comment above */
 }
+@media (prefers-color-scheme: dark) {
+:root[data-theme=glass] {
+    --blur-sm: blur(12px) saturate(160%);
+    --blur-md: blur(18px) saturate(180%);
+    --blur-lg: blur(20px) saturate(200%);
+    --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    --glow-md:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+      inset 1px 0 0 rgba(255, 255, 255, 0.10),
+      inset -1px 0 0 rgba(255, 255, 255, 0.06);
+    --glow-lg:
+      inset 0 2px 0 rgba(255, 255, 255, 0.28),
+      inset 0 -2px 0 rgba(255, 255, 255, 0.08),
+      inset 2px 0 0 rgba(255, 255, 255, 0.14),
+      inset -2px 0 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 40px rgba(111, 169, 255, 0.08);
+  }
+}
 :root[data-theme=glass] {
   /* stylelint-enable no-invalid-position-declaration */
   /* Semantic aliases */
@@ -2413,6 +2432,19 @@
      a faint warm stock, warm near-black ink, press-red masthead rules.
      Every other theme inherits print-base's plain ink-on-white.
      ---------------------------------------------------------------- */
+}
+@media print {
+:root[data-theme=press] {
+    /* stylelint-disable no-invalid-position-declaration -- these are custom-property
+       overrides scoped to the theme selector m.theme() supplies; the position is valid
+       once the mixin wraps them (emits `@media print { :root, :root[data-theme=press] }`),
+       but stylelint can't see the mixin's parent selector statically. */
+    --print-paper: #FBFAF6; /* faint warm newsprint stock */
+    --print-ink: #0A0A0A; /* warm near-black */
+    --print-line: #D93025; /* press red — the masthead rule */
+    --print-muted: #6B6963; /* warm editorial gray */
+    /* stylelint-enable no-invalid-position-declaration */
+  }
 }
 :root[data-theme=press-dark] {
   color-scheme: dark;
