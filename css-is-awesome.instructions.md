@@ -176,13 +176,17 @@ browser's native Print → Save as PDF is the generator; cia just supplies the
   ROOT** — it emits `@page` (invalid when nested in a selector), freezes
   animations so nothing prints invisible, and emits the print variable
   control plane. In `@media print` it always forces `color-scheme: light`, so
-  paired `light-dark()` themes print their light branch for free. Four opt-in
-  flags (all default OFF): `$legible` darkens the body-text tokens (`--ink`,
-  `--muted`…) so dark-only themes (Terminal) stay readable on white — code
-  blocks and accents untouched; `$link-urls` prints each link's destination via
+  paired `light-dark()` themes print their light branch for free. It also
+  defines a **print palette** — `--print-ink`, `--print-paper`, `--print-line`,
+  `--print-muted` (default ink-on-white with grays) — and rebinds the theme's
+  own colour tokens (`--ink`, `--surface-*`, `--border-*`, `--code-*`) onto it,
+  so every theme, dark-only (Terminal) included, prints legible ink-on-paper;
+  override a `--print-*` token to restyle paper (a letterhead). Three opt-in
+  flags (all default OFF): `$link-urls` prints each link's destination via
   `attr(href)`; `$link-origin` prepends an origin to internal `/…` links so they
   resolve to full URLs; `$page-numbers` puts `counter(page)` in the `@page`
-  bottom-center margin box.
+  bottom-center margin box. `$legible` is retained as a **deprecated no-op** —
+  the rebind supersedes it and passing it warns.
 - **`print-hidden`** — hide an element on paper (the "hide the nav" case).
 - **`print-only`** — show an element only on paper (e.g. an inline URL
   footer); hidden on screen.

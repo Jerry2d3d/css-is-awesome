@@ -28,6 +28,7 @@ export const docsNav: DocsNavSection[] = [
     items: [
       { label: "Composition", href: "/docs/composition" },
       { label: "Mobile", href: "/docs/mobile" },
+      { label: "Print", href: "/docs/print" },
       { label: "Recipes", href: "/docs/recipes" },
     ],
   },

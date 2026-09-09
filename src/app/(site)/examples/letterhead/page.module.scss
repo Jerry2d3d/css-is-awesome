@@ -1,0 +1,120 @@
+@use 'mixins' as m;
+@use 'components/buttons' as b;
+
+/* Second print example: a letter that shows the header + footer pattern.
+   Consumer-named classes; the print helpers come from the global print-base
+   layer. The letterhead and footer are print-only and read the --print-*
+   palette, so they only appear on paper and match the print colours. */
+
+.intro {
+  @include m.print-hidden;
+}
+
+.actions {
+  @include m.flex($gap: m.space(3), $wrap: wrap);
+  align-items: center;
+}
+
+.hint {
+  color: var(--ink-faint);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+:global(.cia-btn-print) {
+  @include b.btn(primary);
+}
+
+/* ---- the artifact ---- */
+.letter {
+  margin-block-start: m.space(6);
+  padding: m.space(6);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 8px);
+  background: var(--paper-raised);
+
+  @include m.print {
+    // Fill the sheet so the footer sinks to the foot of the page.
+    margin: 0;
+    min-block-size: calc(100dvh - 1.2in);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+}
+
+/* print-only letterhead — the header */
+.letterhead {
+  @include m.print-only;
+  margin-block-end: m.space(5);
+  padding-block-end: m.space(3);
+  border-block-end: 3px double var(--print-line);
+  text-align: center;
+}
+
+.lhName {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  letter-spacing: 0.14em;
+  color: var(--print-ink);
+}
+
+.lhAddr {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--print-muted);
+}
+
+/* letter body */
+.body {
+  font-family: var(--font-serif);
+  line-height: 1.6;
+  color: var(--ink);
+
+  p {
+    margin: 0 0 m.space(4);
+  }
+}
+
+.date {
+  color: var(--ink-soft);
+}
+
+.to {
+  color: var(--ink-soft);
+}
+
+.signoff {
+  margin-block-start: m.space(5);
+}
+
+.sig {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.meta {
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+
+/* print-only footer — pinned to the foot of the sheet in the print flex column */
+.letterFoot {
+  @include m.print-only;
+  margin-block-start: auto;
+  padding-block-start: m.space(4);
+  border-block-start: 1px solid var(--print-line);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--print-muted);
+}

@@ -598,6 +598,14 @@ $_type-scale: (
 // Override either locally for a per-element exception — no rule rewrite:
 //   .keep-this { --print-hide: revert; }   // stays on paper despite print-hidden
 //   .pdf-row   { --print-show: flex; }     // print-only block laid out as flex
+//
+// Also emits a themeable PRINT PALETTE — --print-ink / --print-paper /
+// --print-line / --print-muted (default ink-on-white) — and rebinds the theme's
+// colour tokens (--ink, --surface-*, --border-*, --code-*) onto it inside
+// @media print, so every theme (dark-only included) prints legible ink-on-paper.
+// Override a --print-* token (in a theme's @media print, or a <link media=print>
+// sheet) to restyle paper. $legible is a deprecated no-op — the rebind supersedes
+// it and passing it warns.
 @mixin print-base(
   $freeze-animations: true,
   $size: letter,
@@ -607,6 +615,10 @@ $_type-scale: (
   $link-origin: null,
   $page-numbers: false
 ) {
+  @if $legible {
+    @warn "print-base: $legible is deprecated and now a no-op — print rebinds --ink onto --print-ink for every theme, so dark-only themes are legible without it. Remove the flag; override --print-* tokens to restyle paper.";
+  }
+
   :root {
     --is-print: 0;
     --print-hide: none;
@@ -619,21 +631,47 @@ $_type-scale: (
 
       // Paired themes build color as light-dark(): forcing the light scheme
       // makes them print their light branch — light text becomes dark text
-      // on the (already white) sheet, for free. Dark-only themes use literal
-      // values and ignore this; $legible below covers them.
+      // on the (already white) sheet, for free.
       color-scheme: light;
 
-      @if $legible {
-        // Dark-only themes (e.g. Terminal) have literal LIGHT ink — unreadable
-        // once the background drops to white in print. Darken just the body
-        // text tokens; --code-* stay untouched so code blocks keep their ink,
-        // and accents are left alone so links/headings keep the theme's voice.
-        --ink:       CanvasText;
-        --ink-soft:  color-mix(in sRGB, CanvasText 78%, Canvas);
-        --ink-faint: color-mix(in sRGB, CanvasText 60%, Canvas);
-        --muted:     color-mix(in sRGB, CanvasText 70%, Canvas);
-      }
+      // Print palette — themeable. Override these (in a theme's own @media
+      // print, or a <link media="print"> theme file) to restyle paper: navy
+      // ink, a letterhead rule, a grayscale draft. Default: ink on white.
+      --print-ink:   #000;
+      --print-paper: #fff;
+      --print-line:  #999;
+      --print-muted: #666;
+
+      // Rebind the theme's colour tokens onto the print palette, so every
+      // element that reads --ink / --surface / --border prints ink-on-paper
+      // and re-inks when a --print-* token is overridden. Supersedes the old
+      // $legible remap: dark-only themes (Terminal) are legible with no flag.
+      --ink:            var(--print-ink);
+      --ink-soft:       var(--print-muted);
+      --ink-faint:      var(--print-muted);
+      --muted:          var(--print-muted);
+      --text-primary:   var(--print-ink);
+      --text-secondary: var(--print-muted);
+      --text-tertiary:  var(--print-muted);
+
+      --paper:              var(--print-paper);
+      --paper-raised:       var(--print-paper);
+      --paper-sunk:         var(--print-paper);
+      --surface-default:    var(--print-paper);
+      --surface-raised:     var(--print-paper);
+      --surface-sunk:       var(--print-paper);
+      --background-default: var(--print-paper);
+
+      --border-default: var(--print-line);
+      --hair:           var(--print-line);
+
+      --code-bg:    var(--print-paper);
+      --code-ink:   var(--print-ink);
+      --code-muted: var(--print-muted);
     }
+
+    // Paper floor: ink on white regardless of what the app sets on <body>.
+    body { background: var(--print-paper); color: var(--print-ink); }
 
     @page { size: $size; margin: $margin; }
 
@@ -651,14 +689,14 @@ $_type-scale: (
       a[href^="http"]::after {
         content: " (" attr(href) ")";
         font-size: 0.85em;
-        color: color-mix(in sRGB, CanvasText 60%, Canvas);
+        color: var(--print-muted);
         word-break: break-all;
       }
       @if $link-origin {
         a[href^="/"]::after {
           content: " (#{$link-origin}" attr(href) ")";
           font-size: 0.85em;
-          color: color-mix(in sRGB, CanvasText 60%, Canvas);
+          color: var(--print-muted);
           word-break: break-all;
         }
       }

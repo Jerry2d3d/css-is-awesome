@@ -1,3 +1,22 @@
+## [1.11.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.11.0...v1.11.1) (2026-09-09)
+
+
+### Features
+
+* **site:** second print example — a letter with letterhead + footer ([4891391](https://github.com/Jerry2d3d/css-is-awesome/commit/4891391bf29aaa0489473318e7ad0face04a772e))
+
+# [1.11.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.10.3...v1.11.0) (2026-09-09)
+
+
+### Features
+
+* **cli:** analyzer off-contract-token rule + print/var-aware color analysis ([6cd1eeb](https://github.com/Jerry2d3d/css-is-awesome/commit/6cd1eeb5feb082cc9c1bf5330d9c540b4cb332d7)), closes [hi#signal](https://github.com/hi/issues/signal) [#hex](https://github.com/Jerry2d3d/css-is-awesome/issues/hex)
+* **cli:** graded, categorized analyzer report (EPIC-06 F3.1) ([ee56cdb](https://github.com/Jerry2d3d/css-is-awesome/commit/ee56cdbd17695f115226c4faeee6382a6041e7d5))
+* **print:** letterhead recipe + Press newsprint print identity ([5963b0c](https://github.com/Jerry2d3d/css-is-awesome/commit/5963b0cce30eb1ce26d59230423477e41990747f))
+* **print:** themeable print palette + token rebind; deprecate $legible ([bf4c657](https://github.com/Jerry2d3d/css-is-awesome/commit/bf4c65783ec22d03eed2b9836928151597828124))
+* **site:** ACME letterhead invoice demo for the print theme ([5d5ed81](https://github.com/Jerry2d3d/css-is-awesome/commit/5d5ed81bf6f9c8490f2173f9d79b37f8f15fd7df))
+* **site:** theme-editor print mode — paper-preview modal (EPIC-08 F5) ([1cfc83e](https://github.com/Jerry2d3d/css-is-awesome/commit/1cfc83e6c1a68eb39b144669802061710337c99c))
+
 ## [1.10.3](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.10.2...v1.10.3) (2026-09-07)
 
 

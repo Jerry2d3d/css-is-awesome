@@ -42,6 +42,11 @@ export const examplesNav: ExampleNavItem[] = [
     label: "Print to PDF",
     description: "A real invoice you can Ctrl+P — screen chrome drops, links become followable URLs, and the sheet numbers itself. Zero JS, no PDF library.",
   },
+  {
+    slug: "letterhead",
+    label: "Letterhead & footer",
+    description: "A printable letter — a print-only letterhead header and a footer pinned to the foot of the sheet, both reading the print palette. Ctrl+P to see them appear.",
+  },
 ];
 
 export const exampleHref = (slug: string): string => `/examples/${slug}`;

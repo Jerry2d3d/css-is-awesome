@@ -9,6 +9,7 @@ import {
   type TokenSpec,
 } from "./catalog";
 import { ColorRow, FontRow, LengthRow, NumberRow, StringRow } from "./rows";
+import PrintPreviewModal from "./PrintPreviewModal";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 import {
   extractDataThemeBlocks,
@@ -452,6 +453,7 @@ export default function ThemeEditorDock() {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [importMsg, setImportMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+  const [printOpen, setPrintOpen] = useState(false);
 
   // Strip the -light / -dark suffix so the imported name reads like a base.
   function baseNameOf(themeName: string): string {
@@ -779,6 +781,14 @@ export default function ThemeEditorDock() {
             </button>
             <button
               type="button"
+              className={styles.btn}
+              onClick={() => setPrintOpen(true)}
+              title="Preview how this theme prints and edit its paper palette"
+            >
+              🖨 Print
+            </button>
+            <button
+              type="button"
               className={[styles.btn, styles.btnPrimary].join(" ")}
               onClick={download}
               title="Download the theme as a drop-in tokens-only .css file"
@@ -801,6 +811,12 @@ export default function ThemeEditorDock() {
           )}
         </footer>
       </aside>
+
+      <PrintPreviewModal
+        open={printOpen}
+        onClose={() => setPrintOpen(false)}
+        family={family}
+      />
     </>
   );
 }

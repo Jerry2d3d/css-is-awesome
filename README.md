@@ -8,7 +8,7 @@
 
 **Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
-> **The recipes book:** build any component in any framework using cia mixins — six recipes today (`dialog`, `combobox`, `print-to-pdf`, `print-spec`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
+> **The recipes book:** build any component in any framework using cia mixins — seven recipes today (`dialog`, `combobox`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
 
 ## For AI agents — start here
 
@@ -202,7 +202,7 @@ Missing font files don't error, so a silent tofu box is the failure mode. If you
 
 cia ships **no component library** — deliberately. Interactive patterns arrive as *recipes*: portable markdown files at [`scss/recipes/`](./scss/recipes/) that give you the correct HTML, the `cia.X` mixin calls to style it, and an a11y checklist graded against WCAG 2.2 AA. Copy the pattern into your own framework; you own the component, cia owns the styling and the accessibility homework.
 
-**Shipped:** `dialog`, `combobox`, `print-to-pdf`, `print-spec`, `mobile-nav`, `bottom-nav`. Queued next: `datepicker`, `data-table`, `command-palette`.
+**Shipped:** `dialog`, `combobox`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav`, `bottom-nav`. Queued next: `datepicker`, `data-table`, `command-palette`.
 
 **Layout doctrine: Grid is the skeleton, Flex is the quick moves.** The page shell is CSS Grid with landmark-named areas (`nav / main / footer` — the map reads like the page); any control-dense region inside gets its own named-area grid whose `gap` carries all vertical rhythm; flex lives at the leaves for one-command flips (`cia.flex($direction: column)`). `cia.page-layout()` and `cia.layout()` own the maps — mobile is a different area map, never margin overrides.
 
@@ -227,10 +227,11 @@ The CLI also carries the registry and the health check:
 npx cia add --list          # browse the recipe book
 npx cia add bottom-nav      # copy a recipe into your project — you own the pattern
 npx cia analyze src/styles  # design-system health: dead cia.* symbols, the
-                            # space() scale trap, hard-coded colors, BEM creep
+                            # space() scale trap, off-contract tokens (typos),
+                            # hard-coded colors, BEM creep
 ```
 
-`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI.
+`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens. The default output is a **graded report** — a health score, a section per concern (Contract / Spacing / Color / Naming / Layout / API) with a `✓` when clean, and a suggested fix on each finding; add `--verbose` for the flat per-file list or `--json` for the machine shape.
 
 ## Print / PDF (zero JS)
 
@@ -241,7 +242,7 @@ Print support is a pure-CSS layer — the browser's native **Print → Save as P
 
 // Once, in a GLOBAL stylesheet — never inside a component module.
 // It emits its own :root block plus @page, so don't wrap it in a selector.
-@include cia.print-base;                   // optional flags: ($size, $margin, $freeze-animations, $legible, $link-urls, $link-origin, $page-numbers)
+@include cia.print-base;                   // optional flags: ($size, $margin, $freeze-animations, $link-urls, $link-origin, $page-numbers)
 
 .site-nav   { @include cia.print-hidden; } // drop chrome on paper
 .print-note { @include cia.print-only; }   // reveal paper-only content
@@ -250,7 +251,30 @@ Print support is a pure-CSS layer — the browser's native **Print → Save as P
 
 `print-base` also collapses animations to zero duration and pins them to their final frame, so a page snapshotted mid-entrance-fade doesn't print as invisible text. It deliberately does **not** force `opacity: 1` or `transform: none` — that would fix the fade while flattening every intentional use of the same properties (a 0.15 watermark, a 0.4 disabled control, a stamp rotated `-4deg`). Elements that were never animating are left untouched. Read `--is-print` (`0` on screen, `1` on paper) for custom effects.
 
-Inside `@media print`, `print-base` always forces `color-scheme: light`, so paired `light-dark()` themes print their light branch for free. Four opt-in flags (all default off) take it further: `$legible` darkens the body-text tokens so dark-only themes (Terminal) stay readable as ink on white; `$link-urls` prints every link's destination via `attr(href)`; `$link-origin` prepends an origin so internal `/…` links resolve to full URLs on paper; `$page-numbers` numbers the sheets in the `@page` footer. The docs site and the theme editor at `/themes` turn those flags on to print themselves as paginated spec documents.
+Inside `@media print`, `print-base` always forces `color-scheme: light`, so paired `light-dark()` themes print their light branch for free. It also defines a **print palette** — `--print-ink`, `--print-paper`, `--print-line`, `--print-muted` (default ink-on-white with light grays) — and rebinds the theme's own colour tokens (`--ink`, `--surface-*`, `--border-*`, `--code-*`) onto it, so every theme prints as clean ink-on-paper and dark-only themes (Terminal) are legible with no flag. Three opt-in flags (all default off) take it further: `$link-urls` prints every link's destination via `attr(href)`; `$link-origin` prepends an origin so internal `/…` links resolve to full URLs on paper; `$page-numbers` numbers the sheets in the `@page` footer. (`$legible` is now a **deprecated no-op** — the token rebind supersedes it; passing it warns.) The docs site and the theme editor at `/themes` turn those flags on to print themselves as paginated spec documents.
+
+### A print theme
+
+Those four `--print-*` tokens are ordinary custom properties, so print is themeable like any other surface. The default every theme inherits is clean black-on-white with light grays; a theme (or a single project) opts into its own paper identity only if it wants one — override the tokens and every element re-inks, no component touched:
+
+```scss
+// A letterhead: navy ink, silver rules. Put this in a theme's own @media print
+// block, or ship it as a print-only stylesheet loaded with <link media="print">.
+@media print {
+  :root {
+    --print-ink:   #16233f; // deep navy
+    --print-muted: #5b6b86;
+    --print-line:  #c7ccd6; // silver hairlines
+    // --print-paper stays #fff
+  }
+}
+```
+
+Loading it as a paired print sheet is the same mechanism as paired light/dark themes:
+
+```html
+<link rel="stylesheet" href="/themes/letterhead/print.css" media="print">
+```
 
 **See it work.** Two live demonstrations back the walkthroughs. The [`print-spec`](./scss/recipes/print-spec.md) recipe paginates a page into a spec document (cover + table index, one page per section, honest sheet numbers). And [`/examples/print-to-pdf`](https://cssisawesome.com/examples/print-to-pdf/) is a real invoice you `Ctrl+P`: on paper the site chrome and the button vanish, the invoice fills the whole sheet, its links print as full followable URLs (`$link-urls` + `$link-origin`), a sheet number appears, and a **print-only QR code** — generated at build time as inline SVG, zero browser JS, no image fetch — links the paper back to the live [invoice-online](https://cssisawesome.com/examples/print-to-pdf/online) page. Full walkthroughs: the [`print-to-pdf`](./scss/recipes/print-to-pdf.md) and [`print-spec`](./scss/recipes/print-spec.md) recipes.
 

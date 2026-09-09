@@ -14,8 +14,11 @@
 | [03](./EPIC-03-i18n-recipes.md) | **i18n Recipes** | 4 recipes: Intl date formatting, number/currency, pluralization, RTL flip patterns. | ~3-5 days | 7 |
 | [04](./EPIC-04-print-recipe.md) | **Print Recipe** ⚠️ _delivered early in v1.0_ | Single recipe + docs page for `@media print` styled with cia tokens. Core shipped in v1.0 (`print-to-pdf.md`). | ~4 hours | 2 |
 | [05](./EPIC-05-migration-mui-chakra.md) | **Migration: MUI + Chakra** | Extend `npx cia migrate` to read MUI theme objects + Chakra theme objects. | ~1 week | 6 |
+| [06](./EPIC-06-analyzer-health-report.md) | **Analyzer health report** | Grade `cia analyze`: score header + categorized findings + a suggested fix on each. Enriches the existing `health %`; adds contract-token + off-scale-length rules. From the 2026-09-07 external review. | ~3-4 days | 6 |
+| [07](./EPIC-07-token-intelligence-editor.md) | **Token intelligence in the editor** | Theme editor shows where a token propagates ("Primary → buttons/tabs/links/focus-ring") and warns on WCAG contrast live. From the 2026-09-07 external review. | ~3-5 days | 5 |
+| [08](./EPIC-08-print-theme-tokens.md) | **Print theme + print tokens** | Print becomes a themeable surface: `--print-ink/-paper/-line/-muted` with a B/W + light-gray default every theme inherits, overridable per-theme (in-file) or via a `letterhead` recipe (markup). Adds a theme-editor print mode. **Core + editor shipped 2026-09-08.** | ~4-6 days | 10 |
 
-**Total v1.2 effort:** ~16-22 working days. **Total stories:** 32.
+**Total v1.2 effort:** ~26-38 working days. **Total stories:** 53.
 
 ## Definition of done for v1.2
 

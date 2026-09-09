@@ -54,29 +54,44 @@ export default async function PrintToPdfExample() {
       {/* The artifact — the ONLY thing that prints. The classes it
           uses are all cia print helpers behind consumer-named selectors. */}
       <article className={styles.invoice}>
+        {/* PRINT-ONLY letterhead — the "letterhead" recipe: markup you add,
+            styled with print-only + the --print-* palette, so it matches the
+            paper look and appears on paper only. */}
+        <header className={styles.letterhead}>
+          <p className={styles.letterheadName}>ACME CORPORATION</p>
+          <p className={styles.letterheadTag}>
+            Threat mitigation for the apex predator since 1949
+          </p>
+          <p className={styles.letterheadAddr}>
+            1 Cliffside Drive · Painted Desert Mesa, AZ · acme.example
+          </p>
+        </header>
+
         <header className={styles.invoiceHead}>
-          <div>
-            <p className={styles.brand}>Acme Studio</p>
-            <p className={styles.meta}>123 Sketchbook Lane · Portland, OR</p>
+          {/* Screen shows the wordmark here; on paper the letterhead above
+              carries it, so this half steps aside. */}
+          <div className={styles.brandScreen}>
+            <p className={styles.brand}>ACME Corporation</p>
+            <p className={styles.meta}>Threat mitigation since 1949</p>
           </div>
           <div className={styles.invoiceNo}>
             <p className={styles.metaLabel}>Invoice</p>
-            <p className={styles.big}>#2026-014</p>
-            <p className={styles.meta}>Due 30 Sep 2026</p>
+            <p className={styles.big}>#RR-1949</p>
+            <p className={styles.meta}>Net 30 (or until the next anvil)</p>
           </div>
         </header>
 
         <div className={styles.billTo}>
           <p className={styles.metaLabel}>Bill to</p>
-          <p>Beacon Coffee Co.</p>
-          <p className={styles.meta}>hello@beacon.example</p>
+          <p>The Coyote</p>
+          <p className={styles.meta}>Route 66 · Painted Desert Mesa, AZ</p>
         </div>
 
         <div className={styles.tableWrap}>
           <table className={styles.lines}>
             <thead>
               <tr>
-                <th>Item</th>
+                <th>Website protection service</th>
                 <th className={styles.num}>Qty</th>
                 <th className={styles.num}>Rate</th>
                 <th className={styles.num}>Amount</th>
@@ -84,36 +99,61 @@ export default async function PrintToPdfExample() {
             </thead>
             <tbody>
               <tr>
-                <td>Brand identity — logo &amp; type system</td>
+                <td>Anvil Early-Warning Firewall — 24/7 sky monitoring</td>
                 <td className={styles.num}>1</td>
-                <td className={styles.num}>$4,000</td>
-                <td className={styles.num}>$4,000</td>
+                <td className={styles.num}>$4,900</td>
+                <td className={styles.num}>$4,900</td>
               </tr>
               <tr>
-                <td>Web design — marketing site</td>
+                <td>Piano-Drop DDoS Shield (88-key coverage)</td>
                 <td className={styles.num}>1</td>
-                <td className={styles.num}>$6,500</td>
-                <td className={styles.num}>$6,500</td>
+                <td className={styles.num}>$1,288</td>
+                <td className={styles.num}>$1,288</td>
               </tr>
               <tr>
-                <td>Design tokens &amp; handoff</td>
-                <td className={styles.num}>12 hrs</td>
-                <td className={styles.num}>$150</td>
-                <td className={styles.num}>$1,800</td>
+                <td>Dark-Web Dynamite Threat Feed — annual</td>
+                <td className={styles.num}>1</td>
+                <td className={styles.num}>$2,400</td>
+                <td className={styles.num}>$2,400</td>
+              </tr>
+              <tr>
+                <td>Boulder Rate-Limiter, self-hosted</td>
+                <td className={styles.num}>3</td>
+                <td className={styles.num}>$300</td>
+                <td className={styles.num}>$900</td>
+              </tr>
+              <tr>
+                <td>Zero-Trust Trapdoor Audit</td>
+                <td className={styles.num}>1</td>
+                <td className={styles.num}>$1,750</td>
+                <td className={styles.num}>$1,750</td>
+              </tr>
+              <tr>
+                <td>Rocket-Sled Incident Response retainer</td>
+                <td className={styles.num}>1</td>
+                <td className={styles.num}>$3,200</td>
+                <td className={styles.num}>$3,200</td>
+              </tr>
+              <tr>
+                <td>Loyalty credit — valued repeat customer</td>
+                <td className={styles.num} />
+                <td className={styles.num} />
+                <td className={styles.num}>&minus;$500</td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
-                <th colSpan={3}>Total</th>
-                <td className={styles.num}>$12,300</td>
+                <th colSpan={3}>Total due</th>
+                <td className={styles.num}>$13,938</td>
               </tr>
             </tfoot>
           </table>
         </div>
 
         <p className={styles.terms}>
-          Payable within 30 days. Questions? See{" "}
-          <Link href="/examples/print-to-pdf/online">the invoice online</Link>.
+          Payable on receipt — or before the next delivery lands, whichever
+          comes first. Questions? See{" "}
+          <Link href="/examples/print-to-pdf/online">the order online</Link>.
         </p>
 
         {/* PRINT ONLY — the foot of the printed page. */}
@@ -126,11 +166,11 @@ export default async function PrintToPdfExample() {
               aria-hidden="true"
               dangerouslySetInnerHTML={{ __html: qrSvg }}
             />
-            <p className={styles.qrCaption}>Scan for the invoice online</p>
+            <p className={styles.qrCaption}>Scan for the order online</p>
           </div>
           <p className={styles.printStamp}>
-            Printed from cssisawesome.com — the theme you were viewing is the
-            theme this prints in.
+            Printed from cssisawesome.com — cia&apos;s print layer turned your
+            theme into clean ink on paper.
           </p>
         </div>
       </article>
