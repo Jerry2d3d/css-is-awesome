@@ -1,0 +1,55 @@
+@use 'components/forms' as forms;
+@use 'layout' as layout;
+@use 'mixins' as m;
+
+.wrap {
+  max-width: 28rem;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: m.space(3);
+  margin-block-end: m.space(4);
+
+  span {
+    @include m.font(medium, 1);
+    color: var(--text-secondary);
+  }
+  select {
+    @include forms.select-base;
+    flex: 1;
+  }
+}
+
+.results {
+  @include layout.stack($gap: 3);
+  margin: 0;
+  padding: m.space(4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 8px);
+
+  div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: m.space(3);
+  }
+  dt {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  dd {
+    margin: 0;
+    text-align: end;
+  }
+}
+
+.price {
+  @include m.font(semibold, 3);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.compact {
+  color: var(--text-muted);
+}
