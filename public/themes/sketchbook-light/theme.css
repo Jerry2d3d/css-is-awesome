@@ -178,14 +178,15 @@
      var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions. */
+  --space-unit: 0.125rem;
   --space-0: 0;
-  --space-1: 0.5rem;
-  --space-2: 0.75rem;
-  --space-3: 0.875rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 6rem;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
 }

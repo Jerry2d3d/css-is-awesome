@@ -191,16 +191,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
