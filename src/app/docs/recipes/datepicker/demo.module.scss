@@ -1,0 +1,75 @@
+@use 'components/forms' as forms;
+@use 'components/overlay' as overlay;
+@use 'components/buttons' as buttons;
+@use 'mixins' as m;
+
+.wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.label {
+  display: block;
+  margin-block-end: m.space(1);
+}
+
+.trigger {
+  @include forms.input-base;
+  @include m.button-reset;
+  text-align: start;
+  cursor: pointer;
+  min-width: 12rem;
+}
+
+.panel {
+  @include overlay.popover-base($p: 3, $max-width: 20rem);
+  position: absolute;
+  inset-block-start: calc(100% + #{m.space(1)});
+  inset-inline-start: 0;
+  z-index: 10;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: m.space(2);
+
+  button {
+    @include buttons.btn(ghost);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: m.space(1);
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.day {
+  @include m.button-reset;
+  aspect-ratio: 1;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include m.transition(background-color, color);
+
+  &:hover {
+    background: var(--interactive-hover);
+  }
+  &[data-outside-month="true"] {
+    color: var(--text-muted);
+  }
+  &[aria-selected="true"] {
+    background: var(--action-primary-default);
+    color: var(--text-inverse);
+  }
+}
