@@ -265,3 +265,9 @@ const dir = computed(() => (RTL_LOCALES.includes(props.locale) ? "rtl" : "ltr"))
 
 - [`print-to-pdf`](./print-to-pdf.md) — print direction inherits from
   `dir` the same way screen layout does; no separate RTL print concern.
+- [`i18n-date-formatting`](./i18n-date-formatting.md),
+  [`i18n-number-currency`](./i18n-number-currency.md),
+  [`i18n-pluralization`](./i18n-pluralization.md) — locale *formatting*
+  (dates, numbers, plurals), the concern this recipe explicitly doesn't
+  cover. Icon-flipping and layout direction (this recipe) vs. formatting
+  (those three) is the full i18n picture.
