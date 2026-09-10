@@ -33,14 +33,14 @@ Detailed breakdown of the work needed to take css-is-awesome from v1.0 to v2.0. 
 | Release | Theme | Folder | Stories | Status |
 |---|---|---|---|---|
 | [v1.0](./v1-0/README.md) | **Recipes-first reframe** — recipes book, theme editor polish, migration on-ramp, playground, bug-fix patch | v1-0/ | 42 | Shipped — tagged v1.0.0 2026-08-17 at 24/42 (ship-then-see); **launched 2026-09-01** (npm publish + public repo + live site); 18 stories carried forward post-launch |
-| [v1.1](./v1-1/README.md) | **Recipes momentum** — 7 more recipes, install wizard, @cia/a11y-recipes, @cia/react codegen POC, density knob, MCP zero-install | v1-1/ | 51 | Planned — not started (the npm version 1.1.0, published 2026-09-01, is NOT this backlog; see version-number caveat above) |
-| [v1.2](./v1-2/README.md) | **Coverage** — RTL audit, form validation, i18n, print, MUI/Chakra migration, analyzer health report, token intelligence, print theme tokens | v1-2/ | 53 | Planned |
+| [v1.1](./v1-1/README.md) | **Recipes momentum** — 14 more recipes across two batches (7 original + 7 Boiler-backed), install wizard, @cia/a11y-recipes, @cia/react codegen POC, density knob, MCP zero-install | v1-1/ | 65 | Planned — not started as a backlog (the npm version 1.1.0, published 2026-09-01, is NOT this backlog; see version-number caveat above). 14 recipes *have* shipped, but via unplanned work outside this backlog — see the 2026-09-10 audit note. |
+| [v1.2](./v1-2/README.md) | **Coverage** — RTL audit, form validation, i18n, print, MUI/Chakra migration, analyzer health report, token intelligence, print theme tokens | v1-2/ | 53 | **6 of 8 epics complete** (2026-09-09/10): RTL audit, form validation, analyzer health report, token intelligence, print theme tokens, and print-recipe-superseded-into-v1.0. i18n recipes and MUI/Chakra migration remain unstarted. |
 | [v1.3](./v1-3/README.md) | **Ecosystem** — Figma plugin, theme marketplace, DTCG migration, @cia/angular, AI token diff | v1-3/ | 38 | Planned |
 | v1.4 | *Reserved — scoped from v1.1-v1.3 feedback* | — | — | Not scoped |
 | [v1.5](./v1-5/README.md) | **IDE integration** — VS Code extension | v1-5/ | 15 | Planned |
 | [v2.0](./v2-0/README.md) | **Visual builder** — Recipes Maker | v2-0/ | 18 | Planned — may never ship |
 
-**Total planned stories across all versions:** 217 (was 188; the 2026-09-07 external-review wave added 19 across four epics — v1.1 MCP zero-install +4, v1.2 analyzer health report +6 and token intelligence +5, v1.3 AI token diff +4; then 2026-09-08 the print-theme-tokens epic added +10 to v1.2, growing to include a letterhead recipe and a theme-editor print mode).
+**Total planned stories across all versions:** 231 (was 188; the 2026-09-07 external-review wave added 19 across four epics — v1.1 MCP zero-install +4, v1.2 analyzer health report +6 and token intelligence +5, v1.3 AI token diff +4; then 2026-09-08 the print-theme-tokens epic added +10 to v1.2; then 2026-09-10 the Boiler-survey recipe batch added +14 to v1.1).
 
 > **On effort estimates.** Per-story day estimates live inside the individual
 > epic files as planning aids. They are deliberately NOT summarised here or on
