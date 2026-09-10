@@ -3,7 +3,7 @@
 **Target release:** v1.2.0 (~3-5 weeks after v1.1)
 **Theme:** Close coverage gaps. RTL, form validation, i18n, print, and migration-on-ramp expansion to MUI + Chakra.
 
-> **Status: In progress.** This is a post-v1.0 version (v1.0 shipped: tagged 2026-08-17, launched 2026-09-01). Six of eight epics have shipped work: **EPIC-04** (Print Recipe) pulled forward into v1.0 as a pure-CSS, zero-JS layer — see [`scss/recipes/print-to-pdf.md`](../../../scss/recipes/print-to-pdf.md) and the `print` / `print-base` / `print-hidden` / `print-only` mixins (marked Superseded; its stories describe the original plan, not the delivered shape); **EPIC-01** (RTL audit), **EPIC-02** (form validation recipes), **EPIC-06** (analyzer health report), **EPIC-07** (token intelligence in the editor), and **EPIC-08** (print theme + tokens) are all **Complete**. EPIC-03/05 are unstarted — see each epic file for current status.
+> **Status: In progress.** This is a post-v1.0 version (v1.0 shipped: tagged 2026-08-17, launched 2026-09-01). Seven of eight epics have shipped work: **EPIC-04** (Print Recipe) pulled forward into v1.0 as a pure-CSS, zero-JS layer — see [`scss/recipes/print-to-pdf.md`](../../../scss/recipes/print-to-pdf.md) and the `print` / `print-base` / `print-hidden` / `print-only` mixins (marked Superseded; its stories describe the original plan, not the delivered shape); **EPIC-01** (RTL audit), **EPIC-02** (form validation recipes), **EPIC-03** (i18n recipes), **EPIC-06** (analyzer health report), **EPIC-07** (token intelligence in the editor), and **EPIC-08** (print theme + tokens) are all **Complete**. Only **EPIC-05** (MUI/Chakra migration) is unstarted — see its epic file for current status.
 
 ## Epics
 
@@ -11,7 +11,7 @@
 |---|---|---|---|---|
 | [01](./EPIC-01-rtl-audit.md) | **RTL Audit + Recipe** | Audit cia source for non-logical properties. Ship `/docs/rtl` walkthrough + RTL recipe + Playwright test in Arabic/Hebrew. **Complete 2026-09-09** — 18 violations found and fixed/annotated, a logical-property utility set added alongside the physical one, `/docs/rtl` + the recipe + the Playwright RTL/axe suite (win32+linux baselines) all shipped and verified live; also fixed two pre-existing a11y bugs the new axe scan surfaced in the shared recipe/blog markdown renderer. | ~3-5 days | 7 |
 | [02](./EPIC-02-form-validation-recipes.md) | **Form Validation Recipes** | 5 recipes: HTML5 validation, react-hook-form + cia, Zod + cia, async validation, success/error patterns. **Complete 2026-09-09** — all 5 shipped with real, verified-live interactive demos at their own routes; added a `forms` recipe category and `react-hook-form` as a docs-site devDependency along the way. | ~1 week | 10 |
-| [03](./EPIC-03-i18n-recipes.md) | **i18n Recipes** | 4 recipes: Intl date formatting, number/currency, pluralization, RTL flip patterns. | ~3-5 days | 7 |
+| [03](./EPIC-03-i18n-recipes.md) | **i18n Recipes** | Intl date formatting, number/currency, pluralization. (RTL flip patterns, the fourth originally-scoped recipe, turned out to already be fully covered by the `rtl-layout` recipe — see the epic's F3.4 status note.) **Complete 2026-09-10** — all 3 shipped with real, verified-live locale-switching demos; new `i18n` recipe category. | ~3-5 days | 7 |
 | [04](./EPIC-04-print-recipe.md) | **Print Recipe** ⚠️ _delivered early in v1.0_ | Single recipe + docs page for `@media print` styled with cia tokens. Core shipped in v1.0 (`print-to-pdf.md`). | ~4 hours | 2 |
 | [05](./EPIC-05-migration-mui-chakra.md) | **Migration: MUI + Chakra** | Extend `npx cia migrate` to read MUI theme objects + Chakra theme objects. | ~1 week | 6 |
 | [06](./EPIC-06-analyzer-health-report.md) | **Analyzer health report** | Grade `cia analyze`: score header + categorized findings + a suggested fix on each. Enriches the existing `health %`; adds contract-token + off-scale-length rules. From the 2026-09-07 external review. **Complete 2026-09-09** — graded report, `off-scale-length`, `missing-focus-visible`, and `/docs/analyzer` all shipped; `duplicated-pattern` (F2.2) dropped per its own guidance. | ~3-4 days | 6 |
@@ -22,9 +22,9 @@
 
 ## Definition of done for v1.2
 
-- [ ] cia source RTL-audited; all properties use logical syntax
-- [ ] 6 new recipes shipped (5 form-validation, 4 i18n — overlap with existing recipes accepted)
-- [ ] Print recipe page lives at `/docs/recipes/print`
+- [x] cia source RTL-audited; all properties use logical syntax (EPIC-01, complete 2026-09-09)
+- [x] 8 new recipes shipped (5 form-validation + 3 i18n — corrected from the original "4 i18n" once F3.4 turned out to already be covered by `rtl-layout`, see EPIC-03's F3.4 status note)
+- [x] Print recipe page lives at `/docs/recipes/print-to-pdf` (the delivered shape's actual route — pulled forward into v1.0, see the status note above)
 - [ ] `npx cia migrate mui ./theme.ts` works
 - [ ] `npx cia migrate chakra ./theme.ts` works
 - [ ] All migrate outputs pass `validate-themes`
