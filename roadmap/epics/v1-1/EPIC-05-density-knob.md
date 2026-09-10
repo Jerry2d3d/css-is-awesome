@@ -1,7 +1,7 @@
 # EPIC v1.1-05 — The density knob (`--space-unit`)
 
-**Status:** In progress (v1.1) — F5.1 (emit the scale from a master unit)
-shipped 2026-09-10, verified live. F5.2 (theme editor slider + docs) remains.
+**Status:** ✅ Complete (v1.1) — F5.1 and F5.2 both shipped 2026-09-10, both
+verified live.
 **Effort estimate:** ~1-2 working days
 **Stories:** 4
 
@@ -135,11 +135,44 @@ hand-written 10-line literal block to one `@include ss.space-scale;`.
 **So that** I can feel the change instead of guessing at numbers
 
 **Acceptance criteria:**
-- `ThemeEditorDock` exposes `--space-unit` as a slider
-- The downloaded `theme.css` carries the chosen value
+- [x] `ThemeEditorDock` exposes `--space-unit` as a slider (the catalog's
+  `length()` helper gained an optional unit param so this row can use
+  `rem` instead of the usual `px`)
+- [x] The downloaded `theme.css` carries the chosen value
+
+**Effort:** ✅ DONE 2026-09-10. Found and fixed a real, pre-existing bug
+while verifying: `ThemeEditorDock`'s override `<style>` tag used a bare
+`[data-theme="…"]` selector (specificity 0,1,0), but every shipped theme's
+own declaration is `:root[data-theme="…"]` (specificity 0,2,0) — the base
+theme ALWAYS won regardless of DOM order, meaning **no row in the entire
+dock was actually applying live**, not just spacing. Confirmed via a direct
+CSSOM rule-matching check, fixed by adding `:root` to the override
+selector, then re-verified both a color row and the new density slider
+genuinely repaint the live preview (and that `reset()` still works).
+Also found and fixed: `getComputedStyle().getPropertyValue()` doesn't
+arithmetically resolve `calc()` in a custom property (only textually
+substitutes nested `var()`s), so after F5.1 the existing `--space-1..9`
+rows were reading back the literal string `"calc(0.125rem * 4)"` instead
+of a usable number — fixed by resolving through an actual `padding`
+property (which does evaluate `calc()`) whenever the raw read contains
+`calc(`. Live-verified via Playwright: slider renders, defaults to
+`0.125`, dragging it doubles `--space-1`'s actual rendered padding
+(8px → 16px), and the existing `--space-N` rows show correct numbers
+again. Disclosed, non-blocking limitation: an individual `--space-N`
+row's own displayed default does not live-update when the unit slider
+moves (it still shows its own row's default, captured once per theme
+switch) — only the actual rendered page repaints live. Fixing that would
+mean re-reading all 9 defaults on every keystroke of the unit slider,
+which wasn't asked for and adds render cost for a cosmetic-only gap.
 
 #### US-V11.05.2.2 — Document the three levels
 
 **Acceptance criteria:**
-- `/docs/authoring/themes` shows unit → step → raw passthrough
-- The comment block in every generated `theme.css` names the master knob
+- [x] `/docs/authoring/themes` shows unit → step → raw passthrough (new
+  "The density knob" section, with the three levels as its own list plus a
+  working code example of `ss.space-scale`)
+- [x] The comment block in every generated `theme.css` names the master
+  knob (both the editor's downloaded-file header and, going forward, any
+  new theme following the docs' `ss.space-scale` pattern)
+
+**Effort:** ✅ DONE 2026-09-10.
