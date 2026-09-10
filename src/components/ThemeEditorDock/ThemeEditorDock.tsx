@@ -79,15 +79,23 @@ function getMode(theme: string): Mode {
 }
 
 // Build the override <style> string from current overrides.
+//
+// Selector MUST be `:root[data-theme="…"]`, not the bare attribute — every
+// shipped theme (scss/_mixins.scss's theme() mixin) emits
+// `:root, :root[data-theme="name"]`, which is specificity (0,2,0). A bare
+// `[data-theme="…"]` override is only (0,1,0) and LOSES to the base theme
+// regardless of DOM order (specificity is compared before source order) —
+// found 2026-09-10 while verifying the density-knob slider: every row in
+// the dock, not just spacing, was silently failing to visually apply.
 function buildCSS(family: string, ov: OverridesByMode): string {
   const lightLines = Object.entries(ov.light).map(([k, v]) => `  ${k}: ${v};`);
   const darkLines = Object.entries(ov.dark).map(([k, v]) => `  ${k}: ${v};`);
   let css = "";
   if (lightLines.length) {
-    css += `[data-theme="${family}-light"] {\n${lightLines.join("\n")}\n}\n`;
+    css += `:root[data-theme="${family}-light"] {\n${lightLines.join("\n")}\n}\n`;
   }
   if (darkLines.length) {
-    css += `[data-theme="${family}-dark"] {\n${darkLines.join("\n")}\n}\n`;
+    css += `:root[data-theme="${family}-dark"] {\n${darkLines.join("\n")}\n}\n`;
   }
   return css;
 }
@@ -112,7 +120,18 @@ function readDefault(token: string, themeId: string): string {
   probe.style.pointerEvents = "none";
   probe.setAttribute("data-theme", themeId);
   document.body.appendChild(probe);
-  const v = getComputedStyle(probe).getPropertyValue(token).trim();
+  let v = getComputedStyle(probe).getPropertyValue(token).trim();
+  // getPropertyValue() textually substitutes var() references but does NOT
+  // arithmetically resolve calc() — a token like --space-1
+  // (calc(var(--space-unit) * 4), see v1.1 EPIC-05) comes back as the literal
+  // string "calc(0.125rem * 4)", not "0.5rem". Rows that expect a plain
+  // number (length/duration/number types) would show that raw text or NaN.
+  // Force real resolution by letting an actual CSS length property consume
+  // it — that DOES evaluate calc() — then read the result back.
+  if (v.includes("calc(")) {
+    probe.style.paddingInlineStart = `var(${token})`;
+    v = getComputedStyle(probe).paddingInlineStart;
+  }
   probe.remove();
   return v;
 }
@@ -193,6 +212,12 @@ function buildDownloadCSS(
     ` * Drop in as theme.css — no markup change needed.\n` +
     ` * To switch between several themes, load them together and set\n` +
     ` *   <html data-theme="${name}">\n` +
+    ` *\n` +
+    ` * --space-unit is the density knob. In this downloaded snapshot every\n` +
+    ` * token below — including --space-0..9 — is a plain literal (the editor\n` +
+    ` * always exports resolved values, same as every other token). To keep\n` +
+    ` * the knob live in your own fork, replace the nine --space-N lines with\n` +
+    ` * calc(var(--space-unit) * N) — see scss/_spacing-scale.scss upstream.\n` +
     ` */\n\n`;
   let body =
     `${selector} {\n  color-scheme: light dark;\n${tokenLines.join("\n")}\n}\n`;

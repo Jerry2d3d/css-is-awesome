@@ -56,8 +56,8 @@ const G = {
 function color(token: string, label: string, group: string, mode: "both" | "shared" = "both"): TokenSpec {
   return { token, label, group, mode, type: "color" };
 }
-function length(token: string, label: string, group: string, max = 64, min = 0, step = 1): TokenSpec {
-  return { token, label, group, mode: "shared", type: "length", unit: "px", min, max, step };
+function length(token: string, label: string, group: string, max = 64, min = 0, step = 1, unit = "px"): TokenSpec {
+  return { token, label, group, mode: "shared", type: "length", unit, min, max, step };
 }
 function duration(token: string, label: string): TokenSpec {
   return { token, label, group: G.duration, mode: "shared", type: "duration", unit: "ms", min: 0, max: 1000, step: 10 };
@@ -190,12 +190,19 @@ export const CATALOG: TokenSpec[] = [
 
   // ===== Spacing (shared) =====
   //
+  // --space-unit is the density knob (v1.1 EPIC-05): every step below is
+  // calc(var(--space-unit) * N) in the shipped theme, so dragging this ONE
+  // slider rescales all nine proportionally. It's listed first for that
+  // reason — it's the "just try this" control, the nine below it are for
+  // deliberately breaking the ramp on one step.
+  //
   // The NUMBERED scale, not the t-shirt names. Components call space(4), which
   // compiles to var(--space-4); the t-shirt names are library-emitted aliases
   // (--space-md: var(--space-4)) and are contract-OPTIONAL. Editing a t-shirt
   // name here used to produce a theme that changed nothing, because the token
   // being set and the token components read were different variables — and a
   // downloaded theme would now fail validate-themes, which requires these ten.
+  length("--space-unit", "Space unit (density)", G.space, 0.25, 0.0625, 0.0125, "rem"),
   length("--space-0", "Space 0 (flush)",     G.space, 16),
   length("--space-1", "Space 1 (tight)",     G.space, 16),
   length("--space-2", "Space 2 (control)",   G.space, 24),
