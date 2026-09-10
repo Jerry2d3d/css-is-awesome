@@ -1,0 +1,183 @@
+@use 'components/data' as data;
+@use 'components/overlay' as overlay;
+@use 'components/buttons' as buttons;
+@use 'layout' as layout;
+@use 'mixins' as m;
+
+$sidebar-width: 11rem;
+
+.adminDashboardLayout {
+  display: grid;
+  grid-template-columns: #{$sidebar-width} 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  min-height: 20rem;
+  margin-block-end: 2rem;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background: var(--surface-subtle);
+  border-inline-end: 1px solid var(--border-default);
+  padding: m.space(4);
+}
+
+.navList {
+  @include layout.stack($gap: 1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  a {
+    display: block;
+    padding: m.space(2) m.space(3);
+    border-radius: var(--radius-md, 6px);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+
+    &[aria-current="page"] {
+      color: var(--text-primary);
+      background: var(--surface-default);
+    }
+    &:hover {
+      background: var(--interactive-hover);
+    }
+  }
+}
+
+.header {
+  grid-area: header;
+  @include m.flex($justify: space-between);
+  padding: m.space(3) m.space(5);
+  border-block-end: 1px solid var(--border-default);
+
+  h2 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+}
+
+.stats {
+  @include m.flex($gap: 5);
+  margin: 0;
+
+  div {
+    text-align: end;
+  }
+  dt {
+    @include m.font(medium, 1);
+    color: var(--text-muted);
+  }
+  dd {
+    margin: 0;
+    @include m.font(semibold, 2);
+  }
+}
+
+.main {
+  grid-area: main;
+  padding: m.space(5);
+}
+
+.srOnly {
+  @include m.sr-only;
+}
+
+.table {
+  @include data.table-base($striped: true, $hover: true);
+  width: 100%;
+
+  th {
+    padding: 0;
+  }
+}
+
+.sortBtn {
+  @include m.button-reset;
+  display: flex;
+  align-items: center;
+  gap: m.space(1);
+  width: 100%;
+  padding: m.space(2) m.space(3);
+  cursor: pointer;
+  text-align: start;
+  @include m.font(semibold, 1);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+
+  &::after {
+    content: "↕";
+    opacity: 0.4;
+  }
+}
+th[aria-sort="ascending"] .sortBtn::after {
+  content: "↑";
+  opacity: 1;
+}
+th[aria-sort="descending"] .sortBtn::after {
+  content: "↓";
+  opacity: 1;
+}
+
+.actionsCell {
+  text-align: end;
+}
+
+.popoverWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.deleteBtn {
+  @include buttons.btn(ghost);
+}
+
+.panel {
+  @include overlay.popover-base($p: 3, $max-width: 14rem);
+  position: absolute;
+  inset-block-start: calc(100% + #{m.space(1)});
+  inset-inline-end: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: m.space(2);
+  text-align: start;
+}
+
+.message {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.panelActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: m.space(2);
+}
+
+.reject {
+  @include buttons.btn(ghost);
+}
+.accept {
+  @include buttons.btn(error);
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: m.space(4);
+}
+
+.status {
+  min-height: 1.25em;
+  margin-block-start: m.space(3);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
