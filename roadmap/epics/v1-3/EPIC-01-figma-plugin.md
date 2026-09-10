@@ -1,8 +1,8 @@
 # EPIC v1.3-01 — Figma Plugin
 
-**Status:** Planned (v1.3)
-**Effort estimate:** ~2 weeks
-**Stories:** 12
+**Status:** ⚠️ Superseded — see [`roadmap/figma-pipeline.md`](../../figma-pipeline.md), which absorbed this epic 2026-09-05. As of 2026-09-10, that plan's Phase F1 (the token bridge) is in **active development outside this repo**, at the sibling project `K:/Repo/figma-import-export` — a standalone MCP server (`figma_export_tokens` / `figma_import_tokens`), not the Figma-plugin-first approach this file originally scoped. This file is kept for its detailed acceptance-criteria thinking on the eventual Phase F2 in-Figma plugin (F1.1/F1.2 below are largely superseded by the external MCP server; F1.3/F1.4 — the actual in-Figma plugin UI and Community publish — remain a real future phase, gated on Phase F1 proving out).
+**Effort estimate:** ~2 weeks (original scope; superseded, see above)
+**Stories:** 12 (original scope; not being built against this file)
 
 ## Mission
 

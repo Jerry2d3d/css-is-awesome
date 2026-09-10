@@ -3,7 +3,7 @@
 **Target release:** originally v1.1.0 — but that npm version number has been consumed: semantic-release published `css-is-awesome@1.1.0` on 2026-09-01 carrying the launch-wave work (theme rework, a11y fixes, linux baselines), not this backlog. This backlog ships under whatever later versions semantic-release derives from its commits.
 **Theme:** Capitalize on v1.0 recipes momentum. Expand the recipe catalog, ship the install wizard, scaffold the `@cia/a11y-recipes` add-on, and prove the recipes → framework-pack codegen pattern with `@cia/react` v0.1.
 
-> **Status: Not started (planned).** v1.0 has shipped (v1.0.0 tagged 2026-08-17; launched 2026-09-01 with the first npm publish, public repo, and live docs site) — but no story in any epic below has begun; everything here is future work. The density knob (EPIC-05) was queued into this version on 2026-08-29 (f9822be) and is likewise unstarted. The 18 v1.0 stories carried forward post-launch (see [v1-0/README.md](../v1-0/README.md)) compete with this backlog for priority once real user signal arrives.
+> **Status: In progress.** v1.0 has shipped (v1.0.0 tagged 2026-08-17; launched 2026-09-01 with the first npm publish, public repo, and live docs site). Of the epics below, **EPIC-08 is in progress** (2 of 7 batch-2 recipes shipped 2026-09-10: `datepicker`, `data-table`); **EPIC-09 (Playground)** was moved in from v1-0 EPIC-04 the same day, still 0/7; every other epic (01-07) remains unstarted. The density knob (EPIC-05) was queued into this version on 2026-08-29 (f9822be) and is likewise unstarted. The remaining v1-0 carried-forward stories (see [v1-0/README.md](../v1-0/README.md)) compete with this backlog for priority once real user signal arrives.
 
 ## Epics
 
@@ -17,8 +17,9 @@
 | [05](./EPIC-05-density-knob.md) | **The density knob (`--space-unit`)** | One variable rescales the whole spacing system. `--space-0..9` become `calc()` over a master unit; set it once and the UI tightens or opens up. Density changes a page's character more than colour does. | ~1-2 days | 4 |
 | [07](./EPIC-07-mcp-zero-install.md) | **MCP that just works** | `npx css-is-awesome-mcp` with no manual `sdk`+`zod` install — bundle into the server artifact or ship an add-on package, without adding JS deps to the core package. From the 2026-09-07 external review; pull-forward DX. | ~1-2 days | 4 |
 | [08](./EPIC-08-additional-recipes-batch-2.md) | **Additional Recipes (batch 2, from Boiler)** | 7 more recipes, each backed by a real reference implementation surveyed from `boiler-project-ai` via its own MCP server: datepicker, data-table (both close the original, never-built v1.0-queued gap), admin-dashboard-layout, confirm-dialog, auth-flow, multi-step-wizard, otp-input. **In progress** — `datepicker` and `data-table` shipped 2026-09-10, verified live; 5 remain. | ~9-13 days | 14 |
+| [09](./EPIC-09-playground.md) | **Playground** | `/playground` page — paste SCSS using cia mixins, live-compiled preview, share via URL. Moved here 2026-09-10 from v1-0 EPIC-04, where it had sat unprioritized since the 2026-09-01 launch. Distinct from v2.0's Recipes Maker (code-first vs. drag-and-drop — see the epic file for the comparison). | ~4-6 days | 7 |
 
-**Total v1.1 effort:** ~36-52 working days. **Total stories:** 65.
+**Total v1.1 effort:** ~40-58 working days. **Total stories:** 72.
 
 ## Definition of done for v1.1
 

@@ -4,6 +4,25 @@
 > tool, the codebase, and the shipped output share ONE token vocabulary,
 > legible to designers, developers, and AI agents alike. Plan only —
 > nothing here is built yet except the foundations noted as shipped.
+>
+> **Update 2026-09-10 — Phase F1 is being built, outside this repo.**
+> [`K:/Repo/figma-import-export`](../../figma-import-export) (sibling repo,
+> not a subfolder of css-is-awesome) is a standalone MCP server implementing
+> the token bridge this section describes — `figma_export_tokens` /
+> `figma_import_tokens` in place of the `cia figma export` / `cia theme
+> from-figma` CLI verbs originally imagined below. Deliberately kept out of
+> this repo: it needs `@modelcontextprotocol/sdk` + `zod` as real runtime
+> dependencies, and cia's own package ships zero JS — a separate repo avoids
+> that tension entirely rather than fighting it with a bundling trick. It reuses
+> cia's real `scripts/theme-validator.js` + `scripts/theme-contract.json` via
+> `CIA_REPO_PATH` rather than reimplementing validation, so the two repos
+> stay in lockstep on what a valid theme is. Status: v0.1.0, 8/8 tests
+> passing, tested end-to-end on `sketchbook` and `cupertino`. One
+> architectural difference from the plan below worth tracking: it bridges
+> through **Tokens Studio's own JSON shape** (`{value,type}` pairs, `{ref}`
+> aliasing) rather than canonical **DTCG** (`$value`/`$type`), so it isn't
+> yet aligned with the "DTCG-FIRST" pivot the Landscape section calls for —
+> see the improvement notes handed to that repo's own session.
 
 ## What exists today (the foundations)
 
@@ -41,6 +60,8 @@ our server with Figma's official one: Figma's MCP describes the design,
 cia's MCP translates it into the system.
 
 ## Phase F1 — the token bridge (files first, no plugin needed)
+
+> **In progress externally** — see the 2026-09-10 update note above.
 
 - **`cia figma export`**: generate a Figma-Variables-compatible JSON from
   the theme sources. The mapping that makes this powerful: **each cia
