@@ -70,9 +70,17 @@ export default function RoadmapPage() {
           <Link href="/docs/mcp">Tool reference</Link>.
         </li>
         <li>
-          <strong>A recipes book</strong> &mdash; seven framework-agnostic
-          patterns: dialog, combobox, print-to-pdf, print-spec, letterhead,
-          mobile-nav and bottom-nav. <Link href="/docs/recipes">Browse them</Link>.
+          <strong>A recipes book</strong> &mdash; 16 framework-agnostic
+          patterns spanning dialogs, a datepicker and data table, an
+          app-shell layout, five form-validation approaches, an RTL layout
+          walkthrough, print/PDF, and mobile navigation.{" "}
+          <Link href="/docs/recipes">Browse them</Link>.
+        </li>
+        <li>
+          <strong>RTL support, audited.</strong> The source is swept for
+          physical properties that should be logical, with a CI-gated
+          checker and a live left-to-right/right-to-left demo.{" "}
+          <Link href="/docs/rtl">RTL</Link>.
         </li>
         <li>
           <strong>A themeable print surface.</strong> Four print tokens
@@ -94,8 +102,16 @@ export default function RoadmapPage() {
           the book into your project so you own it, and{" "}
           <code>npx cia analyze</code> audits your stylesheets against the
           installed API (dead symbols, the spacing-scale trap, hard-coded
-          colors, BEM creep) and prints a graded, categorized report with a
-          suggested fix on every finding, plus CI-ready exit codes.
+          colors, BEM creep, off-contract tokens, off-scale lengths, missing
+          focus-visible states) and prints a graded, categorized report with a
+          suggested fix on every finding, plus CI-ready exit codes.{" "}
+          <Link href="/docs/analyzer">Rule reference</Link>.
+        </li>
+        <li>
+          <strong>Token intelligence in the theme editor.</strong> Every
+          color/spacing/radius row shows a &ldquo;used by&rdquo; disclosure of
+          which mixins actually consume it, and color rows carry a live WCAG
+          contrast readout with a one-click nearest-passing-color fix.
         </li>
         <li>
           <strong>A dated browser-support matrix</strong> &mdash; the Baseline
@@ -148,21 +164,10 @@ export default function RoadmapPage() {
           MCP so AI agents translate Figma frames into cia calls directly.
         </li>
         <li>
-          <strong>More recipes</strong> &mdash; datepicker, data table,
-          command palette, multiselect combobox, breadcrumb, pagination, file
-          upload, toast, sortable list, colour picker.
-        </li>
-        <li>
-          <strong>A smarter analyzer</strong> &mdash; contract-token awareness
-          (flag a <code>var()</code> that isn&rsquo;t a real token, with the
-          nearest real one as the fix) and off-scale-length detection, on top
-          of the graded report shipped above.
-        </li>
-        <li>
-          <strong>Token intelligence in the theme editor</strong> &mdash; see
-          where a token propagates (&ldquo;Primary &rarr;
-          buttons/tabs/links/focus-ring&rdquo;) and a live WCAG contrast
-          warning as you edit.
+          <strong>More recipes</strong> &mdash; command palette, multiselect
+          combobox, breadcrumb, pagination, file upload, toast, sortable
+          list, colour picker, confirm-dialog, auth flow, multi-step wizard,
+          OTP input, admin-dashboard layout.
         </li>
         <li>
           <strong>A guided installer.</strong> <code>npm create cia</code>{" "}
@@ -189,13 +194,8 @@ export default function RoadmapPage() {
       <h2 id="later">Further out</h2>
       <ul>
         <li>
-          <strong>RTL audit</strong> &mdash; sweep the source for physical
-          properties that should be logical, with tests in a real RTL locale.
-        </li>
-        <li>
-          <strong>Form validation and i18n recipes</strong> &mdash; native
-          validation, popular form libraries, date and currency formatting,
-          pluralisation.
+          <strong>i18n recipes</strong> &mdash; date and currency formatting,
+          pluralisation, RTL flip patterns.
         </li>
         <li>
           <strong>More migration paths</strong> &mdash; reading MUI and Chakra

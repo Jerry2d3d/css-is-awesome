@@ -8,7 +8,7 @@
 
 **Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
-> **The recipes book:** build any component in any framework using cia mixins — seven recipes today (`dialog`, `combobox`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
+> **The recipes book:** build any component in any framework using cia mixins — 16 recipes today, including `dialog`, `combobox`, `datepicker`, `data-table`, `app-shell`, five form-validation patterns (HTML5, react-hook-form, Zod, async, success-states), `rtl-layout`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav` and `bottom-nav` — with `command-palette` and five more (`confirm-dialog`, `auth-flow`, `multi-step-wizard`, `otp-input`, `admin-dashboard-layout`) queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
 
 ## For AI agents — start here
 
