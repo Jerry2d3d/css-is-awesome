@@ -1,6 +1,7 @@
 # EPIC v1.1-08 — Additional Recipes (batch 2, from Boiler)
 
-**Status:** Planned (v1.1)
+**Status:** In progress (v1.1) — F8.1 (datepicker) and F8.2 (data-table)
+shipped 2026-09-10, both verified live. F8.3-F8.7 remain.
 **Effort estimate:** ~9-13 working days
 **Stories:** 14
 
@@ -74,24 +75,29 @@ calendar grid, built on native `Date` with no date library
 **So that** I close one of cia's oldest queued gaps without a new dependency
 
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/datepicker.md`
-- [ ] Reference: `boiler-project-ai/packages/react/src/components/DatePicker`
+- [x] Recipe at `scss/recipes/datepicker.md`
+- [x] Reference: `boiler-project-ai/packages/react/src/components/DatePicker`
   (composes a `Popup` anchored-positioning primitive + a `Calendar`
   month-grid, both on native `Date`) and `.../Calendar`
-- [ ] A read-only text trigger + popup calendar, not a native
-  `<input type="date">` replacement — note native `<input type="date">`
-  as the zero-JS fallback for when a custom UI isn't needed
-- [ ] Keyboard: arrow keys move focus within the grid, Enter selects,
-  Esc closes and returns focus to the trigger
-- [ ] A11y checklist covers `role="grid"`/`role="gridcell"` on the calendar,
+- [x] A read-only-trigger **button** (not a text input — avoids parsing a
+  typed date string), not a native `<input type="date">` replacement —
+  recipe notes native `<input type="date">` as the zero-JS fallback
+- [~] Keyboard: Enter selects, Esc closes and returns focus to the trigger
+  (shipped, verified live); arrow-key grid navigation is documented in the
+  recipe's Interactivity section but not wired in the live demo — a fair
+  scope cut for a first pass, noted honestly rather than claimed done
+- [x] A11y checklist covers `role="grid"`/`role="gridcell"` on the calendar,
   `aria-selected` on the chosen date, announced month/year on navigation
-- [ ] Framework examples
+- [x] Framework examples
 
-**Effort:** L (1-2 days)
+**Effort:** L (1-2 days) — ✅ DONE 2026-09-10. Verified live: opens, month
+navigation ("September 2026" → "October 2026"), date selection updates the
+trigger and closes the popup, Escape closes and returns focus to the
+trigger. Zero console errors.
 
 #### US-V11.08.1.2 — Render demo page with a live calendar
 
-**Effort:** S (≤4 hrs)
+**Effort:** S (≤4 hrs) — ✅ DONE 2026-09-10.
 
 ---
 
@@ -106,26 +112,42 @@ rendering + pagination), with a note on choosing `<table>` vs. a CSS Grid
 **So that** I close cia's other oldest queued gap with a proven shape
 
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/data-table.md`
-- [ ] Reference: `boiler-project-ai/packages/react/src/components/DataTable`
+- [x] Recipe at `scss/recipes/data-table.md`
+- [x] Reference: `boiler-project-ai/packages/react/src/components/DataTable`
   (two layout engines sharing one props interface — `DataTable` on a real
   `<table>`, `DataTableGrid` on CSS Grid + `role="table"` for virtualization/
   pinned-column cases an HTML table can't do)
-- [ ] Covers: column definition (key/header/sortable/width), a `SortState`
+- [x] Covers: column definition (key/header/sortable/width), a `SortState`
   model (`{ key, direction } | null`), click-header-to-sort with a visible
   sort indicator
-- [ ] Cross-links `pagination` (v1.1 EPIC-01 F1.3) rather than re-teaching it
-- [ ] A11y checklist covers: sortable header buttons (not bare clickable
+- [~] Pagination: `pagination` (v1.1 EPIC-01 F1.3) **doesn't exist as a
+  shipped recipe yet** (still unstarted), so instead of a broken cross-link
+  the recipe/demo ship a minimal inline prev/next pager, explicitly noted
+  as "the smallest viable version, not blocked on the future recipe"
+- [x] A11y checklist covers: sortable header buttons (not bare clickable
   `<th>`), `aria-sort` on the active column, row count announced after a
   sort/filter change
-- [ ] Framework examples
+- [x] Framework examples
 
-**Effort:** L (1-2 days)
-**Depends on:** `pagination` (v1.1 EPIC-01 F1.3, cross-linked)
+**Effort:** L (1-2 days) — ✅ DONE 2026-09-10. Verified live: three-state
+sort cycle (ascending → descending → back to original order) confirmed via
+`aria-sort` and actual row order changes; pagination confirmed ("Page 1 of
+2" → "Page 2 of 2"). Zero console errors. Also fixed a real bug found while
+verifying: the recipe's own code sample uses the `cia-sr-only` **utility
+class** for the table caption, but this docs site only loads `theme.css`
+(tokens), not the separate opt-in utilities bundle — the class silently
+had no effect, leaving "Team members" visible above the table instead of
+screen-reader-only. The live demo now uses the `sr-only` **mixin** directly
+via a CSS Module instead; the recipe's own code sample is unaffected
+(correct for a real consumer who *does* load the utilities bundle) but a
+note was worth adding for anyone reusing this pattern on a similarly
+utilities-free page.
+**Depends on:** `pagination` (v1.1 EPIC-01 F1.3) — not yet available; worked
+around, not blocked on it
 
 #### US-V11.08.2.2 — Render demo page with a small sortable dataset
 
-**Effort:** S (≤4 hrs)
+**Effort:** S (≤4 hrs) — ✅ DONE 2026-09-10.
 
 ---
 

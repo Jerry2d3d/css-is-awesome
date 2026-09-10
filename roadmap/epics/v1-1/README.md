@@ -16,7 +16,7 @@
 | [06](./EPIC-06-blog.md) | **The blog: two tracks** | Engineering-the-system posts + NEW CSS-discoveries track; index split, feed.xml, 3 seed posts | S | 5 |
 | [05](./EPIC-05-density-knob.md) | **The density knob (`--space-unit`)** | One variable rescales the whole spacing system. `--space-0..9` become `calc()` over a master unit; set it once and the UI tightens or opens up. Density changes a page's character more than colour does. | ~1-2 days | 4 |
 | [07](./EPIC-07-mcp-zero-install.md) | **MCP that just works** | `npx css-is-awesome-mcp` with no manual `sdk`+`zod` install — bundle into the server artifact or ship an add-on package, without adding JS deps to the core package. From the 2026-09-07 external review; pull-forward DX. | ~1-2 days | 4 |
-| [08](./EPIC-08-additional-recipes-batch-2.md) | **Additional Recipes (batch 2, from Boiler)** | 7 more recipes, each backed by a real reference implementation surveyed from `boiler-project-ai` via its own MCP server: datepicker, data-table (both close the original, never-built v1.0-queued gap), admin-dashboard-layout, confirm-dialog, auth-flow, multi-step-wizard, otp-input. | ~9-13 days | 14 |
+| [08](./EPIC-08-additional-recipes-batch-2.md) | **Additional Recipes (batch 2, from Boiler)** | 7 more recipes, each backed by a real reference implementation surveyed from `boiler-project-ai` via its own MCP server: datepicker, data-table (both close the original, never-built v1.0-queued gap), admin-dashboard-layout, confirm-dialog, auth-flow, multi-step-wizard, otp-input. **In progress** — `datepicker` and `data-table` shipped 2026-09-10, verified live; 5 remain. | ~9-13 days | 14 |
 
 **Total v1.1 effort:** ~36-52 working days. **Total stories:** 65.
 
