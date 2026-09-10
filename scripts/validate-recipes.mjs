@@ -86,7 +86,7 @@ const RECIPES_DIR = dirArg ? path.resolve(dirArg.slice("--dir=".length)) : path.
 // Exactly the fields src/lib/recipes.ts reads. If that file grows a field,
 // this list grows with it — that is the contract, not the README table.
 const REQUIRED_FIELDS = ["name", "description", "category", "complexity", "cia-version"];
-const CATEGORIES = new Set(["overlay", "input", "data", "navigation", "feedback", "layout", "auth", "forms"]);
+const CATEGORIES = new Set(["overlay", "input", "data", "navigation", "feedback", "layout", "auth", "forms", "i18n"]);
 const COMPLEXITIES = new Set(["simple", "medium", "complex"]);
 
 const REQUIRED_SECTIONS = [
