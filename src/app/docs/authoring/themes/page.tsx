@@ -189,12 +189,14 @@ export default function AuthoringThemesPage() {
         </li>
         <li>
           <strong>Spacing</strong> — the numbered scale{" "}
-          <code>--space-0</code> through <code>--space-9</code>. Required, and
-          owned by the theme: declare it and the whole page re-proportions. The
-          six t-shirt names (<code>--space-2xs/xs/sm/md/lg/xl</code>) are{" "}
-          <em>optional</em> — the library emits them as <code>var()</code>{" "}
-          references (<code>--space-md: var(--space-4)</code>), so they follow
-          the numbered scale automatically.
+          <code>--space-0</code> through <code>--space-9</code>, plus{" "}
+          <code>--space-unit</code> (the density knob, since v1.1 EPIC-05).
+          All required, and owned by the theme: declare them and the whole
+          page re-proportions. The six t-shirt names (
+          <code>--space-2xs/xs/sm/md/lg/xl</code>) are <em>optional</em> — the
+          library emits them as <code>var()</code> references (
+          <code>--space-md: var(--space-4)</code>), so they follow the
+          numbered scale automatically.
         </li>
         <li>
           <strong>Layering</strong> — the <code>--z-*</code> scale
@@ -210,6 +212,65 @@ export default function AuthoringThemesPage() {
       <p>
         See <Link href="/docs/tokens">/docs/tokens</Link> for the full gallery
         with live swatches and current values for each shipped theme.
+      </p>
+
+      <h2 id="density-knob">The density knob — three levels of power</h2>
+      <p>
+        Every shipped theme derives its 9 spacing steps from one master
+        variable via <code>calc()</code>:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-prop">--space-unit</span>: <span className="tok-val">0.125rem</span>;
+{"\n"}<span className="tok-prop">--space-1</span>: <span className="tok-val">calc(var(--space-unit) * 4)</span>;  <span className="tok-com">{"/* 0.5rem */"}</span>
+{"\n"}<span className="tok-prop">--space-4</span>: <span className="tok-val">calc(var(--space-unit) * 8)</span>;  <span className="tok-com">{"/* 1rem */"}</span>
+{"\n"}<span className="tok-com">{"/* ...through --space-9 */"}</span></Example.Code>
+      </Example>
+      <p>Nothing about that is locked — there are three levels, and none of them require editing more than what you actually mean to change:</p>
+      <ol>
+        <li>
+          <strong>The unit</strong> — override <code>--space-unit</code> alone
+          and all 9 steps rescale together, proportionally, at runtime. This
+          is what the <Link href="/themes">theme editor&apos;s</Link>{" "}
+          density slider edits. Halve it for a noticeably tighter UI; raise it
+          for an airier one — one edit instead of nine.
+        </li>
+        <li>
+          <strong>A step</strong> — override a single{" "}
+          <code>--space-N</code> with a literal (e.g.{" "}
+          <code>--space-5: 2rem;</code>) to deliberately break the ramp at
+          just that rung. A literal always wins over the <code>calc()</code>{" "}
+          it replaces, so this keeps working exactly as before — nothing
+          about the density knob changes how an individual override behaves.
+        </li>
+        <li>
+          <strong>Raw passthrough</strong> — a component that needs a spacing
+          value outside the 9-step scale entirely isn&apos;t stuck: call{" "}
+          <code>m.space(0.5rem)</code> (a literal length instead of a scale
+          key) or <code>m.grid(n)</code> (any multiple of cia&apos;s 4px
+          geometric grid, deliberately not themed — see the mixin&apos;s own
+          doc comment in <code>scss/_mixins.scss</code>). Neither of those
+          touches <code>--space-unit</code> or the numbered scale at all.
+        </li>
+      </ol>
+      <p>
+        Themes get this for free by using the shared mixin instead of
+        hand-writing all 10 values:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">@use</span> <span className="tok-val">'../spacing-scale'</span> <span className="tok-prop">as</span> <span className="tok-val">ss</span>;
+{"\n"}
+{"\n"}<span className="tok-sel">@include</span> <span className="tok-val">m.theme(&apos;my-theme&apos;)</span> {"{"}
+{"\n"}  <span className="tok-sel">@include</span> <span className="tok-val">ss.space-scale</span>;  <span className="tok-com">{"/* --space-unit + --space-0..9, default unit 0.125rem */"}</span>
+{"\n"}  <span className="tok-com">{"/* or: @include ss.space-scale($unit: 0.15rem); for a theme that ships airier by default */"}</span>
+{"\n"}{"}"}</Example.Code>
+      </Example>
+      <p>
+        A theme.css you download from the editor is a flattened snapshot —
+        every token, <code>--space-unit</code> included, is exported as a
+        plain literal, same as every other token. To keep the knob live in
+        your own fork, swap the nine <code>--space-N</code> lines back for{" "}
+        <code>calc(var(--space-unit) * N)</code>, matching the multipliers
+        in <code>scss/_spacing-scale.scss</code>.
       </p>
 
       <h2 id="file-structure">File structure</h2>
