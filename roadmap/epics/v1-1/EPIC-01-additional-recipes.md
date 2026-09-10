@@ -10,7 +10,20 @@ Add 7 recipes to the v1.0 recipe book, prioritized by frequency of shadcn/MUI/Ra
 
 ## Why now
 
-v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-table, command-palette). This batch closes the next-most-common gaps so consumers stop saying "cia doesn't have X."
+**Correction (2026-09-10):** this originally said "v1.0 ships the 5
+highest-leverage recipes (dialog, combobox, datepicker, data-table,
+command-palette)." Only `dialog` and `combobox` actually shipped in v1.0 —
+`datepicker`, `data-table`, and `command-palette` were queued and never
+built. `datepicker` and `data-table` are now their own epic
+([`EPIC-08-additional-recipes-batch-2.md`](./EPIC-08-additional-recipes-batch-2.md)),
+each backed by a real reference implementation found in `boiler-project-ai`.
+`command-palette` remains genuinely unbuilt and un-referenced.
+
+This batch (batch 1) closes the next-most-common gaps beyond those five so
+consumers stop saying "cia doesn't have X." Three of its stories below
+(`F1.3` pagination, `F1.4` file-upload, `F1.5` toast) also gained a real
+Boiler reference implementation from the same 2026-09-10 survey — noted
+inline.
 
 ## Out of scope
 
@@ -76,6 +89,10 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **I want** a pagination recipe with first/prev/next/last + page numbers
 **So that** I ship a keyboard-accessible pager with proper ARIA
 
+**Reference (2026-09-10):** `boiler-project-ai/packages/react/src/components/Pagination`
+is a real, working implementation — its `admin/page.tsx` uses it directly
+alongside a search bar and data table. Start from it.
+
 **Acceptance criteria:**
 - [ ] Recipe at `scss/recipes/pagination.md`
 - [ ] Semantic: `<nav aria-label="Pagination"><ul>…</ul></nav>`
@@ -97,6 +114,12 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **I want** a recipe that handles native `<input type="file">` + drag-and-drop drop-zone styling
 **So that** I get accessible-by-default behavior with progressive enhancement
 
+**Reference (2026-09-10):** `boiler-project-ai/packages/react/src/components/Upload`
+(399 lines) is a real, working implementation — drag/drop + keyboard
+"browse" fallback, per-file progress, accept/max-size/max-count
+validation. Its own doc comment frames it as closing a "Tier 2 gap vs.
+KendoReact." Start from it.
+
 **Acceptance criteria:**
 - [ ] Recipe at `scss/recipes/file-upload.md`
 - [ ] Native `<input type="file">` is the source of truth (always present, sometimes visually hidden via `cia.sr-only`)
@@ -117,6 +140,10 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **As** an AI agent building user-feedback messaging
 **I want** a toast recipe using `[popover]` (or fallback for older browsers) with auto-dismiss and pause-on-hover
 **So that** I ship transient notifications without a JS library
+
+**Reference (2026-09-10):** `boiler-project-ai/packages/react/src/components/Toast`
+(80 lines) is a real, working implementation — built on Boiler's `Alert`
+variants/icons, auto-dismiss + an actions row. Start from it.
 
 **Acceptance criteria:**
 - [ ] Recipe at `scss/recipes/toast.md`

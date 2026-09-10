@@ -16,12 +16,13 @@
 | [06](./EPIC-06-blog.md) | **The blog: two tracks** | Engineering-the-system posts + NEW CSS-discoveries track; index split, feed.xml, 3 seed posts | S | 5 |
 | [05](./EPIC-05-density-knob.md) | **The density knob (`--space-unit`)** | One variable rescales the whole spacing system. `--space-0..9` become `calc()` over a master unit; set it once and the UI tightens or opens up. Density changes a page's character more than colour does. | ~1-2 days | 4 |
 | [07](./EPIC-07-mcp-zero-install.md) | **MCP that just works** | `npx css-is-awesome-mcp` with no manual `sdk`+`zod` install — bundle into the server artifact or ship an add-on package, without adding JS deps to the core package. From the 2026-09-07 external review; pull-forward DX. | ~1-2 days | 4 |
+| [08](./EPIC-08-additional-recipes-batch-2.md) | **Additional Recipes (batch 2, from Boiler)** | 7 more recipes, each backed by a real reference implementation surveyed from `boiler-project-ai` via its own MCP server: datepicker, data-table (both close the original, never-built v1.0-queued gap), admin-dashboard-layout, confirm-dialog, auth-flow, multi-step-wizard, otp-input. | ~9-13 days | 14 |
 
-**Total v1.1 effort:** ~27-39 working days. **Total stories:** 51.
+**Total v1.1 effort:** ~36-52 working days. **Total stories:** 65.
 
 ## Definition of done for v1.1
 
-- [ ] 12 recipes total in the recipe book (5 from v1.0 + 7 new)
+- [ ] 28 recipes total in the recipe book (14 shipped as of 2026-09-10 + batch 1's 7 + batch 2's 7 — this line previously said "12 total (5 from v1.0 + 7 new)," which was stale on both counts: only `dialog` and `combobox` ever shipped in v1.0, and today's 14 shipped across later, unplanned work well beyond that — see `roadmap/epics/README.md`'s audit notes for the real history)
 - [ ] `npm create cia@latest` ships and works on Mac/Linux/Windows
 - [ ] `@cia/a11y-recipes` npm package published
 - [ ] `@cia/react` v0.1 published with 3-5 generated components
