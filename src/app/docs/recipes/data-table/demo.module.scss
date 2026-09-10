@@ -1,0 +1,62 @@
+@use 'components/data' as data;
+@use 'components/buttons' as buttons;
+@use 'mixins' as m;
+
+.wrap {
+  @include data.table-responsive;
+  margin-block-end: 1rem;
+}
+
+// The demo uses this instead of the `cia-sr-only` utility class the recipe
+// itself shows — this docs site only loads theme.css (tokens), not the
+// separate opt-in utilities bundle, so the utility class would have no
+// effect here. The mixin behind it is identical either way.
+.srOnly {
+  @include m.sr-only;
+}
+
+.table {
+  @include data.table-base($striped: true, $hover: true);
+
+  th {
+    padding: 0;
+  }
+}
+
+.sortBtn {
+  @include m.button-reset;
+  display: flex;
+  align-items: center;
+  gap: m.space(1);
+  width: 100%;
+  padding: m.space(2) m.space(4);
+  cursor: pointer;
+  text-align: start;
+  @include m.font(semibold, 1);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+
+  &::after {
+    content: "↕";
+    opacity: 0.4;
+  }
+}
+
+th[aria-sort="ascending"] .sortBtn::after {
+  content: "↑";
+  opacity: 1;
+}
+th[aria-sort="descending"] .sortBtn::after {
+  content: "↓";
+  opacity: 1;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: m.space(3);
+
+  button {
+    @include buttons.btn(ghost);
+  }
+}
