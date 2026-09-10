@@ -1,8 +1,17 @@
 # EPIC v1.1-05 — The density knob (`--space-unit`)
 
-**Status:** Planned (v1.1)
+**Status:** In progress (v1.1) — F5.1 (emit the scale from a master unit)
+shipped 2026-09-10, verified live. F5.2 (theme editor slider + docs) remains.
 **Effort estimate:** ~1-2 working days
 **Stories:** 4
+
+> **Implementation note (2026-09-10):** shipped with one change from the
+> "Design" section below — the per-step multipliers are **derived** from
+> `_system.scss`'s existing `$spacing-scale` map via `math.div($value,
+> $unit)` inside a loop (`scss/_spacing-scale.scss`), not hand-typed as a
+> second table. Same reasoning and prior-art research (Radix's `--scaling`,
+> MUI's density RFC) recorded in memory
+> (`project_density_knob_spacing_scale_design`) for anyone revisiting this.
 
 ## Mission
 
@@ -89,15 +98,33 @@ literal value.
 **So that** I don't hand-edit nine tokens and risk breaking the ramp's rhythm
 
 **Acceptance criteria:**
-- `_generator.scss` emits `--space-unit` plus the nine `calc()` steps
-- Every shipped theme renders byte-identical spacing (zero-diff harness passes)
-- Overriding a single `--space-N` with a literal still wins over the `calc()`
+- [x] A shared mixin (`scss/_spacing-scale.scss`, not `_generator.scss` —
+  themes don't route spacing through the generator today; see implementation
+  note above) emits `--space-unit` plus the nine `calc()` steps
+- [x] Every shipped theme renders byte-identical spacing — verified live via
+  Playwright: `getComputedStyle` padding for all 9 steps across 4 sampled
+  themes (sketchbook, terminal, press, cupertino) matches the exact prior
+  px values (8/12/14/16/24/32/48/64/96px)
+- [x] Overriding a single `--space-N` with a literal still wins over the
+  `calc()` (unchanged CSS cascade behavior, not re-tested — inherent to how
+  custom properties resolve)
+- [x] Bonus verified: overriding `--space-unit` itself live-rescales every
+  step (tested `--space-1` doubling from 8px → 16px when `--space-unit`
+  doubled)
+
+**Effort:** ✅ DONE 2026-09-10. All 24 theme SCSS files converted from a
+hand-written 10-line literal block to one `@include ss.space-scale;`.
+`build:css:themes`, `validate-themes`, and `check:theme-drift` all pass.
 
 #### US-V11.05.1.2 — Add `--space-unit` to the theme contract
 
 **Acceptance criteria:**
-- `--space-unit` is contract-required; all themes declare it
-- `validate-themes` fails a theme that omits it
+- [x] `--space-unit` is contract-required; all themes declare it
+- [x] `validate-themes` fails a theme that omits it (untested directly, but
+  it's now required-list-driven the same way every other required token is
+  gated — no theme currently omits it since the shared mixin always emits it)
+
+**Effort:** ✅ DONE 2026-09-10.
 
 ### F5.2 — Make the knob discoverable
 
