@@ -1,0 +1,120 @@
+@use 'components/overlay' as overlay;
+@use 'components/buttons' as buttons;
+@use 'mixins' as m;
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: m.space(3);
+  padding: m.space(3) m.space(4);
+
+  & + & {
+    border-block-start: 1px solid var(--hair);
+  }
+}
+
+.name {
+  font-size: 0.9rem;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: m.space(2);
+}
+
+.tagPopover {
+  position: relative;
+  display: inline-block;
+}
+
+.tagPill {
+  @include m.button-reset;
+  cursor: pointer;
+  padding: m.space(1) m.space(2);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.deleteBtn {
+  @include buttons.btn(ghost);
+}
+
+.panel {
+  @include overlay.popover-base($p: 3, $max-width: 16rem);
+  position: absolute;
+  inset-block-start: calc(100% + #{m.space(1)});
+  inset-inline-end: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: m.space(2);
+  text-align: start;
+}
+
+.icon {
+  color: var(--warning-default);
+}
+
+.message {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: m.space(2);
+}
+
+.reject {
+  @include buttons.btn(ghost);
+}
+.accept {
+  @include buttons.btn(error);
+}
+
+.status {
+  min-height: 1.25em;
+  margin-block-start: m.space(3);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.empty {
+  padding: m.space(4);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.confirmDialog {
+  @include overlay.modal;
+
+  [data-slot="body"] {
+    display: flex;
+    align-items: flex-start;
+    gap: m.space(3);
+  }
+  [data-slot="footer"] {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: m.space(2);
+  }
+}
+.confirmDialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
