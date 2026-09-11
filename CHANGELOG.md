@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.0...v1.14.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **package:** ship scripts/audit-pairs.json — the a11y module was broken on every real install ([d7e18ef](https://github.com/Jerry2d3d/css-is-awesome/commit/d7e18efdabfe8eaa9e722f1ac68e4b874d45077b))
+
 # [1.14.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.2...v1.14.0) (2026-09-11)
 
 
