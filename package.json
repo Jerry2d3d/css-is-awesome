@@ -70,6 +70,7 @@
     "scripts/theme-contract.json",
     "scripts/theme-validator.js",
     "scripts/theme-a11y.js",
+    "scripts/audit-pairs.json",
     "scripts/icon-validator.js",
     "scripts/icon-contract.json",
     "bin",
