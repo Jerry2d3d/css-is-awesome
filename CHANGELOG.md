@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.0...v1.13.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **themes:** import a single :root theme file into BOTH modes, not just the active tab ([96a860a](https://github.com/Jerry2d3d/css-is-awesome/commit/96a860a1482db67d5bbe9a8b7426308b24250ca6)), closes [#F7F3EA](https://github.com/Jerry2d3d/css-is-awesome/issues/F7F3EA) [#1A1815](https://github.com/Jerry2d3d/css-is-awesome/issues/1A1815)
+
 # [1.13.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.12.1...v1.13.0) (2026-09-11)
 
 
