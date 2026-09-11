@@ -10,7 +10,6 @@
   "style": "dist/css-is-awesome.css",
   "sass": "scss/main.scss",
   "bin": {
-    "css-is-awesome-mcp": "mcp/server.cjs",
     "cia": "bin/cia.cjs"
   },
   "sideEffects": [

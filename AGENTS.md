@@ -308,9 +308,22 @@ Inside this package (all whitelisted in `files`):
 
 ## MCP server (SHIPPED — use it)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` (version read from package.json), protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. **Prefer querying it over guessing** — it returns cia's real mixin signatures, tokens, themes, and recipes.
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome`, protocol `2024-11-05`) at `mcp/server.cjs`. It's in the `files` manifest, so it lands in every consumer's `node_modules`. **Prefer querying it over guessing** — it returns cia's real mixin signatures, tokens, themes, and recipes.
 
-Wire it into your MCP client's `.mcp.json`:
+Two ways to run it — prefer the dedicated `npx css-is-awesome-mcp` package (zero install, SDK is a real dependency, no separate peer-install step):
+
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
+    }
+  }
+}
+```
+
+Or run this in-repo copy directly — needs its SDK peer deps installed manually first (`npm install -D @modelcontextprotocol/sdk zod` in the client project, since they're optional peers):
 
 ```json
 {
@@ -323,7 +336,7 @@ Wire it into your MCP client's `.mcp.json`:
 }
 ```
 
-The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in the client project to run it. It exposes **30 tools** across 8 families:
+Either way it exposes **30 tools** across 8 families:
 
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)

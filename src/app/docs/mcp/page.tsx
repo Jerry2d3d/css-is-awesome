@@ -14,8 +14,33 @@ export default function McpPage() {
 
       <h2 id="setup">Setup</h2>
       <p>
-        Add cia to your client&rsquo;s <code>.mcp.json</code>:
+        <strong>Recommended — zero install.</strong> Use the dedicated{" "}
+        <code>css-is-awesome-mcp</code> package. It depends on{" "}
+        <code>css-is-awesome</code> and always resolves your installed
+        version&rsquo;s real source, and the MCP SDK ships as a real
+        dependency — no separate install step:
       </p>
+      <Example>
+        <Example.Code>{`{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
+    }
+  }
+}`}</Example.Code>
+      </Example>
+      <p>
+        <strong>Alternative — the copy already in your <code>node_modules</code>.</strong>{" "}
+        cia&rsquo;s own package ships <code>mcp/server.cjs</code> too, for anyone
+        who&rsquo;d rather not add a second package. This copy needs its SDK
+        installed manually first, since it&rsquo;s an{" "}
+        <strong>optional peer dependency</strong> (so a plain CSS-only install
+        never pulls JS in):
+      </p>
+      <Example>
+        <Example.Code>{`npm install -D @modelcontextprotocol/sdk zod`}</Example.Code>
+      </Example>
       <Example>
         <Example.Code>{`{
   "mcpServers": {
@@ -25,19 +50,6 @@ export default function McpPage() {
     }
   }
 }`}</Example.Code>
-      </Example>
-      <p>
-        Or run it directly via the wired-in <code>bin</code>:
-      </p>
-      <Example>
-        <Example.Code>{`npx css-is-awesome-mcp`}</Example.Code>
-      </Example>
-      <p>
-        The MCP SDK is an <strong>optional peer dependency</strong> — install it
-        in the client&rsquo;s project if you want to actually run the server:
-      </p>
-      <Example>
-        <Example.Code>{`npm install -D @modelcontextprotocol/sdk zod`}</Example.Code>
       </Example>
 
       <h2 id="tools">Tools — 30 total: 28 across 8 families + 2 specialty tools</h2>

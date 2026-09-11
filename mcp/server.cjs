@@ -87,7 +87,9 @@ function resolveMcp() {
   catch {
     throw new Error(
       'css-is-awesome MCP server: @modelcontextprotocol/sdk is not installed. ' +
-      'Install with: npm install @modelcontextprotocol/sdk zod'
+      'Easiest fix: run `npx css-is-awesome-mcp` instead — it has the SDK as ' +
+      'a real dependency, no manual install needed. ' +
+      'To use this in-repo copy directly anyway: npm install @modelcontextprotocol/sdk zod'
     );
   }
 }
@@ -95,7 +97,10 @@ function resolveMcp() {
 function resolveStdio() {
   try { return require('@modelcontextprotocol/sdk/server/stdio.js'); }
   catch {
-    throw new Error('css-is-awesome MCP server: @modelcontextprotocol/sdk (stdio) missing — reinstall.');
+    throw new Error(
+      'css-is-awesome MCP server: @modelcontextprotocol/sdk (stdio) missing. ' +
+      'Run `npx css-is-awesome-mcp` instead, or reinstall the peer deps here.'
+    );
   }
 }
 

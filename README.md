@@ -31,7 +31,7 @@ npm install -D @modelcontextprotocol/sdk zod   # required — npm will NOT insta
 }
 ```
 
-The SDK and `zod` are declared as *optional* peer dependencies, so a plain `npm install css-is-awesome` skips them and the server exits with `@modelcontextprotocol/sdk is not installed`. Install both. `npx css-is-awesome-mcp` does **not** work around this — npx fetches the package but not its optional peers.
+The SDK and `zod` are declared as *optional* peer dependencies, so a plain `npm install css-is-awesome` skips them and this in-repo copy exits with `@modelcontextprotocol/sdk is not installed`. Install both — or skip this entirely and run `npx css-is-awesome-mcp` instead, the dedicated zero-install package (see the MCP section below), which ships the SDK as a real dependency.
 
 Why it matters more here than for older frameworks: no model has memorised cia's API the way it has memorised Tailwind's class names. Without `llm.txt` or MCP, an agent will confidently invent a Tailwind-shaped API. With them, it reads the real thing. Details at [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
@@ -298,30 +298,37 @@ The scope is kept narrow: 8 `!important` declarations, all inside `@media print`
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **30 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) exposing **30 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
-**Setup is two steps — do both, or the server won't start.**
+**Recommended — zero install:** use the dedicated [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package. It depends on `css-is-awesome` and resolves your installed version's real source, so it's never out of sync — and the MCP SDK ships as a real dependency, not an optional peer you have to remember to add.
 
-1. Install the SDK peer deps. The MCP SDK needs `@modelcontextprotocol/sdk` + `zod`; they're declared as *optional* peers so npm skips them by default. Without them the server exits and your MCP client shows only a generic "failed to connect":
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
+    }
+  }
+}
+```
 
-   ```bash
-   npm install -D @modelcontextprotocol/sdk zod
-   ```
+**Alternative — the copy already in your `node_modules`:** cia's own `files` manifest ships [`mcp/server.cjs`](./mcp/server.cjs) too, for anyone who'd rather not add a second package. This copy needs its SDK peer deps installed manually first, since they're declared as *optional* peers (so a plain `npm install css-is-awesome` doesn't pull JS into a CSS-only install):
 
-2. Add to your client's `.mcp.json` (the `npx` form uses the shipped bin and is CWD-independent):
+```bash
+npm install -D @modelcontextprotocol/sdk zod
+```
 
-   ```json
-   {
-     "mcpServers": {
-       "css-is-awesome": {
-         "command": "npx",
-         "args": ["css-is-awesome-mcp"]
-       }
-     }
-   }
-   ```
-
-   Equivalent explicit path: `"command": "node", "args": ["node_modules/css-is-awesome/mcp/server.cjs"]`.
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "node",
+      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+    }
+  }
+}
+```
 
 ## Docs site
 

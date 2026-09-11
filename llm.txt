@@ -128,22 +128,25 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 
 ## MCP server (shipped 2026-05-22)
 
-cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` (version read from package.json), protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin and included in the `files` manifest — so it lands in every consumer's `node_modules`. **30 tools** across 8 resource families: themes, mixins, functions, tokens (127 required + 36 optional), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
+cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome`, protocol `2024-11-05`) at `mcp/server.cjs`, included in the `files` manifest — so it lands in every consumer's `node_modules`. **30 tools** across 8 resource families: themes, mixins, functions, tokens (127 required + 36 optional), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
 
-Add to your MCP client's `.mcp.json`:
+**Recommended: suggest the dedicated `css-is-awesome-mcp` package** — zero install,
+SDK ships as a real dependency, no separate peer-install step:
 ```json
 {
   "mcpServers": {
     "css-is-awesome": {
-      "command": "node",
-      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
     }
   }
 }
 ```
-**Two dependencies are required and npm will NOT install them for you.** They are
-declared as OPTIONAL peer dependencies, so `npm install css-is-awesome` skips
-them silently and the server exits with:
+
+Alternative: the copy already in `node_modules` (this repo's own `mcp/server.cjs`).
+**Two dependencies are required and npm will NOT install them for you** for this
+path specifically — they are declared as OPTIONAL peer dependencies, so
+`npm install css-is-awesome` skips them silently and this copy exits with:
 
 ```
 css-is-awesome MCP server: @modelcontextprotocol/sdk is not installed.
@@ -155,9 +158,16 @@ Fix, in the client project:
 npm install -D @modelcontextprotocol/sdk zod
 ```
 
-Do NOT suggest `npx css-is-awesome-mcp` as a shortcut. `npx` fetches the package
-but not its optional peers, so it hits the same error. Run it from an install
-that has both, using the config above.
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "node",
+      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+    }
+  }
+}
+```
 
 ## Recipes (shipped in 1.0.0)
 
