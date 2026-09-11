@@ -5,42 +5,42 @@
 > the user separately runs `npm install @modelcontextprotocol/sdk zod`.
 > Pull-forward candidate — small, high-leverage, DX not features.
 
-**Status:** 🟡 Partial (v1.1) — F1 built and verified locally 2026-09-11;
-publish + user-facing doc/error-message updates deliberately deferred (not
-forgotten — see the status note below).
+**Status:** ✅ Complete (v1.1) — `css-is-awesome-mcp@1.0.1` published to npm
+2026-09-11, verified with a real fresh `npx` call, docs/error-messages
+updated across both repos.
 **Effort estimate:** ~1-2 working days
 **Stories:** 4
 
-> **Status note (2026-09-11).** Built the chosen Option B package —
-> `css-is-awesome-mcp`, a new sibling repo at `K:/Repo/css-is-awesome-mcp`
-> (matching the `figma-import-export` precedent, per your call) — and
-> verified it end to end: `require.resolve('css-is-awesome/package.json')`
-> correctly resolves the installed dependency, a real `npm pack` of this
-> repo installs and serves identical data to the in-repo dev-tree server
-> (157 mixins, 112 sketchbook tokens, 24 themes, 25 recipes — cross-checked
-> both ways), and a **clean install from the real npm registry** (not a
-> local tarball) works the same way. `scripts/verify-consumer-install.mjs`
-> in the new repo automates that whole proof and a `.github/workflows/ci.yml`
-> runs it on push/PR (written, not yet exercised — nothing's been pushed).
+> **Status note (2026-09-11, final).** `css-is-awesome-mcp` is live on npm.
+> Both repos now publish exclusively through GitHub Actions (semantic-release
+> + a Classic Automation `NPM_TOKEN`, never a manual terminal `npm publish`
+> — npm killed authenticator-app 2FA setup in September 2025, so a terminal
+> publish has no way to satisfy the OTP prompt; see
+> [[feedback_npm_publish_via_ci_only]]).
 >
-> **Deliberately NOT done this session, and why:** I drafted an update to
-> this repo's `mcp/server.cjs` guard-error message and to the public
-> README/`/docs/mcp` page recommending `npx css-is-awesome-mcp` as the
-> primary fix — then reverted it. `css-is-awesome-mcp` isn't published to
-> npm yet (out of this session's scope — see the plan's scope boundary: no
-> `npm publish`, no `git push`, no new GitHub repo creation without
-> separate explicit go-ahead). Shipping that doc/error-message change now
-> would tell a real user hitting the error *today* to run a command that
-> fails for them (package not found). Those two edits are staged and ready
-> the moment the new package is actually published — publishing it is the
-> genuinely remaining step, not more building.
+> **A real bug shipped with the first publish, and was fixed the same day.**
+> `css-is-awesome` still declared its own `bin: { "css-is-awesome-mcp": "mcp/server.cjs" }`
+> — the same command name the new package needed. Since the new package
+> depends on core, npm links both packages' bins into the same
+> `node_modules/.bin/`, and core's silently won: `npx css-is-awesome-mcp`
+> was running core's old file, not the new package's own — proven by
+> `serverInfo.version` reporting cia's version instead of the new package's.
+> The existing "consumer-shaped" verification script didn't catch it because
+> it copied `server.cjs` directly into its scratch dir instead of installing
+> the new package as a real dependency, so it never exercised npm's `bin`
+> resolution at all — the one mechanism the bug lived in. Fixed by removing
+> core's colliding `bin` entry (nothing that depended on the *file* broke —
+> every real `.mcp.json` config already used the direct `node .../mcp/server.cjs`
+> path) and rewriting the verify script to install both packages for real and
+> assert on the resolved bin target before spawning it. Full story:
+> [the blog post](https://cssisawesome.com/blog/the-mcp-command-that-ran-someone-elses-file).
 >
-> Also confirmed while investigating: the "zero JS for CSS-only installs"
+> Confirmed while investigating: the "zero JS for CSS-only installs"
 > invariant this whole epic protects was **already correctly upheld**
 > before any of this — `sdk`/`zod`/`sass` are `peerDependencies` with
 > `peerDependenciesMeta.*.optional: true`, which npm never auto-installs
 > even on npm 7+. The actual gap was always exactly the DX one the epic
-> names: someone who *wants* the MCP server has to run a second manual
+> names: someone who *wants* the MCP server had to run a second manual
 > install first. That's what the new package fixes.
 
 ## Mission
@@ -115,42 +115,45 @@ depend-on is the default unless the extra install proves annoying.
   publishing wasn't in this session's scope — `list_mixins` (and 3 other
   tools) answer correctly over real stdio either way, and `css-is-awesome`'s
   own manifest is untouched, so it still pulls zero JS dependencies.
-- [~] **US-V11.07.1.2** (S) — Drafted, then **reverted**. The intended
-  error-message update (recommend `npx css-is-awesome-mcp` as the primary
-  remedy) would be actively wrong advice for anyone hitting the error today,
-  since the new package isn't published — `npx css-is-awesome-mcp` would
-  fail for them too (package not found). Staged and ready to land the
-  moment publishing happens; shipping it before that would trade one broken
-  instruction for another.
+- [x] **US-V11.07.1.2** (S) — ✅ DONE. `mcp/server.cjs`'s guard-error
+  messages now recommend `npx css-is-awesome-mcp` first, with the manual
+  peer-install path kept as the documented fallback. Core's own colliding
+  `bin` entry was removed in the same pass (see the bug writeup above).
 
 ### F2 — Proof + docs
 
-- [~] **US-V11.07.2.1** (M) — Done differently than scoped: rather than
-  extending the CORE repo's `scripts/mcp-coverage.mjs` (which tests the
-  in-repo dev-tree path by design and still should — confirmed unaffected,
-  still 30/30 tools, 100% coverage), the NEW repo has its own
-  `scripts/verify-consumer-install.mjs`, which is the actual "consumer-shaped,
-  not dev-tree" proof — it can't live in the core repo since the whole point
-  is testing a *separate* package's *separate* install path. Runs via
-  `.github/workflows/ci.yml` on push/PR — written and correct, **not yet
-  exercised by a real CI run** since nothing in the new repo has been pushed.
-- [ ] **US-V11.07.2.2** (S) — Not done. Drafted README + `/docs/mcp` copy
-  changes for the core repo, then held them back for the same reason as
-  F1.1.2 — the new package isn't published, so the public docs shouldn't
-  yet tell a real visitor the one-liner "just works" when it doesn't. Lands
-  together with publishing.
+- [x] **US-V11.07.2.1** (M) — Done differently than scoped, and hardened
+  further after shipping: rather than extending the CORE repo's
+  `scripts/mcp-coverage.mjs` (which tests the in-repo dev-tree path by
+  design and still should — confirmed unaffected, still 30/30 tools, 100%
+  coverage), the NEW repo has its own `scripts/verify-consumer-install.mjs`.
+  Its first version still missed the actual bin-collision bug because it
+  copied `server.cjs` directly instead of installing the package for real —
+  rewritten to pack and install both packages as real dependencies and
+  assert on the resolved `.bin` target (POSIX-symlink-aware, not just a
+  Windows-shaped file read). Runs via `.github/workflows/ci.yml` on every
+  push/PR, now actually green on real CI.
+- [x] **US-V11.07.2.2** (S) — ✅ DONE. README, AGENTS.md, `llm.txt`,
+  `bin/README.md`, and `/docs/mcp` all updated to lead with
+  `npx css-is-awesome-mcp` as the recommended path, with the in-repo
+  `mcp/server.cjs` copy documented as the alternative. The README and
+  `llm.txt` previously contained an explicit warning telling people *not*
+  to use that command — written before the package existed, now backwards
+  and corrected.
 
 ## What changes
 
 - ✅ A new `css-is-awesome-mcp` package (Option B) — a sibling **repo**
-  (`K:/Repo/css-is-awesome-mcp`), not a subdirectory of this one, built and
-  committed locally 2026-09-11. Not yet published.
-- ⏸️ `mcp/server.cjs`'s SDK-require guard message update — drafted,
-  reverted, staged for when publishing happens (see F1.1.2 above).
-- ✅ CI gains a consumer-shaped MCP launch check — in the new repo, not
-  this one; written, not yet run (nothing pushed).
-- ⏸️ MCP install docs simplifying to one command — same staged/deferred
-  status as the guard message.
+  (`K:/Repo/css-is-awesome-mcp`), published to npm as `1.0.1`.
+- ✅ `mcp/server.cjs`'s SDK-require guard message updated to recommend the
+  new package first.
+- ✅ CI gains a consumer-shaped MCP launch check — in the new repo, running
+  on every push, now including the bin-resolution regression check.
+- ✅ MCP install docs simplified to one command, across both repos' READMEs
+  and the docs site.
+- ✅ Core's own colliding `bin.css-is-awesome-mcp` entry removed — not
+  originally scoped this precisely, but became necessary once the
+  collision was found (see status note above).
 
 ## What we may lose
 
@@ -176,20 +179,17 @@ depend-on is the default unless the extra install proves annoying.
 ## Definition of done
 
 - [x] `npx css-is-awesome-mcp` starts with no manual sdk/zod install — verified
-  against a real npm-registry install and a packed local tarball, both times
-  with identical, correct data (157 mixins, 112 sketchbook tokens, 24
-  themes, 25 recipes) to the in-repo dev-tree server
-- [~] A consumer-shaped launch check exists (`scripts/verify-consumer-install.mjs`
-  + `.github/workflows/ci.yml` in the new repo) but hasn't run in real CI yet
-  — nothing's been pushed
-- [ ] Docs are one command — drafted, reverted; lands with publishing (see
-  F1.1.2/F2.2.2 notes above)
+  with a real fresh `npx` call against a fully isolated npm cache, resolving
+  to the new package's own server (not core's — see the bin-collision fix)
+- [x] A consumer-shaped launch check exists (`scripts/verify-consumer-install.mjs`
+  + `.github/workflows/ci.yml` in the new repo), actually installs both
+  packages for real, and is green on real CI
+- [x] Docs are one command — README, AGENTS.md, llm.txt, bin/README.md, and
+  `/docs/mcp` all lead with `npx css-is-awesome-mcp`
 - [x] The core `css-is-awesome` package still declares zero JS runtime
   dependencies — untouched by any of this work
-- [ ] **Not done: actually publishing `css-is-awesome-mcp` to npm.** This is
-  the one genuinely remaining step — everything above is built and verified
-  locally. Deliberately outside this session's scope (real, irreversible,
-  external action); needs separate explicit go-ahead.
+- [x] `css-is-awesome-mcp` published to npm (`1.0.1`) via CI/semantic-release,
+  never a manual terminal publish
 
 ## Related
 
