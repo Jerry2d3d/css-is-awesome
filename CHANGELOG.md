@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.2...v1.14.0) (2026-09-11)
+
+
+### Features
+
+* **mcp:** add validate_theme tool — the real validator, exposed as a tool call ([7a8b497](https://github.com/Jerry2d3d/css-is-awesome/commit/7a8b4971640f6fd6b13148f05288e9e3e76ade10))
+
 ## [1.13.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.1...v1.13.2) (2026-09-11)
 
 
