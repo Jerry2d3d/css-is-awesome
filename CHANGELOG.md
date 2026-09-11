@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.12.0...v1.12.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **mcp:** remove colliding css-is-awesome-mcp bin entry, point docs at the new package ([f2ac41c](https://github.com/Jerry2d3d/css-is-awesome/commit/f2ac41c4d6056a1d13c19c5dcb48386acfb0fcda))
+
 # [1.12.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.11.1...v1.12.0) (2026-09-11)
 
 
