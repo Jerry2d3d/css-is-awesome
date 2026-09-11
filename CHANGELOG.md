@@ -1,3 +1,37 @@
+# [1.12.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.11.1...v1.12.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **a11y:** unlabeled checklist checkboxes and non-focusable code blocks ([d98a92c](https://github.com/Jerry2d3d/css-is-awesome/commit/d98a92c549a2b74c3cff976d0fdfd61031162585))
+* **ci:** raise utilities size budget to 5.0 KB, correct stale bundle-size docs ([0e447f1](https://github.com/Jerry2d3d/css-is-awesome/commit/0e447f16e33d5a39cbcedb3b44caab79e4920f23))
+* **theme-editor:** density slider + fix override specificity bug affecting every row ([3977043](https://github.com/Jerry2d3d/css-is-awesome/commit/39770434e5f1819b57c16e502de15e252c5cf0d5))
+* **theme:** recurse into at-rules when bundling themes ([ca6397b](https://github.com/Jerry2d3d/css-is-awesome/commit/ca6397bcdcbcfc6bcb784253855b0af74d94ae74))
+
+
+### Features
+
+* **cli:** npx cia migrate chakra — Chakra UI theme object -> cia theme.scss ([2bcc95c](https://github.com/Jerry2d3d/css-is-awesome/commit/2bcc95c32058b2b1f60378e6718b772363fd77a2))
+* **cli:** npx cia migrate mui — MUI theme object -> cia theme.scss ([4f1d682](https://github.com/Jerry2d3d/css-is-awesome/commit/4f1d6828fc13fa1929f78127ab7c94503f55afb0))
+* **cli:** off-scale-length and missing-focus-visible analyzer rules ([d7bb8d9](https://github.com/Jerry2d3d/css-is-awesome/commit/d7bb8d96598b9897f130a152ad024ccc13a0cbbb))
+* **editor:** print preview persists per theme and seeds from overrides ([404e494](https://github.com/Jerry2d3d/css-is-awesome/commit/404e494051b9d3893c8ab18762da8044a389f5fd))
+* **editor:** token-consumer map, used-by list, live contrast readout ([a52f74e](https://github.com/Jerry2d3d/css-is-awesome/commit/a52f74e968f340d1c9f6b2ed8a02b8f16457432b))
+* **recipes:** admin-dashboard-layout recipe + live demo ([6e79812](https://github.com/Jerry2d3d/css-is-awesome/commit/6e79812980abbd90391507bd06db06b65820c1e2))
+* **recipes:** app-shell recipe - navbar + control panel + footer + modal ([a5abd6e](https://github.com/Jerry2d3d/css-is-awesome/commit/a5abd6e68287a1d99978e8956d601c170cbff657))
+* **recipes:** auth-flow recipe + live demo ([7e566e2](https://github.com/Jerry2d3d/css-is-awesome/commit/7e566e274fd84be8eab0ae877e3c222a1adc8c1e))
+* **recipes:** confirm-dialog recipe + live demo ([24977c2](https://github.com/Jerry2d3d/css-is-awesome/commit/24977c2214efc5588d90c601da70c2db1ed3b1f5))
+* **recipes:** data-table recipe + live demo ([cbcdbb3](https://github.com/Jerry2d3d/css-is-awesome/commit/cbcdbb384f2d44f25071d593391d0cb4a6bd5d0d))
+* **recipes:** datepicker recipe + live demo ([90ea515](https://github.com/Jerry2d3d/css-is-awesome/commit/90ea515f8c2ab044a4957be642295d188cf60cb3))
+* **recipes:** form validation recipes + live demos ([78ae02d](https://github.com/Jerry2d3d/css-is-awesome/commit/78ae02d4c29458d60feb90f0135faaedd7684b26))
+* **recipes:** i18n-date-formatting recipe + live demo ([689152a](https://github.com/Jerry2d3d/css-is-awesome/commit/689152a4ebb55b5c19285bfcd6f4c81f1a090b1d))
+* **recipes:** i18n-number-currency recipe + live demo ([a4ec9a3](https://github.com/Jerry2d3d/css-is-awesome/commit/a4ec9a35b80d9a4d6fb8f5333107694ef9e5ccf3))
+* **recipes:** i18n-pluralization recipe + live demo ([fe6a3f0](https://github.com/Jerry2d3d/css-is-awesome/commit/fe6a3f0272de3d848b5306800e3ecbca84d09e1c))
+* **recipes:** multi-step-wizard recipe + live demo ([932358e](https://github.com/Jerry2d3d/css-is-awesome/commit/932358e54d0550ecf7017d48266f833646634d58))
+* **recipes:** otp-input recipe + live demo ([af99b86](https://github.com/Jerry2d3d/css-is-awesome/commit/af99b86ab08f8357e908bd19533ea3bd55eab548))
+* **rtl:** audit + fix non-logical CSS, add a logical utility set ([35704fd](https://github.com/Jerry2d3d/css-is-awesome/commit/35704fda8941c56eea16070813845d15295f897f))
+* **rtl:** recipe + /docs/rtl live demo ([b18bc04](https://github.com/Jerry2d3d/css-is-awesome/commit/b18bc04910b9db02c0091ccaa4e93ab551d13326))
+* **themes:** --space-unit density knob — one var drives all 9 spacing steps ([a1638c7](https://github.com/Jerry2d3d/css-is-awesome/commit/a1638c72338309055f752e6940220a9a8cd6be99))
+
 ## [1.11.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.11.0...v1.11.1) (2026-09-09)
 
 
