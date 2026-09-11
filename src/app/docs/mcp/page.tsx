@@ -198,6 +198,18 @@ export default function McpPage() {
           source (e.g. <code>theme:terminal</code>)
         </li>
         <li>
+          <code>derive-theme:&lt;base&gt;</code> — everything needed to
+          hand-build a new theme file from an existing one in one round
+          trip: the base theme&rsquo;s full source (the correct starting
+          template — copy it, edit only what changes), the{" "}
+          <code>theme()</code> mixin&rsquo;s wrapper contract, the
+          required/optional token checklist, and the rules for doing it
+          safely. This server never writes files — the response is
+          everything an agent needs to build the content and write it
+          itself (e.g. <code>derive-theme:sketchbook</code> to start a new
+          theme from Sketchbook)
+        </li>
+        <li>
           <code>tokens</code> — the full token contract
         </li>
         <li>

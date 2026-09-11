@@ -1136,6 +1136,40 @@ const handlers = {
         }
         break;
       }
+      case 'derive-theme': {
+        if (!target) throw new Error('assemble_prompt: intent "derive-theme:" requires a base theme name');
+        const base = handlers.get_theme({ name: target });
+        const themeMixin = handlers.get_mixin({ name: 'theme' });
+        const tk = getTokens();
+        banner(`css-is-awesome — deriving a new theme from ${base.name}`);
+        sub('Base theme — copy this, then edit only what should change');
+        lines.push('```scss');
+        lines.push(base.raw_scss);
+        lines.push('```');
+        lines.push('');
+        sub('The `theme()` wrapper contract');
+        lines.push('```scss');
+        lines.push(themeMixin.signature);
+        lines.push('```');
+        if (themeMixin.doc) { lines.push(''); lines.push(themeMixin.doc); }
+        lines.push('');
+        sub('Required + optional tokens (must all still be present)');
+        lines.push(`Required: ${tk.required.length}. Optional: ${tk.optional.length}.`);
+        lines.push('');
+        const dtCats = Object.keys(tk.byCategory).sort();
+        for (const cat of dtCats) {
+          lines.push(`### ${cat} (${tk.byCategory[cat].length})`);
+          lines.push('');
+          for (const name of tk.byCategory[cat].sort()) lines.push(`- ${name}`);
+          lines.push('');
+        }
+        sub('Rules');
+        lines.push('1. This server never writes files. Build the new theme file\'s content from the above, then write it yourself with your own file tools — ask the user where it should go if it isn\'t obvious.');
+        lines.push('2. Keep the `:root, :root[data-theme="<new-name>"]` shape (the base theme above already has it) unless you are deliberately building a multi-theme-bundle entry, where `$standalone: false` applies instead.');
+        lines.push('3. Only change values that should actually differ for the new design — copy everything else from the base theme unchanged, including tokens you don\'t recognize.');
+        lines.push('4. Before calling it done: every required token listed above must still be present in the new file. If this repo is available locally, `node scripts/theme-validator.js <path-to-new-theme.css>` confirms it.');
+        break;
+      }
       case 'animations': {
         const a = getAnimations();
         banner('css-is-awesome — animations');
@@ -1175,7 +1209,7 @@ const handlers = {
         break;
       }
       default:
-        throw new Error(`assemble_prompt: unknown intent "${intent}". Try overview | mixin:<name> | component:<name> | theme:<name> | tokens | animations | recipe:<name>.`);
+        throw new Error(`assemble_prompt: unknown intent "${intent}". Try overview | mixin:<name> | component:<name> | theme:<name> | derive-theme:<base> | tokens | animations | recipe:<name>.`);
     }
 
     if (args && typeof args === 'string' && args.trim()) {
