@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.1...v1.14.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* **site:** center the /about hero lead paragraph ([840dd13](https://github.com/Jerry2d3d/css-is-awesome/commit/840dd13dd4bb2d0721676679cf74658219779834))
+
 ## [1.14.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.0...v1.14.1) (2026-09-11)
 
 
