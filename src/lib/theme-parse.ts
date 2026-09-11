@@ -145,6 +145,44 @@ export function splitLightDark(raw: string): { light: string; dark: string } | n
   };
 }
 
+// Finds every `@media (prefers-color-scheme: dark) { ... }` block and
+// returns the union of every --token declaration nested inside it,
+// regardless of which selector wraps them within the block. This is how
+// the editor's own "Download" output stores dark-mode overrides for
+// NON-color tokens (emitTokenLines puts them here instead of a
+// `light-dark()` call, since light-dark() only makes sense for color
+// values) — cia's shipped themes never use this shape, but a file
+// re-imported after being downloaded from the editor does. Without this,
+// those overrides were silently invisible to the importer: neither
+// extractDataThemeBlocks nor extractRootBlock ever looks inside an
+// `@media` block, so a nested rule in one was skipped entirely rather
+// than mis-parsed — same outcome (the value never reached the editor) but
+// a different, less obvious failure mode than the light-dark() splitting
+// bug this file's other export fixes.
+export function extractPrefersDarkOverrides(css: string): Map<string, string> {
+  const s = stripBlockComments(css);
+  const out = new Map<string, string>();
+  const mediaRe = /@media\s*\(\s*prefers-color-scheme\s*:\s*dark\s*\)/gi;
+  let m: RegExpExecArray | null;
+  while ((m = mediaRe.exec(s)) !== null) {
+    const braceIdx = s.indexOf("{", m.index);
+    if (braceIdx === -1) break;
+    const block = readBracedBlock(s, braceIdx);
+    if (!block) break;
+    let i = 0;
+    while (i < block.body.length) {
+      const nestedBrace = block.body.indexOf("{", i);
+      if (nestedBrace === -1) break;
+      const nested = readBracedBlock(block.body, nestedBrace);
+      if (!nested) break;
+      for (const [t, v] of collectTokenValues(nested.body)) out.set(t, v);
+      i = nested.end + 1;
+    }
+    mediaRe.lastIndex = block.end + 1;
+  }
+  return out;
+}
+
 // Legacy / per-file shape: union of every `:root { ... }` block in the
 // file. Same return shape as a single ParsedBlock with name=null.
 export function extractRootBlock(css: string): ParsedBlock {

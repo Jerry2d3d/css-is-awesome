@@ -14,6 +14,7 @@ import { AUDIT_PAIRS, parseColor, contrastRatio, nearestPassingColor } from "@/l
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 import {
   extractDataThemeBlocks,
+  extractPrefersDarkOverrides,
   extractRootBlock,
   isConsolidated,
   splitLightDark,
@@ -494,6 +495,20 @@ export default function ThemeEditorDock() {
   //   1. A pair sharing a base name that matches the active family.
   //   2. Otherwise the first complete pair.
   //   3. Otherwise the first block (single-mode import to active tab).
+  // Groups parsed blocks by base name (stripping a -light/-dark suffix) and
+  // picks the best pair for the currently-edited family, preferring an
+  // exact family match, then any base with both a light and dark block.
+  //
+  // An UNSUFFIXED block (cia's real shipped shape — one
+  // `:root, :root[data-theme="<name>"]` block per theme, both modes inside
+  // via `light-dark()`) is assigned to BOTH light and dark, pointing at the
+  // SAME block object — never gated on which editor tab happens to be open.
+  // tabMode is UI state, not a property of the file being parsed; using it
+  // here silently dropped the other mode's data on every import of a
+  // standard single-file theme (the common case), regardless of whether
+  // the file's own name matched the currently-edited family. The caller
+  // detects `light === dark` (same reference) to know it needs to split
+  // light-dark() values out of that one shared block.
   function pickPair(blocks: ParsedBlock[]): {
     base: string;
     light?: ParsedBlock;
@@ -508,7 +523,7 @@ export default function ThemeEditorDock() {
       const entry = byBase.get(base) ?? {};
       if (mode === "light") entry.light = b;
       else if (mode === "dark") entry.dark = b;
-      else entry.light = entry.light ?? b; // unsuffixed: treat as light placeholder
+      else { entry.light = b; entry.dark = b; }
       byBase.set(base, entry);
     }
 
@@ -520,11 +535,7 @@ export default function ThemeEditorDock() {
       if (entry.light && entry.dark) return { base, ...entry };
     }
     const first = blocks[0];
-    return {
-      base: baseNameOf(first.name ?? ""),
-      light: tabMode === "light" ? first : undefined,
-      dark: tabMode === "dark" ? first : undefined,
-    };
+    return { base: baseNameOf(first.name ?? ""), light: first, dark: first };
   }
 
   function applyImport(baseName: string, light?: Map<string, string>, dark?: Map<string, string>) {
@@ -536,6 +547,34 @@ export default function ThemeEditorDock() {
     if (baseName) setNameInput(baseName);
   }
 
+  // Splits a block's raw values into real light/dark maps: light-dark(A, B)
+  // values split into A/B, mode-invariant values (radius, font, spacing,
+  // duration, …) applied to both unchanged. Used whenever only ONE block's
+  // worth of source data is available for both modes — cia's real shipped
+  // theme shape (one :root[data-theme] block per theme, not a pair of
+  // -light/-dark files).
+  function splitBlockValues(values: Map<string, string>): {
+    light: Map<string, string>;
+    dark: Map<string, string>;
+    splitCount: number;
+  } {
+    const light = new Map<string, string>();
+    const dark = new Map<string, string>();
+    let splitCount = 0;
+    for (const [token, raw] of values) {
+      const split = splitLightDark(raw);
+      if (split) {
+        light.set(token, split.light);
+        dark.set(token, split.dark);
+        splitCount++;
+      } else {
+        light.set(token, raw);
+        dark.set(token, raw);
+      }
+    }
+    return { light, dark, splitCount };
+  }
+
   async function importTheme(file: File) {
     setImportMsg(null);
     try {
@@ -544,6 +583,19 @@ export default function ThemeEditorDock() {
         setImportMsg({ kind: "err", text: "File is empty." });
         return;
       }
+      // Dark-mode overrides for NON-color tokens live in a separate
+      // `@media (prefers-color-scheme: dark)` block in files the editor's
+      // own Download button produces (emitTokenLines only uses light-dark()
+      // for color tokens). Neither branch below looks inside @media blocks
+      // on its own, so compute this once and layer it over whichever dark
+      // map each branch builds — it always wins, since it's an explicit
+      // dark-only override, not a guess.
+      const mediaDark = extractPrefersDarkOverrides(text);
+      const mergeMediaDark = (dark: Map<string, string>) => {
+        for (const [k, v] of mediaDark) dark.set(k, v);
+        return dark;
+      };
+
       if (isConsolidated(text)) {
         const blocks = extractDataThemeBlocks(text);
         if (blocks.length === 0) {
@@ -551,9 +603,23 @@ export default function ThemeEditorDock() {
           return;
         }
         const { base, light, dark } = pickPair(blocks);
-        applyImport(base, light?.values, dark?.values);
-        const which = light && dark ? "light + dark" : light ? "light only" : "dark only";
-        setImportMsg({ kind: "ok", text: `Imported "${base}" (${which}, ${blocks.length} block${blocks.length === 1 ? "" : "s"} in file).` });
+        const mediaNote = mediaDark.size ? `, ${mediaDark.size} dark-only via @media` : "";
+        if (light && dark && light !== dark) {
+          // Genuinely separate light/dark blocks (the older two-file-per-mode
+          // shape) — each already holds real per-mode values, use directly.
+          applyImport(base, light.values, mergeMediaDark(new Map(dark.values)));
+          setImportMsg({ kind: "ok", text: `Imported "${base}" (light + dark, ${blocks.length} block${blocks.length === 1 ? "" : "s"} in file${mediaNote}).` });
+        } else if (light || dark) {
+          // Same block for both (cia's real shipped shape: one combined
+          // block, values may use light-dark()) — split it into both modes
+          // instead of only the block "light" happens to alias to.
+          const only = (light ?? dark)!;
+          const { light: lv, dark: dv, splitCount } = splitBlockValues(only.values);
+          applyImport(base, lv, mergeMediaDark(dv));
+          setImportMsg({ kind: "ok", text: `Imported "${base}" into both modes (${only.values.size} tokens, ${splitCount} via light-dark()${mediaNote}).` });
+        } else {
+          setImportMsg({ kind: "err", text: 'No [data-theme="…"] blocks parsed.' });
+        }
         return;
       }
       const block = extractRootBlock(text);
@@ -562,32 +628,16 @@ export default function ThemeEditorDock() {
         return;
       }
       const base = sanitizeName(nameInput, `${family}-custom`);
-      // A bare `:root` block is cia's normal single-file theme shape —
-      // both modes live in ONE block via `light-dark(lightVal, darkVal)`
-      // per token. Split each value so both modes actually get real data;
-      // dumping the whole raw map into only the active tab (the old
-      // behavior) left the other mode with nothing, so switching modes
-      // silently fell back to whatever theme the site currently had active.
-      const lightValues = new Map<string, string>();
-      const darkValues = new Map<string, string>();
-      let splitCount = 0;
-      for (const [token, raw] of block.values) {
-        const split = splitLightDark(raw);
-        if (split) {
-          lightValues.set(token, split.light);
-          darkValues.set(token, split.dark);
-          splitCount++;
-        } else {
-          // Mode-invariant value (radius, font, spacing, duration, …) —
-          // same in both modes.
-          lightValues.set(token, raw);
-          darkValues.set(token, raw);
-        }
-      }
+      // A bare `:root` block with no [data-theme] at all — same "one block,
+      // both modes inside via light-dark()" shape as above, just without a
+      // data-theme selector wrapping it.
+      const { light: lightValues, dark: darkValues, splitCount } = splitBlockValues(block.values);
+      mergeMediaDark(darkValues);
       applyImport(base, lightValues, darkValues);
+      const mediaNote = mediaDark.size ? `, ${mediaDark.size} dark-only via @media` : "";
       setImportMsg({
         kind: "ok",
-        text: `Imported :root block into both modes (${block.values.size} tokens, ${splitCount} via light-dark()).`,
+        text: `Imported :root block into both modes (${block.values.size} tokens, ${splitCount} via light-dark()${mediaNote}).`,
       });
     } catch (err) {
       setImportMsg({ kind: "err", text: err instanceof Error ? err.message : "Import failed." });
