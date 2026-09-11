@@ -35,6 +35,7 @@ export default function AboutPage() {
           <Principle num={2} title="Honest about limits">Keep the overflow. Don't hide imperfection — dimension it, annotate it, ship it.</Principle>
           <Principle num={3} title="Skins are themes">One HTML. Many stylesheets. Zen, Bricks, Brutalist, Terminal, Blueprint, Sketchbook — same system, different voices.</Principle>
           <Principle num={4} title="Tools, not stock">Don't ship finished products. Ship the pieces. The designer decides the shape.</Principle>
+          <Principle num={5} title="Bring your own components">Bring your own components. Bring your own selectors. cia provides the design system — not React, not Vue, not a specific framework's shape. That's what keeps it useful in Angular, Svelte, Web Components, Razor, SharePoint, and plain HTML, not just wherever the component library happens to already work.</Principle>
         </div>
 
         <hr className="brush-rule" />
@@ -44,7 +45,12 @@ export default function AboutPage() {
           <TimelineItem date="2009 — the origin" title="A meme is posted.">Steven Frank ships the now-famous <code>CSS&nbsp;IS&nbsp;AWESOME</code> image. The internet keeps it forever.</TimelineItem>
           <TimelineItem date="2025 — the package" title="v0.1.0 is cut.">A token-driven SCSS design system takes shape. Light and dark themes, semantic tokens, an ~800-LOC mixin API, Figma tokens auto-generated from Tokens Studio.</TimelineItem>
           <TimelineItem date="2026 — the themes" title="Five voices, one system.">Zen, Bricks, Brutalist, Terminal, Blueprint — each a full skin, each honoring the overflow. Sketchbook arrives later in the year.</TimelineItem>
-          <TimelineItem date="now — for agents" title="An MCP server, shipped.">The MCP server is live — it ships inside the npm package and hands agents like Claude, Cursor, and Gemini a set of tools to reason about the system directly, no repo grep-walking required. Still on the way: a companion CLI for scaffolding, and custom bots that speak it fluently.</TimelineItem>
+          <TimelineItem date="2026 — for agents" title="An MCP server, shipped.">The MCP server ships inside the npm package and hands agents like Claude, Cursor, and Gemini a set of tools to reason about the system directly, no repo grep-walking required.</TimelineItem>
+          <TimelineItem date="now — zero install" title="A dedicated MCP package.">
+            <code>npx css-is-awesome-mcp</code> — a standalone companion package, so wiring an
+            agent up to cia takes one line in <code>.mcp.json</code> and no manual dependency
+            install. Same 30 tools, always resolves your installed cia version&apos;s real source.
+          </TimelineItem>
           <TimelineItem date="2026 — the launch" title="Published, public, live.">The first release lands on npm — <code>npm install css-is-awesome</code> is real, jsDelivr and unpkg mirror it, the GitHub repo is public, and this docs site is live at cssisawesome.com.</TimelineItem>
         </ol>
 
@@ -52,6 +58,7 @@ export default function AboutPage() {
 
         <h2>What it isn't</h2>
         <p>This isn't Tailwind. It isn't Bootstrap. It isn't a component library with 80 prebuilt headers. It's a box of primitives — bricks, if you prefer — that hand you a palette, a grid, and the honest freedom to build the rest yourself.</p>
+        <p>The <a href="/themes">theme editor</a> uses real UI components to validate a theme against something concrete, but those components aren't a product cia ships — they're test fixtures. cia doesn't have an opinion on your markup or your framework. You own your components; cia provides the styling system underneath them.</p>
         <p>If you want a system that looks like every other site, reach for something else. If you want one that gives you the tools and gets out of the way, this is it.</p>
 
         <p style={{ marginTop: '3rem' }}><Seal>Approved · v{version}</Seal></p>

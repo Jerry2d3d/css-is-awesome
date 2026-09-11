@@ -44,6 +44,11 @@ export default function ThemesPage() {
             Tweak any token live with the editor in the bottom-right, then
             download a complete <code>theme.css</code>.
           </p>
+          <p className={styles.disclaimer}>
+            This page uses real UI components to validate your theme, but
+            cia does not ship a component library. You own your markup and
+            components — cia provides the styling system underneath them.
+          </p>
         </section>
 
         {/* Table index — PRINT ONLY. The page numbers live here in the

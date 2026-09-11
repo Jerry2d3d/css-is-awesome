@@ -4,7 +4,7 @@
 
 [![npm](https://img.shields.io/npm/v/css-is-awesome?logo=npm&color=cb3837)](https://www.npmjs.com/package/css-is-awesome) [![CI](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml/badge.svg)](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml) [![Node](https://img.shields.io/badge/node-%E2%89%A520-43853d?logo=node.js&logoColor=white)](./package.json) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![semantic-release](https://img.shields.io/badge/semantic--release-enabled-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-**Bring your own selectors. We bring the design system.** One CSS file per theme — drop it in and the page restyles, no markup change. 24 themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
+**Bring your own components. Bring your own selectors. We bring the design system.** No component library to fight, in React, Vue, Angular, Svelte, Web Components, Razor, SharePoint, or plain HTML — cia styles the markup you already own. One CSS file per theme — drop it in and the page restyles, no markup change. 24 themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
 
 **Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
@@ -16,22 +16,18 @@
 
 **Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 30 tools covering themes, mixins, functions, tokens, recipes and components.
 
-```bash
-npm install -D @modelcontextprotocol/sdk zod   # required — npm will NOT install these for you
-```
-
 ```json
 {
   "mcpServers": {
     "css-is-awesome": {
-      "command": "node",
-      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
     }
   }
 }
 ```
 
-The SDK and `zod` are declared as *optional* peer dependencies, so a plain `npm install css-is-awesome` skips them and this in-repo copy exits with `@modelcontextprotocol/sdk is not installed`. Install both — or skip this entirely and run `npx css-is-awesome-mcp` instead, the dedicated zero-install package (see the MCP section below), which ships the SDK as a real dependency.
+That's the whole setup — [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) is a dedicated zero-install package, no manual dependency step. (The in-repo copy at `mcp/server.cjs` still works too, if you'd rather not add a second package — see the MCP section below for that path, which needs `npm install -D @modelcontextprotocol/sdk zod` first since those are optional peers here.)
 
 Why it matters more here than for older frameworks: no model has memorised cia's API the way it has memorised Tailwind's class names. Without `llm.txt` or MCP, an agent will confidently invent a Tailwind-shaped API. With them, it reads the real thing. Details at [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
