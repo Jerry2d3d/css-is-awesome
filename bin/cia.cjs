@@ -5,9 +5,12 @@
  * Subcommand router. Each subcommand lives in its own file under bin/ and
  * exposes a `run(args)` async function.
  *
- * Status: both converters shipped (EPIC-03 migration on-ramp, 6/6).
+ * Status: 4 converters shipped (v1.0 EPIC-03 tailwind+bootstrap; v1.2
+ *   EPIC-05 mui+chakra).
  *   migrate tailwind  — parse tailwind.config.* + dump theme JSON
  *   migrate bootstrap — parse Bootstrap SCSS/CSS vars + dump theme JSON
+ *   migrate mui       — parse a MUI createTheme() result + dump theme JSON
+ *   migrate chakra    — parse a Chakra extendTheme() result + dump theme JSON
  *
  * cia core ships ZERO JavaScript in the `files` manifest. The CLI lives in
  * `bin/` which is explicitly allowed per the architecture lock — same path
@@ -27,7 +30,7 @@ Usage:
 
 Commands:
   migrate <tool> [path]   Convert another design system's config to a cia
-                          theme. Tools: tailwind | bootstrap.
+                          theme. Tools: tailwind | bootstrap | mui | chakra.
   add <recipe>            Copy a recipe from the book into your project
                           (own the pattern). \`cia add --list\` to browse.
   analyze [path]          Design-system health check: dead cia.* symbols,
@@ -58,7 +61,18 @@ Tools:
              via Bootstrap convention.
              Run \`cia migrate bootstrap --help\` for full options.
 
-Common options (both tools):
+  mui        Read a MUI (Material UI v5+) theme module (createTheme({...})
+             result) and write a cia theme.scss. Maps palette.primary/
+             secondary/error/warning/info/success, text, background,
+             spacing, shape.borderRadius, typography.fontFamily.
+             Run \`cia migrate mui --help\` for full options.
+
+  chakra     Read a Chakra UI (v2) theme module (extendTheme({...})
+             result) and write a cia theme.scss. Maps colors, space,
+             radii, fonts, fontSizes.
+             Run \`cia migrate chakra --help\` for full options.
+
+Common options (all tools):
   --name <name>    Theme name. Default: migrated
   --out <path>     Custom output path. Default: ./cia-themes/<name>.scss
   --json           Skip the file write and dump JSON to stdout (pipe-safe).
@@ -66,7 +80,8 @@ Common options (both tools):
 Examples:
   cia migrate tailwind ./tailwind.config.js
   cia migrate bootstrap ./scss/_variables.scss --name acme
-  cia migrate bootstrap ./scss/_variables.scss --json | jq '.cia.report'
+  cia migrate mui ./src/theme.ts --name acme
+  cia migrate chakra ./src/theme.ts --json | jq '.cia.report'
 `;
 
 function fail(message, exit = 1) {
@@ -109,7 +124,17 @@ async function main() {
       await run(migrateArgs);
       return;
     }
-    fail(`unknown migrate tool '${tool}'. Available: tailwind, bootstrap.`);
+    if (tool === 'mui') {
+      const { run } = require('./migrate-mui.cjs');
+      await run(migrateArgs);
+      return;
+    }
+    if (tool === 'chakra') {
+      const { run } = require('./migrate-chakra.cjs');
+      await run(migrateArgs);
+      return;
+    }
+    fail(`unknown migrate tool '${tool}'. Available: tailwind, bootstrap, mui, chakra.`);
   }
 
   if (command === 'add') {
