@@ -119,6 +119,32 @@ export function extractDataThemeBlocks(css: string): ParsedBlock[] {
   return order.map((n) => byName.get(n)!);
 }
 
+// Splits a `light-dark(A, B)` value into its light/dark components. Paren-
+// aware comma split so a value like
+// `light-dark(rgba(0,0,0,.1), rgba(255,255,255,.1))` survives intact
+// instead of splitting on the inner commas. Returns null if the value
+// isn't a light-dark() call (mode-invariant tokens — radius, font,
+// spacing, etc. — apply the same either way).
+export function splitLightDark(raw: string): { light: string; dark: string } | null {
+  const trimmed = raw.trim();
+  const m = /^light-dark\(([\s\S]*)\)$/i.exec(trimmed);
+  if (!m) return null;
+  const inner = m[1];
+  let depth = 0;
+  let splitAt = -1;
+  for (let i = 0; i < inner.length; i++) {
+    const ch = inner[i];
+    if (ch === "(") depth++;
+    else if (ch === ")") depth--;
+    else if (ch === "," && depth === 0) { splitAt = i; break; }
+  }
+  if (splitAt === -1) return null;
+  return {
+    light: inner.slice(0, splitAt).trim(),
+    dark: inner.slice(splitAt + 1).trim(),
+  };
+}
+
 // Legacy / per-file shape: union of every `:root { ... }` block in the
 // file. Same return shape as a single ParsedBlock with name=null.
 export function extractRootBlock(css: string): ParsedBlock {

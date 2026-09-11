@@ -16,6 +16,7 @@ import {
   extractDataThemeBlocks,
   extractRootBlock,
   isConsolidated,
+  splitLightDark,
   type ParsedBlock,
 } from "@/lib/theme-parse";
 import {
@@ -561,14 +562,32 @@ export default function ThemeEditorDock() {
         return;
       }
       const base = sanitizeName(nameInput, `${family}-custom`);
-      applyImport(
-        base,
-        tabMode === "light" ? block.values : undefined,
-        tabMode === "dark" ? block.values : undefined,
-      );
+      // A bare `:root` block is cia's normal single-file theme shape —
+      // both modes live in ONE block via `light-dark(lightVal, darkVal)`
+      // per token. Split each value so both modes actually get real data;
+      // dumping the whole raw map into only the active tab (the old
+      // behavior) left the other mode with nothing, so switching modes
+      // silently fell back to whatever theme the site currently had active.
+      const lightValues = new Map<string, string>();
+      const darkValues = new Map<string, string>();
+      let splitCount = 0;
+      for (const [token, raw] of block.values) {
+        const split = splitLightDark(raw);
+        if (split) {
+          lightValues.set(token, split.light);
+          darkValues.set(token, split.dark);
+          splitCount++;
+        } else {
+          // Mode-invariant value (radius, font, spacing, duration, …) —
+          // same in both modes.
+          lightValues.set(token, raw);
+          darkValues.set(token, raw);
+        }
+      }
+      applyImport(base, lightValues, darkValues);
       setImportMsg({
         kind: "ok",
-        text: `Imported :root block into ${tabMode} mode (${block.values.size} tokens).`,
+        text: `Imported :root block into both modes (${block.values.size} tokens, ${splitCount} via light-dark()).`,
       });
     } catch (err) {
       setImportMsg({ kind: "err", text: err instanceof Error ? err.message : "Import failed." });
