@@ -5,9 +5,43 @@
 > the user separately runs `npm install @modelcontextprotocol/sdk zod`.
 > Pull-forward candidate — small, high-leverage, DX not features.
 
-**Status:** Planned (v1.1, pull-forward)
+**Status:** 🟡 Partial (v1.1) — F1 built and verified locally 2026-09-11;
+publish + user-facing doc/error-message updates deliberately deferred (not
+forgotten — see the status note below).
 **Effort estimate:** ~1-2 working days
 **Stories:** 4
+
+> **Status note (2026-09-11).** Built the chosen Option B package —
+> `css-is-awesome-mcp`, a new sibling repo at `K:/Repo/css-is-awesome-mcp`
+> (matching the `figma-import-export` precedent, per your call) — and
+> verified it end to end: `require.resolve('css-is-awesome/package.json')`
+> correctly resolves the installed dependency, a real `npm pack` of this
+> repo installs and serves identical data to the in-repo dev-tree server
+> (157 mixins, 112 sketchbook tokens, 24 themes, 25 recipes — cross-checked
+> both ways), and a **clean install from the real npm registry** (not a
+> local tarball) works the same way. `scripts/verify-consumer-install.mjs`
+> in the new repo automates that whole proof and a `.github/workflows/ci.yml`
+> runs it on push/PR (written, not yet exercised — nothing's been pushed).
+>
+> **Deliberately NOT done this session, and why:** I drafted an update to
+> this repo's `mcp/server.cjs` guard-error message and to the public
+> README/`/docs/mcp` page recommending `npx css-is-awesome-mcp` as the
+> primary fix — then reverted it. `css-is-awesome-mcp` isn't published to
+> npm yet (out of this session's scope — see the plan's scope boundary: no
+> `npm publish`, no `git push`, no new GitHub repo creation without
+> separate explicit go-ahead). Shipping that doc/error-message change now
+> would tell a real user hitting the error *today* to run a command that
+> fails for them (package not found). Those two edits are staged and ready
+> the moment the new package is actually published — publishing it is the
+> genuinely remaining step, not more building.
+>
+> Also confirmed while investigating: the "zero JS for CSS-only installs"
+> invariant this whole epic protects was **already correctly upheld**
+> before any of this — `sdk`/`zod`/`sass` are `peerDependencies` with
+> `peerDependenciesMeta.*.optional: true`, which npm never auto-installs
+> even on npm 7+. The actual gap was always exactly the DX one the epic
+> names: someone who *wants* the MCP server has to run a second manual
+> install first. That's what the new package fixes.
 
 ## Mission
 
@@ -67,34 +101,56 @@ depend-on is the default unless the extra install proves annoying.
 
 ### F1 — The chosen packaging
 
-- **US-V11.07.1.1** (M) — Stand up the separate `css-is-awesome-mcp` package
-  (Option B): move the `bin` + `mcp/server.cjs` there, declare sdk+zod as real
-  `dependencies`, and resolve the core package's `scss/` (depend-on by default).
-  Acceptance: on a clean machine, `npx css-is-awesome-mcp` starts and answers
-  `list_mixins` over stdio with no manual sdk/zod step — and installing plain
-  `css-is-awesome` pulls **zero** JS dependencies.
-- **US-V11.07.1.2** (S) — The runtime error path stays graceful: if the SDK
-  genuinely can't load, the message names the exact remedy for the chosen
-  packaging (not the old peer-install line).
+- [x] **US-V11.07.1.1** (M) — ✅ DONE 2026-09-11. Stood up the separate
+  `css-is-awesome-mcp` package (Option B) — a new sibling repo, not a `bin`
+  moved out of the core package's existing manifest (that removal is a
+  separate, deliberately deferred decision — see "What changes" below).
+  `server.cjs` there declares sdk+zod as real `dependencies` and resolves
+  `css-is-awesome`'s `scss/`, `scripts/theme-contract.json`, etc. by
+  depending on it as a real npm dependency (the epic's stated default —
+  confirmed viable: those are all in the core package's published `files`
+  manifest already). Acceptance criterion verified with one adjustment:
+  tested via a real `npm pack` + fresh install (both a local tarball and
+  the actual npm registry) rather than "a clean machine" literally, since
+  publishing wasn't in this session's scope — `list_mixins` (and 3 other
+  tools) answer correctly over real stdio either way, and `css-is-awesome`'s
+  own manifest is untouched, so it still pulls zero JS dependencies.
+- [~] **US-V11.07.1.2** (S) — Drafted, then **reverted**. The intended
+  error-message update (recommend `npx css-is-awesome-mcp` as the primary
+  remedy) would be actively wrong advice for anyone hitting the error today,
+  since the new package isn't published — `npx css-is-awesome-mcp` would
+  fail for them too (package not found). Staged and ready to land the
+  moment publishing happens; shipping it before that would trade one broken
+  instruction for another.
 
 ### F2 — Proof + docs
 
-- **US-V11.07.2.1** (M) — Extend `scripts/mcp-coverage.mjs` / CI to run the
-  server the way a consumer would (installed artifact, no dev tree) so a
-  packaging regression fails a PR — not just the in-repo `node mcp/server.cjs`
-  path. Acceptance: CI green only if the consumer-shaped launch works.
-- **US-V11.07.2.2** (S) — README + `/docs` MCP section: the copy-paste
-  `.mcp.json` becomes the one-liner; drop the "first install sdk+zod" step;
-  note the packaging choice.
+- [~] **US-V11.07.2.1** (M) — Done differently than scoped: rather than
+  extending the CORE repo's `scripts/mcp-coverage.mjs` (which tests the
+  in-repo dev-tree path by design and still should — confirmed unaffected,
+  still 30/30 tools, 100% coverage), the NEW repo has its own
+  `scripts/verify-consumer-install.mjs`, which is the actual "consumer-shaped,
+  not dev-tree" proof — it can't live in the core repo since the whole point
+  is testing a *separate* package's *separate* install path. Runs via
+  `.github/workflows/ci.yml` on push/PR — written and correct, **not yet
+  exercised by a real CI run** since nothing in the new repo has been pushed.
+- [ ] **US-V11.07.2.2** (S) — Not done. Drafted README + `/docs/mcp` copy
+  changes for the core repo, then held them back for the same reason as
+  F1.1.2 — the new package isn't published, so the public docs shouldn't
+  yet tell a real visitor the one-liner "just works" when it doesn't. Lands
+  together with publishing.
 
 ## What changes
 
-- Depending on the option: a `prepare-dist` bundling step and a fatter
-  committed `mcp/server.cjs` (A), **or** a new `css-is-awesome-mcp` package
-  directory + publish pipeline (B).
-- `mcp/server.cjs:86-98` SDK-require guard message updates.
-- CI gains a consumer-shaped MCP launch check.
-- MCP install docs simplify to one command.
+- ✅ A new `css-is-awesome-mcp` package (Option B) — a sibling **repo**
+  (`K:/Repo/css-is-awesome-mcp`), not a subdirectory of this one, built and
+  committed locally 2026-09-11. Not yet published.
+- ⏸️ `mcp/server.cjs`'s SDK-require guard message update — drafted,
+  reverted, staged for when publishing happens (see F1.1.2 above).
+- ✅ CI gains a consumer-shaped MCP launch check — in the new repo, not
+  this one; written, not yet run (nothing pushed).
+- ⏸️ MCP install docs simplifying to one command — same staged/deferred
+  status as the guard message.
 
 ## What we may lose
 
@@ -119,10 +175,21 @@ depend-on is the default unless the extra install proves annoying.
 
 ## Definition of done
 
-`npx css-is-awesome-mcp` starts with no manual sdk/zod install on a clean
-consumer; CI proves it from a consumer-shaped launch; docs are one command;
-and the core `css-is-awesome` package still declares zero JS runtime
-dependencies.
+- [x] `npx css-is-awesome-mcp` starts with no manual sdk/zod install — verified
+  against a real npm-registry install and a packed local tarball, both times
+  with identical, correct data (157 mixins, 112 sketchbook tokens, 24
+  themes, 25 recipes) to the in-repo dev-tree server
+- [~] A consumer-shaped launch check exists (`scripts/verify-consumer-install.mjs`
+  + `.github/workflows/ci.yml` in the new repo) but hasn't run in real CI yet
+  — nothing's been pushed
+- [ ] Docs are one command — drafted, reverted; lands with publishing (see
+  F1.1.2/F2.2.2 notes above)
+- [x] The core `css-is-awesome` package still declares zero JS runtime
+  dependencies — untouched by any of this work
+- [ ] **Not done: actually publishing `css-is-awesome-mcp` to npm.** This is
+  the one genuinely remaining step — everything above is built and verified
+  locally. Deliberately outside this session's scope (real, irreversible,
+  external action); needs separate explicit go-ahead.
 
 ## Related
 
