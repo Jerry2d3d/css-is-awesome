@@ -1,3 +1,10 @@
+## [1.13.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.1...v1.13.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* **themes:** fix theme-editor import losing the other mode's data (take 2) ([2d90aa9](https://github.com/Jerry2d3d/css-is-awesome/commit/2d90aa9cadfaae9ca285bcfbc8e668d81744b573))
+
 ## [1.13.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.0...v1.13.1) (2026-09-11)
 
 
