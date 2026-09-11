@@ -402,7 +402,7 @@ Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 **Stable, [published on npm](https://www.npmjs.com/package/css-is-awesome)** (first published 2026-09-01). The mixin API, functions, token contract, and theme architecture are stable and under strict SemVer — breaking changes require a major bump. See [`VERSIONING.md`](./VERSIONING.md) for the policy.
 
-The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 30-tool MCP server. The npm package ships ZERO JavaScript by hard rule.
+The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 30-tool MCP server (now also available zero-install via the companion [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package). The npm package ships ZERO JavaScript by hard rule.
 
 See [CHANGELOG.md](./CHANGELOG.md) for the full history and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 upgrade path.
 

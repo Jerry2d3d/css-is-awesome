@@ -244,9 +244,22 @@ resolve_size({ px: 17 })
 
       <h2 id="versioning">Versioning</h2>
       <p>
-        The MCP server ships in the cia package itself; its version is cia&rsquo;s
-        version. When cia&rsquo;s mixin API changes, the server reports the new
-        API on the next read. No separate semver, no client config to update.
+        Two ways to run this server, two versioning stories. The in-repo copy
+        (<code>mcp/server.cjs</code>) ships inside the cia package itself, so
+        its <code>serverInfo.version</code> is cia&rsquo;s own version — when
+        cia&rsquo;s mixin API changes, it reports the new API on the next
+        read, no separate semver, no client config to update.
+      </p>
+      <p>
+        The dedicated{" "}
+        <code>css-is-awesome-mcp</code> package tracks its own, independent
+        release cadence instead (packaging fixes don&rsquo;t need a cia
+        release, and vice versa) — its{" "}
+        <code>serverInfo.version</code> reports its own version, not
+        cia&rsquo;s. It always resolves whatever version of{" "}
+        <code>css-is-awesome</code> you actually have installed as a real
+        dependency, so the mixin data it serves is never stale even though
+        the version number reported is a different one.
       </p>
     </>
   );
