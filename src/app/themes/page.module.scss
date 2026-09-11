@@ -44,6 +44,47 @@
   color: var(--text-muted);
 }
 
+/* ---------- What you can edit ---------- */
+
+.howItWorks {
+  max-width: 1000px;
+  margin: 0 auto 3rem;
+}
+.howTitle {
+  text-align: center;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+.howCard {
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-md, 8px);
+  background: var(--paper-raised, var(--paper-default));
+  padding: 1rem 1.1rem;
+
+  h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+  }
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+}
+.howNote {
+  margin: 1.25rem auto 0;
+  max-width: 70ch;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+}
+
 /* ---------- Builder layout ---------- */
 
 .layout {

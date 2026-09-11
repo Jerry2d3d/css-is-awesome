@@ -51,6 +51,39 @@ export default function ThemesPage() {
           </p>
         </section>
 
+        <section className={styles.howItWorks} aria-label="What you can edit">
+          <h2 className={styles.howTitle}>What you can edit</h2>
+          <div className={styles.cardGrid}>
+            <div className={styles.howCard}>
+              <h3>Color</h3>
+              <p>Paper, ink, surfaces, and borders; action/brand colors; status, feedback, and guide tones; AI and code accents — every color token, light and dark set independently.</p>
+            </div>
+            <div className={styles.howCard}>
+              <h3>Layout</h3>
+              <p>Corner radius, the numbered spacing scale, and blur.</p>
+            </div>
+            <div className={styles.howCard}>
+              <h3>Type</h3>
+              <p>Display, body, and mono font stacks, plus size, weight, and line-height.</p>
+            </div>
+            <div className={styles.howCard}>
+              <h3>Motion</h3>
+              <p>Durations, easing curves, shadows, glows, and z-index layers.</p>
+            </div>
+            <div className={styles.howCard}>
+              <h3>🖨 Print</h3>
+              <p>Click <strong>Print</strong> in the dock to preview how the active theme prints, and edit its Ink/Paper/Rules/Muted palette separately from the screen colors — persists per theme.</p>
+            </div>
+          </div>
+          <p className={styles.howNote}>
+            Edit any token live in the dock (bottom-right) and watch every
+            component on this page reskin instantly, per light/dark mode.
+            Download a complete <code>theme.css</code>, copy a share link
+            that reproduces your exact edits, or upload an existing{" "}
+            <code>theme.css</code> to keep editing it.
+          </p>
+        </section>
+
         {/* Table index — PRINT ONLY. The page numbers live here in the
             markup, hidden on screen and revealed by @media print (all
             CSS, zero JS). They're honest because every section forces
