@@ -27,7 +27,7 @@
 }
 ```
 
-That's the whole setup — [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) is a dedicated zero-install package, no manual dependency step. (The in-repo copy at `mcp/server.cjs` still works too, if you'd rather not add a second package — see the MCP section below for that path, which needs `npm install -D @modelcontextprotocol/sdk zod` first since those are optional peers here.)
+That's the whole setup — [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) is a dedicated zero-install package, no manual dependency step. `npx` fetches and caches it on first run with no install command needed; if you'd rather pin an exact version in your own `package.json`/lockfile, `npm install css-is-awesome-mcp` works too — `npx` then uses the locally installed copy instead of fetching. (The in-repo copy at `mcp/server.cjs` still works too, if you'd rather not add a second package — see the MCP section below for that path, which needs `npm install -D @modelcontextprotocol/sdk zod` first since those are optional peers here.)
 
 Why it matters more here than for older frameworks: no model has memorised cia's API the way it has memorised Tailwind's class names. Without `llm.txt` or MCP, an agent will confidently invent a Tailwind-shaped API. With them, it reads the real thing. Details at [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
@@ -307,6 +307,12 @@ cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `
     }
   }
 }
+```
+
+No install command required — `npx` fetches and caches the package the first time your MCP client runs it. Prefer a pinned version in your own lockfile instead? `npm install css-is-awesome-mcp` works the same way as any other dependency; `npx` then runs the locally installed copy rather than fetching one:
+
+```bash
+npm install css-is-awesome-mcp
 ```
 
 **Alternative — the copy already in your `node_modules`:** cia's own `files` manifest ships [`mcp/server.cjs`](./mcp/server.cjs) too, for anyone who'd rather not add a second package. This copy needs its SDK peer deps installed manually first, since they're declared as *optional* peers (so a plain `npm install css-is-awesome` doesn't pull JS into a CSS-only install):

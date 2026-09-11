@@ -142,6 +142,9 @@ SDK ships as a real dependency, no separate peer-install step:
   }
 }
 ```
+No install command needed — `npx` fetches it on first run. To pin an exact
+version in a lockfile instead, `npm install css-is-awesome-mcp` works the same
+as any other dependency; `npx` then uses that local copy.
 
 Alternative: the copy already in `node_modules` (this repo's own `mcp/server.cjs`).
 **Two dependencies are required and npm will NOT install them for you** for this

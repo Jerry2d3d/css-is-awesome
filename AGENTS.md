@@ -323,6 +323,8 @@ Two ways to run it — prefer the dedicated `npx css-is-awesome-mcp` package (ze
 }
 ```
 
+No install step needed — `npx` fetches it on first run. To pin an exact version instead, `npm install css-is-awesome-mcp` first; `npx` then uses that local copy.
+
 Or run this in-repo copy directly — needs its SDK peer deps installed manually first (`npm install -D @modelcontextprotocol/sdk zod` in the client project, since they're optional peers):
 
 ```json

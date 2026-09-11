@@ -31,6 +31,19 @@ export default function McpPage() {
 }`}</Example.Code>
       </Example>
       <p>
+        No install command needed — <code>npx</code> fetches and caches the
+        package the first time your MCP client runs it. Prefer a pinned
+        version in your own lockfile instead? Install it like any other
+        dependency:
+      </p>
+      <Example>
+        <Example.Code>{`npm install css-is-awesome-mcp`}</Example.Code>
+      </Example>
+      <p>
+        <code>npx</code> then runs the locally installed copy instead of
+        fetching one.
+      </p>
+      <p>
         <strong>Alternative — the copy already in your <code>node_modules</code>.</strong>{" "}
         cia&rsquo;s own package ships <code>mcp/server.cjs</code> too, for anyone
         who&rsquo;d rather not add a second package. This copy needs its SDK
