@@ -586,7 +586,8 @@ function writeThemeScss(cia, options = {}) {
     timestamp = new Date().toISOString().slice(0, 19) + 'Z',
   } = options;
 
-  const sourceLabel = tool === 'bootstrap' ? 'Bootstrap values' : 'Tailwind values';
+  const TOOL_LABELS = { bootstrap: 'Bootstrap values', mui: 'MUI values', chakra: 'Chakra values', tailwind: 'Tailwind values' };
+  const sourceLabel = TOOL_LABELS[tool] || 'Tailwind values';
   const lines = [];
 
   // ── Header (block comment so consumer sees it before any SCSS) ──
@@ -812,6 +813,7 @@ async function run(args) {
 module.exports = {
   run,
   findTailwindConfig,
+  loadConfig,
   extractTheme,
   summary,
   // Mapping internals exported for unit testing + external introspection
