@@ -338,15 +338,22 @@ function validateTokenSet(declared, contract) {
 }
 
 // -----------------------------------------------------------
-// Validate a single file. Auto-detects per-file vs consolidated.
+// Validate raw CSS text. Auto-detects per-file vs consolidated.
 // Returns a unified result shape with either a flat pass/fail
 // (per-file) or a list of per-theme pass/fails (consolidated).
+//
+// `options.label` names the result (shown as `result.file`) and, in the
+// legacy per-file branch, seeds the a11y report's inferred theme name —
+// there's no real file path when validating text handed over directly
+// (e.g. from an MCP tool call), so callers that have one should pass it
+// as label; callers that don't get '(pasted CSS)'.
 // -----------------------------------------------------------
-function validateFile(filePath, contract, options) {
+function validateText(text, contract, options) {
   const opts = options || {};
   const wantA11y = opts.a11y !== false;
+  const label = opts.label || '(pasted CSS)';
   const result = {
-    file: filePath,
+    file: label,
     mode: 'per-file',
     ok: false,
     declaredCount: 0,
@@ -355,14 +362,6 @@ function validateFile(filePath, contract, options) {
     a11y: null,
     error: null,
   };
-
-  let text;
-  try {
-    text = fs.readFileSync(filePath, 'utf8');
-  } catch (err) {
-    result.error = err.message;
-    return result;
-  }
 
   if (isConsolidated(text)) {
     result.mode = 'consolidated';
@@ -409,10 +408,31 @@ function validateFile(filePath, contract, options) {
   result.missing = v.missing;
   result.ok = v.ok;
   if (wantA11y) {
-    const inferredName = path.basename(path.dirname(filePath)) || path.basename(filePath, '.css');
+    const inferredName = label !== '(pasted CSS)' ? (path.basename(path.dirname(label)) || path.basename(label, '.css')) : 'theme';
     result.a11y = a11y.auditThemeTokens({ name: inferredName, values: root.values });
   }
   return result;
+}
+
+// Reads a file and delegates to validateText, with the file path as the
+// result's label (and a11y's inferred-name source in the legacy branch).
+function validateFile(filePath, contract, options) {
+  let text;
+  try {
+    text = fs.readFileSync(filePath, 'utf8');
+  } catch (err) {
+    return {
+      file: filePath,
+      mode: 'per-file',
+      ok: false,
+      declaredCount: 0,
+      missing: [],
+      themes: null,
+      a11y: null,
+      error: err.message,
+    };
+  }
+  return validateText(text, contract, Object.assign({}, options, { label: filePath }));
 }
 
 // -----------------------------------------------------------
@@ -665,6 +685,7 @@ module.exports = {
   extractDataThemeBlocks,
   isConsolidated,
   validateFile,
+  validateText,
   loadContract,
   a11y: a11y,
 };

@@ -685,6 +685,19 @@ const handlers = {
     return { total: matches.length, items: matches };
   },
 
+  // Validates ANY theme CSS against the real token contract + a11y audit —
+  // not scoped to cia's own shipped themes. Works on cia's themes, a fully
+  // custom one built by an agent (e.g. via the derive-theme assemble_prompt
+  // intent), anything — whatever CSS text is passed in. Reuses the same
+  // validateText() the CLI (`npm run validate-themes`) calls, so a pass/fail
+  // here is exactly what `node scripts/theme-validator.js` would report,
+  // not a reimplementation that could quietly drift from it.
+  validate_theme({ css, label } = {}) {
+    if (!css || typeof css !== 'string') throw new Error('validate_theme: css is required');
+    const { validateText, loadContract } = require(path.join(SCRIPTS_DIR, 'theme-validator.js'));
+    return validateText(css, loadContract(), { label: label || undefined });
+  },
+
   // ─── Mixins ────────────────────────────────────────────────────────────
 
   list_mixins({ category, component, limit = 500, offset = 0 } = {}) {
@@ -1326,6 +1339,20 @@ async function startServer() {
       limit: z.number().int().min(1).max(50).optional(),
     },
   }, async (a) => ok(handlers.search_themes(a || {})));
+
+  server.registerTool('validate_theme', {
+    description:
+      'Validate ANY theme CSS against cia\'s real token contract and WCAG contrast audit — the same check ' +
+      '`npm run validate-themes` runs, exposed as a tool call. Not scoped to cia\'s own themes: works on a ' +
+      'fully custom theme you (or another agent) just built, e.g. via the derive-theme assemble_prompt intent. ' +
+      'Pass compiled CSS (a :root or [data-theme="..."] block) — this does not compile Sass, so give it the ' +
+      'output, not .scss source. Returns missing required tokens (if any, mode "per-file" or "consolidated" ' +
+      'depending on shape) and a11y warnings per contrast pair.',
+    inputSchema: {
+      css: z.string().describe('Compiled theme CSS to validate — the :root/[data-theme] block(s), not .scss source.'),
+      label: z.string().optional().describe('Optional name for the result (e.g. the intended theme name); purely cosmetic.'),
+    },
+  }, async (a) => ok(handlers.validate_theme(a || {})));
 
   // Mixins
   server.registerTool('list_mixins', {

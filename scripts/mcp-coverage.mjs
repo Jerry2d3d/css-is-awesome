@@ -197,6 +197,12 @@ try {
       b.includes(sample.mixins) ? null : "assembled prompt missing the requested mixin",
     );
   }
+  await call("validate_theme", { css: ':root { --paper: #fff; }', label: "coverage-smoke" }, (b) => {
+    const r = JSON.parse(b);
+    return r.ok === false && Array.isArray(r.missing) && r.missing.length > 0
+      ? null
+      : "expected ok:false with missing required tokens for a deliberately incomplete theme";
+  });
 
   // ─── Report ───────────────────────────────────────────────────────────────
   const tested = new Set(results.map((r) => r.name));

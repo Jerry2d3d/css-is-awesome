@@ -65,7 +65,7 @@ export default function McpPage() {
 }`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 30 total: 28 across 8 families + 2 specialty tools</h2>
+      <h2 id="tools">Tools — 31 total: 28 across 8 families + 3 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -256,6 +256,35 @@ resolve_size({ px: 17 })
 //
 // AI follows the note: prefer the snapped grid value unless the
 // design intent specifically requires the off-grid value.`}</Example.Code>
+      </Example>
+
+      <h2 id="validate-theme">
+        <code>validate_theme</code>
+      </h2>
+      <p>
+        Validate ANY theme CSS against cia&rsquo;s real token contract and
+        WCAG contrast audit — the same check{" "}
+        <code>npm run validate-themes</code> runs, exposed as a tool call
+        instead of a shell command. Not scoped to cia&rsquo;s own shipped
+        themes: pass a fully custom theme you (or another agent) just
+        built — for example, the output of the{" "}
+        <code>derive-theme:&lt;base&gt;</code> <code>assemble_prompt</code>{" "}
+        intent above — and get back a real pass/fail before you write it
+        anywhere.
+      </p>
+      <p>
+        Pass compiled CSS (a <code>:root</code> or{" "}
+        <code>[data-theme=&quot;...&quot;]</code> block) — this does not
+        compile Sass, so give it the output, not <code>.scss</code> source.
+      </p>
+      <Example>
+        <Example.Code>{`validate_theme({ css: theCssYouJustBuilt, label: "boilerplatev2" })
+// →  { ok: false, mode: "consolidated",
+//      themes: [{ name: "boilerplatev2", ok: false,
+//        missing: ["--space-unit", "--space-0"], a11y: [...] }] }
+//
+// ok: false means required tokens are missing, or an a11y pair failed —
+// fix and re-validate before writing the file anywhere.`}</Example.Code>
       </Example>
 
       <h2 id="security">Security + portability</h2>
