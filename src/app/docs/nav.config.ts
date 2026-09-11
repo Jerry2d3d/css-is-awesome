@@ -46,6 +46,8 @@ export const docsNav: DocsNavSection[] = [
     items: [
       { label: "From Bootstrap", href: "/docs/migration-bootstrap" },
       { label: "From Tailwind", href: "/docs/migration-tailwind" },
+      { label: "From MUI", href: "/docs/migration-mui" },
+      { label: "From Chakra", href: "/docs/migration-chakra" },
     ],
   },
   {
