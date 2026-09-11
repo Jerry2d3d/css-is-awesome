@@ -388,11 +388,11 @@ Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 | Bundle | Size | Use case |
 |---|---|---|
-| `dist/tokens.css` | 2.2 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
-| `dist/css-is-awesome.core.min.css` | 2.4 KB | Tokens + resets, no utilities or components |
-| `dist/css-is-awesome.utilities.min.css` | 4.1 KB | Every `cia-*` utility class, nothing else |
-| `dist/css-is-awesome.min.css` | 7.3 KB | Full bundle (everything) |
-| Per-theme `themes/<name>/theme.css` | 1.5–3.4 KB | One file per theme, both modes via `light-dark()`, drop-in with no markup change |
+| `dist/tokens.css` | 2.25 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
+| `dist/css-is-awesome.core.min.css` | 2.38 KB | Tokens + resets, no utilities or components |
+| `dist/css-is-awesome.utilities.min.css` | 4.75 KB | Every `cia-*` utility class, nothing else |
+| `dist/css-is-awesome.min.css` | 7.96 KB | Full bundle (everything) |
+| Per-theme `themes/<name>/theme.css` | 1.9–3.7 KB | One file per theme, both modes via `light-dark()`, drop-in with no markup change |
 | **JavaScript shipped in package** | **0 KB** | Zero. Period. JS-driven features ship as separate add-on packages. |
 
 ## Status

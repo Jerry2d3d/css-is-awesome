@@ -44,8 +44,8 @@ type Tier = {
 
 const BUNDLE_TIERS: Tier[] = [
   { name: "core",      size: "2.4 KB gzipped", contains: "Tokens (CSS custom properties) + resets. The minimum to use the system." },
-  { name: "utilities", size: "4.1 KB gzipped", contains: "All cia-* utility classes (spacing, typography, layout, color, etc.)." },
-  { name: "full",      size: "7.3 KB gzipped", contains: "Core + utilities + every component recipe in one file." },
+  { name: "utilities", size: "4.75 KB gzipped", contains: "All cia-* utility classes (spacing, typography, layout, color, etc.)." },
+  { name: "full",      size: "7.96 KB gzipped", contains: "Core + utilities + every component recipe in one file." },
 ];
 
 function Cell({ v }: { v: string | boolean }) {
