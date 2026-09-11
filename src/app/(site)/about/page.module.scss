@@ -9,6 +9,17 @@
   padding: 5rem 1.5rem 3rem;
   text-align: center;
 }
+// The global .lead class (src/app/globals.css) has max-width but no
+// auto margin — correct for its main use (left-aligned docs-page intros),
+// wrong here: without this, the narrower block sits flush against .hero's
+// left edge instead of centering, even though .hero itself has
+// text-align: center (that only centers inline content WITHIN the block,
+// not the block's own position). Same override /themes' page.module.scss
+// already carries for its own hero — this page was missing it.
+.hero :global(.lead) {
+  margin-left: auto;
+  margin-right: auto;
+}
 .eyebrow {
   font-family: var(--font-script);
   font-size: 1.5rem;
