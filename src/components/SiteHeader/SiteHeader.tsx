@@ -21,15 +21,21 @@ import ThemeSelect from "@/components/ThemeSelect";
 
 type NavId = "home" | "docs" | "themes" | "examples" | "compare" | "showcase" | "blog" | "about";
 
-const NAV: { id: NavId; label: string; href: string }[] = [
+// `prefetch: false` on the less-frequently-clicked links. next/link defaults
+// to prefetch: true, and since this header renders on every page, all 8
+// links enter the viewport (and get prefetched) immediately on load — any
+// link not clicked within a few seconds logs a "preloaded but not used"
+// console warning for its now-wasted CSS chunk. Kept on for the two links
+// people actually click a lot (Docs, Themes); disabled for the rest.
+const NAV: { id: NavId; label: string; href: string; prefetch?: boolean }[] = [
   { id: "home",     label: "Home",     href: "/" },
   { id: "docs",     label: "Docs",     href: "/docs" },
   { id: "themes",   label: "Themes",   href: "/themes" },
   { id: "examples", label: "Examples", href: "/examples" },
   { id: "compare",  label: "Compare",  href: "/compare" },
-  { id: "showcase", label: "Showcase", href: "/showcase" },
-  { id: "blog",     label: "Blog",     href: "/blog" },
-  { id: "about",    label: "About",    href: "/about" },
+  { id: "showcase", label: "Showcase", href: "/showcase", prefetch: false },
+  { id: "blog",     label: "Blog",     href: "/blog",     prefetch: false },
+  { id: "about",    label: "About",    href: "/about",    prefetch: false },
 ];
 
 function currentFromPath(path: string): NavId | null {
@@ -71,6 +77,7 @@ export default function SiteHeader(_props: { current?: string } = {}) {
             <Link
               key={item.id}
               href={item.href}
+              prefetch={item.prefetch}
               className={item.id === current ? styles.isActive : undefined}
               aria-current={item.id === current ? "page" : undefined}
             >
@@ -93,6 +100,7 @@ export default function SiteHeader(_props: { current?: string } = {}) {
             <li key={item.id}>
               <Link
                 href={item.href}
+                prefetch={item.prefetch}
                 className={item.id === current ? styles.isHere : undefined}
                 aria-current={item.id === current ? "page" : undefined}
               >
