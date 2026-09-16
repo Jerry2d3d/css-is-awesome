@@ -1,0 +1,66 @@
+@use 'components/navigation' as nav;
+@use 'mixins' as m;
+
+.wrap {
+  margin-block-end: m.space(4);
+}
+
+.pager {
+  [data-slot="list"] {
+    @include nav.pagination($gap: 2xs);
+    flex-wrap: wrap;
+  }
+
+  // <button> items get the same box the mixin gives an <a>; the reset is
+  // what strips the UA button chrome so both variants look identical.
+  [data-slot="item"] {
+    @include m.button-reset;
+    @include nav.pagination-item($size: 2.25rem, $r: md);
+    @include m.focus-ring;
+  }
+
+  [data-slot="ellipsis"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 2.25rem;
+    color: var(--text-muted);
+    user-select: none;
+  }
+
+  [data-slot="summary"] {
+    // Desktop: a status line under the run of pages (full-width flex item).
+    flex-basis: 100%;
+    margin-block-start: m.space(2);
+    @include m.font(reg, 1);
+    color: var(--text-secondary);
+  }
+
+  // Mobile: prev / "Page 3 of 12" / next. Same markup — the numbered run
+  // and the first/last jumps hide, and the summary is seated between the
+  // two arrows via flex order. Pure CSS, comes back on rotate.
+  @include m.mobile-only {
+    [data-slot="list"] {
+      justify-content: space-between;
+      flex-wrap: nowrap;
+    }
+
+    li:not([data-slot="prev"]):not([data-slot="next"]):not([data-slot="summary"]) {
+      display: none;
+    }
+
+    [data-slot="prev"] { order: 0; }
+    [data-slot="summary"] {
+      order: 1;
+      flex-basis: auto;
+      margin: 0;
+    }
+    [data-slot="next"] { order: 2; }
+  }
+}
+
+.hint {
+  margin: m.space(3) 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
