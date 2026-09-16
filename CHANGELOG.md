@@ -1,3 +1,16 @@
+# [1.15.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.3...v1.15.0) (2026-09-16)
+
+
+### Features
+
+* **recipes:** breadcrumb recipe + live demo ([c50fdd2](https://github.com/Jerry2d3d/css-is-awesome/commit/c50fdd2c52940f85d53020d095c410f3a0cb84a7))
+* **recipes:** color-picker recipe + live demo ([4cc34f6](https://github.com/Jerry2d3d/css-is-awesome/commit/4cc34f6cf875fdcd3bbf92ed3e4c50aac4d83cb0))
+* **recipes:** combobox-multiselect recipe + live demo ([1b919e0](https://github.com/Jerry2d3d/css-is-awesome/commit/1b919e08a87fceca49d25b6d5d1f084bc2359317))
+* **recipes:** file-upload recipe + live demo ([74043c4](https://github.com/Jerry2d3d/css-is-awesome/commit/74043c4aa3b1301d5ebc49b40151ab91f715804e))
+* **recipes:** pagination recipe + live demo ([d93fa2a](https://github.com/Jerry2d3d/css-is-awesome/commit/d93fa2a37ff6f8927a5736c3110c3af25901b006))
+* **recipes:** sortable-list recipe + live demo ([9ddd71e](https://github.com/Jerry2d3d/css-is-awesome/commit/9ddd71ecab5ab8d2f72717083bcffb8b7df1fe68))
+* **recipes:** toast recipe + live demo ([45ead4d](https://github.com/Jerry2d3d/css-is-awesome/commit/45ead4d3bded5a99228486deabe8136056d1bf4e))
+
 ## [1.14.3](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.2...v1.14.3) (2026-09-12)
 
 
