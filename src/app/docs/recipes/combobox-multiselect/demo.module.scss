@@ -1,0 +1,112 @@
+@use 'mixins' as m;
+@use 'layout' as layout;
+@use 'components/forms' as forms;
+@use 'components/feedback' as feedback;
+@use 'components/overlay' as overlay;
+@use 'components/buttons' as buttons;
+
+.multiselect {
+  max-inline-size: 28rem;
+  margin-block-end: m.space(4);
+}
+
+.label {
+  @include forms.label-base;
+}
+
+// Positioning context for the popup — wraps the field and the listbox only.
+.control {
+  position: relative;
+}
+
+// The shared "field" box gets the input chrome; the real <input> is bare.
+.field {
+  @include forms.input-base($py: 2xs, $px: 1);
+  @include layout.cluster($gap: 2xs);
+  cursor: text;
+
+  &:focus-within {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-focus) 20%, transparent);
+  }
+}
+
+.chips {
+  @include m.list-reset;
+  @include layout.cluster($gap: 2xs);
+}
+
+.chip {
+  @include feedback.tag($removable: true);
+}
+
+.remove {
+  @include buttons.btn-icon($size: 1.25rem, $r: sm);
+  @include m.font(medium, 2);
+  line-height: 1;
+  color: var(--text-muted);
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--interactive-hover);
+  }
+}
+
+.input {
+  @include m.form-reset;
+  flex: 1 1 8ch;
+  min-inline-size: 8ch;
+  padding: m.space(2xs) m.space(1);
+  background: transparent;
+  color: var(--text-primary);
+  @include m.font(reg, 2);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.listbox {
+  @include overlay.popover-base($p: 1, $max-width: none);
+  position: absolute;
+  inset-block-start: calc(100% + #{m.space(1)});
+  inset-inline: 0;
+  margin: 0;
+  list-style: none;
+  max-block-size: 16rem;
+  overflow-y: auto;
+
+  [role='option'] {
+    @include overlay.dropdown-item;
+    border-radius: var(--radius-sm, 4px);
+    justify-content: space-between;
+
+    &[aria-selected='true']::after {
+      content: '✓';
+      color: var(--action-primary-default);
+    }
+    &[aria-selected='true'] {
+      font-weight: 500;
+    }
+    &[data-active] {
+      background: var(--interactive-hover);
+    }
+  }
+}
+
+.hint {
+  @include forms.form-help;
+}
+
+.srOnly {
+  @include m.sr-only;
+}
+
+.result {
+  margin: m.space(3) 0 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
