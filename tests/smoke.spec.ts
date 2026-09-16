@@ -1,4 +1,6 @@
 import { test, expect, type ConsoleMessage, type Page } from "@playwright/test";
+import { readdirSync } from "node:fs";
+import path from "node:path";
 import { flatNav } from "../src/app/docs/nav.config";
 
 /**
@@ -44,11 +46,10 @@ const UNLISTED_ROUTES = [
   "/docs/components/modal",
   "/docs/components/tabs",
   "/docs/components/tooltip",
+  // Hand-built recipe pages (no `.md` behind them — see RECIPE_ROUTES for
+  // the markdown-backed ones).
   "/docs/recipes/anchor-positioning",
-  "/docs/recipes/combobox",
   "/docs/recipes/copy-button",
-  "/docs/recipes/dialog",
-  "/docs/recipes/print-to-pdf",
   "/docs/recipes/tabs-aria",
   "/blog",
   "/blog/a-barrel-that-emits-nothing",
@@ -61,9 +62,20 @@ const UNLISTED_ROUTES = [
   "/blog/your-brand-comes-with-you",
 ] as const;
 
+/**
+ * Every markdown-backed recipe page, derived from `scss/recipes/*.md` with the
+ * same skip rule as src/lib/recipes.ts (no `_` prefix, no README). This list
+ * used to be hand-maintained and had silently fallen behind — none of the
+ * batch-2 recipes were ever smoke-tested. Now a new recipe is covered the
+ * moment its `.md` lands.
+ */
+const RECIPE_ROUTES = readdirSync(path.join(process.cwd(), "scss", "recipes"))
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+  .map((f) => `/docs/recipes/${f.replace(/\.md$/, "")}`);
+
 // Dedupe and preserve order (top-level first, then docs, then the rest).
 const ROUTES = Array.from(
-  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES]),
+  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES, ...RECIPE_ROUTES]),
 );
 
 /**
