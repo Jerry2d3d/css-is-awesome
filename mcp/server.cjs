@@ -21,7 +21,7 @@
  *   Sizing:        resolve_size
  *   Prompt:        assemble_prompt(intent[, args])
  *
- * 30 tools total.
+ * 31 tools total.
  *
  * Discovery model: filesystem scan, no database. Parses SCSS files with
  * focused regex (no full SCSS AST). Tokens come from the authoritative

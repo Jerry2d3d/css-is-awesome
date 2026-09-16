@@ -70,9 +70,11 @@ export default function RoadmapPage() {
           <Link href="/docs/mcp">Tool reference</Link>.
         </li>
         <li>
-          <strong>A recipes book</strong> &mdash; 16 framework-agnostic
-          patterns spanning dialogs, a datepicker and data table, an
-          app-shell layout, five form-validation approaches, an RTL layout
+          <strong>A recipes book</strong> &mdash; 31 framework-agnostic
+          patterns spanning dialogs, comboboxes, a datepicker and data table,
+          pagination, breadcrumbs, toasts, file upload, a sortable list, a
+          colour picker, app-shell and admin layouts, auth and wizard flows,
+          five form-validation approaches, three i18n patterns, an RTL layout
           walkthrough, print/PDF, and mobile navigation.{" "}
           <Link href="/docs/recipes">Browse them</Link>.
         </li>

@@ -8,13 +8,13 @@
 
 **Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
-> **The recipes book:** build any component in any framework using cia mixins — 16 recipes today, including `dialog`, `combobox`, `datepicker`, `data-table`, `app-shell`, five form-validation patterns (HTML5, react-hook-form, Zod, async, success-states), `rtl-layout`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav` and `bottom-nav` — with `command-palette` and five more (`confirm-dialog`, `auth-flow`, `multi-step-wizard`, `otp-input`, `admin-dashboard-layout`) queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
+> **The recipes book:** build any component in any framework using cia mixins — 31 recipes today, including `dialog`, `combobox`, `combobox-multiselect`, `datepicker`, `data-table`, `pagination`, `breadcrumb`, `toast`, `file-upload`, `sortable-list`, `color-picker`, `app-shell`, `admin-dashboard-layout`, `auth-flow`, `otp-input`, `multi-step-wizard`, `confirm-dialog`, five form-validation patterns (HTML5, react-hook-form, Zod, async, success-states), three i18n patterns, `rtl-layout`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav` and `bottom-nav` — with `command-palette` still queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
 
 ## For AI agents — start here
 
 **Read [`llm.txt`](./llm.txt) first.** One file, the whole system: install path, hard rules, the mixin vocabulary, and the traps that make agents write wrong cia code. It ships in the npm package, so it's at `node_modules/css-is-awesome/llm.txt` in any project that has cia.
 
-**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 30 tools covering themes, mixins, functions, tokens, recipes and components.
+**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 31 tools covering themes, mixins, functions, tokens, recipes, components and theme validation.
 
 ```json
 {
@@ -294,7 +294,7 @@ The scope is kept narrow: 8 `!important` declarations, all inside `@media print`
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) exposing **30 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) exposing **31 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) , `resolve_size` (snap design px values to cia's 4px grid) and `validate_theme` (run the real theme validator on CSS you just wrote). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
 **Recommended — zero install:** use the dedicated [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package. It depends on `css-is-awesome` and resolves your installed version's real source, so it's never out of sync — and the MCP SDK ships as a real dependency, not an optional peer you have to remember to add.
 
@@ -408,7 +408,7 @@ Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 **Stable, [published on npm](https://www.npmjs.com/package/css-is-awesome)** (first published 2026-09-01). The mixin API, functions, token contract, and theme architecture are stable and under strict SemVer — breaking changes require a major bump. See [`VERSIONING.md`](./VERSIONING.md) for the policy.
 
-The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 30-tool MCP server (now also available zero-install via the companion [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package). The npm package ships ZERO JavaScript by hard rule.
+The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 31-tool MCP server (now also available zero-install via the companion [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package). The npm package ships ZERO JavaScript by hard rule.
 
 See [CHANGELOG.md](./CHANGELOG.md) for the full history and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 upgrade path.
 

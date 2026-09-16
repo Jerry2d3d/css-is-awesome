@@ -8,7 +8,7 @@ A token-driven SCSS design system with a **single mixin-router per component**. 
 
 **Every mixin is a knob-board.** Each look/feel dimension is an *input*, so a consumer can restyle any mixin at any time by changing an argument — row→column is just `@include cia.flex($direction: column)`, never a hand-written `flex-direction`. Customization lives in the mixin's arguments; the consumer stays one line. **If a visual dimension can only be reached by overriding in CSS, that's a missing input — add it to the mixin.** Fewer SCSS lines always wins.
 
-**v1.0 architecture (locked 2026-05-23):** humans-first, AI-second. The 5-pillar priority is **(1) users first, (2) tokens, (3) theme editor on the website, (4) mixin-first speed, (5) AI as composer via recipes book + MCP server**. v1.0 shipped the recipes book + theme editor polish + Tailwind/Bootstrap migration CLI + playground + MCP polish. No separate React component library (Jerry's call — recipes are the deliverable). Full backlog: [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/).
+**v1.0 architecture (locked 2026-05-23):** humans-first, AI-second. The 5-pillar priority is **(1) users first, (2) tokens, (3) theme editor on the website, (4) mixin-first speed, (5) AI as composer via recipes book + MCP server**. v1.0 shipped the recipes book + theme editor polish + Tailwind/Bootstrap migration CLI + MCP polish (the playground was carried forward to v1.1 EPIC-09, still unbuilt). No separate React component library (Jerry's call — recipes are the deliverable). Full backlog: [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/).
 
 Three authoring tiers, in primary-to-fallback order:
 
@@ -338,7 +338,7 @@ Or run this in-repo copy directly — needs its SDK peer deps installed manually
 }
 ```
 
-Either way it exposes **30 tools** across 8 families:
+Either way it exposes **31 tools** across 8 families:
 
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
@@ -348,7 +348,7 @@ Either way it exposes **30 tools** across 8 families:
 - **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`
 - **Doc readers** — `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme`, `read_versioning`
-- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value)
+- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value), `validate_theme` (run the real theme validator — contract + contrast — on a CSS string before you ship it)
 
 ## Other tooling (shipped)
 

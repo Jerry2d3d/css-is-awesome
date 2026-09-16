@@ -172,7 +172,7 @@ npm install -D @modelcontextprotocol/sdk zod
 }
 ```
 
-## Recipes (shipped in 1.0.0)
+## Recipes (shipped in 1.0.0, grown since)
 
 cia ships a **recipes book**: portable patterns for building accessible components in any framework. Each recipe is a markdown file at `scss/recipes/<name>.md` with:
 
@@ -183,7 +183,7 @@ cia ships a **recipes book**: portable patterns for building accessible componen
 
 AI agents read recipes via MCP `list_recipes` / `get_recipe(name)` and generate consumer components in any framework. Humans read them at `/docs/recipes` and copy patterns directly.
 
-**Shipped today — 7 recipes: dialog, combobox, print-to-pdf, print-spec, letterhead, mobile-nav, bottom-nav.** Queued next: datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `scss/recipes/README.md` for the schema.
+**Shipped today — 31 recipes** (as of 2026-09-16): admin-dashboard-layout, app-shell, auth-flow, bottom-nav, breadcrumb, color-picker, combobox, combobox-multiselect, confirm-dialog, data-table, datepicker, dialog, file-upload, form-validation-async, form-validation-html5, form-validation-react-hook-form, form-validation-success-states, form-validation-zod, i18n-date-formatting, i18n-number-currency, i18n-pluralization, letterhead, mobile-nav, multi-step-wizard, otp-input, pagination, print-spec, print-to-pdf, rtl-layout, sortable-list, toast. The authoritative list is `list_recipes` (MCP) or `npx cia add --list` — both read `scss/recipes/` directly. Queued next: command-palette. **No component library** — recipes are the deliverable. See `scss/recipes/README.md` for the schema.
 
 ## Priority ladder (the v1.0 pitch order)
 
