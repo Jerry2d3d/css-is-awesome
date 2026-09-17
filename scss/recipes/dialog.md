@@ -282,5 +282,5 @@ If the slide-up entrance matters to you, use a `[popover]` element with the `bot
 
 - [`bare-tags`](./_bare-tags.scss) — base bare `<dialog>` styling that applies if you skip a custom class name
 - `bottom-nav` — slide-up sheets on `[popover]` with the full animation; the alternative named in the bottom-sheet variant above
-- (planned v1.1) `command-palette.md` — Cmd+K palette built on `<dialog>` + combobox pattern
-- (planned v1.1) `toast.md` — non-modal transient notifications (`[popover]` based)
+- [`command-palette`](./command-palette.md) — Cmd+K palette built on `<dialog>` + the combobox pattern; `showModal()` is its focus trap
+- [`toast`](./toast.md) — non-modal transient notifications (`[popover]` variant included)

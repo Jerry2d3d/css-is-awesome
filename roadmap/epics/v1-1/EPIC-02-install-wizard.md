@@ -84,7 +84,7 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 
 **Effort:** S (≤4 hrs)
 
-#### US-V11.02.2.3 — Prompt for `@cia/a11y-recipes` add-on
+#### US-V11.02.2.3 — ~~Prompt for `@cia/a11y-recipes` add-on~~ (RETIRED 2026-09-17 — the add-on was folded into the core book; the wizard asks no a11y question because every recipe is WCAG-graded)
 
 **As** the wizard
 **I want** to ask "want WCAG-strict a11y recipes?" Y/N
@@ -149,5 +149,5 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 ## Related
 
 - [v1.1 EPIC-04-framework-pack-react.md](./EPIC-04-framework-pack-react.md) — `@cia/react` is what wizard installs when React chosen
-- [v1.1 EPIC-03-cia-a11y-recipes.md](./EPIC-03-cia-a11y-recipes.md) — add-on the wizard offers
+- [v1.1 EPIC-03-cia-a11y-recipes.md](./EPIC-03-cia-a11y-recipes.md) — ~~add-on the wizard offers~~ retired 2026-09-17; nothing to offer
 - [project_install_wizard.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_install_wizard.md) — original idea memory

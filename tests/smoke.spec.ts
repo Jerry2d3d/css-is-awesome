@@ -85,6 +85,22 @@ const ROUTES = Array.from(
  */
 const IGNORED_CONSOLE_PATTERNS: RegExp[] = [];
 
+/**
+ * The browser reports a failed resource as a console error whose text never
+ * names the URL ("Failed to load resource: the server responded with a status
+ * of 404"). Under `npx serve out` every page fires ~17 of those for Next's
+ * RSC prefetch payloads (`__next.<route>.__PAGE__.txt?_rsc=…`) — files a
+ * static export never emits, so the request 404s on any static host. That is
+ * a Next static-export quirk, not a broken page, and it made the suite fail
+ * locally at random depending on prefetch timing (documented 2026-09-09).
+ *
+ * So: drop the URL-less console line and judge 404s by URL instead — any
+ * 404 response that is NOT an RSC prefetch payload is still an error, which
+ * keeps a genuinely missing stylesheet, font or image failing the smoke.
+ */
+const RSC_PREFETCH_404 = /[?&]_rsc=|\/__next\.[^/]*__PAGE__\.txt/;
+const RESOURCE_404_TEXT = /status of 404/;
+
 function attachConsoleErrorWatcher(page: Page): { errors: string[] } {
   const errors: string[] = [];
   const isIgnored = (text: string) =>
@@ -94,7 +110,14 @@ function attachConsoleErrorWatcher(page: Page): { errors: string[] } {
     if (msg.type() !== "error") return;
     const text = msg.text();
     if (isIgnored(text)) return;
+    if (RESOURCE_404_TEXT.test(text)) return; // judged by URL below instead
     errors.push(text);
+  });
+  page.on("response", (res) => {
+    if (res.status() !== 404) return;
+    const url = res.url();
+    if (RSC_PREFETCH_404.test(url)) return;
+    errors.push(`[404] ${url}`);
   });
   page.on("pageerror", (err) => {
     const text = `[pageerror] ${err.message}`;

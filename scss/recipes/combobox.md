@@ -516,4 +516,4 @@ Committed values render as removable chips before the input; the input clears af
 - [`dialog`](./dialog.md) — the other half of the command-palette pattern
 - [`combobox-multiselect`](./combobox-multiselect.md) — this recipe extended to multiple selections with removable chips
 - [`datepicker`](./datepicker.md) — another "native first, custom when needed" input recipe
-- (not yet built) `command-palette` — Cmd+K palette = `<dialog>` + this combobox's input layer; it would link here for the input, not redefine it
+- [`command-palette`](./command-palette.md) — Cmd+K palette = `<dialog>` + this combobox's input layer; it links here for the input, doesn't redefine it
