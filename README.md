@@ -334,7 +334,7 @@ npm install -D @modelcontextprotocol/sdk zod
 
 ## Docs site
 
-The docs site is live at **https://cssisawesome.com** (production — Vercel, deployed from the `prod-css-is-awesome` branch), with a GitHub Pages mirror at **https://jerry2d3d.github.io/css-is-awesome/** that auto-deploys from `main`. To run it locally:
+The docs site is live at **https://cssisawesome.com** (production — Vercel, building `main` on every push), with a GitHub Pages mirror at **https://jerry2d3d.github.io/css-is-awesome/** that deploys after each release. To run it locally:
 
 ```bash
 git clone https://github.com/Jerry2d3d/css-is-awesome.git
@@ -410,7 +410,7 @@ Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 31-tool MCP server (now also available zero-install via the companion [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package). The npm package ships ZERO JavaScript by hard rule.
 
-See [CHANGELOG.md](./CHANGELOG.md) for the full history and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 upgrade path.
+See [CHANGELOG.md](./CHANGELOG.md) for the full history and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 and v0.8 → v1.0 upgrade paths.
 
 For the deep authoring reference (tier decisions, mixin contracts, agent rules), read [`AGENTS.md`](./AGENTS.md).
 

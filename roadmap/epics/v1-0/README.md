@@ -88,7 +88,7 @@ Effort scale:
 - [ ] `npm run lint:scss` clean
 - [x] `npm run test` (Playwright + axe) passes — *CI green on both win32 and linux as of 2026-09-01; linux visual baselines committed 2026-08-29/30 (d8a3974, 093cb62)*
 - [x] CHANGELOG.md `1.0.0` entry written — *`## [1.0.0] — 2026-08-17` present*
-- [ ] MIGRATION.md `v0.8 → v1.0` section written — *carried forward; MIGRATION.md still tops out at v0.8.1 as of 2026-09-01*
+- [x] MIGRATION.md `v0.8 → v1.0` section written — *done 2026-09-17: no breaking changes 0.8.2 → 1.0.0 (verified against the 67 commits and `validate-api`); the section documents the two-import model, the 1.1.0 custom-theme spacing requirement, the `:where(:root)` / `theme()` selector change and the additive print + api features*
 - [ ] README.md hero updated to "humans-first" framing — *carried forward*
 - [ ] llm.txt updated to reflect shipped recipes — *carried forward; llm.txt describes the recipes book but wasn't re-verified against the shipped recipe list*
 - [x] semantic-release publishes cleanly to npm — *done 2026-09-01, with a twist: v1.0.0 was tagged 2026-08-17 but never reached the registry; the **first npm publish ever was css-is-awesome@1.1.0 on 2026-09-01** (dist-tag `latest`, GitHub Release + annotated tag). The CI → Release automation is proven end to end*
