@@ -131,7 +131,9 @@
     "prepublishOnly": "npm run build:css:all",
     "check:theme-drift": "node scripts/check-theme-drift.mjs",
     "check:token-consumers": "node scripts/check-token-consumer-map.mjs",
-    "check:rtl": "node scripts/audit-logical-properties.mjs"
+    "check:rtl": "node scripts/audit-logical-properties.mjs",
+    "prebuild": "node scripts/build-playground-scss-map.mjs",
+    "verify:playground": "node scripts/build-playground-scss-map.mjs && node scripts/verify-playground-compile.mjs"
   },
   "keywords": [
     "css",
@@ -172,6 +174,12 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
+    "@codemirror/commands": "6.11.1",
+    "@codemirror/lang-html": "6.4.12",
+    "@codemirror/lang-sass": "6.0.2",
+    "@codemirror/language": "6.12.4",
+    "@codemirror/state": "6.7.5",
+    "@codemirror/view": "6.43.12",
     "@eslint/eslintrc": "^3.2.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@playwright/test": "^1.59.1",
