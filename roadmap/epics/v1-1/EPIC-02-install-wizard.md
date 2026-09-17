@@ -1,6 +1,6 @@
 # EPIC v1.1-02 — `npm create cia` Install Wizard
 
-**Status:** Planned (v1.1)
+**Status:** 🟡 Built 2026-09-17, publish pending — the `create-cia` package is complete and tested in `K:/repo/create-cia` (25/25 tests, real install verified against a Vite+React fixture, 13.4 kB packed); the docs page `/docs/install/wizard` and README mention are on the `docs/install-wizard` branch. Remaining: create the `Jerry2d3d/create-cia` GitHub repo, add the `NPM_TOKEN` (Classic Automation) secret, push — CI publishes `create-cia@1.0.0`. Then tick the publish/test-matrix boxes below. Deviations disclosed inline.
 **Effort estimate:** ~3-5 working days
 **Stories:** 7
 
@@ -29,11 +29,11 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** I don't read 5 docs pages to decide what to install
 
 **Acceptance criteria:**
-- [ ] New npm package `create-cia` published (npm's `create-*` convention)
-- [ ] Package contains a `bin/create-cia.cjs` (or `.mjs`) entry
-- [ ] Works on Mac, Linux, Windows (no shell-specific dependencies)
-- [ ] Uses `@clack/prompts` (or `prompts` — pick whichever is lighter)
-- [ ] No prompts → reasonable defaults applied + summary printed
+- [ ] New npm package `create-cia` published (npm's `create-*` convention) *(built; publish is the manual repo + secret step)*
+- [x] Package contains a `bin/create-cia.mjs` entry (ESM)
+- [x] Works on Mac, Linux, Windows (no shell-specific dependencies)
+- [x] Uses `@clack/prompts` (or `prompts` — pick whichever is lighter)
+- [x] No prompts → reasonable defaults applied + summary printed
 
 **Effort:** M (4-8 hrs)
 **Depends on:** none
@@ -45,10 +45,10 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** existing-project flow doesn't ask "what framework" if Next.js/Vite/Astro is already detected
 
 **Acceptance criteria:**
-- [ ] If `package.json` exists, parse to detect framework (next, vite, astro, vue, svelte, angular markers)
-- [ ] Skip framework prompt; show "Detected: Next.js — use this? [Y/n]" instead
-- [ ] If no `package.json`, prompt full framework list
-- [ ] Errors gracefully if package.json is malformed
+- [x] If `package.json` exists, parse to detect framework (next, vite, astro, vue, svelte, angular markers)
+- [x] Skip framework prompt; show "Detected: Next.js — use this? [Y/n]" instead
+- [x] If no `package.json`, prompt full framework list
+- [x] Errors gracefully if package.json is malformed
 
 **Effort:** S (≤4 hrs)
 **Depends on:** US-V11.02.1.1
@@ -64,10 +64,10 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** the wizard installs the right framework pack (when available)
 
 **Acceptance criteria:**
-- [ ] Options: React (recommended — pairs with @cia/react when v1.1 ships), Vue, Svelte, Angular, Vanilla
-- [ ] Defaults to React (highest install count from telemetry once v1.1 ships)
-- [ ] If chosen framework has a `@cia/*` pack available at install time, add it to install list
-- [ ] If no pack exists, note "framework recipe pack not yet published; recipes work in any framework"
+- [x] Options: React (recommended — pairs with @cia/react when v1.1 ships), Vue, Svelte, Angular, Vanilla
+- [x] Defaults to React when nothing is detected *(detection wins whenever a package.json exists)*
+- [x] ~~`@cia/*` pack wiring~~ — no framework packs exist (EPIC-04 unstarted); the wizard installs `sass` when missing instead, which the epic omitted but the generated entry needs
+- [x] If no pack exists, note "framework recipe pack not yet published; recipes work in any framework"
 
 **Effort:** S (≤4 hrs)
 
@@ -78,9 +78,9 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** the consumer's `<html data-theme>` is set correctly without manual edit
 
 **Acceptance criteria:**
-- [ ] Lists all 8 themes with one-line description (read from theme metadata if available, else hard-coded)
-- [ ] Defaults to `boilerplate` (neutral starter)
-- [ ] After selection, prints next steps: "Add `<html data-theme=\"<chosen>\">` to your root layout"
+- [x] Lists all 8 themes with one-line description (read from theme metadata if available, else hard-coded)
+- [x] Defaults to `boilerplate` (neutral starter)
+- [x] After selection, prints next steps: "Add `<html data-theme=\"<chosen>\">` to your root layout"
 
 **Effort:** S (≤4 hrs)
 
@@ -108,10 +108,10 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** the consumer doesn't have to write any boilerplate
 
 **Acceptance criteria:**
-- [ ] Spawns `npm install <packages>` with detected package manager (npm / pnpm / yarn / bun)
-- [ ] Creates `app/styles/cia.scss` (or framework-appropriate path) with `@use 'css-is-awesome' as cia;`
-- [ ] Adds `<link rel="stylesheet" href="/themes/<chosen>/theme.css">` to root layout (where detection succeeds)
-- [ ] Prints next-step summary with copy-paste lines for what the wizard couldn't auto-wire
+- [x] Spawns `npm install <packages>` with detected package manager (npm / pnpm / yarn / bun)
+- [x] Creates `app/styles/cia.scss` (or framework-appropriate path) with `@use 'css-is-awesome' as cia;`
+- [x] Imports the theme into the root layout via the package's `css-is-awesome/themes/<name>` export *(a `<link>` into node_modules does not survive a Next/Vite production build; the `<link>` form is printed for the no-bundler case)*
+- [x] Prints next-step summary with copy-paste lines for what the wizard couldn't auto-wire
 
 **Effort:** M (4-8 hrs)
 **Depends on:** US-V11.02.2.1, US-V11.02.2.2, US-V11.02.2.3
@@ -123,10 +123,10 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** I know what to do next
 
 **Acceptance criteria:**
-- [ ] Summary shows: installed packages, theme set, SCSS entry path
-- [ ] 3-5 suggested next actions with command snippets
-- [ ] Link to docs site for the chosen theme
-- [ ] Time-to-first-render estimate ("you can render your first cia button in ~30 seconds")
+- [x] Summary shows: installed packages, theme set, SCSS entry path
+- [x] 3-5 suggested next actions with command snippets
+- [x] Link to docs site for the chosen theme
+- [x] Time-to-first-render estimate ("you can render your first cia button in ~30 seconds")
 
 **Effort:** S (≤4 hrs)
 
@@ -135,10 +135,10 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 - [ ] All 7 stories accepted
 - [ ] `npm create cia@latest` published to npm
 - [ ] Tested on Mac, Linux, Windows
-- [ ] Tested in 3 detected project types (Next.js, Vite-React, vanilla)
-- [ ] Tested in a no-package.json directory (new-project mode)
-- [ ] Docs page at `/docs/install/wizard` shows the wizard flow with screenshots
-- [ ] README.md Quick Start mentions the wizard alongside `npm install`
+- [x] Tested in 3 detected project types (Next.js dry-run, Vite-React real install, empty dir) — 2026-09-17
+- [x] Tested in a no-package.json directory (new-project mode)
+- [x] Docs page at `/docs/install/wizard` shows the wizard flow *(verbatim dry-run output instead of screenshots — it can't go stale silently)*
+- [x] README.md mentions the wizard alongside `npm install`
 
 ## Risks
 

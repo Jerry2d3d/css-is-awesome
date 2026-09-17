@@ -8,6 +8,7 @@ export const docsNav: DocsNavSection[] = [
       { label: "Introduction", href: "/docs" },
       { label: "Three tiers", href: "/docs/three-tiers" },
       { label: "Install", href: "/docs/install" },
+      { label: "Install wizard", href: "/docs/install/wizard" },
     ],
   },
   {
