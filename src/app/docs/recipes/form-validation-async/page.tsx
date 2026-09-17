@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("form-validation-async")} — Recipes — css-is-awesome`,
   description: "The debounced, abortable \"is this username taken?\" pattern — loading spinner, success or error state.",
@@ -13,6 +14,7 @@ export default function FormValidationAsyncPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Form validation — Async"}</h1>
+      <TryInPlayground slug="form-validation-async" />
       <p className="lead">
         Try it: type a username. The check is simulated (no real network
         call, this site is a static export — see the recipe&rsquo;s

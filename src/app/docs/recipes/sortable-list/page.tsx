@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("sortable-list")} — Recipes — css-is-awesome`,
   description:
@@ -14,6 +15,7 @@ export default function SortableListPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Sortable list"}</h1>
+      <TryInPlayground slug="sortable-list" />
       <p className="lead">
         Live: drag a row by its grip, or tab to a grip and press Space to
         grab, arrow keys to move, Space to drop, Escape to cancel. Every move

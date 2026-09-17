@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("form-validation-html5")} — Recipes — css-is-awesome`,
   description: "Zero-JS form validation with native HTML5 constraints and :user-invalid/:user-valid.",
@@ -13,6 +14,7 @@ export default function FormValidationHtml5Page() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Form validation — HTML5"}</h1>
+      <TryInPlayground slug="form-validation-html5" />
       <p className="lead">
         Try it: leave a field empty and blur it, or type an invalid value.
         The error styling and the submit-time summary below are both live —

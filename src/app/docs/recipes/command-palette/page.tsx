@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("command-palette")} — Recipes — css-is-awesome`,
   description:
@@ -14,6 +15,7 @@ export default function CommandPalettePage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Command palette"}</h1>
+      <TryInPlayground slug="command-palette" />
       <p className="lead">
         Live: press <kbd>Ctrl</kbd>+<kbd>K</kbd> (or <kbd>⌘</kbd>+<kbd>K</kbd>) anywhere
         on this page, or click the trigger. Type to filter, arrow through the groups,

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getRecipe, getRecipeSlugs, prettifyRecipeName } from "@/lib/recipes";
 import RecipeCopyButtons from "./RecipeCopyButtons";
 
+import TryInPlayground from "../_components/TryInPlayground";
 // Statically generate one page per `.md` recipe at build time. New recipes
 // (e.g. print-to-pdf once its PR merges) appear automatically — no route edits.
 export function generateStaticParams() {
@@ -42,6 +43,7 @@ export default async function RecipePage({
         <Link href="/docs/recipes">Recipes</Link>
       </p>
       <h1>{title}</h1>
+      <TryInPlayground slug={slug} />
       <p className="lead">{recipe.description}</p>
       <div className="recipe-meta">
         {recipe.category && <span className="recipe-chip">{recipe.category}</span>}

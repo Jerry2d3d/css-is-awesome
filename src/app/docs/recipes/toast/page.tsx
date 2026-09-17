@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("toast")} — Recipes — css-is-awesome`,
   description:
@@ -14,6 +15,7 @@ export default function ToastPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Toast"}</h1>
+      <TryInPlayground slug="toast" />
       <p className="lead">
         Live: fire a toast of each severity. Hover or focus one to pause its
         countdown, close it early, or hit Undo on the success toast. The stack

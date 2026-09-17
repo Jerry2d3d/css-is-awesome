@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("color-picker")} — Recipes — css-is-awesome`,
   description:
@@ -14,6 +15,7 @@ export default function ColorPickerPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Color picker"}</h1>
+      <TryInPlayground slug="color-picker" />
       <p className="lead">
         Live: the native picker with its hex twin, then the custom OKLCH
         picker — drag the sliders, or type a hex / oklch() value and watch

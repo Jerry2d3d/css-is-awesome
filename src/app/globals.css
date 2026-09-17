@@ -333,6 +333,31 @@ hr,
 .recipe-chip[data-complexity="complex"] { color: var(--info-text);    background: var(--info-subtle); }
 .recipe-chip-version { font-variant-numeric: tabular-nums; }
 
+/* "Try in playground" — one line under the h1, before the lead. The link is
+   built at build time from the recipe's own markup + SCSS (no client JS). */
+.recipe-try {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  margin: -0.25rem 0 1rem;
+  font-size: 0.9rem;
+}
+.recipe-try-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.8rem;
+  font-weight: 600;
+  color: var(--text-inverse);
+  background: var(--action-primary-default);
+  border-radius: 999px;
+  text-decoration: none;
+  border: 0;
+}
+.recipe-try-link:hover { background: var(--action-primary-hover); border: 0; }
+.recipe-try-hint { color: var(--text-muted); font-size: 0.8rem; }
+
 /* Recipe library card grid on /docs/recipes */
 .recipe-card-grid {
   display: grid;

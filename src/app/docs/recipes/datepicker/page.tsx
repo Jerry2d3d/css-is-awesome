@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("datepicker")} — Recipes — css-is-awesome`,
   description: "A formatted date field with an inline calendar-grid popup, built on native Date and Intl.",
@@ -13,6 +14,7 @@ export default function DatePickerPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Datepicker"}</h1>
+      <TryInPlayground slug="datepicker" />
       <p className="lead">
         Live: click the field to open the calendar, navigate months, pick a
         date. Click outside or press Escape to close. No date library —

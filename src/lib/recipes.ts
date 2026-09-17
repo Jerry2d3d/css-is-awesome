@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { Marked } from "marked";
+import { recipePlaygroundPayload } from "./playground/recipe-link";
 
 // ─── Where the recipes live ──────────────────────────────────────────────────
 // Recipes are authored as Markdown in `scss/recipes/*.md` so they ship inside
@@ -172,4 +173,17 @@ export function getRecipe(slug: string): Recipe | null {
   const { data, body } = parseFrontmatter(raw);
   const html = rewriteRecipeMdLinks(marked.parse(body) as string);
   return { slug, ...toFrontmatter(data, slug), html };
+}
+
+/**
+ * `#code=` payload for the "Try in playground" link: the recipe's Structure
+ * HTML + Styling SCSS, gzip+base64url-encoded at build time. Null when the
+ * recipe has no extractable starter (the page then renders no button).
+ */
+export function getRecipePlaygroundPayload(slug: string): string | null {
+  if (!isRecipeFile(`${slug}.md`)) return null;
+  const file = path.join(RECIPES_DIR, `${slug}.md`);
+  if (!fs.existsSync(file)) return null;
+  const { body } = parseFrontmatter(fs.readFileSync(file, "utf8"));
+  return recipePlaygroundPayload(body);
 }
