@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.15.0...v1.16.0) (2026-09-17)
+
+
+### Features
+
+* **recipes:** command-palette recipe + live demo ([6cc16b1](https://github.com/Jerry2d3d/css-is-awesome/commit/6cc16b104b625c8f73fda7631f72289b50e892ed))
+
 # [1.15.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.3...v1.15.0) (2026-09-16)
 
 
