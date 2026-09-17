@@ -8,7 +8,7 @@
 
 **Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
-> **The recipes book:** build any component in any framework using cia mixins — 31 recipes today, including `dialog`, `combobox`, `combobox-multiselect`, `datepicker`, `data-table`, `pagination`, `breadcrumb`, `toast`, `file-upload`, `sortable-list`, `color-picker`, `app-shell`, `admin-dashboard-layout`, `auth-flow`, `otp-input`, `multi-step-wizard`, `confirm-dialog`, five form-validation patterns (HTML5, react-hook-form, Zod, async, success-states), three i18n patterns, `rtl-layout`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav` and `bottom-nav` — with `command-palette` still queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
+> **The recipes book:** build any component in any framework using cia mixins — 32 recipes today, including `dialog`, `command-palette`, `combobox`, `combobox-multiselect`, `datepicker`, `data-table`, `pagination`, `breadcrumb`, `toast`, `file-upload`, `sortable-list`, `color-picker`, `app-shell`, `admin-dashboard-layout`, `auth-flow`, `otp-input`, `multi-step-wizard`, `confirm-dialog`, five form-validation patterns (HTML5, react-hook-form, Zod, async, success-states), three i18n patterns, `rtl-layout`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav` and `bottom-nav`. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
 
 ## For AI agents — start here
 
