@@ -1,5 +1,13 @@
 # Manual gate — promote main to prod-css-is-awesome.
 #
+# STATUS 2026-09-17: dormant. Verified that cssisawesome.com tracks `main`
+# directly (the live site showed 1.16.0 two minutes after the release
+# commit landed on main, while this branch sat at 1.11.1, 93 commits
+# behind). So Vercel's Production Branch is evidently `main` now, not
+# prod-css-is-awesome. Kept for the flags.json-override path described
+# below; confirm the Production Branch in the Vercel project settings
+# before relying on this gate again.
+#
 # Trigger: ONLY runs when you click "Run workflow" in the Actions tab.
 # Pushes to main do NOT auto-mirror to prod. This is the deploy button —
 # click it when you're ready for cssisawesome.com to move.

@@ -15,8 +15,14 @@
 name: Deploy docs to GitHub Pages
 
 on:
+  # Runs after the Release workflow (which itself runs after CI), NOT after
+  # CI directly. Reason: semantic-release pushes the version-bump commit
+  # with [skip ci]; building on CI completion checked out main *before*
+  # that commit existed, so the home page's version stamp (read from
+  # package.json) was always one release behind. Release completes even
+  # when there is nothing to release, so ordinary pushes still deploy.
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["Release"]
     types: [completed]
     branches: [main]
   workflow_dispatch:
@@ -35,12 +41,13 @@ jobs:
     name: Build static export
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Only run if CI succeeded on a push to main. workflow_dispatch has
-    # no associated workflow_run, so allow it through unconditionally.
+    # Only run if the Release workflow succeeded on main (it is itself gated
+    # on CI success, and its run is "skipped" when CI failed). The upstream
+    # event of a Release run is workflow_run, not push, so don't check it.
+    # workflow_dispatch has no associated workflow_run, so allow it through.
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
        github.event.workflow_run.head_branch == 'main')
     steps:
       - name: Checkout

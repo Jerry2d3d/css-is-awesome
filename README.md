@@ -334,7 +334,7 @@ npm install -D @modelcontextprotocol/sdk zod
 
 ## Docs site
 
-The docs site is live at **https://cssisawesome.com** (production — Vercel, deployed from the `prod-css-is-awesome` branch), with a GitHub Pages mirror at **https://jerry2d3d.github.io/css-is-awesome/** that auto-deploys from `main`. To run it locally:
+The docs site is live at **https://cssisawesome.com** (production — Vercel, building `main` on every push), with a GitHub Pages mirror at **https://jerry2d3d.github.io/css-is-awesome/** that deploys after each release. To run it locally:
 
 ```bash
 git clone https://github.com/Jerry2d3d/css-is-awesome.git

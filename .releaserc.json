@@ -1,12 +1,37 @@
 {
-  "branches": ["main"],
+  "branches": [
+    "main"
+  ],
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
       {
         "releaseRules": [
-          { "type": "feat", "scope": "site", "release": "patch" },
-          { "type": "feat", "scope": "docs-site", "release": "patch" }
+          {
+            "type": "feat",
+            "scope": "site",
+            "release": false
+          },
+          {
+            "type": "fix",
+            "scope": "site",
+            "release": false
+          },
+          {
+            "type": "perf",
+            "scope": "site",
+            "release": false
+          },
+          {
+            "type": "feat",
+            "scope": "docs-site",
+            "release": false
+          },
+          {
+            "type": "fix",
+            "scope": "docs-site",
+            "release": false
+          }
         ]
       }
     ],
@@ -21,7 +46,11 @@
     [
       "@semantic-release/git",
       {
-        "assets": ["CHANGELOG.md", "package.json", "package-lock.json"],
+        "assets": [
+          "CHANGELOG.md",
+          "package.json",
+          "package-lock.json"
+        ],
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ],
