@@ -27,7 +27,7 @@ inline.
 
 ## Out of scope
 
-- Recipes requiring tiny JS shims (moved to [`EPIC-03-cia-a11y-recipes.md`](./EPIC-03-cia-a11y-recipes.md))
+- ~~Recipes requiring tiny JS shims (moved to EPIC-03)~~ — EPIC-03 was folded back into the core book 2026-09-17; shims, where unavoidable, are code blocks inside the recipe
 - Recipes that aren't generic across frameworks (e.g. framework-specific routing)
 
 ## Features
@@ -216,4 +216,4 @@ variants/icons, auto-dismiss + an actions row. Start from it.
 ## Related
 
 - [v1.0 EPIC-01-recipes-book.md](../v1-0/EPIC-01-recipes-book.md) — schema + first 5 recipes
-- [v1.1 EPIC-03-cia-a11y-recipes.md](./EPIC-03-cia-a11y-recipes.md) — WCAG-strict variants that EXTEND these recipes
+- [v1.1 EPIC-03-cia-a11y-recipes.md](./EPIC-03-cia-a11y-recipes.md) — retired 2026-09-17; WCAG-strict content lives inside these recipes as Variants subsections

@@ -390,7 +390,7 @@ Full backlog: [`roadmap/epics/v1-0/README.md`](./roadmap/epics/v1-0/README.md).
 
 - ❌ `@cia/react` as a separate npm component library Jerry maintains forever
 - ❌ shadcn-style component ejection CLI for cia
-- ❌ `@cia/a11y` as cia-original JS shims (deferred → `@cia/a11y-recipes` post-v1.0)
+- ❌ `@cia/a11y` as cia-original JS shims (deferred → `@cia/a11y-recipes` post-v1.0 → **retired 2026-09-17**: folded into the core recipe book, WCAG-strict content is a Variants subsection per recipe)
 - ❌ Component library as the v1.0 selling point — recipes ARE the deliverable
 - ❌ VS Code extension at v1.0 (deferred to v1.5; playground covers the demo need)
 
@@ -465,7 +465,7 @@ Open list of ideas that could make cia better, captured in [`WISHLIST.md`](./WIS
 
 | Release | Theme | Epic folder | Stories | Effort |
 |---|---|---|---|---|
-| **v1.1** | Recipes momentum (7 more recipes, install wizard, @cia/a11y-recipes add-on, @cia/react codegen POC) | [v1-1](./roadmap/epics/v1-1/README.md) | 43 | ~25-35 days |
+| **v1.1** | Recipes momentum (14 more recipes, install wizard, ~~@cia/a11y-recipes add-on~~ (retired), @cia/react codegen POC, playground) | [v1-1](./roadmap/epics/v1-1/README.md) | 43 | ~25-35 days |
 | **v1.2** | Coverage (RTL audit, form-validation recipes, i18n recipes, print recipe, MUI + Chakra migration) | [v1-2](./roadmap/epics/v1-2/README.md) | 32 | ~16-22 days |
 | **v1.3** | Ecosystem (Figma plugin, theme marketplace, DTCG migration CLI, @cia/angular) | [v1-3](./roadmap/epics/v1-3/README.md) | 34 | ~28-35 days |
 | v1.4 | *Reserved — scoped based on v1.1-v1.3 community feedback* | — | — | — |
