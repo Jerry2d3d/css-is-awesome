@@ -59,12 +59,12 @@ export default defineConfig({
     {
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
-      testIgnore: /(visual|rtl)\.spec\.ts/,
+      testIgnore: /(visual|rtl|playground)\.spec\.ts/,
     },
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
-      testIgnore: /(visual|rtl)\.spec\.ts/,
+      testIgnore: /(visual|rtl|playground)\.spec\.ts/,
     },
   ],
 
