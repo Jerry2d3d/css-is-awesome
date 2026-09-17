@@ -1,0 +1,108 @@
+@use 'components/overlay' as overlay;
+@use 'components/buttons' as buttons;
+@use 'mixins' as m;
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: m.space(3);
+}
+
+.trigger {
+  @include buttons.btn(outline);
+  gap: m.space(2);
+
+  kbd {
+    @include m.font(reg, 1);
+    padding: 0 m.space(1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm, 4px);
+    background: var(--surface-muted);
+  }
+}
+
+.status {
+  margin: 0;
+  min-height: 1.25em;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.srOnly {
+  @include m.sr-only;
+}
+
+.palette {
+  @include overlay.modal-base($p: 0, $r: lg, $shadow: 5, $max-width: 40rem);
+  border: 1px solid var(--border-default);
+  margin: 10vh auto auto;
+  overflow: hidden;
+  color: var(--text-primary);
+
+  &::backdrop {
+    background: rgb(0 0 0 / 50%);
+  }
+
+  [data-slot="search"] {
+    padding: m.space(3) m.space(4);
+    border-block-end: 1px solid var(--border-default);
+  }
+
+  [data-slot="input"] {
+    inline-size: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--text-primary);
+    font: inherit;
+    @include m.font(reg, 3);
+
+    &:focus {
+      outline: none;
+    }
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  [data-slot="list"] {
+    @include m.list-reset;
+    max-block-size: 22rem;
+    overflow-y: auto;
+    padding-block: m.space(2);
+
+    ul {
+      @include m.list-reset;
+    }
+  }
+
+  [data-slot="heading"] {
+    padding: m.space(2) m.space(4) m.space(1);
+    @include m.font(semibold, 1);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  [role="option"] {
+    @include overlay.dropdown-item($py: 2, $px: 4);
+    justify-content: space-between;
+    cursor: default;
+  }
+
+  [role="option"][data-active] {
+    background: var(--interactive-hover);
+  }
+
+  [data-slot="hint"] {
+    @include m.font(reg, 1);
+    color: var(--text-muted);
+  }
+
+  [data-slot="empty"] {
+    margin: 0;
+    padding: m.space(5) m.space(4);
+    text-align: center;
+    color: var(--text-muted);
+  }
+}
