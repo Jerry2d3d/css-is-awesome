@@ -165,6 +165,11 @@ export default function DocsPage() {
           and editor for shipped themes.
         </li>
         <li>
+          <Link href="/playground">Playground</Link> — write SCSS with cia
+          mixins and see it render live against any theme, in your browser;
+          share it as a link. Every recipe has a “Try in playground” button.
+        </li>
+        <li>
           <Link href="/docs/authoring/themes">Authoring themes</Link> — the
           token contract and validator for writing your own.
         </li>

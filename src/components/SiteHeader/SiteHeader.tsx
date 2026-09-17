@@ -19,7 +19,7 @@ import LogoMark from "@/components/LogoMark";
 import LightDarkToggle from "@/components/LightDarkToggle";
 import ThemeSelect from "@/components/ThemeSelect";
 
-type NavId = "home" | "docs" | "themes" | "examples" | "compare" | "showcase" | "blog" | "about";
+type NavId = "home" | "docs" | "themes" | "playground" | "examples" | "compare" | "showcase" | "blog" | "about";
 
 // `prefetch: false` on the less-frequently-clicked links. next/link defaults
 // to prefetch: true, and since this header renders on every page, all 8
@@ -31,6 +31,7 @@ const NAV: { id: NavId; label: string; href: string; prefetch?: boolean }[] = [
   { id: "home",     label: "Home",     href: "/" },
   { id: "docs",     label: "Docs",     href: "/docs" },
   { id: "themes",   label: "Themes",   href: "/themes" },
+  { id: "playground", label: "Playground", href: "/playground", prefetch: false },
   { id: "examples", label: "Examples", href: "/examples" },
   { id: "compare",  label: "Compare",  href: "/compare" },
   { id: "showcase", label: "Showcase", href: "/showcase", prefetch: false },
