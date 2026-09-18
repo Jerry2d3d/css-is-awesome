@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.16.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.16.0...v1.16.1) (2026-09-18)
+
+
+### Bug Fixes
+
+* **contract:** --space-unit is optional, not required — contract 1.1 + CI growth gate ([42292ff](https://github.com/Jerry2d3d/css-is-awesome/commit/42292ff995a3e6d7fa1623404614f3519e30a284))
+
+
+### Features
+
+* **site:** "Try in playground" on every recipe page ([9d2c7cc](https://github.com/Jerry2d3d/css-is-awesome/commit/9d2c7cc18399ff0c55c5c986ed70bdd9b6e1ddb5))
+* **site:** /playground — in-browser Sass compile, CodeMirror panes, live preview ([c1474e4](https://github.com/Jerry2d3d/css-is-awesome/commit/c1474e40bfecaa7bd7b742ca545bf7f8f6756021))
+* **site:** link the playground from the nav, the docs intro and the README ([9acabcc](https://github.com/Jerry2d3d/css-is-awesome/commit/9acabcc66f84e30f83cc8a7ff01e4845635ee2c4))
+* **site:** playground groundwork — scss source map, [@use](https://github.com/use) resolver, share codec ([f5fb619](https://github.com/Jerry2d3d/css-is-awesome/commit/f5fb619d5b3d11dff9c77beeb77cd192b4b6d090))
+
 # [1.16.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.15.0...v1.16.0) (2026-09-17)
 
 
