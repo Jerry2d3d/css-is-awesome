@@ -148,7 +148,7 @@ Authoring template (in your own project — a theme file is a global stylesheet,
 
 `$standalone` defaults to `true` (emit `:root, :root[data-theme="<name>"]`). Pass `$standalone: false` only when your block is going into a multi-theme bundle where the bare `:root` would collide.
 
-The validator (`node scripts/theme-validator.js`) enforces the token contract — **127 required + 36 optional = 163 slots** — plus WCAG 2.2 AA contrast (**22 audited pairs per theme**, including five `--code-*` pairs). Themes that miss required tokens or fail contrast cannot ship without `--allow-a11y-fail`.
+The validator (`node scripts/theme-validator.js`) enforces the token contract — **127 required + 41 optional = 168 slots** — plus WCAG 2.2 AA contrast (**22 audited pairs per theme**, including five `--code-*` pairs). Themes that miss required tokens or fail contrast cannot ship without `--allow-a11y-fail`.
 
 ### Theming spacing (new — read this before you set a size token)
 
@@ -168,7 +168,7 @@ Why it matters: components call `cia.space(4)`, which resolves to `var(--space-4
 
 Two `<link media>` themes still work under the new selector model: a stylesheet whose `media` doesn't match is loaded but never applied, so only the matching file's `:root` block lands.
 
-Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every required contract token (127 required in v1; missing tokens always fail). The audit also runs a WCAG 2.2 AA contrast check over 22 pairs; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
+Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every required contract token (127 required in contract 1.1; missing required tokens always fail, missing optional ones are reported as info). The audit also runs a WCAG 2.2 AA contrast check over 22 pairs; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
 
 ### Theme init (Next.js / SSR consumers)
 
@@ -343,7 +343,7 @@ Either way it exposes **31 tools** across 8 families:
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
 - **Functions** — `list_functions`, `get_function`, `search_functions`
-- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (127 required + 36 optional contract tokens)
+- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (127 required + 41 optional contract tokens)
 - **Animations** — `list_animations`, `get_animation`
 - **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`

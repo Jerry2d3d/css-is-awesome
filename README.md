@@ -145,7 +145,7 @@ node scripts/theme-validator.js public/themes/midnight/theme.css
 #    <link rel="stylesheet" href="/themes/midnight/theme.css">
 ```
 
-Full authoring walkthrough: [`/docs/authoring/themes`](https://cssisawesome.com/docs/authoring/themes/). The contract (127 required + 36 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
+Full authoring walkthrough: [`/docs/authoring/themes`](https://cssisawesome.com/docs/authoring/themes/). The contract (127 required + 41 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
 
 ## Token contract
 
@@ -361,7 +361,7 @@ It also hosts the **[playground](https://cssisawesome.com/playground/)**: write 
 | `npm run dtcg-to-scss` | Convert DTCG-format design tokens into cia SCSS |
 | `npm run lint` | ESLint on the Next.js app |
 | `npm run lint:scss` | Stylelint on the SCSS library |
-| `npm run validate-themes` | Validate every theme against the 127-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7; checks both `light-dark()` branches and reports the worse) |
+| `npm run validate-themes` | Validate every theme against the 127-required-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7; checks both `light-dark()` branches and reports the worse) |
 | `npm run validate-icons` | Validate the `core` icon pack against the 49-glyph contract |
 | `npm run validate-api` | Assert the `css-is-awesome/api` barrel stays zero-emit |
 | `npm run validate-package` | Pack + install into a temp project and compile every documented `@use` form — catches breakage that in-repo checks can't see |

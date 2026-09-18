@@ -223,6 +223,7 @@ The **numbered scale is the source of truth and is contract-required**: a theme 
 | Token                       | Type   | Example (default rhythm)          | Purpose                          |
 | --------------------------- | ------ | --------------------------------- | -------------------------------- |
 | `--space-0` … `--space-9`   | length | `0`, `0.25rem`, `0.5rem`, … `6rem` | The numbered scale — **required** |
+| `--space-unit`              | length | `0.25rem`                          | The density knob — **optional** (contract 1.1). Shipped themes derive every `--space-N` from it via `calc()`; a hand-written theme that declares absolute `--space-N` values never references it, so nothing breaks without it. It was listed as *required* by mistake in library 1.12.0–1.16.0. |
 
 The t-shirt names are **optional aliases**. The library emits `xs`–`xl` as `var()` references into the numbered scale, so they follow it automatically; `--space-2xs` sits outside the numbered scale and emits as a literal:
 
