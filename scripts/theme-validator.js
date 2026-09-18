@@ -334,7 +334,15 @@ function validateTokenSet(declared, contract) {
   for (const required of contract.required) {
     if (!declared.has(required)) missing.push(required);
   }
-  return { ok: missing.length === 0, missing, declaredCount: declared.size };
+  // Optional tokens (contract 1.1+) are reported as INFO, never as failures:
+  // the library or the theme generator supplies a default for each of them.
+  // `--space-unit` is the canonical case — it was wrongly listed as required
+  // in 1.12.0–1.16.0 and broke every consumer's custom theme on a MINOR.
+  const optionalMissing = [];
+  for (const optional of Array.isArray(contract.optional) ? contract.optional : []) {
+    if (!declared.has(optional)) optionalMissing.push(optional);
+  }
+  return { ok: missing.length === 0, missing, optionalMissing, declaredCount: declared.size };
 }
 
 // -----------------------------------------------------------
@@ -358,6 +366,7 @@ function validateText(text, contract, options) {
     ok: false,
     declaredCount: 0,
     missing: [],
+    optionalMissing: [],
     themes: null,
     a11y: null,
     error: null,
@@ -379,6 +388,7 @@ function validateText(text, contract, options) {
         ok: v.ok,
         declaredCount: v.declaredCount,
         missing: v.missing,
+        optionalMissing: v.optionalMissing,
         a11y: null,
       };
       if (wantA11y) theme.a11y = a11y.auditThemeTokens({ name: b.name, values: b.values });
@@ -406,6 +416,7 @@ function validateText(text, contract, options) {
   const v = validateTokenSet(root.tokens, contract);
   result.declaredCount = v.declaredCount;
   result.missing = v.missing;
+  result.optionalMissing = v.optionalMissing;
   result.ok = v.ok;
   if (wantA11y) {
     const inferredName = label !== '(pasted CSS)' ? (path.basename(path.dirname(label)) || path.basename(label, '.css')) : 'theme';
@@ -443,6 +454,15 @@ function relForDisplay(p) {
   return rel || p;
 }
 
+// Optional tokens a theme leaves to the library default. Info only — shown as
+// a count, or listed with --show-optional. Never affects the exit code.
+function optionalInfo(optionalMissing, indent) {
+  const list = Array.isArray(optionalMissing) ? optionalMissing : [];
+  if (!list.length) return;
+  console.log(`${indent}${dim(`i ${list.length} optional token(s) not declared — library default applies`)}`);
+  if (SHOW_OPTIONAL) for (const token of list) console.log(`${indent}    ${dim(token)}`);
+}
+
 function reportResult(result) {
   const rel = relForDisplay(result.file);
 
@@ -463,6 +483,7 @@ function reportResult(result) {
         console.log(
           `    ${green('✓')} [data-theme="${t.name}"] ${dim(`(${t.declaredCount} tokens)`)}`
         );
+        optionalInfo(t.optionalMissing, '      ');
       } else {
         const n = t.missing.length;
         console.log(
@@ -481,6 +502,7 @@ function reportResult(result) {
     console.log(
       `${green('✓')} ${bold(rel)} ${dim(`passes (${result.declaredCount} tokens declared)`)}`
     );
+    optionalInfo(result.optionalMissing, '    ');
     return;
   }
 
@@ -561,6 +583,7 @@ function printUsage() {
     '  --all              validate every theme.css under public/ (CI mode)',
     '  --no-a11y          skip the WCAG 2.2 AA contrast audit',
     '  --allow-a11y-fail  do NOT exit non-zero on a11y FAILs (report only)',
+    '  --show-optional    list optional contract tokens a theme leaves to the library default (info only)',
     '  --strict           accepted for backwards compatibility (no-op; FAIL is now the default)',
     '',
     'Exit codes:',
@@ -573,8 +596,11 @@ function printUsage() {
   console.log(u);
 }
 
+let SHOW_OPTIONAL = false;
+
 function main(argv) {
   const argsRaw = argv.slice(2).filter(function (a) { return a !== '--watch'; });
+  SHOW_OPTIONAL = argsRaw.includes('--show-optional');
   if (argsRaw.length === 0 || argsRaw.includes('-h') || argsRaw.includes('--help')) {
     printUsage();
     process.exit(argsRaw.length === 0 ? 2 : 0);
@@ -583,7 +609,7 @@ function main(argv) {
   const wantLenient = argsRaw.includes('--allow-a11y-fail');
   // --strict is accepted as a no-op for backwards compatibility — a11y FAIL is now the default
   const args = argsRaw.filter(function (a) {
-    return a !== '--no-a11y' && a !== '--strict' && a !== '--allow-a11y-fail';
+    return a !== '--no-a11y' && a !== '--strict' && a !== '--allow-a11y-fail' && a !== '--show-optional';
   });
 
   const contract = loadContract();

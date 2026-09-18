@@ -89,7 +89,11 @@ aliases that reference it.
 ```
 
 Shipped themes were all converted; if you copied one as a starting point,
-re-copy its spacing block. (Later 1.x releases derive the whole scale from a
+re-copy its spacing block. `--space-unit` (the density knob, 1.12.0) is
+**optional** — since contract 1.1 (library 1.16.1) the validator reports a
+missing optional token as info, never a failure; between 1.12.0 and 1.16.0 it
+was wrongly listed as required, which is why a custom theme could fail
+validation after a minor upgrade. (Later 1.x releases derive the whole scale from a
 single `--space-unit`; see the theme authoring docs for the current shape.)
 
 While you are in the file: the six `--radius-button` / `-card` / `-input` /

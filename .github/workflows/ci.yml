@@ -18,6 +18,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # check:contract diffs the token contract against the last release
+          # tag; a shallow clone has no tags and the check would skip itself.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -46,6 +50,13 @@ jobs:
       # files and make it compare rebuilt-vs-rebuilt, which always passes.
       - name: Theme artifacts match their SCSS sources
         run: npm run check:theme-drift
+
+      # A required token added/removed without a contract MAJOR (or an optional
+      # one added without a MINOR) breaks every consumer's custom theme on
+      # upgrade — 1.12.0 did exactly that with --space-unit. This diffs the
+      # contract against the last release tag and fails on an unbumped change.
+      - name: Token contract changes carry their version bump
+        run: npm run check:contract
 
       # Unlike the theme-drift check above, this regenerates entirely in
       # memory (no disk write, no restore step needed) and diffs against the

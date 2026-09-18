@@ -1,6 +1,6 @@
 {
-  "version": "1",
-  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference).",
+  "version": "1.1",
+  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Tokens in `optional` are reported by the validator as info, never as failures \u2014 the library or the theme generator supplies a default. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference). Contract 1.1 (2026-09-18): --space-unit relaxed from required to optional; it had been added as required in library 1.12.0, which VERSIONING.md forbids in a MINOR.",
   "required": [
     "--action-primary-active",
     "--action-primary-default",
@@ -93,7 +93,6 @@
     "--shadow-xl",
     "--shu",
     "--shu-wash",
-    "--space-unit",
     "--space-0",
     "--space-1",
     "--space-2",
@@ -168,6 +167,7 @@
     "--space-lg",
     "--space-md",
     "--space-sm",
+    "--space-unit",
     "--space-xl",
     "--space-xs",
     "--tag-radius",

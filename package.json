@@ -130,6 +130,7 @@
     "prepare": "node scripts/prepare-dist.mjs",
     "prepublishOnly": "npm run build:css:all",
     "check:theme-drift": "node scripts/check-theme-drift.mjs",
+    "check:contract": "node scripts/check-contract-growth.mjs",
     "check:token-consumers": "node scripts/check-token-consumer-map.mjs",
     "check:rtl": "node scripts/audit-logical-properties.mjs",
     "prebuild": "node scripts/build-playground-scss-map.mjs",
