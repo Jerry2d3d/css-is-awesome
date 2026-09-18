@@ -19,7 +19,7 @@ import { flatNav } from "../src/app/docs/nav.config";
 
 // Top-level routes we always want smoke-tested. The `/docs` route is also in
 // flatNav (as "Introduction") so we avoid double-counting below.
-const TOP_LEVEL_ROUTES = ["/", "/examples", "/themes"] as const;
+const TOP_LEVEL_ROUTES = ["/", "/examples", "/themes", "/playground"] as const;
 
 const DOCS_ROUTES = flatNav().map((item) => item.href);
 

@@ -345,6 +345,8 @@ npm run dev          # http://localhost:5173
 
 The docs site is a Next.js 16 app at `src/` that dogfoods the library — every page uses CSS Modules composed from the same tokens and mixins the library ships.
 
+It also hosts the **[playground](https://cssisawesome.com/playground/)**: write SCSS with cia mixins, see it render live against any of the 24 themes, and share the result as a link. Sass runs in your browser (dart-sass in a web worker against cia's own source), so nothing is uploaded and the site stays a static export. Every recipe page has a “Try in playground” button.
+
 ## Scripts
 
 | Script | Does |

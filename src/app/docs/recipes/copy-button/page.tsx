@@ -1,10 +1,12 @@
 import Example from "@/components/Example";
 import Badge from "@/components/Badge";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export default function CopyButtonRecipePage() {
   return (
     <>
       <h1>Recipe — Copy Button JS shim</h1>
+      <TryInPlayground slug="copy-button" />
       <p className="lead">
         cia&rsquo;s npm package ships <strong>zero JavaScript</strong>. For the{" "}
         <a href="/docs/components/copy-button">CopyButton component</a> to actually copy text,

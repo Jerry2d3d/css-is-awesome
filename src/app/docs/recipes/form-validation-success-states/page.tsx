@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("form-validation-success-states")} — Recipes — css-is-awesome`,
   description: "Three success-feedback patterns after a form validates or submits, live: an inline checkmark, a summary banner, and an optimistic toggle.",
@@ -13,6 +14,7 @@ export default function FormValidationSuccessStatesPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Form validation — Success states"}</h1>
+      <TryInPlayground slug="form-validation-success-states" />
       <p className="lead">
         Three of this recipe&rsquo;s four patterns, live: an inline
         checkmark, a submit summary banner, and an optimistic toggle that
