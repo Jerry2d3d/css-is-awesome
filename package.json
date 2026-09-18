@@ -90,7 +90,6 @@
     "THEMING.md",
     "MIGRATION.md",
     "CONTRACT.md",
-    "ROADMAP.md",
     "VERSIONING.md",
     "scripts/prepare-dist.mjs"
   ],
