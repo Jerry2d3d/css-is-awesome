@@ -10,7 +10,7 @@
 | # | Epic | Mission | Effort | Stories |
 |---|---|---|---|---|
 | [01](./EPIC-01-additional-recipes.md) | **Additional Recipes (batch 1)** | 7 more recipes: combobox-multiselect, breadcrumb, pagination, file-upload, toast, sortable list, color-picker. **Complete 2026-09-16** — all 7 shipped with live demos, validator 31/31 green. | ~10-14 days | 14 |
-| [02](./EPIC-02-install-wizard.md) | **`npm create cia` wizard** | Guided install: framework? theme? a11y add-on? Wires SCSS entry + theme attr in one command. | ~3-5 days | 7 |
+| [02](./EPIC-02-install-wizard.md) | **`npm create cia` wizard** | Guided install: framework? theme? MCP? Wires SCSS entry + theme attr in one command. **Built 2026-09-17** as the sibling `create-cia` package (zero deps, 33 tests, CI green on Ubuntu + Windows, Node 20 + 24); publish pending an npm token with publish rights; docs PR #15 draft. The a11y-add-on prompt was retired with EPIC-03. | ~3-5 days | 7 |
 | [03](./EPIC-03-cia-a11y-recipes.md) | **`@cia/a11y-recipes` add-on** | ⛔ **Folded into the core book 2026-09-17** — no separate package. WCAG-strict content lives inside each recipe as a Variants subsection; `command-palette` (with its native `<dialog>` focus trap) shipped as a core recipe the same day. See the decision block in the epic file. | — | 10 (retired) |
 | [04](./EPIC-04-framework-pack-react.md) | **`@cia/react` v0.1 (POC)** | Prove the codegen pipeline: parse recipes → emit React components. First batch of generated components. Sync mechanism for recipe updates. | ~2 weeks | 12 |
 | [06](./EPIC-06-blog.md) | **The blog: two tracks** | Engineering-the-system posts + NEW CSS-discoveries track; index split, feed.xml, 3 seed posts | S | 5 |
