@@ -75,6 +75,12 @@ jobs:
       - name: Validate themes
         run: npm run validate-themes
 
+      # tokens-to-theme.cjs ships in the package and is the design-tool
+      # on-ramp (DTCG / Tokens Studio → theme.css). Its fixtures must keep
+      # producing contract-valid themes against the current contract.
+      - name: Design-tokens → theme converter
+        run: npm run test:tokens
+
       - name: Validate icon pack
         run: npm run validate-icons
 
