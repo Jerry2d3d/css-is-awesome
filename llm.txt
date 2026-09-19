@@ -104,7 +104,7 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 | Mobile playbook (layouts, dropdown doctrine, lessons) | `src/app/docs/mobile/page.tsx` |
 | Browser support matrix (Baseline floor + progressive tiers) | `src/app/docs/browser-support/page.tsx` |
 | Theme authoring (full walkthrough) | `src/app/docs/authoring/themes/page.tsx` |
-| Theme contract (127 required + 41 optional, machine-readable) | `scripts/theme-contract.json` |
+| Theme contract (127 required + 41 optional grouped into 10 features, machine-readable) | `scripts/theme-contract.json` |
 | Theme pairing (`<link media>` recipe) | `src/app/docs/themes/pairing/page.tsx` |
 | CopyButton JS recipe | `src/app/docs/recipes/copy-button/page.tsx` |
 | Anchor positioning recipe | `src/app/docs/recipes/anchor-positioning/page.tsx` |

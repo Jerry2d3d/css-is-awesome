@@ -342,7 +342,19 @@ function validateTokenSet(declared, contract) {
   for (const optional of Array.isArray(contract.optional) ? contract.optional : []) {
     if (!declared.has(optional)) optionalMissing.push(optional);
   }
-  return { ok: missing.length === 0, missing, optionalMissing, declaredCount: declared.size };
+  // Contract 1.2: group by the feature each optional token enables, so the
+  // report can say "missing the tokens for print" instead of listing 41 names.
+  const featureOf = {};
+  const features = contract.features && typeof contract.features === 'object' ? contract.features : {};
+  for (const [feature, def] of Object.entries(features)) {
+    for (const t of (def && Array.isArray(def.tokens)) ? def.tokens : []) featureOf[t] = feature;
+  }
+  const optionalMissingByFeature = {};
+  for (const t of optionalMissing) {
+    const f = featureOf[t] || 'other';
+    (optionalMissingByFeature[f] = optionalMissingByFeature[f] || []).push(t);
+  }
+  return { ok: missing.length === 0, missing, optionalMissing, optionalMissingByFeature, declaredCount: declared.size };
 }
 
 // -----------------------------------------------------------
@@ -367,6 +379,7 @@ function validateText(text, contract, options) {
     declaredCount: 0,
     missing: [],
     optionalMissing: [],
+    optionalMissingByFeature: {},
     themes: null,
     a11y: null,
     error: null,
@@ -389,6 +402,7 @@ function validateText(text, contract, options) {
         declaredCount: v.declaredCount,
         missing: v.missing,
         optionalMissing: v.optionalMissing,
+        optionalMissingByFeature: v.optionalMissingByFeature,
         a11y: null,
       };
       if (wantA11y) theme.a11y = a11y.auditThemeTokens({ name: b.name, values: b.values });
@@ -417,6 +431,7 @@ function validateText(text, contract, options) {
   result.declaredCount = v.declaredCount;
   result.missing = v.missing;
   result.optionalMissing = v.optionalMissing;
+  result.optionalMissingByFeature = v.optionalMissingByFeature;
   result.ok = v.ok;
   if (wantA11y) {
     const inferredName = label !== '(pasted CSS)' ? (path.basename(path.dirname(label)) || path.basename(label, '.css')) : 'theme';
@@ -456,11 +471,18 @@ function relForDisplay(p) {
 
 // Optional tokens a theme leaves to the library default. Info only — shown as
 // a count, or listed with --show-optional. Never affects the exit code.
-function optionalInfo(optionalMissing, indent) {
+function optionalInfo(optionalMissing, byFeature, indent) {
   const list = Array.isArray(optionalMissing) ? optionalMissing : [];
   if (!list.length) return;
-  console.log(`${indent}${dim(`i ${list.length} optional token(s) not declared — library default applies`)}`);
-  if (SHOW_OPTIONAL) for (const token of list) console.log(`${indent}    ${dim(token)}`);
+  const groups = byFeature && typeof byFeature === 'object' ? byFeature : {};
+  const summary = Object.entries(groups).map(([f, ts]) => `${f} ${ts.length}`).join(' · ');
+  console.log(`${indent}${dim(`i ${list.length} optional token(s) not declared — library default applies${summary ? ` (${summary})` : ''}`)}`);
+  if (SHOW_OPTIONAL) {
+    for (const [f, ts] of Object.entries(groups)) {
+      console.log(`${indent}    ${dim(f + ':')}`);
+      for (const token of ts) console.log(`${indent}      ${dim(token)}`);
+    }
+  }
 }
 
 function reportResult(result) {
@@ -483,7 +505,7 @@ function reportResult(result) {
         console.log(
           `    ${green('✓')} [data-theme="${t.name}"] ${dim(`(${t.declaredCount} tokens)`)}`
         );
-        optionalInfo(t.optionalMissing, '      ');
+        optionalInfo(t.optionalMissing, t.optionalMissingByFeature, '      ');
       } else {
         const n = t.missing.length;
         console.log(
@@ -502,7 +524,7 @@ function reportResult(result) {
     console.log(
       `${green('✓')} ${bold(rel)} ${dim(`passes (${result.declaredCount} tokens declared)`)}`
     );
-    optionalInfo(result.optionalMissing, '    ');
+    optionalInfo(result.optionalMissing, result.optionalMissingByFeature, '    ');
     return;
   }
 
@@ -583,7 +605,7 @@ function printUsage() {
     '  --all              validate every theme.css under public/ (CI mode)',
     '  --no-a11y          skip the WCAG 2.2 AA contrast audit',
     '  --allow-a11y-fail  do NOT exit non-zero on a11y FAILs (report only)',
-    '  --show-optional    list optional contract tokens a theme leaves to the library default (info only)',
+    '  --show-optional    list optional contract tokens a theme leaves to the library default, grouped by feature (info only)',
     '  --strict           accepted for backwards compatibility (no-op; FAIL is now the default)',
     '',
     'Exit codes:',
