@@ -55,6 +55,23 @@ export default function RoadmapPage() {
           palette.
         </li>
         <li>
+          <strong>The density knob.</strong> One variable,{" "}
+          <code>--space-unit</code>, rescales the entire spacing system, so a
+          theme can feel compact or airy from a single line. A slider in the
+          theme editor drives it.
+        </li>
+        <li>
+          <strong>A design-tokens on-ramp.</strong>{" "}
+          <code>npx cia theme from-tokens</code> turns a DTCG or Tokens Studio
+          export into a complete, validated theme file; <code>cia theme map</code>{" "}
+          shows the mapping as data, and both are MCP tools too.
+        </li>
+        <li>
+          <strong>A playground.</strong> Paste SCSS that uses cia mixins, see
+          it render live against any theme, share it as a link; every recipe
+          page opens in it. <Link href="/playground">Try it</Link>.
+        </li>
+        <li>
           <strong>Accessibility enforced by default.</strong> Every theme is
           audited for WCAG 2.2 AA contrast across 22 token pairs, and a failing
           theme fails the build.{" "}
@@ -142,8 +159,10 @@ export default function RoadmapPage() {
           through the validator.
         </li>
         <li>
-          <strong>The dropdown recipe</strong> &mdash; recipe #6, from the
-          reference implementation the docs already run.
+          <strong>Page surfaces</strong> &mdash; two theme-owned page
+          backgrounds, <em>hero</em> for the front page and <em>band</em> for
+          section stripes, each with an optional image and a scrim that keeps
+          text legible. One include or one body attribute applies them.
         </li>
       </ul>
 
@@ -156,36 +175,16 @@ export default function RoadmapPage() {
           the subject. <Link href="/blog">Blog</Link>.
         </li>
         <li>
-          <strong>The MCP server as its own installable package</strong> so it
-          takes one line of config and no install step. Today it needs
-          dependencies added by hand, which nobody should have to discover.
-        </li>
-        <li>
           <strong>The rest of the Figma pipeline</strong> &mdash; beyond the
           token bridge above: a published cia Figma Library whose component
           names mirror the mixins, and a machine-readable mapping served over
           MCP so AI agents translate Figma frames into cia calls directly.
         </li>
         <li>
-          <strong>More recipes</strong> &mdash; command palette, multiselect
-          combobox, breadcrumb, pagination, file upload, toast, sortable
-          list, colour picker, confirm-dialog, auth flow, multi-step wizard,
-          OTP input, admin-dashboard layout.
-        </li>
-        <li>
           <strong>A guided installer.</strong> <code>npm create cia</code>{" "}
           &mdash; asks which framework and theme, then wires the SCSS entry
-          point for you.
-        </li>
-        <li>
-          <strong>The density knob.</strong> One variable that rescales the
-          entire spacing system, so a theme can feel compact or airy from a
-          single line.
-        </li>
-        <li>
-          <strong>Stricter accessibility recipes</strong> as an optional add-on
-          &mdash; WCAG-strict variants with live-region announcements and full
-          focus management.
+          point and the MCP server for you. Built and tested; publishing
+          next.
         </li>
         <li>
           <strong>Proving the codegen pipeline</strong> &mdash; generating React

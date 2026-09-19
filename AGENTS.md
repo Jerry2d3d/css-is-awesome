@@ -365,7 +365,7 @@ Either way it exposes **33 tools** across 8 families:
   into a complete theme.css — every required token the file lacks inherits from a shipped base theme (`--base`,
   default boilerplate), unmapped paths pass through verbatim and are reported, a `--dark` file or paired
   `color-light`/`color-dark` groups become `light-dark()`, and the validator + WCAG audit run before anything is
-  written. Same function as the MCP `theme_from_tokens` tool. Run any verb with `--help`. (`cia init` remains
+  written. Same function as the MCP `theme_from_tokens` tool; `npx cia theme map [--json] [--path <token.path>]` prints the design-token → cia-token mapping that verb applies (same data as the MCP `get_token_map` tool), for anyone who needs to map one token name the way the converter would. Run any verb with `--help`. (`cia init` remains
   planned.)
 - **JSON token export** — Tokens Studio-format sample in `figma-tokens/tokens.json`; it round-trips through `cia theme from-tokens` (paired light/dark groups → one `light-dark()` theme).
 - **`llm.txt`** — at the repo root and served from the docs site; single-fetch
