@@ -11,6 +11,7 @@
  *   migrate bootstrap — parse Bootstrap SCSS/CSS vars + dump theme JSON
  *   migrate mui       — parse a MUI createTheme() result + dump theme JSON
  *   migrate chakra    — parse a Chakra extendTheme() result + dump theme JSON
+ *   theme from-tokens — design-tokens JSON (DTCG / Tokens Studio) → validated theme.css
  *
  * cia core ships ZERO JavaScript in the `files` manifest. The CLI lives in
  * `bin/` which is explicitly allowed per the architecture lock — same path
@@ -36,11 +37,15 @@ Commands:
   analyze [path]          Design-system health check: dead cia.* symbols,
                           the space() scale trap, hard-coded colors, BEM,
                           hand-written area maps.
+  theme from-tokens <f>   Design-tokens JSON (DTCG v2025.10, Tokens Studio,
+                          or flat --token map) → a complete, validated
+                          theme.css. \`cia theme from-tokens --help\`.
 
 Examples:
   cia migrate tailwind ./tailwind.config.js
   cia add bottom-nav
   cia analyze src/styles
+  cia theme from-tokens tokens.json --name acme --out src/styles/acme.css
 
 Run \`cia <command> --help\` for command-specific help.
 `;
@@ -147,6 +152,20 @@ async function main() {
     const { run } = require('./analyze.cjs');
     await run(rest);
     return;
+  }
+
+  if (command === 'theme') {
+    const [sub, ...themeArgs] = rest;
+    if (!sub || sub === '-h' || sub === '--help' || sub === 'help') {
+      process.stdout.write(require('./theme-from-tokens.cjs').HELP);
+      return;
+    }
+    if (sub === 'from-tokens') {
+      const { run } = require('./theme-from-tokens.cjs');
+      await run(themeArgs);
+      return;
+    }
+    fail(`unknown theme subcommand '${sub}'. Available: from-tokens.`);
   }
 
   fail(`unknown command '${command}'. Run \`cia --help\` for usage.`);
