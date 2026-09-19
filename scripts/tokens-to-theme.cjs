@@ -201,6 +201,46 @@ const TOKEN_MAP = {
   'layer.modal':                    '--z-modal',
   'layer.popover':                  '--z-popover',
   'layer.tooltip':                  '--z-tooltip',
+  // ── Role-named font families (boilerplate / ui-ux-builder layout) ──────
+  // "primary" is the body face, "secondary" the display/heading face.
+  'font.primary':                    '--font-primary',
+  'font.secondary':                  '--font-display',
+  'font.heading':                    '--font-display',
+  'font.body':                       '--font-primary',
+  'typography.font.secondary':       '--font-display',
+  'typography.font.heading':         '--font-display',
+  'typography.family.primary':       '--font-primary',
+  'typography.family.secondary':     '--font-display',
+  'typography.family.heading':       '--font-display',
+
+  // ── component.<name>.<knob> → the contract's per-component overrides ──
+  // (optional tokens, contract 1.2 features component-radius / -shadows /
+  // -motion / borders-extended). `components.` is aliased to `component.`.
+  'component.button.radius':         '--btn-radius',
+  'component.button.shadow':         '--shadow-button',
+  'component.button.duration':       '--duration-button-hover',
+  'component.card.radius':           '--card-radius',
+  'component.card.shadow':           '--shadow-card',
+  'component.card.border':           '--border-card',
+  'component.input.radius':          '--input-radius',
+  'component.input.border':          '--border-input',
+  'component.input.shadow':          '--shadow-input-focus',
+  'component.input.focus-shadow':    '--shadow-input-focus',
+  'component.modal.radius':          '--modal-radius',
+  'component.modal.shadow':          '--shadow-modal',
+  'component.modal.duration':        '--duration-modal-open',
+  'component.badge.radius':          '--badge-radius',
+  'component.tag.radius':            '--tag-radius',
+  'component.chip.radius':           '--tag-radius',
+  'component.dropdown.shadow':       '--shadow-dropdown',
+  'component.popover.shadow':        '--shadow-popover',
+  'component.tooltip.shadow':        '--shadow-tooltip',
+  'component.toast.duration':        '--duration-toast-slide',
+  'component.divider.border':        '--border-divider',
+  'component.divider.color':         '--border-divider',
+  'component.focus.ring':            '--border-focus-ring',
+  'component.text.shadow':           '--shadow-text',
+  'component.touch-target.min':      '--touch-target-min',
 };
 
 // Group-name rewrites applied before the generic rule (rule 2). Case-insensitive
@@ -226,6 +266,9 @@ const PATH_ALIASES = [
   [/^lineHeights?\./i, 'line-height.'],
   [/^durations?\./i, 'duration.'],
   [/^motion\.duration\./i, 'duration.'],
+  [/^font\.family\./, 'font.'],        // font.family.mono → font.mono → --font-mono
+  [/^fontFamily\./, 'font.'],
+  [/^components\./, 'component.'],     // components.button.radius → component.button.radius
 ];
 
 // Token families that are unitless by contract — a bare number stays bare.

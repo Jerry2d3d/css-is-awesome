@@ -157,3 +157,26 @@ test('resolvePath(): mapped, unmapped, via + contract status', () => {
   assert.deepEqual(resolvePath('typography.size.lg'), { path: 'typography.size.lg', token: '--typography-size-lg', mapped: false, via: 'passthrough', status: null });
   assert.throws(() => resolvePath(''), /path is required/);
 });
+
+test('boilerplate DTCG layout: top-level light/dark modes, font.family roles, component.* overrides', () => {
+  const dim = (v) => ({ $value: { value: v, unit: 'px' }, $type: 'dimension' });
+  const tokens = {
+    light: { color: { brand: { primary: { $value: '#3A5FCD', $type: 'color' } }, text: { primary: { $value: '#111111', $type: 'color' } } } },
+    dark:  { color: { brand: { primary: { $value: '#8FB0FF', $type: 'color' } }, text: { primary: { $value: '#F5F5F5', $type: 'color' } } } },
+    font: { family: { primary: { $value: 'Inter, sans-serif', $type: 'fontFamily' }, secondary: { $value: 'Fraunces, serif', $type: 'fontFamily' }, mono: { $value: 'JetBrains Mono, monospace', $type: 'fontFamily' } } },
+    radius: { md: dim(8) }, shadow: { md: { $value: '0 2px 8px rgba(0,0,0,.2)', $type: 'shadow' } },
+    space: { unit: dim(4), 4: dim(16) }, typography: { size: { base: dim(16) } },
+    component: { button: { radius: dim(999) }, card: { shadow: { $value: '0 1px 2px rgba(0,0,0,.1)', $type: 'shadow' } } },
+    components: { input: { radius: dim(6) } },
+  };
+  const r = themeFromTokens({ tokens, name: 'forge-layout', ciaRoot: ROOT });
+  assert.equal(r.report.format, 'dtcg');
+  assert.equal(r.report.darkMode, true);
+  assert.deepEqual(r.report.pairedGroups, ['light', 'dark']);
+  assert.match(r.css, /--brand-primary: light-dark\(#3A5FCD, #8FB0FF\)/);
+  for (const t of ['--font-primary', '--font-display', '--font-mono', '--btn-radius', '--shadow-card', '--input-radius', '--space-unit', '--font-size-base']) {
+    assert.ok(r.report.fromTokens.includes(t) || r.report.optionalDeclared.includes(t), `${t} should be mapped`);
+  }
+  assert.deepEqual(r.report.unmapped, [], 'nothing in the boilerplate layout should be unmapped');
+  assert.equal(r.validation.ok, true);
+});

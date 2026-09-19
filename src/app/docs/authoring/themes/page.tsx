@@ -157,7 +157,7 @@ export default function AuthoringThemesPage() {
           group names are rewritten (<code>spacing.</code> → <code>space.</code>,{" "}
           <code>border-radius.</code> → <code>radius.</code>, <code>elevation.</code> →{" "}
           <code>shadow.</code>, <code>zIndex.</code> → <code>z.</code>,{" "}
-          <code>fontFamilies.</code> → <code>font.</code>), and the segments are joined with{" "}
+          <code>fontFamilies.</code> / <code>font.family.</code> → <code>font.</code>, <code>components.</code> → <code>component.</code>), and the segments are joined with{" "}
           <code>-</code>. If that name is in the contract it is used: <code>space.4</code> →{" "}
           <code>--space-4</code>, <code>brand.primary</code> → <code>--brand-primary</code>,{" "}
           <code>text.primary</code> → <code>--text-primary</code>, <code>code.bg</code> →{" "}
