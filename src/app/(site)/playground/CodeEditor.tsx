@@ -57,7 +57,15 @@ const CodeEditor = forwardRef<CodeEditorRef, Props>(function CodeEditor(
   }, [lang, label]);
 
   useImperativeHandle(ref, () => ({
-    setValue: (next) => handle.current?.setValue(next),
+    // Race closed here: a share-link decode can finish before the CodeMirror
+    // chunk has landed AND before React has re-rendered us with the new
+    // `initialValue` prop. The ref call used to be a silent no-op in that
+    // window, so the editor was then created from the stale starter text.
+    // Stash the value instead; createEditor reads it on arrival.
+    setValue: (next) => {
+      if (handle.current) handle.current.setValue(next);
+      else latest.current.initialValue = next;
+    },
     jumpTo: (line, column) => handle.current?.jumpTo(line, column),
   }));
 
