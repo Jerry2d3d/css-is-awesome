@@ -1,5 +1,13 @@
 # Changelog
 
+# [1.17.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.16.1...v1.17.0) (2026-09-19)
+
+
+### Features
+
+* **cli:** cia theme from-tokens — design-tokens JSON → validated theme.css ([066b484](https://github.com/Jerry2d3d/css-is-awesome/commit/066b4849d2e937f0362e8f21cb212f3fcc144c5f))
+* **mcp:** theme_from_tokens tool + in-process handler (32 tools) ([9dc90c4](https://github.com/Jerry2d3d/css-is-awesome/commit/9dc90c40574a5e21b7b724f97792b0fd9c4182b0))
+
 ## [1.16.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.16.0...v1.16.1) (2026-09-18)
 
 
