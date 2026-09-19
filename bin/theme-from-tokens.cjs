@@ -136,4 +136,72 @@ async function run(argv) {
   }
 }
 
-module.exports = { run, parseArgs, HELP };
+const MAP_HELP = `cia theme map — the design-token → cia-token mapping, as data
+
+Usage:
+  cia theme map                 Human-readable table: explicit entries by family,
+                                the prefix rewrites, then the generic rule
+  cia theme map --json          The same mapping as JSON (stable shape — read it
+                                from a build script or another tool)
+  cia theme map --path <p>      How ONE path resolves, e.g. --path color.text.primary
+
+The JSON shape: { generatorVersion, contractVersion, explicit: { "<path>": "--token" },
+aliases: [{ pattern, replaceWith }], genericRule, targets: { required, optional } }.
+Same data the MCP tool get_token_map returns and \`cia theme from-tokens\` applies.
+`;
+
+function parseMapArgs(argv) {
+  const opts = { json: false };
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === '-h' || a === '--help') opts.help = true;
+    else if (a === '--json') opts.json = true;
+    else if (a === '--path') { opts.path = argv[++i]; if (opts.path === undefined) throw new Error('--path needs a value'); }
+    else throw new Error(`unknown option ${a}`);
+  }
+  return opts;
+}
+
+function familyOf(tokenPath) { return tokenPath.split('.')[0]; }
+
+async function runMap(argv) {
+  let opts;
+  try { opts = parseMapArgs(argv); } catch (e) { process.stderr.write(`cia theme map: ${e.message}\n`); process.exit(2); }
+  if (opts.help) { process.stdout.write(MAP_HELP); return; }
+  const { tokenMap, resolvePath } = require('../scripts/tokens-to-theme.cjs');
+
+  if (opts.path) {
+    let r;
+    try { r = resolvePath(opts.path); } catch (e) { process.stderr.write(`cia theme map: ${e.message}\n`); process.exit(2); }
+    if (opts.json) { process.stdout.write(JSON.stringify(r, null, 2) + '\n'); return; }
+    const how = {
+      'explicit': 'explicit table entry',
+      'explicit-after-alias': 'explicit table entry, after a prefix rewrite',
+      'generic': 'generic rule (join with "-", found in the contract)',
+      'passthrough': 'NOT a contract token — emitted verbatim, reported as unmapped',
+    }[r.via];
+    process.stdout.write(`${r.path}  →  ${r.token}\n  ${r.mapped ? 'mapped' : 'unmapped'} · ${how}${r.status ? ` · contract: ${r.status}` : ''}\n`);
+    return;
+  }
+
+  const m = tokenMap();
+  if (opts.json) { process.stdout.write(JSON.stringify(m, null, 2) + '\n'); return; }
+  const out = [`cia token map — generator ${m.generatorVersion}, contract ${m.contractVersion}`, ''];
+  const byFamily = {};
+  for (const [p, t] of Object.entries(m.explicit)) (byFamily[familyOf(p)] = byFamily[familyOf(p)] || []).push([p, t]);
+  out.push(`Explicit entries (${Object.keys(m.explicit).length})`);
+  for (const fam of Object.keys(byFamily).sort()) {
+    out.push(`  ${fam}`);
+    const w = Math.max(...byFamily[fam].map(([p]) => p.length));
+    for (const [p, t] of byFamily[fam]) out.push(`    ${p.padEnd(w)}  →  ${t}`);
+  }
+  out.push('', `Prefix rewrites (${m.aliases.length}, first match wins, applied before the generic rule)`);
+  const aw = Math.max(...m.aliases.map((a) => a.pattern.length));
+  for (const a of m.aliases) out.push(`    ${a.pattern.padEnd(aw)}  →  ${JSON.stringify(a.replaceWith)}`);
+  out.push('', 'Generic rule', `  ${m.genericRule}`, '',
+    `Targets: ${m.targets.required.length} required + ${m.targets.optional.length} optional contract tokens`,
+    '', 'Try one:  cia theme map --path color.text.primary');
+  process.stdout.write(out.join('\n') + '\n');
+}
+
+module.exports = { run, runMap, parseArgs, parseMapArgs, HELP, MAP_HELP };

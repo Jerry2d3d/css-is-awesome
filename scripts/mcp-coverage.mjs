@@ -222,6 +222,23 @@ try {
     return null;
   });
 
+  // The mapping as data: the whole map has the documented shape and agrees
+  // with the converter's table; a single path resolves with contract context.
+  await call("get_token_map", {}, (b) => {
+    const m = JSON.parse(b);
+    if (!m || typeof m.explicit !== "object" || !Array.isArray(m.aliases) || typeof m.genericRule !== "string") return "expected { explicit, aliases, genericRule, … }";
+    if (m.explicit["typography.font.body"] !== "--font-sans") return "expected the explicit table (typography.font.body → --font-sans)";
+    if (!m.targets || !Array.isArray(m.targets.required) || m.targets.required.length < 100) return "expected targets.required from the contract";
+    if (!m.contractVersion) return "expected contractVersion";
+    return null;
+  });
+  await call("get_token_map", { path: "spacing.4" }, (b) => {
+    const r = JSON.parse(b);
+    if (r.token !== "--space-4" || r.mapped !== true) return "expected spacing.4 → --space-4 (mapped)";
+    if (r.required !== true) return "expected --space-4 to be flagged required";
+    return null;
+  });
+
   // ─── Report ───────────────────────────────────────────────────────────────
   const tested = new Set(results.map((r) => r.name));
   const untested = advertised.filter((t) => !tested.has(t));

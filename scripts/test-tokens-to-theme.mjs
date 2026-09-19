@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const FIX = join(ROOT, 'scripts', 'fixtures', 'tokens');
-const { themeFromTokens, detectFormat, mapPath, listBases } = require(join(ROOT, 'scripts', 'tokens-to-theme.cjs'));
+const { themeFromTokens, detectFormat, mapPath, listBases, tokenMap, resolvePath, TOKEN_MAP } = require(join(ROOT, 'scripts', 'tokens-to-theme.cjs'));
 const contract = JSON.parse(readFileSync(join(ROOT, 'scripts', 'theme-contract.json'), 'utf8'));
 const json = (f) => JSON.parse(readFileSync(join(FIX, f), 'utf8'));
 
@@ -131,4 +131,52 @@ test('detectFormat + mapPath rules', () => {
   assert.deepEqual(mapPath('zIndex.modal', c), { token: '--z-modal', mapped: true });
   assert.deepEqual(mapPath('color.text.linkHover', c), { token: '--text-link-hover', mapped: true });
   assert.deepEqual(mapPath('nothing.here', c), { token: '--nothing-here', mapped: false });
+});
+
+test('tokenMap(): JSON-serialisable, agrees with TOKEN_MAP, aliases compile, deterministic', () => {
+  const m = tokenMap();
+  const round = JSON.parse(JSON.stringify(m));
+  assert.deepEqual(round, m, 'must survive a JSON round-trip (no RegExp / functions)');
+  assert.deepEqual(m.explicit, TOKEN_MAP);
+  assert.ok(m.aliases.length >= 10);
+  for (const a of m.aliases) assert.doesNotThrow(() => new RegExp(a.pattern), `alias pattern compiles: ${a.pattern}`);
+  assert.equal(typeof m.genericRule, 'string');
+  assert.ok(m.genericRule.length > 80);
+  assert.equal(m.contractVersion, contract.version);
+  assert.deepEqual(m.targets.required, contract.required);
+  assert.deepEqual(m.targets.optional, contract.optional);
+  assert.equal(typeof m.generatorVersion, 'string');
+  assert.deepEqual(tokenMap(), m, 'deterministic');
+});
+
+test('resolvePath(): mapped, unmapped, via + contract status', () => {
+  assert.deepEqual(resolvePath('color.text.primary'), { path: 'color.text.primary', token: '--text-primary', mapped: true, via: 'explicit', status: 'required' });
+  assert.deepEqual(resolvePath('spacing.4'), { path: 'spacing.4', token: '--space-4', mapped: true, via: 'generic', status: 'required' });
+  assert.deepEqual(resolvePath('spacing.unit'), { path: 'spacing.unit', token: '--space-unit', mapped: true, via: 'generic', status: 'optional' });
+  assert.deepEqual(resolvePath('elevation.md'), { path: 'elevation.md', token: '--shadow-md', mapped: true, via: 'generic', status: 'required' });
+  assert.deepEqual(resolvePath('typography.size.lg'), { path: 'typography.size.lg', token: '--typography-size-lg', mapped: false, via: 'passthrough', status: null });
+  assert.throws(() => resolvePath(''), /path is required/);
+});
+
+test('boilerplate DTCG layout: top-level light/dark modes, font.family roles, component.* overrides', () => {
+  const dim = (v) => ({ $value: { value: v, unit: 'px' }, $type: 'dimension' });
+  const tokens = {
+    light: { color: { brand: { primary: { $value: '#3A5FCD', $type: 'color' } }, text: { primary: { $value: '#111111', $type: 'color' } } } },
+    dark:  { color: { brand: { primary: { $value: '#8FB0FF', $type: 'color' } }, text: { primary: { $value: '#F5F5F5', $type: 'color' } } } },
+    font: { family: { primary: { $value: 'Inter, sans-serif', $type: 'fontFamily' }, secondary: { $value: 'Fraunces, serif', $type: 'fontFamily' }, mono: { $value: 'JetBrains Mono, monospace', $type: 'fontFamily' } } },
+    radius: { md: dim(8) }, shadow: { md: { $value: '0 2px 8px rgba(0,0,0,.2)', $type: 'shadow' } },
+    space: { unit: dim(4), 4: dim(16) }, typography: { size: { base: dim(16) } },
+    component: { button: { radius: dim(999) }, card: { shadow: { $value: '0 1px 2px rgba(0,0,0,.1)', $type: 'shadow' } } },
+    components: { input: { radius: dim(6) } },
+  };
+  const r = themeFromTokens({ tokens, name: 'forge-layout', ciaRoot: ROOT });
+  assert.equal(r.report.format, 'dtcg');
+  assert.equal(r.report.darkMode, true);
+  assert.deepEqual(r.report.pairedGroups, ['light', 'dark']);
+  assert.match(r.css, /--brand-primary: light-dark\(#3A5FCD, #8FB0FF\)/);
+  for (const t of ['--font-primary', '--font-display', '--font-mono', '--btn-radius', '--shadow-card', '--input-radius', '--space-unit', '--font-size-base']) {
+    assert.ok(r.report.fromTokens.includes(t) || r.report.optionalDeclared.includes(t), `${t} should be mapped`);
+  }
+  assert.deepEqual(r.report.unmapped, [], 'nothing in the boilerplate layout should be unmapped');
+  assert.equal(r.validation.ok, true);
 });

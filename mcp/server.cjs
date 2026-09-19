@@ -20,9 +20,10 @@
  *                  read_three_tiers, read_readme, read_versioning
  *   Sizing:        resolve_size
  *   Themes (build): theme_from_tokens — design-tokens JSON → validated theme.css
+ *                   get_token_map     — the path → token mapping as data (or one path)
  *   Prompt:        assemble_prompt(intent[, args])
  *
- * 32 tools total.
+ * 33 tools total.
  *
  * Discovery model: filesystem scan, no database. Parses SCSS files with
  * focused regex (no full SCSS AST). Tokens come from the authoritative
@@ -717,6 +718,25 @@ const handlers = {
     return themeFromTokens({ tokens, name, format, base, dark, mode, validate });
   },
 
+  // The design-token → cia-token mapping theme_from_tokens applies, as DATA:
+  // the explicit table, the prefix rewrites, the generic rule, and the target
+  // token lists — or, with `path`, how one path resolves plus the contract's
+  // view of the target (required/optional + contract-1.2 feature). Exists so
+  // two consumers (an inventory builder, a boilerplate registry) map the same
+  // source token the same way without re-deriving the rules.
+  get_token_map({ path: tokenPath } = {}) {
+    const { tokenMap, resolvePath } = require(path.join(SCRIPTS_DIR, 'tokens-to-theme.cjs'));
+    if (tokenPath == null || tokenPath === '') return tokenMap({ ciaRoot: PROJECT_ROOT });
+    const r = resolvePath(String(tokenPath), { ciaRoot: PROJECT_ROOT });
+    const entry = getTokens().byName[r.token] || null;
+    return {
+      ...r,
+      required: entry ? entry.required : null,
+      feature: entry && !entry.required ? (entry.feature || null) : null,
+      category: entry ? entry.category : null,
+    };
+  },
+
   // ─── Mixins ────────────────────────────────────────────────────────────
 
   list_mixins({ category, component, limit = 500, offset = 0 } = {}) {
@@ -1395,6 +1415,19 @@ async function startServer() {
       validate: z.boolean().optional().describe('Run the validator + WCAG audit (default true).'),
     },
   }, async (a) => ok(handlers.theme_from_tokens(a || {})));
+
+  server.registerTool('get_token_map', {
+    description:
+      'The design-token → cia-token mapping that theme_from_tokens applies, as data. Without `path`: ' +
+      '{ generatorVersion, contractVersion, explicit: { "<path>": "--token" }, aliases: [{ pattern, ' +
+      'replaceWith }], genericRule, targets: { required, optional } }. With `path` (e.g. ' +
+      '"color.text.primary"): how that one path resolves — { token, mapped, via, status, required, ' +
+      'feature, category }. Use it to map a Figma / DTCG / Tokens Studio token name to the cia custom ' +
+      'property the same way the converter does, or to check a name before building a theme.',
+    inputSchema: {
+      path: z.string().optional().describe('One token path to resolve (dot-separated, e.g. spacing.4). Omit for the whole map.'),
+    },
+  }, async (a) => ok(handlers.get_token_map(a || {})));
 
   // Mixins
   server.registerTool('list_mixins', {

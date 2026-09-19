@@ -157,7 +157,7 @@ export default function AuthoringThemesPage() {
           group names are rewritten (<code>spacing.</code> → <code>space.</code>,{" "}
           <code>border-radius.</code> → <code>radius.</code>, <code>elevation.</code> →{" "}
           <code>shadow.</code>, <code>zIndex.</code> → <code>z.</code>,{" "}
-          <code>fontFamilies.</code> → <code>font.</code>), and the segments are joined with{" "}
+          <code>fontFamilies.</code> / <code>font.family.</code> → <code>font.</code>, <code>components.</code> → <code>component.</code>), and the segments are joined with{" "}
           <code>-</code>. If that name is in the contract it is used: <code>space.4</code> →{" "}
           <code>--space-4</code>, <code>brand.primary</code> → <code>--brand-primary</code>,{" "}
           <code>text.primary</code> → <code>--text-primary</code>, <code>code.bg</code> →{" "}
@@ -178,6 +178,17 @@ export default function AuthoringThemesPage() {
         exits non-zero on a failure unless you pass <code>--allow-a11y-fail</code>. In
         practice a brand palette plus a text colour is enough to get a passing theme;
         the more of the contract the file supplies, the less it borrows.
+      </p>
+      <h3 id="tokens-map-as-data">Read the mapping as data</h3>
+      <p>
+        If another tool has to map the same token names the same way (a boilerplate
+        registry, a Figma plugin, an agent), do not copy the rules above — read them.{" "}
+        <code>npx cia theme map --json</code> prints the explicit table, the prefix
+        rewrites and the generic rule as one JSON object; <code>npx cia theme map --path
+        color.text.primary</code> shows how a single name resolves and whether the target is
+        required or optional. The MCP tool <code>get_token_map</code> returns the same
+        data, and <code>require(&apos;css-is-awesome/scripts/tokens-to-theme.cjs&apos;)</code>{" "}
+        exposes it in-process as <code>tokenMap()</code> and <code>resolvePath(path)</code>.
       </p>
 
       <h2 id="token-contract">The token contract</h2>

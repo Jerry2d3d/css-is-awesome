@@ -201,6 +201,46 @@ const TOKEN_MAP = {
   'layer.modal':                    '--z-modal',
   'layer.popover':                  '--z-popover',
   'layer.tooltip':                  '--z-tooltip',
+  // ── Role-named font families (boilerplate / ui-ux-builder layout) ──────
+  // "primary" is the body face, "secondary" the display/heading face.
+  'font.primary':                    '--font-primary',
+  'font.secondary':                  '--font-display',
+  'font.heading':                    '--font-display',
+  'font.body':                       '--font-primary',
+  'typography.font.secondary':       '--font-display',
+  'typography.font.heading':         '--font-display',
+  'typography.family.primary':       '--font-primary',
+  'typography.family.secondary':     '--font-display',
+  'typography.family.heading':       '--font-display',
+
+  // ── component.<name>.<knob> → the contract's per-component overrides ──
+  // (optional tokens, contract 1.2 features component-radius / -shadows /
+  // -motion / borders-extended). `components.` is aliased to `component.`.
+  'component.button.radius':         '--btn-radius',
+  'component.button.shadow':         '--shadow-button',
+  'component.button.duration':       '--duration-button-hover',
+  'component.card.radius':           '--card-radius',
+  'component.card.shadow':           '--shadow-card',
+  'component.card.border':           '--border-card',
+  'component.input.radius':          '--input-radius',
+  'component.input.border':          '--border-input',
+  'component.input.shadow':          '--shadow-input-focus',
+  'component.input.focus-shadow':    '--shadow-input-focus',
+  'component.modal.radius':          '--modal-radius',
+  'component.modal.shadow':          '--shadow-modal',
+  'component.modal.duration':        '--duration-modal-open',
+  'component.badge.radius':          '--badge-radius',
+  'component.tag.radius':            '--tag-radius',
+  'component.chip.radius':           '--tag-radius',
+  'component.dropdown.shadow':       '--shadow-dropdown',
+  'component.popover.shadow':        '--shadow-popover',
+  'component.tooltip.shadow':        '--shadow-tooltip',
+  'component.toast.duration':        '--duration-toast-slide',
+  'component.divider.border':        '--border-divider',
+  'component.divider.color':         '--border-divider',
+  'component.focus.ring':            '--border-focus-ring',
+  'component.text.shadow':           '--shadow-text',
+  'component.touch-target.min':      '--touch-target-min',
 };
 
 // Group-name rewrites applied before the generic rule (rule 2). Case-insensitive
@@ -226,6 +266,9 @@ const PATH_ALIASES = [
   [/^lineHeights?\./i, 'line-height.'],
   [/^durations?\./i, 'duration.'],
   [/^motion\.duration\./i, 'duration.'],
+  [/^font\.family\./, 'font.'],        // font.family.mono → font.mono → --font-mono
+  [/^fontFamily\./, 'font.'],
+  [/^components\./, 'component.'],     // components.button.radius → component.button.radius
 ];
 
 // Token families that are unitless by contract — a bare number stays bare.
@@ -545,6 +588,45 @@ function collect(tokens, format, contract) {
 // ---------------------------------------------------------------------------
 const NAME_RE = /^[a-z0-9][a-z0-9-]*$/;
 
+// ---------------------------------------------------------------------------
+// The mapping as DATA — so a second implementation (a boilerplate registry,
+// an inventory builder, another agent) can map the same source token the
+// same way this command does, without re-deriving the rules.
+// ---------------------------------------------------------------------------
+const GENERIC_RULE =
+  'If a path is not in `explicit` (checked before and after the alias rewrites), strip/rewrite the ' +
+  'prefix per `aliases` (first matching pattern wins), join the remaining segments with "-", prefix ' +
+  '"--", and lower-case it. If that name is a contract token (required or optional) it is the target. ' +
+  'One retry converts camelCase segments to kebab-case (color.text.linkHover → --text-link-hover). ' +
+  'Otherwise the path is emitted verbatim as --<joined-path> and reported as unmapped — never dropped.';
+
+/** The full path → token mapping as JSON-serialisable data. */
+function tokenMap({ ciaRoot = path.join(__dirname, '..') } = {}) {
+  const contract = loadContract(ciaRoot);
+  return {
+    generatorVersion: GENERATOR_VERSION,
+    contractVersion: contract.version,
+    explicit: { ...TOKEN_MAP },
+    aliases: PATH_ALIASES.map(([re, to]) => ({ pattern: re.source, replaceWith: to })),
+    genericRule: GENERIC_RULE,
+    targets: { required: [...contract.required], optional: [...contract.optional] },
+  };
+}
+
+/** How ONE path resolves, with the contract loaded for the caller. */
+function resolvePath(tokenPath, { ciaRoot = path.join(__dirname, '..') } = {}) {
+  if (typeof tokenPath !== 'string' || !tokenPath.trim()) throw new Error('resolvePath: path is required');
+  const contract = loadContract(ciaRoot);
+  const p = tokenPath.trim();
+  const result = mapPath(p, contract);
+  const via = TOKEN_MAP[p] ? 'explicit'
+    : TOKEN_MAP[applyPathAliases(p)] ? 'explicit-after-alias'
+    : result.mapped ? 'generic' : 'passthrough';
+  const status = contract.required.includes(result.token) ? 'required'
+    : contract.optional.includes(result.token) ? 'optional' : null;
+  return { path: p, token: result.token, mapped: result.mapped, via, status };
+}
+
 function themeFromTokens(opts = {}) {
   const ciaRoot = opts.ciaRoot || CIA_ROOT_DEFAULT;
   const name = String(opts.name || '').trim();
@@ -661,6 +743,8 @@ module.exports = {
   resolveAliases,
   normalizeValue,
   mapPath,
+  tokenMap,
+  resolvePath,
   listBases,
   TOKEN_MAP,
   PATH_ALIASES,
