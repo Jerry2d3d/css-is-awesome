@@ -51,15 +51,8 @@ const UNLISTED_ROUTES = [
   "/docs/recipes/anchor-positioning",
   "/docs/recipes/copy-button",
   "/docs/recipes/tabs-aria",
+  // Individual posts are derived from disk — see BLOG_ROUTES below.
   "/blog",
-  "/blog/a-barrel-that-emits-nothing",
-  "/blog/an-mcp-server-for-a-css-library",
-  "/blog/from-0-8-to-1-0",
-  "/blog/print-to-pdf-with-zero-javascript",
-  "/blog/recipes-not-components",
-  "/blog/the-import-in-our-readme-did-not-work",
-  "/blog/the-validator-that-wasnt-looking",
-  "/blog/your-brand-comes-with-you",
 ] as const;
 
 /**
@@ -73,9 +66,20 @@ const RECIPE_ROUTES = readdirSync(path.join(process.cwd(), "scss", "recipes"))
   .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
   .map((f) => `/docs/recipes/${f.replace(/\.md$/, "")}`);
 
+/**
+ * Every blog post, derived from `src/content/blog/*.md` with the same skip
+ * rule as src/lib/blog.ts (no `_` prefix, no README). Same lesson as the
+ * recipes above: the hand-maintained list covered 8 of 18 posts, so the three
+ * Track B discovery posts (EPIC-06) were never smoke-tested. A new post is
+ * now covered the moment its `.md` lands.
+ */
+const BLOG_ROUTES = readdirSync(path.join(process.cwd(), "src", "content", "blog"))
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+  .map((f) => `/blog/${f.replace(/\.md$/, "")}`);
+
 // Dedupe and preserve order (top-level first, then docs, then the rest).
 const ROUTES = Array.from(
-  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES, ...RECIPE_ROUTES]),
+  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES, ...RECIPE_ROUTES, ...BLOG_ROUTES]),
 );
 
 /**
