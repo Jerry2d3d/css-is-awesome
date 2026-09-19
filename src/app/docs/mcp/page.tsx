@@ -66,7 +66,7 @@ export default function McpPage() {
 }`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 32 total: 28 across 8 families + 4 specialty tools</h2>
+      <h2 id="tools">Tools — 33 total: 28 across 8 families + 5 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -340,6 +340,37 @@ resolve_size({ px: 17 })
         <code>brand.primary</code> → <code>--brand-primary</code>. Full contract in
         the <Link href="/docs/authoring/themes#from-design-tokens">theme authoring guide</Link>.
       </p>
+
+      <h2 id="get-token-map">
+        <code>get_token_map</code>
+      </h2>
+      <p>
+        The mapping <code>theme_from_tokens</code> applies, as <strong>data</strong>, so a
+        second implementation (a boilerplate registry, an inventory builder, another agent)
+        maps the same source token the same way without re-deriving the rules. Without{" "}
+        <code>path</code> it returns the whole map: the explicit table, the prefix rewrites
+        (as regex sources), the generic rule in one paragraph, and the contract&rsquo;s
+        required and optional token lists. With <code>path</code> it returns how that one
+        name resolves, plus the contract&rsquo;s view of the target. Same data as{" "}
+        <code>npx cia theme map --json</code>; reachable in-process as{" "}
+        <code>handlers.get_token_map</code>.
+      </p>
+      <Example>
+        <Example.Code>{`get_token_map({ path: "spacing.4" })
+// →  { path: "spacing.4", token: "--space-4", mapped: true, via: "generic",
+//      status: "required", required: true, feature: null, category: "space" }
+
+get_token_map({ path: "typography.size.lg" })
+// →  { token: "--typography-size-lg", mapped: false, via: "passthrough", status: null, … }
+//     (cia's type scale is a Sass map, not tokens — the path is carried verbatim)
+
+get_token_map()
+// →  { generatorVersion, contractVersion: "1.2",
+//      explicit: { "typography.font.body": "--font-sans", …115 entries },
+//      aliases: [{ pattern: "^colors?\\.", replaceWith: "" }, …20],
+//      genericRule: "If a path is not in explicit …",
+//      targets: { required: [ …127 ], optional: [ …41 ] } }`}</Example.Code>
+      </Example>
 
       <h2 id="security">Security + portability</h2>
       <p>

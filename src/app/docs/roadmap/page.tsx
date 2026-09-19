@@ -61,8 +61,9 @@ export default function RoadmapPage() {
           <Link href="/docs/a11y">How that works</Link>.
         </li>
         <li>
-          <strong>Zero JavaScript in the package.</strong> Installing cia
-          downloads CSS and SCSS. Nothing else.
+          <strong>Zero runtime JavaScript in the package.</strong> Nothing
+          in it is loaded by a page. The Node tooling (the <code>cia</code>{" "}
+          CLI, the MCP server, the validators) never reaches the browser.
         </li>
         <li>
           <strong>An MCP server</strong> so AI agents can query the real API

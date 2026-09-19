@@ -4,7 +4,7 @@ This file is the entry point for AI coding agents (Aider, Codex, Cursor, Claude 
 
 ## What this library is
 
-A token-driven SCSS design system with a **single mixin-router per component**. **Mixin-first since v0.8** — the mixin is the API; the class/tag/selector is the consumer's choice. The npm package ships **zero JavaScript** by hard rule.
+A token-driven SCSS design system with a **single mixin-router per component**. **Mixin-first since v0.8** — the mixin is the API; the class/tag/selector is the consumer's choice. The npm package ships **zero runtime JavaScript** by hard rule — nothing in it is loaded by a page; the Node tooling (`cia` CLI, MCP server, validators) never reaches the browser.
 
 **Every mixin is a knob-board.** Each look/feel dimension is an *input*, so a consumer can restyle any mixin at any time by changing an argument — row→column is just `@include cia.flex($direction: column)`, never a hand-written `flex-direction`. Customization lives in the mixin's arguments; the consumer stays one line. **If a visual dimension can only be reached by overriding in CSS, that's a missing input — add it to the mixin.** Fewer SCSS lines always wins.
 
@@ -25,7 +25,7 @@ When asked to add a UI element, follow this order:
 3. **Never invent `cia-*` class names.** That prefix is library-owned. Consumer code uses its own naming.
 4. **All values come from tokens.** Never hardcode `#3A5FCD`, `1rem`, `8px`. Use `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`.
 5. **No BEM.** No `__element` / `--modifier` chains. `cia-` is a single-class namespace prefix, not BEM.
-6. **No JavaScript.** Cia ships zero JS in the npm package. The 6 interactive components (accordion, modal, tooltip, dropdown, tabs, copy-button) use native HTML primitives — `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`. Mobile navigation follows the same doctrine: the `hamburger` / `drawer` / `sheet` / `dock` mixin family rides `[popover]` + CSS Grid — see the `mobile-nav` recipe (hamburger + drawer) and the `bottom-nav` recipe (dock + sheets). **This rule binds cia, not you.** If you're *consuming* cia (building an app/component library on top of it), write JavaScript/framework components freely — React, SVG charts, interactivity, all of it — and use cia purely for styling (mixins + tokens). Compose the mixins to build any visual you want; you are not limited to cia's pre-made component mixins.
+6. **No runtime JavaScript.** Nothing in the npm package is loaded by a page — the Node tooling (`cia` CLI, MCP server, validators) never reaches the browser. The 6 interactive components (accordion, modal, tooltip, dropdown, tabs, copy-button) use native HTML primitives — `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`. Mobile navigation follows the same doctrine: the `hamburger` / `drawer` / `sheet` / `dock` mixin family rides `[popover]` + CSS Grid — see the `mobile-nav` recipe (hamburger + drawer) and the `bottom-nav` recipe (dock + sheets). **This rule binds cia, not you.** If you're *consuming* cia (building an app/component library on top of it), write JavaScript/framework components freely — React, SVG charts, interactivity, all of it — and use cia purely for styling (mixins + tokens). Compose the mixins to build any visual you want; you are not limited to cia's pre-made component mixins.
 7. **Grid is the skeleton; Flex is the quick moves.** Three levels, strictly:
    - **The page shell is CSS Grid with landmark-named areas.** The body's areas ARE the document's landmarks — `nav`, `main`, `footer` — so the area map reads like the page and screen readers get the structure for free. Declared once via `cia.page-layout(default | sidebar-left | sidebar-right | holy-grail)` (100dvh, sticky footer, auto mobile collapse) or `cia.layout((sidebar content toc), $tracks: …)`; children claim slots with `cia.page-header` / `cia.page-main` / `cia.page-footer` / `cia.area(name)`. Baseline since 2020.
    - **The doctrine scales inward: any control-dense region gets its own named-area grid.** A docs article (`header / demo / usage / tabs / footer`), a selections rail (`filter / list`), a dashboard — when a region has many controls, name its rows with `cia.layout(...)` too. Nested grids all the way down where density warrants; the grid's `gap` is the region's entire vertical rhythm (children carry no rhythm margins).
@@ -338,7 +338,7 @@ Or run this in-repo copy directly — needs its SDK peer deps installed manually
 }
 ```
 
-Either way it exposes **32 tools** across 8 families:
+Either way it exposes **33 tools** across 8 families:
 
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
@@ -348,11 +348,11 @@ Either way it exposes **32 tools** across 8 families:
 - **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`
 - **Doc readers** — `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme`, `read_versioning`
-- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value), `validate_theme` (run the real theme validator — contract + contrast — on a CSS string before you ship it), `theme_from_tokens` (DTCG / Tokens Studio / flat token JSON → a complete theme.css, base-inherited and validated; same function as `cia theme from-tokens`)
+- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value), `validate_theme` (run the real theme validator — contract + contrast — on a CSS string before you ship it), `theme_from_tokens` (DTCG / Tokens Studio / flat token JSON → a complete theme.css, base-inherited and validated; same function as `cia theme from-tokens`), `get_token_map` (that path → token mapping as data, or how one path resolves — read it instead of re-deriving the rules)
 
 ## Other tooling (shipped)
 
-- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. Four verbs:
+- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. Four verbs (`theme` has two subcommands: `from-tokens` and `map`, the latter printing the path → token mapping as a table, `--json`, or `--path <p>` for one name):
   `npx cia migrate tailwind|bootstrap [path]` parses another system's config and
   dumps a cia theme; `npx cia add <recipe>` (`--list` to browse) copies a recipe
   from the book into the project — own the pattern; `npx cia analyze [path]`
