@@ -1,6 +1,43 @@
 # EPIC v1.1-04 — `@cia/react` v0.1 (Codegen Proof of Concept)
 
-**Status:** Planned (v1.1)
+**Status:** ⛔ DEFERRED PERMANENTLY — 2026-09-19, on the epic's own fail-fast clause. No `@cia/react` will ship.
+
+> ## Decision 2026-09-19 — the codegen is `cat` with a 15-line header
+>
+> This epic wrote its own exit condition: *"If codegen does NOT work cleanly, this epic fails fast and `@cia/react` is permanently deferred (recipes remain the only framework story). That's a legitimate v1.1 outcome."* A time-boxed spike built the pipeline exactly as F4.1 specifies and ran it over three recipes of increasing difficulty. It does not work cleanly. The artifacts are in [`spike/`](../../../spike/README.md) and can be re-run.
+>
+> **What the spike produced**
+>
+> | Recipe | Generated | Verbatim / synthesised | Renders? |
+> |---|---|---|---|
+> | `breadcrumb` (simple) | `Breadcrumb.jsx` | 21 / 15 (58% copied) | ❌ `TypeError: Cannot read properties of undefined (reading 'length')` |
+> | `combobox-multiselect` (complex) | `ComboboxMultiselect.jsx` | 98 / 15 (87% copied) | ⚠️ renders — as a hard-coded **pizza-toppings picker** |
+> | `toast` (complex) | `Toast.jsx` | 88 / 15 (85% copied) | ❌ `ReferenceError: ToastRecipe is not defined` |
+>
+> **1. It is file assembly, not codegen.** The 15 "synthesised" lines are *byte-identical* across all three outputs apart from the component name — a fixed wrapper template plus a `DO NOT EDIT` header. Everything else is the recipe's React block copied verbatim. F4.1's own criterion concedes this: *"this is the source of truth — codegen just copies it into the right file shape."* A generator whose output is `cat recipe-section` plus a constant is not a pipeline worth two weeks and a published package.
+>
+> **2. The prop model is incompatible with real recipes.** US-V11.04.1.2 mandates the interface `(children, className, ...rest)`. The three recipes expose three different shapes, none of them that one:
+> - `breadcrumb` requires a `crumbs: Crumb[]` prop — the generated wrapper passes none, so it crashes on first render.
+> - `combobox-multiselect` takes **no props at all** and is named `MyMultiselect`.
+> - `toast` has **no default export**; it exports `ToastProvider` + a `useToast` hook and keeps `ToastItem` private. There is no single component to wrap, so the wrapper references an identifier that does not exist.
+>
+> **3. Demo fixtures ship to consumers.** `npm install @cia/react` would deliver a `ComboboxMultiselect` hard-wired to `const OPTIONS = ["Cheese", "Mushrooms", "Olives", "Onions", "Peppers", "Pineapple", "Spinach"]` with a `Toppings` label and no prop to change either. Recipe React sections are teaching examples; they are written to be read and adapted, not imported. That is the correct thing for them to be, and it is why they cannot double as package source.
+>
+> **4. Every output is TSX, and the epic scopes TypeScript out.** "v0.1 is JSX-only, types deferred to v0.2" — but all four framework sections in every recipe are `tsx`. TypeScript's parser rejects all three generated `.jsx` files (2, 4 and 18 errors). Shipping v0.1 would mean stripping the types the recipes deliberately carry.
+>
+> **5. The styling criterion is wrong twice over.** US-V11.04.1.3 says the generated `.module.scss` contains `@use 'css-is-awesome' as cia;`. That is the emitting bundle, which [`scss/recipes/README.md`](../../../scss/recipes/README.md) forbids in a component stylesheet — *"a top-level `:root` is a hard build error in CSS Modules pure mode"* — and which does not even forward the layout mixins the recipes call (`@include cia.stack` → `Undefined mixin`; `stack` lives in `_layout.scss`). The correct `@use 'css-is-awesome/api' as cia;` compiles clean, so this one is a fixable spec bug. The unfixable part is semantic: `toast.md` styles two distinct selectors, `.my-toasts` (the region, `stack`) and `.my-toast` (one notification, `toast-base`), and a single `cia-recipe-toast` class collapses both onto the same element.
+>
+> **6. It duplicates a package that already exists and is better.** `@boilerai/react` **0.2.1** already publishes **103 components** against `css-is-awesome ^1.16.1` — including `ComboBox` and `DataTable`, two of this epic's four named targets. Its `Breadcrumb` exports `BreadcrumbItem` and `BreadcrumbProps`, takes `items` / `separator = '/'` / `ariaLabel = 'Breadcrumb'`, and ships with a test file, a stories file and a README. The generated one crashes. boiler-project-ai is cia's designated showcase consumer; shipping a thinner, generated rival from cia's own repo would compete with the showcase and split the React story in two.
+>
+> **7. The rules already anticipated this.** [`roadmap/epics/README.md`](../README.md) line 111: *"**No component library to maintain** — recipes are the framework story; `@cia/<framework>` packs ship via codegen **if at all**."* The "if at all" is doing real work. [`AGENTS.md`](../../../AGENTS.md) line 11: *"No separate React component library (Jerry's call — recipes are the deliverable)."* A published `@cia/react` is not a violation of the zero-runtime-JavaScript rule — that rule binds the `css-is-awesome` package, and this would be a separate one — but it is squarely against the no-component-library call, and codegen was the only justification for the exception. Codegen did not hold up, so the exception lapses.
+>
+> **What happens to the stories**
+>
+> All 12 are retired unbuilt. The same user-power test that retired [EPIC-03](./EPIC-03-cia-a11y-recipes.md) applies: a generated package would cost a publish pipeline, a peer-dep matrix, a sync mechanism and a drift lint, and a consumer gains a component that is strictly worse than copying the recipe by hand or installing `@boilerai/react`. The framework story stays: **32 recipes, each with runnable React / Vue / Svelte / vanilla examples, plus `npx cia add <recipe>` to copy one into a project.** The mirror epic [v1.3 EPIC-04 `@cia/angular`](../v1-3/EPIC-04-framework-pack-angular.md) is deferred on the same evidence, as its own "if codegen proves out" gate never opened.
+>
+> **What would reopen it.** Real consumer demand for an installable component package, plus a recipe schema change that separates a *reference implementation* (propless, fixture-laden, written to be read) from a *component contract* (named props, no fixtures, one export shape). That is a recipes-book change first and a codegen change second. Nobody has asked for it; `@boilerai/react` already answers the need.
+>
+> The stories below are kept verbatim as the historical plan. None will be executed.
 **Effort estimate:** ~2 weeks
 **Stories:** 12
 
