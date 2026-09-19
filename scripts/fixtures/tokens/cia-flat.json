@@ -1,0 +1,10 @@
+{
+  "--brand-primary": "#0e7490",
+  "--brand-primary-hover": "#155e75",
+  "--action-primary-default": "#0e7490",
+  "--action-primary-hover": "#155e75",
+  "--action-primary-active": "#164e63",
+  "--text-primary": "#0f172a",
+  "--space-unit": "0.25rem",
+  "--my-app-hero-gradient": "linear-gradient(90deg, #0e7490, #155e75)"
+}

@@ -97,6 +97,89 @@ export default function AuthoringThemesPage() {
         <li><strong>Asymmetric (Pattern C)</strong> — one nested <code>@media (prefers-color-scheme: dark)</code> block inside the theme for non-color overrides (different blur, font, or radius per mode). Used by Glass. <code>light-dark()</code> is color-only per spec; non-color values need the nested block.</li>
       </ul>
 
+      <h2 id="from-design-tokens">From design tokens (Figma → theme.css)</h2>
+      <p>
+        If your palette, spacing and type scale already live in a design tool,
+        skip the SCSS: <code>cia theme from-tokens</code> turns a design-tokens
+        file into a complete, validated <code>theme.css</code> in the exact shape
+        the shipped themes use. No Sass involved — the CLI, the MCP tool{" "}
+        <code>theme_from_tokens</code> and the in-process handler are one function
+        (<code>scripts/tokens-to-theme.cjs</code>, shipped in the package).
+      </p>
+      <Example>
+        <Example.Code><span className="tok-com">{"# DTCG, Tokens Studio, or a flat --token map — format auto-detected"}</span>
+{"\n"}<span className="tok-sel">npx</span> <span className="tok-val">cia theme from-tokens tokens.json --name acme --out src/styles/acme.css</span>
+{"\n"}
+{"\n"}<span className="tok-com">{"# a separate dark file → light-dark() values"}</span>
+{"\n"}<span className="tok-sel">npx</span> <span className="tok-val">cia theme from-tokens light.json --dark dark.json --name acme --json</span>
+{"\n"}
+{"\n"}<span className="tok-com">{"# inherit whatever you did not specify from a different shipped theme"}</span>
+{"\n"}<span className="tok-sel">npx</span> <span className="tok-val">cia theme from-tokens brand.json --name acme --base press</span></Example.Code>
+      </Example>
+      <h3 id="tokens-input-formats">Input formats</h3>
+      <ul>
+        <li>
+          <strong>DTCG v2025.10</strong> (<code>--format dtcg</code>): nested groups whose
+          leaves carry <code>$value</code> and optionally <code>$type</code>. Aliases{" "}
+          <code>{"{group.path}"}</code> resolve recursively; an unresolved alias or a
+          cycle is an error, never a silent drop. Composite values are understood:
+          colour objects (<code>{"{ hex }"}</code> or{" "}
+          <code>{"{ colorSpace, components, alpha }"}</code>), dimension and duration
+          objects (<code>{"{ value, unit }"}</code>), shadow objects or arrays, font-family
+          arrays, cubic-bezier arrays. <code>$extensions</code> is ignored.
+        </li>
+        <li>
+          <strong>Tokens Studio for Figma</strong> (<code>--format tokens-studio</code>):
+          leaves carry <code>value</code> and <code>type</code>. A single set works as-is;
+          a multi-set export (top-level <code>$themes</code> / <code>$metadata</code>) merges
+          the sets in <code>$metadata.tokenSetOrder</code>, later sets winning. Numbers
+          exported as strings (<code>&quot;16&quot;</code>) get their unit from the type.
+          Paired top-level groups — <code>color-light</code> + <code>color-dark</code>, or{" "}
+          <code>light</code> + <code>dark</code> — are split into the two modes automatically.
+        </li>
+        <li>
+          <strong>cia-flat</strong> (<code>--format cia-flat</code>):{" "}
+          <code>{"{ \"--brand-primary\": \"#3A5FCD\" }"}</code>, passed straight through.
+        </li>
+      </ul>
+      <h3 id="tokens-path-rules">How a path becomes a token</h3>
+      <ol>
+        <li>
+          An explicit table maps Figma-style names that do not spell the cia token:{" "}
+          <code>typography.font.body</code> → <code>--font-sans</code>,{" "}
+          <code>shape.radius.md</code> → <code>--radius-md</code>,{" "}
+          <code>effect.shadow.md</code> → <code>--shadow-md</code>,{" "}
+          <code>motion.duration.fast</code> → <code>--duration-fast</code>,{" "}
+          <code>layer.modal</code> → <code>--z-modal</code>.
+        </li>
+        <li>
+          Otherwise a leading <code>color.</code> / <code>colors.</code> is stripped, common
+          group names are rewritten (<code>spacing.</code> → <code>space.</code>,{" "}
+          <code>border-radius.</code> → <code>radius.</code>, <code>elevation.</code> →{" "}
+          <code>shadow.</code>, <code>zIndex.</code> → <code>z.</code>,{" "}
+          <code>fontFamilies.</code> → <code>font.</code>), and the segments are joined with{" "}
+          <code>-</code>. If that name is in the contract it is used: <code>space.4</code> →{" "}
+          <code>--space-4</code>, <code>brand.primary</code> → <code>--brand-primary</code>,{" "}
+          <code>text.primary</code> → <code>--text-primary</code>, <code>code.bg</code> →{" "}
+          <code>--code-bg</code>.
+        </li>
+        <li>
+          Anything else is emitted verbatim as <code>--&lt;joined-path&gt;</code> and listed in{" "}
+          <code>report.unmapped</code>, so your own tokens survive and nothing disappears.
+        </li>
+      </ol>
+      <h3 id="tokens-minimum">Minimum content</h3>
+      <p>
+        None. Every required contract token the file does not supply is inherited from the
+        base theme (<code>--base</code>, default <code>boilerplate</code>; <code>--base list</code>{" "}
+        prints the 24 options) and listed in <code>report.inherited</code>. Optional tokens
+        are never inherited — the library default applies. The validator and the WCAG
+        contrast audit run on the result and are returned as <code>validation</code>; the CLI
+        exits non-zero on a failure unless you pass <code>--allow-a11y-fail</code>. In
+        practice a brand palette plus a text colour is enough to get a passing theme;
+        the more of the contract the file supplies, the less it borrows.
+      </p>
+
       <h2 id="token-contract">The token contract</h2>
       <p>
         The machine-readable source of truth is{" "}

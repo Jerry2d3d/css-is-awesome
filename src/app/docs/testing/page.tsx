@@ -87,7 +87,7 @@ export default function TestingPage() {
             <tr>
               <td><code>coverage:mcp</code></td>
               <td>
-                Spawns the MCP server over stdio and calls all 31 tools
+                Spawns the MCP server over stdio and calls all 32 tools
               </td>
             </tr>
             <tr>

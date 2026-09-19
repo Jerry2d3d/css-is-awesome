@@ -713,6 +713,10 @@ module.exports = {
   validateFile,
   validateText,
   loadContract,
+  // Reporters — reused by `cia theme from-tokens` so its output reads exactly
+  // like `npm run validate-themes`.
+  reportResult,
+  reportA11yForTheme,
   a11y: a11y,
 };
 

@@ -19,9 +19,10 @@
  *                  read_theming, read_agents, read_contract,
  *                  read_three_tiers, read_readme, read_versioning
  *   Sizing:        resolve_size
+ *   Themes (build): theme_from_tokens — design-tokens JSON → validated theme.css
  *   Prompt:        assemble_prompt(intent[, args])
  *
- * 31 tools total.
+ * 32 tools total.
  *
  * Discovery model: filesystem scan, no database. Parses SCSS files with
  * focused regex (no full SCSS AST). Tokens come from the authoritative
@@ -698,6 +699,18 @@ const handlers = {
     return validateText(css, loadContract(), { label: label || undefined });
   },
 
+  // Design-tokens JSON (DTCG v2025.10 / Tokens Studio / flat --token map) →
+  // a complete theme.css in the shipped shape, validated + contrast-audited.
+  // Same function as `cia theme from-tokens`; reachable in-process through
+  // module.exports.handlers so an inventory builder can call it without a
+  // transport. See scripts/tokens-to-theme.cjs for the input contract.
+  theme_from_tokens({ tokens, name, format, base, dark, mode, validate } = {}) {
+    if (tokens == null) throw new Error('theme_from_tokens: tokens is required (object or JSON string)');
+    if (!name) throw new Error('theme_from_tokens: name is required');
+    const { themeFromTokens } = require(path.join(SCRIPTS_DIR, 'tokens-to-theme.cjs'));
+    return themeFromTokens({ tokens, name, format, base, dark, mode, validate });
+  },
+
   // ─── Mixins ────────────────────────────────────────────────────────────
 
   list_mixins({ category, component, limit = 500, offset = 0 } = {}) {
@@ -1353,6 +1366,27 @@ async function startServer() {
       label: z.string().optional().describe('Optional name for the result (e.g. the intended theme name); purely cosmetic.'),
     },
   }, async (a) => ok(handlers.validate_theme(a || {})));
+
+  server.registerTool('theme_from_tokens', {
+    description:
+      'Build a complete, validated cia theme.css from a design-tokens JSON — DTCG v2025.10 ({ $value, $type }, ' +
+      '{aliases} resolved), a Tokens Studio for Figma export ({ value, type }, single or multi-set), or a flat ' +
+      '{ "--token": value } map. Format is auto-detected. Every REQUIRED contract token the file does not supply ' +
+      'is inherited from a shipped base theme (default boilerplate) and listed in report.inherited, so the output ' +
+      'is always contract-complete; unmapped paths are emitted verbatim and listed in report.unmapped, never ' +
+      'dropped. Pass `dark` (same format) or a single file with paired color-light/color-dark groups to get ' +
+      'light-dark() values. Returns { css, report, validation } — validation is the same result validate_theme ' +
+      'gives, run on the CSS before you write it anywhere.',
+    inputSchema: {
+      tokens: z.union([z.record(z.any()), z.string()]).describe('The tokens JSON (object, or a JSON string).'),
+      name: z.string().describe('Theme name — kebab-case slug, becomes [data-theme="<name>"].'),
+      format: z.enum(['auto', 'dtcg', 'tokens-studio', 'cia-flat']).optional().describe('Default auto.'),
+      base: z.string().optional().describe('Shipped theme that supplies missing required tokens. Default boilerplate.'),
+      dark: z.union([z.record(z.any()), z.string()]).optional().describe('Optional dark-mode tokens (same format) → light-dark() values.'),
+      mode: z.enum(['light', 'dark']).optional().describe('Single-mode color-scheme when there is no dark side. Default light.'),
+      validate: z.boolean().optional().describe('Run the validator + WCAG audit (default true).'),
+    },
+  }, async (a) => ok(handlers.theme_from_tokens(a || {})));
 
   // Mixins
   server.registerTool('list_mixins', {

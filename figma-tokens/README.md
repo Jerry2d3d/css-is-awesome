@@ -22,6 +22,21 @@ The `.scss` siblings exist for consumers who want to `@import` Figma-exported
 tokens directly without going through `tokens.json`. They are not consumed by
 the main `scss/` build — `scss/main.scss` pulls from `scss/theme/`.
 
+## Round trip: `tokens.json` → a theme
+
+`tokens.json` is a Tokens Studio export and is consumed by the design-tokens
+on-ramp shipped since 1.17.0:
+
+```bash
+npx cia theme from-tokens node_modules/css-is-awesome/figma-tokens/tokens.json --name figma-demo --out figma-demo.css
+```
+
+Its paired `color-light` / `color-dark` groups become one `light-dark()` theme;
+`brand`, `spacing`, `font-*`, `line-height`, `border-radius` and `shadow` map by
+the generic path rule; anything without a contract home (e.g. `brand.accent`)
+is emitted verbatim and listed in the report. The same function is the MCP
+`theme_from_tokens` tool. Input contract: `/docs/authoring/themes#from-design-tokens`.
+
 ## Direction of truth
 
 **Hand-maintained.** Keep in sync with `scss/theme/` when tokens change.

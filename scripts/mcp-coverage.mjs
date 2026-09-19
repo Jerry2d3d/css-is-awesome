@@ -203,6 +203,24 @@ try {
       ? null
       : "expected ok:false with missing required tokens for a deliberately incomplete theme";
   });
+  // A tiny DTCG file with an alias must come back as a complete, contract-valid
+  // theme: the two supplied tokens from the file, everything else inherited.
+  await call("theme_from_tokens", {
+    name: "coverage-tokens",
+    tokens: {
+      color: { text: { primary: { $value: "#0f172a" } } },
+      brand: { primary: { $value: "{color.text.primary}" } },
+      space: { "4": { $value: { value: 16, unit: "px" }, $type: "dimension" } },
+    },
+  }, (b) => {
+    const r = JSON.parse(b);
+    const okShape = r && typeof r.css === "string" && r.css.includes('[data-theme="coverage-tokens"]') && r.report && r.validation;
+    if (!okShape) return "expected { css, report, validation } with the named theme block";
+    if (r.validation.ok !== true) return "expected the generated theme to satisfy the contract";
+    if (!r.report.fromTokens.includes("--brand-primary") || !r.report.fromTokens.includes("--space-4")) return "expected --brand-primary (via alias) and --space-4 from the file";
+    if (r.report.inherited.length === 0) return "expected the base theme to fill the rest";
+    return null;
+  });
 
   // ─── Report ───────────────────────────────────────────────────────────────
   const tested = new Set(results.map((r) => r.name));
