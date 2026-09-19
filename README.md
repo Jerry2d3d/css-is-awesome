@@ -14,7 +14,7 @@
 
 **Read [`llm.txt`](./llm.txt) first.** One file, the whole system: install path, hard rules, the mixin vocabulary, and the traps that make agents write wrong cia code. It ships in the npm package, so it's at `node_modules/css-is-awesome/llm.txt` in any project that has cia.
 
-**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 31 tools covering themes, mixins, functions, tokens, recipes, components and theme validation.
+**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 32 tools covering themes, mixins, functions, tokens, recipes, components, theme validation and theme generation from design tokens.
 
 ```json
 {
@@ -226,6 +226,10 @@ npx cia analyze src/styles  # design-system health: dead cia.* symbols, the
                             # space() scale trap, off-contract tokens (typos),
                             # off-scale lengths, hard-coded colors, BEM creep,
                             # missing focus-visible styling
+npx cia theme from-tokens tokens.json --name acme --out src/styles/acme.css
+                            # design tokens (DTCG v2025.10, Tokens Studio, or a
+                            # flat --token map) → a complete, validated theme.css;
+                            # missing required tokens inherit from a shipped base
 ```
 
 `cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens. Off-scale-length findings suggest the nearest named step (e.g. `--radius-md`) for a literal `border-radius`/`padding`/`margin`/`gap` value, as a hint toward using a token — never a claim about your active theme's exact pixel value, since themes are free to set their own numbers (Terminal sets every `--radius-*` to `0`, deliberately). The default output is a **graded report** — a health score, a section per concern (Contract / Spacing / Color / Naming / Layout / API / Accessibility) with a `✓` when clean, and a suggested fix on each finding; add `--verbose` for the flat per-file list or `--json` for the machine shape. Full rule reference: [`/docs/analyzer`](https://cssisawesome.com/docs/analyzer/).
@@ -294,7 +298,7 @@ The scope is kept narrow: 8 `!important` declarations, all inside `@media print`
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) exposing **31 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) , `resolve_size` (snap design px values to cia's 4px grid) and `validate_theme` (run the real theme validator on CSS you just wrote). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) exposing **32 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) , `resolve_size` (snap design px values to cia's 4px grid) `validate_theme` (run the real theme validator on CSS you just wrote) and `theme_from_tokens` (design-tokens JSON → a complete, validated theme.css). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
 **Recommended — zero install:** use the dedicated [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package. It depends on `css-is-awesome` and resolves your installed version's real source, so it's never out of sync — and the MCP SDK ships as a real dependency, not an optional peer you have to remember to add.
 
@@ -410,7 +414,7 @@ Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 **Stable, [published on npm](https://www.npmjs.com/package/css-is-awesome)** (first published 2026-09-01). The mixin API, functions, token contract, and theme architecture are stable and under strict SemVer — breaking changes require a major bump. See [`VERSIONING.md`](./VERSIONING.md) for the policy.
 
-The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 31-tool MCP server (now also available zero-install via the companion [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package). The npm package ships ZERO JavaScript by hard rule.
+The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 32-tool MCP server (now also available zero-install via the companion [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package). The npm package ships ZERO JavaScript by hard rule.
 
 See [CHANGELOG.md](./CHANGELOG.md) for the full history and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 and v0.8 → v1.0 upgrade paths.
 

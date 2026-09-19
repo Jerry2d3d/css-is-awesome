@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Example from "@/components/Example";
 
 export default function McpPage() {
@@ -65,7 +66,7 @@ export default function McpPage() {
 }`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 31 total: 28 across 8 families + 3 specialty tools</h2>
+      <h2 id="tools">Tools — 32 total: 28 across 8 families + 4 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -286,6 +287,59 @@ resolve_size({ px: 17 })
 // ok: false means required tokens are missing, or an a11y pair failed —
 // fix and re-validate before writing the file anywhere.`}</Example.Code>
       </Example>
+
+      <h2 id="theme-from-tokens">
+        <code>theme_from_tokens</code>
+      </h2>
+      <p>
+        Turn a design-tokens file into a complete, validated cia theme in one
+        call. Accepts <strong>DTCG v2025.10</strong> (<code>$value</code> /{" "}
+        <code>$type</code> leaves, <code>{"{aliases}"}</code> resolved),{" "}
+        <strong>Tokens Studio for Figma</strong> exports (<code>value</code> /{" "}
+        <code>type</code> leaves, single set or multi-set with{" "}
+        <code>$metadata.tokenSetOrder</code>), or a flat{" "}
+        <code>{"{ \"--token\": value }"}</code> map. The format is auto-detected.
+      </p>
+      <p>
+        There is no minimum content. Every required contract token the file does
+        not supply is inherited from a shipped base theme (default{" "}
+        <code>boilerplate</code>) and listed in <code>report.inherited</code>, so
+        the output is always contract-complete; paths that are not cia tokens are
+        emitted verbatim and listed in <code>report.unmapped</code>, never
+        dropped. Pass <code>dark</code> (same format), or a single file with
+        paired <code>color-light</code> / <code>color-dark</code> groups, and the
+        differing colours become <code>light-dark()</code>. The result carries
+        the same <code>validation</code> object <code>validate_theme</code>{" "}
+        returns, run on the CSS before you write it anywhere. Same function as{" "}
+        <code>npx cia theme from-tokens</code>, and reachable in-process as{" "}
+        <code>handlers.theme_from_tokens</code>.
+      </p>
+      <Example>
+        <Example.Code>{`theme_from_tokens({
+  name: "acme",
+  tokens: {                                   // DTCG v2025.10
+    color: { brand: { primary: { $value: "#3a5fcd" } },
+             text:  { primary: { $value: "#0f172a" } } },
+    space: { "4": { $type: "dimension", $value: { value: 16, unit: "px" } } }
+  }
+})
+// →  { css: ':root, :root[data-theme="acme"] { color-scheme: light; --action-primary-active: …',
+//      report: { format: "dtcg", base: "boilerplate", darkMode: false,
+//                fromTokens: ["--brand-primary", "--space-4", "--text-primary"],
+//                inherited: [ …the other 124 required tokens… ], unmapped: [] },
+//      validation: { ok: true, mode: "consolidated", themes: [ … ], a11ySummary: { fail: 0, … } } }`}</Example.Code>
+      </Example>
+      <p>
+        Path rules: an explicit table covers Figma-style names that do not spell
+        the cia token (<code>typography.font.body</code> →{" "}
+        <code>--font-sans</code>); otherwise a leading <code>color.</code> is
+        stripped, common group names are rewritten (<code>spacing.</code> →{" "}
+        <code>space.</code>, <code>border-radius.</code> → <code>radius.</code>,{" "}
+        <code>zIndex.</code> → <code>z.</code>), and the segments are joined with{" "}
+        <code>-</code> — so <code>space.4</code> → <code>--space-4</code> and{" "}
+        <code>brand.primary</code> → <code>--brand-primary</code>. Full contract in
+        the <Link href="/docs/authoring/themes#from-design-tokens">theme authoring guide</Link>.
+      </p>
 
       <h2 id="security">Security + portability</h2>
       <p>

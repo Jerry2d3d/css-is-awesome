@@ -338,7 +338,7 @@ Or run this in-repo copy directly — needs its SDK peer deps installed manually
 }
 ```
 
-Either way it exposes **31 tools** across 8 families:
+Either way it exposes **32 tools** across 8 families:
 
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
@@ -348,11 +348,11 @@ Either way it exposes **31 tools** across 8 families:
 - **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`
 - **Doc readers** — `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme`, `read_versioning`
-- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value), `validate_theme` (run the real theme validator — contract + contrast — on a CSS string before you ship it)
+- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value), `validate_theme` (run the real theme validator — contract + contrast — on a CSS string before you ship it), `theme_from_tokens` (DTCG / Tokens Studio / flat token JSON → a complete theme.css, base-inherited and validated; same function as `cia theme from-tokens`)
 
 ## Other tooling (shipped)
 
-- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. Three verbs:
+- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. Four verbs:
   `npx cia migrate tailwind|bootstrap [path]` parses another system's config and
   dumps a cia theme; `npx cia add <recipe>` (`--list` to browse) copies a recipe
   from the book into the project — own the pattern; `npx cia analyze [path]`
@@ -360,9 +360,14 @@ Either way it exposes **31 tools** across 8 families:
   the `space()` 1–9 scale trap, off-contract tokens (near-miss typos only), hard-coded
   hex colors, BEM chains — with a health score and CI-ready exit codes. Low-noise on
   color: a hex in a `var(--token, #hex)` fallback is token-driven, and a literal inside
-  `@media print` is an intentional paper colour — neither is flagged. Run any verb with `--help`. (`cia init` remains
+  `@media print` is an intentional paper colour — neither is flagged; `npx cia theme from-tokens <tokens.json> --name <slug>`
+  turns a design-tokens file (DTCG v2025.10, Tokens Studio for Figma, or a flat `--token` map; format auto-detected)
+  into a complete theme.css — every required token the file lacks inherits from a shipped base theme (`--base`,
+  default boilerplate), unmapped paths pass through verbatim and are reported, a `--dark` file or paired
+  `color-light`/`color-dark` groups become `light-dark()`, and the validator + WCAG audit run before anything is
+  written. Same function as the MCP `theme_from_tokens` tool. Run any verb with `--help`. (`cia init` remains
   planned.)
-- **JSON token export** — DTCG-format token list in `figma-tokens/`.
+- **JSON token export** — Tokens Studio-format sample in `figma-tokens/tokens.json`; it round-trips through `cia theme from-tokens` (paired light/dark groups → one `light-dark()` theme).
 - **`llm.txt`** — at the repo root and served from the docs site; single-fetch
   summary for any AI agent. Also readable over MCP via `read_llm_txt`.
 
