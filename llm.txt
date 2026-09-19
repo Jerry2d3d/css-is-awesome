@@ -198,4 +198,4 @@ Humans first. AI's role is to compose, not to lead the pitch.
 
 ---
 
-*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for the v1.0 architecture lock, 2026-08-30 for the theme single-source rework (24 themes, 127+36 contract, themeable spacing, `:root, :root[data-theme]` selector), and 2026-09-04 for the shipped recipes count (5), the mobile-nav mixin family, and the dropdown popover guard. Update when the API surface changes.*
+*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for the v1.0 architecture lock, 2026-08-30 for the theme single-source rework (24 themes, 127+36 contract, themeable spacing, `:root, :root[data-theme]` selector), 2026-09-04 for the shipped recipes count (5), the mobile-nav mixin family, and the dropdown popover guard, and 2026-09-19 for the 32-recipe book, 33-tool MCP, contract 1.2 (127 + 41 in 10 features), the playground and the design-tokens on-ramp. Update when the API surface changes.*
