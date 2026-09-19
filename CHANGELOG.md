@@ -1,5 +1,14 @@
 # Changelog
 
+# [1.19.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.18.0...v1.19.0) (2026-09-19)
+
+
+### Features
+
+* **cli:** cia theme map — the design-token → cia-token mapping as data ([283db9b](https://github.com/Jerry2d3d/css-is-awesome/commit/283db9b47b2195b8d8cb3afe9bad254c88e91cab))
+* **cli:** map boilerplate's canonical DTCG layout — font.family roles, component.* overrides ([8ae71fd](https://github.com/Jerry2d3d/css-is-awesome/commit/8ae71fd55b07bbf7da6d562f5388dcc489bcffb9))
+* **mcp:** get_token_map tool + in-process handler (33 tools) ([ff5610f](https://github.com/Jerry2d3d/css-is-awesome/commit/ff5610f5409bead49fa794a8c27967f602376c77))
+
 # [1.18.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.17.0...v1.18.0) (2026-09-19)
 
 
