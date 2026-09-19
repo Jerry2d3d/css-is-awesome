@@ -1,5 +1,17 @@
 # Changelog
 
+# [1.18.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.17.0...v1.18.0) (2026-09-19)
+
+
+### Bug Fixes
+
+* **site:** playground editor no longer boots from stale text when a share link decodes early ([3f0748f](https://github.com/Jerry2d3d/css-is-awesome/commit/3f0748f28b8a70471f1f61485733872c6ccdd6a9))
+
+
+### Features
+
+* **contract:** feature groups for optional tokens — contract 1.2 ([cc98e1f](https://github.com/Jerry2d3d/css-is-awesome/commit/cc98e1f9397ae89ef65b70557a942b5b561a0f85))
+
 # [1.17.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.16.1...v1.17.0) (2026-09-19)
 
 
