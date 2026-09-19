@@ -38,6 +38,9 @@ const eslintConfig = [
       "bin/**",
       "mcp/**",
       "scripts/**",
+      // spike/ is the EPIC-04 codegen evaluation — Node tooling, same as the
+      // three above. It is not in the `files` manifest and does not ship.
+      "spike/**",
     ],
   },
 ];
