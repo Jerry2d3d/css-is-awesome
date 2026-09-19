@@ -545,6 +545,45 @@ function collect(tokens, format, contract) {
 // ---------------------------------------------------------------------------
 const NAME_RE = /^[a-z0-9][a-z0-9-]*$/;
 
+// ---------------------------------------------------------------------------
+// The mapping as DATA — so a second implementation (a boilerplate registry,
+// an inventory builder, another agent) can map the same source token the
+// same way this command does, without re-deriving the rules.
+// ---------------------------------------------------------------------------
+const GENERIC_RULE =
+  'If a path is not in `explicit` (checked before and after the alias rewrites), strip/rewrite the ' +
+  'prefix per `aliases` (first matching pattern wins), join the remaining segments with "-", prefix ' +
+  '"--", and lower-case it. If that name is a contract token (required or optional) it is the target. ' +
+  'One retry converts camelCase segments to kebab-case (color.text.linkHover → --text-link-hover). ' +
+  'Otherwise the path is emitted verbatim as --<joined-path> and reported as unmapped — never dropped.';
+
+/** The full path → token mapping as JSON-serialisable data. */
+function tokenMap({ ciaRoot = path.join(__dirname, '..') } = {}) {
+  const contract = loadContract(ciaRoot);
+  return {
+    generatorVersion: GENERATOR_VERSION,
+    contractVersion: contract.version,
+    explicit: { ...TOKEN_MAP },
+    aliases: PATH_ALIASES.map(([re, to]) => ({ pattern: re.source, replaceWith: to })),
+    genericRule: GENERIC_RULE,
+    targets: { required: [...contract.required], optional: [...contract.optional] },
+  };
+}
+
+/** How ONE path resolves, with the contract loaded for the caller. */
+function resolvePath(tokenPath, { ciaRoot = path.join(__dirname, '..') } = {}) {
+  if (typeof tokenPath !== 'string' || !tokenPath.trim()) throw new Error('resolvePath: path is required');
+  const contract = loadContract(ciaRoot);
+  const p = tokenPath.trim();
+  const result = mapPath(p, contract);
+  const via = TOKEN_MAP[p] ? 'explicit'
+    : TOKEN_MAP[applyPathAliases(p)] ? 'explicit-after-alias'
+    : result.mapped ? 'generic' : 'passthrough';
+  const status = contract.required.includes(result.token) ? 'required'
+    : contract.optional.includes(result.token) ? 'optional' : null;
+  return { path: p, token: result.token, mapped: result.mapped, via, status };
+}
+
 function themeFromTokens(opts = {}) {
   const ciaRoot = opts.ciaRoot || CIA_ROOT_DEFAULT;
   const name = String(opts.name || '').trim();
@@ -661,6 +700,8 @@ module.exports = {
   resolveAliases,
   normalizeValue,
   mapPath,
+  tokenMap,
+  resolvePath,
   listBases,
   TOKEN_MAP,
   PATH_ALIASES,
