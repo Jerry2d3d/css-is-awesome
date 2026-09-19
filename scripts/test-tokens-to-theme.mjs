@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const FIX = join(ROOT, 'scripts', 'fixtures', 'tokens');
-const { themeFromTokens, detectFormat, mapPath, listBases } = require(join(ROOT, 'scripts', 'tokens-to-theme.cjs'));
+const { themeFromTokens, detectFormat, mapPath, listBases, tokenMap, resolvePath, TOKEN_MAP } = require(join(ROOT, 'scripts', 'tokens-to-theme.cjs'));
 const contract = JSON.parse(readFileSync(join(ROOT, 'scripts', 'theme-contract.json'), 'utf8'));
 const json = (f) => JSON.parse(readFileSync(join(FIX, f), 'utf8'));
 
@@ -131,4 +131,29 @@ test('detectFormat + mapPath rules', () => {
   assert.deepEqual(mapPath('zIndex.modal', c), { token: '--z-modal', mapped: true });
   assert.deepEqual(mapPath('color.text.linkHover', c), { token: '--text-link-hover', mapped: true });
   assert.deepEqual(mapPath('nothing.here', c), { token: '--nothing-here', mapped: false });
+});
+
+test('tokenMap(): JSON-serialisable, agrees with TOKEN_MAP, aliases compile, deterministic', () => {
+  const m = tokenMap();
+  const round = JSON.parse(JSON.stringify(m));
+  assert.deepEqual(round, m, 'must survive a JSON round-trip (no RegExp / functions)');
+  assert.deepEqual(m.explicit, TOKEN_MAP);
+  assert.ok(m.aliases.length >= 10);
+  for (const a of m.aliases) assert.doesNotThrow(() => new RegExp(a.pattern), `alias pattern compiles: ${a.pattern}`);
+  assert.equal(typeof m.genericRule, 'string');
+  assert.ok(m.genericRule.length > 80);
+  assert.equal(m.contractVersion, contract.version);
+  assert.deepEqual(m.targets.required, contract.required);
+  assert.deepEqual(m.targets.optional, contract.optional);
+  assert.equal(typeof m.generatorVersion, 'string');
+  assert.deepEqual(tokenMap(), m, 'deterministic');
+});
+
+test('resolvePath(): mapped, unmapped, via + contract status', () => {
+  assert.deepEqual(resolvePath('color.text.primary'), { path: 'color.text.primary', token: '--text-primary', mapped: true, via: 'explicit', status: 'required' });
+  assert.deepEqual(resolvePath('spacing.4'), { path: 'spacing.4', token: '--space-4', mapped: true, via: 'generic', status: 'required' });
+  assert.deepEqual(resolvePath('spacing.unit'), { path: 'spacing.unit', token: '--space-unit', mapped: true, via: 'generic', status: 'optional' });
+  assert.deepEqual(resolvePath('elevation.md'), { path: 'elevation.md', token: '--shadow-md', mapped: true, via: 'generic', status: 'required' });
+  assert.deepEqual(resolvePath('typography.size.lg'), { path: 'typography.size.lg', token: '--typography-size-lg', mapped: false, via: 'passthrough', status: null });
+  assert.throws(() => resolvePath(''), /path is required/);
 });
