@@ -42,6 +42,14 @@ npm install css-is-awesome
 npm install -D sass
 ```
 
+Or let the wizard do the wiring — it detects your framework, picks a theme, writes the SCSS entry and connects the MCP server, in the project you're already in:
+
+```bash
+npm create cia@latest        # add --dry-run to see the plan first
+```
+
+Guide: [`/docs/install/wizard`](https://cssisawesome.com/docs/install/wizard/).
+
 ```scss
 @use 'css-is-awesome' as cia;
 
