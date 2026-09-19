@@ -1,6 +1,6 @@
 {
-  "version": "1.1",
-  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Tokens in `optional` are reported by the validator as info, never as failures \u2014 the library or the theme generator supplies a default. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference). Contract 1.1 (2026-09-18): --space-unit relaxed from required to optional; it had been added as required in library 1.12.0, which VERSIONING.md forbids in a MINOR.",
+  "version": "1.2",
+  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Tokens in `optional` are reported by the validator as info, never as failures \u2014 the library or the theme generator supplies a default. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference). Contract 1.1 (2026-09-18): --space-unit relaxed from required to optional; it had been added as required in library 1.12.0, which VERSIONING.md forbids in a MINOR. Contract 1.2 (2026-09-18): `features` groups every optional token by the capability it enables, so a validator or installer can say \"missing the tokens for print\" instead of listing all optional tokens.",
   "required": [
     "--action-primary-active",
     "--action-primary-default",
@@ -172,5 +172,98 @@
     "--space-xs",
     "--tag-radius",
     "--touch-target-min"
-  ]
+  ],
+  "features": {
+    "density": {
+      "enables": "The density knob: shipped themes derive every --space-N from this one unit via calc(); set it to tighten or open up the whole UI (theme editor slider).",
+      "tokens": [
+        "--space-unit"
+      ]
+    },
+    "spacing-aliases": {
+      "enables": "T-shirt spacing names (2xs\u2013xl) for consumer CSS that prefers them; the library reads the numbered scale, so these are pure aliases.",
+      "tokens": [
+        "--space-2xs",
+        "--space-xs",
+        "--space-sm",
+        "--space-md",
+        "--space-lg",
+        "--space-xl"
+      ]
+    },
+    "print": {
+      "enables": "A themed printed page: cia.print-base rebinds ink/surface/border/code tokens onto this palette inside @media print. Without them the ink-on-white default applies.",
+      "tokens": [
+        "--print-ink",
+        "--print-paper",
+        "--print-line",
+        "--print-muted"
+      ]
+    },
+    "component-radius": {
+      "enables": "Per-component corner radius overrides (buttons, cards, inputs, modals, badges, tags) without rebuilding SCSS; each falls back to the generic --radius-* scale.",
+      "tokens": [
+        "--btn-radius",
+        "--card-radius",
+        "--input-radius",
+        "--modal-radius",
+        "--badge-radius",
+        "--tag-radius"
+      ]
+    },
+    "component-shadows": {
+      "enables": "Per-component elevation overrides; each falls back to the generic --shadow-* scale.",
+      "tokens": [
+        "--shadow-button",
+        "--shadow-card",
+        "--shadow-dropdown",
+        "--shadow-input-focus",
+        "--shadow-modal",
+        "--shadow-popover",
+        "--shadow-tooltip",
+        "--shadow-text"
+      ]
+    },
+    "component-motion": {
+      "enables": "Per-component durations for button hover, modal open and toast slide; each falls back to the generic --duration-* scale.",
+      "tokens": [
+        "--duration-button-hover",
+        "--duration-modal-open",
+        "--duration-toast-slide"
+      ]
+    },
+    "surfaces-extended": {
+      "enables": "Extra background layers (elevated, hero, overlay, scrim) for themes that want more than the required surface set; each falls back to a required surface.",
+      "tokens": [
+        "--background-elevated",
+        "--background-hero",
+        "--background-overlay",
+        "--background-scrim"
+      ]
+    },
+    "borders-extended": {
+      "enables": "Per-context border colours (card, divider, focus ring, input); each falls back to --border-default / --border-focus.",
+      "tokens": [
+        "--border-card",
+        "--border-divider",
+        "--border-focus-ring",
+        "--border-input"
+      ]
+    },
+    "logo": {
+      "enables": "Theme-aware logo assets (default, mark, monochrome, wordmark) as url() or SVG data values for the icon/brand mixins.",
+      "tokens": [
+        "--logo-default",
+        "--logo-mark",
+        "--logo-monochrome",
+        "--logo-wordmark"
+      ]
+    },
+    "touch-target": {
+      "enables": "Minimum interactive target size read by form and button mixins (WCAG 2.2 SC 2.5.8); the library default is 24px.",
+      "tokens": [
+        "--touch-target-min"
+      ]
+    }
+  }
 }

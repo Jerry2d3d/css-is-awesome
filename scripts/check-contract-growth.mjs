@@ -83,6 +83,22 @@ const optionalAdded = diff(optA, optB).filter((t) => !reqB.has(t));
 const optionalRemoved = diff(optB, optA).filter((t) => !reqA.has(t));
 
 const problems = [];
+// Contract 1.2: every optional token belongs to exactly one feature, and a
+// feature may only name optional tokens. Otherwise "missing the tokens for X"
+// would lie.
+if (after.features && typeof after.features === 'object') {
+  const seen = new Map();
+  for (const [f, def] of Object.entries(after.features)) {
+    for (const t of (def && Array.isArray(def.tokens)) ? def.tokens : []) {
+      if (seen.has(t)) problems.push(`features: ${t} listed under both "${seen.get(t)}" and "${f}"`);
+      seen.set(t, f);
+      if (reqA.has(t)) problems.push(`features: ${t} is REQUIRED but listed under feature "${f}" — features group optional tokens only`);
+      else if (!optA.has(t)) problems.push(`features: ${t} under "${f}" is not in the contract at all`);
+    }
+  }
+  const orphans = [...optA].filter((t) => !seen.has(t));
+  if (orphans.length) problems.push(`features: optional token(s) in no feature: ${orphans.join(', ')}`);
+}
 const needMajor = [...requiredAdded, ...requiredRemoved, ...tightened, ...optionalRemoved];
 const needMinor = [...relaxed, ...optionalAdded];
 if (needMajor.length && !majorBumped) {

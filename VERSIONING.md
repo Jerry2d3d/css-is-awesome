@@ -43,6 +43,7 @@ Additive, non-breaking changes.
 | New public CSS class                                         | `.cia-grid-auto-fit` added                        |
 | New public SCSS mixin                                        | `m.cluster($gap)` added                           |
 | New optional token added to contract (`"1"` → `"1.1"`)       | `--dropdown-offset-y` added to component section  |
+| Contract metadata added (e.g. the `features` map, `"1.1"` → `"1.2"`, 2026-09-18) | Additive keys — old validators ignore them |
 | Required token relaxed to optional (contract minor bump)      | `--space-unit` required → optional, contract `"1"` → `"1.1"` (2026-09-18) |
 | New theme or recipe shipped                                  | `prism` family added; `mobile-nav` recipe added   |
 | New utility class (`.cia-*`)                                 | `.cia-text-balance` added                         |

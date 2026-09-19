@@ -426,6 +426,12 @@ function loadTokenContract() {
     return { required: [], optional: [], byName: {}, byCategory: {} };
   }
   const optional = Array.isArray(contract.optional) ? contract.optional : [];
+  // Contract 1.2: optional tokens are grouped by the feature they enable.
+  const features = contract.features && typeof contract.features === 'object' ? contract.features : {};
+  const featureOf = {};
+  for (const [feature, def] of Object.entries(features)) {
+    for (const t of (def && Array.isArray(def.tokens)) ? def.tokens : []) featureOf[t] = feature;
+  }
 
   const byName = {};
   const byCategory = {};
@@ -460,11 +466,11 @@ function loadTokenContract() {
   }
   for (const t of optional) {
     const category = categorize(t);
-    byName[t] = { name: t, category, required: false };
+    byName[t] = { name: t, category, required: false, feature: featureOf[t] || null };
     (byCategory[category] = byCategory[category] || []).push(t);
   }
 
-  return { required: contract.required, optional, byName, byCategory };
+  return { required: contract.required, optional, features, byName, byCategory };
 }
 
 /**
@@ -854,6 +860,8 @@ const handlers = {
       name: entry.name,
       category: entry.category,
       required: entry.required,
+      // Contract 1.2: the feature an OPTIONAL token enables (null for required).
+      feature: entry.required ? null : (entry.feature || null),
       themeValues,
       referencedBy: referencedBy.slice(0, 20),
     };

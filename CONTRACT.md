@@ -306,6 +306,25 @@ Paper themes declare these as `none` / `transparent` so a swap to a glass or pho
 
 ---
 
+## Optional tokens by feature (contract 1.2)
+
+Every optional token belongs to exactly one **feature** in `scripts/theme-contract.json` (`features`), so a validator, installer or agent can say *"this theme is missing the tokens for print"* instead of listing all 41 optional names. The validator's info line reports counts per feature; `--show-optional` lists them grouped. `npm run check:contract` fails the build if an optional token is in no feature, in two, or if a feature names a required token.
+
+| Feature | Tokens | Enables |
+| --- | --- | --- |
+| `density` | `--space-unit` | The density knob: shipped themes derive every --space-N from this one unit via calc(); set it to tighten or open up the whole UI (theme editor slider). |
+| `spacing-aliases` | `--space-2xs`, `--space-xs`, `--space-sm`, `--space-md`, `--space-lg`, `--space-xl` | T-shirt spacing names (2xs–xl) for consumer CSS that prefers them; the library reads the numbered scale, so these are pure aliases. |
+| `print` | `--print-ink`, `--print-paper`, `--print-line`, `--print-muted` | A themed printed page: cia.print-base rebinds ink/surface/border/code tokens onto this palette inside @media print. Without them the ink-on-white default applies. |
+| `component-radius` | `--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius` | Per-component corner radius overrides (buttons, cards, inputs, modals, badges, tags) without rebuilding SCSS; each falls back to the generic --radius-* scale. |
+| `component-shadows` | `--shadow-button`, `--shadow-card`, `--shadow-dropdown`, `--shadow-input-focus`, `--shadow-modal`, `--shadow-popover`, `--shadow-tooltip`, `--shadow-text` | Per-component elevation overrides; each falls back to the generic --shadow-* scale. |
+| `component-motion` | `--duration-button-hover`, `--duration-modal-open`, `--duration-toast-slide` | Per-component durations for button hover, modal open and toast slide; each falls back to the generic --duration-* scale. |
+| `surfaces-extended` | `--background-elevated`, `--background-hero`, `--background-overlay`, `--background-scrim` | Extra background layers (elevated, hero, overlay, scrim) for themes that want more than the required surface set; each falls back to a required surface. |
+| `borders-extended` | `--border-card`, `--border-divider`, `--border-focus-ring`, `--border-input` | Per-context border colours (card, divider, focus ring, input); each falls back to --border-default / --border-focus. |
+| `logo` | `--logo-default`, `--logo-mark`, `--logo-monochrome`, `--logo-wordmark` | Theme-aware logo assets (default, mark, monochrome, wordmark) as url() or SVG data values for the icon/brand mixins. |
+| `touch-target` | `--touch-target-min` | Minimum interactive target size read by form and button mixins (WCAG 2.2 SC 2.5.8); the library default is 24px. |
+
+---
+
 ## Print (optional)
 
 Four tokens describing the printed page. They're **optional** — `cia.print-base` (included once, at the stylesheet root) emits every one of them on `:root` inside `@media print` with a clean ink-on-white default, and every print rule reads them via `var(--print-*)`. A theme MAY override them in its own `@media print` block for a paper identity (Press does, for a newsprint look); a theme that sets none of them prints the plain default.
