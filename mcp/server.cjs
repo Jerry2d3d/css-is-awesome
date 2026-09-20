@@ -1402,7 +1402,8 @@ async function startServer() {
       '{ "--token": value } map. Format is auto-detected. Every REQUIRED contract token the file does not supply ' +
       'is inherited from a shipped base theme (default boilerplate) and listed in report.inherited, so the output ' +
       'is always contract-complete; unmapped paths are emitted verbatim and listed in report.unmapped, never ' +
-      'dropped. Pass `dark` (same format) or a single file with paired color-light/color-dark groups to get ' +
+      'dropped. Pass `dark` (same format), or one file with paired top-level groups — `light`/`dark` (each a full '
+      + 'token set) or `color-light`/`color-dark` (each a colour set) — to get ' +
       'light-dark() values. Returns { css, report, validation } — validation is the same result validate_theme ' +
       'gives, run on the CSS before you write it anywhere.',
     inputSchema: {
