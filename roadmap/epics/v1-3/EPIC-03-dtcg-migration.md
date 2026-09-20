@@ -1,6 +1,6 @@
 # EPIC v1.3-03 — DTCG / Style Dictionary Migration CLI
 
-**Status:** Planned (v1.3)
+**Status:** ⛔ Superseded 2026-09-19 — a superset shipped as `npx cia theme from-tokens` (1.17.0: DTCG / Tokens Studio / cia-flat → contract-complete, validated `theme.css`, no Sass needed) and `npx cia theme map` (1.19.0: the mapping as data). See [v1-4 EPIC-02](../v1-4/EPIC-02-design-tokens-on-ramp.md). The `cia migrate dtcg` verb name below was never built; the stories are kept as the historical plan.
 **Effort estimate:** ~3 working days
 **Stories:** 4
 

@@ -213,7 +213,7 @@ Shared chrome + reusable building blocks now live in `src/components/`:
 - [x] **`npm pack` smoke test** — Agent X verified the tarball: 162 kB packed / 1.0 MB unpacked / 125 files. No `dist/components/`, no `src/`, no tests, no `.next/` or `out/`. Top-level layout: `dist/`, `scss/`, `public/` (now includes `icons/`), `figma-tokens/`, both `LICENSE` files, key `.md` docs.
 - [x] **Hand-design boilerplate theme** at `public/themes/boilerplate/theme.css` (tracked in Phase 4.5 — done).
 - [x] **Add `public/icons` and `LICENSE-third-party` to `package.json` `files`** so the new Lucide pack ships in the tarball.
-- [x] **`npm publish` 0.7.0+** — the package shipped publicly via semantic-release. Current published version is **0.8.2** (panel R7 bug-fix patch, 2026-05-21) after the v0.8 mixin-first reframe (BREAKING) and v0.8.1 animations split.
+- [x] **`npm publish` 0.7.0+** — the package shipped publicly via semantic-release. Current published version is **1.19.0** (2026-09-19; first npm publish was 1.1.0 on 2026-09-01). Historically: 0.8.2 (panel R7 bug-fix patch, 2026-05-21) after the v0.8 mixin-first reframe (BREAKING) and v0.8.1 animations split.
 - [x] **Boilerplate consumer install** — boiler-project-ai is on `feature/v2.5-wave8-bare-tags` consuming `css-is-awesome@0.8.2` via `file:` workspace dep. Wave 8 atom conversion wrapped on the feature branch (2026-05-21). End-to-end mixin API + bare-tags Tier-2 pattern verified.
 
 ### Follow-on
@@ -468,7 +468,7 @@ Open list of ideas that could make cia better, captured in [`WISHLIST.md`](./WIS
 | **v1.1** | Recipes momentum (14 more recipes, install wizard, ~~@cia/a11y-recipes add-on~~ (retired), @cia/react codegen POC, playground) | [v1-1](./roadmap/epics/v1-1/README.md) | 43 | ~25-35 days |
 | **v1.2** | Coverage (RTL audit, form-validation recipes, i18n recipes, print recipe, MUI + Chakra migration) | [v1-2](./roadmap/epics/v1-2/README.md) | 32 | ~16-22 days |
 | **v1.3** | Ecosystem (Figma plugin, theme marketplace, DTCG migration CLI, @cia/angular) | [v1-3](./roadmap/epics/v1-3/README.md) | 34 | ~28-35 days |
-| v1.4 | *Reserved — scoped based on v1.1-v1.3 community feedback* | — | — | — |
+| **v1.4** | Consumer feedback wave (page surfaces, design-tokens on-ramp ✅, contract hygiene ✅) | [v1-4](./roadmap/epics/v1-4/README.md) | 19 | ~5-6 days |
 | **v1.5** | IDE integration (VS Code extension) | [v1-5](./roadmap/epics/v1-5/README.md) | 15 | ~10 days |
 | **v2.0** | Visual builder (Recipes Maker — Jerry's idea, may never ship) | [v2-0](./roadmap/epics/v2-0/README.md) | 18 | ~15-20 days |
 
