@@ -4,6 +4,12 @@ Requests that arrive from projects **consuming** cia — a boilerplate, a genera
 
 Why a separate log: the roadmap is what *we* planned; this is what *they* needed. When the two disagree, this folder wins the argument about what to build next (ship-then-see).
 
+## What goes in, and what never does
+
+Record **the ask, the answer, and the release it shipped in**. That is the whole job, and it is enough for a reader to follow why cia changed.
+
+Never record the other project's source, file paths, internal architecture, component inventories or catalogue counts. Those belong to them, this repo is public, and none of it strengthens the record. Naming the project is fine and useful provenance; describing its insides is not. When in doubt, write what cia did and let their side of the story stay theirs.
+
 | Date | From | About | Outcome |
 |---|---|---|---|
 | [2026-09-18](./2026-09-18-gremlin-forge-boilerplate.md) | Gremlin Forge (via boiler-project-ai) | `--space-unit` contract break; design tokens → theme; optional tokens by feature; in-process MCP handlers; mapping as data | All shipped: 1.16.1 · 1.17.0 · 1.18.0 · 1.19.0 · mcp 1.3.0 / 1.4.0 → [v1-4](../epics/v1-4/README.md) |
