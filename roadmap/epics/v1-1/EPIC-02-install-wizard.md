@@ -1,6 +1,6 @@
 # EPIC v1.1-02 — `npm create cia` Install Wizard
 
-**Status:** Planned (v1.1)
+**Status:** 🟡 BUILT, PUBLISH-BLOCKED — the `create-cia` package is complete in its own repo (zero runtime dependencies, 33 tests, CI green on Ubuntu + Windows / Node 20 + 24). It is not on npm: that needs a publish-capable `NPM_TOKEN`. Its docs PR stays a draft until the package publishes, so the command it documents is never a 404.
 **Effort estimate:** ~3-5 working days
 **Stories:** 7
 
