@@ -39,8 +39,8 @@
  *     }
  *   }
  *
- * Aligned with the canonical sibling MCP shape: ui-ux-builder, ideas-master,
- * video-maker. Response envelope is `{ total, items }` for list/search;
+ * Aligned with the canonical sibling MCP shape used across our other servers.
+ * Response envelope is `{ total, items }` for list/search;
  * get_* tools return the full record.
  */
 
