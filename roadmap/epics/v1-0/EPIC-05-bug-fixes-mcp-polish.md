@@ -181,4 +181,4 @@ These items don't fit cleanly into another epic but block clean v1.0 sign-off. T
 ## Related
 
 - [EPIC-01-recipes-book.md](./EPIC-01-recipes-book.md) — MCP recipe exposure (US-01.4.1) tested here in US-05.2.2
-- [project_v07x_punch_list.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_v07x_punch_list.md) — original audit-style memory; replace/update once these ship
+- Project notes (kept outside this repo) — original audit-style list; refresh once these ship

@@ -261,4 +261,4 @@ Jerry's 2026-05-23 architectural call: "I don't want to keep up with a component
 - [v1.0 EPIC-01-recipes-book.md](../v1-0/EPIC-01-recipes-book.md) — recipes that this generates from
 - [v1.3 EPIC-04-framework-pack-angular.md](../v1-3/EPIC-04-framework-pack-angular.md) — mirror epic if React codegen proves out
 - [post-v1-ideas.md](../v1-0/post-v1-ideas.md) — vue / svelte / framework story
-- [project_v1_architecture_recipes.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_v1_architecture_recipes.md) — "no component library to maintain" architectural rule this epic respects via codegen
+- Project notes (kept outside this repo) — "no component library to maintain" architectural rule this epic respects via codegen

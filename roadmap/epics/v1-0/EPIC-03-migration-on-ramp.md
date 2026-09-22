@@ -171,4 +171,4 @@ If this lands cleanly, every cia launch post can include "if you're already on T
 ## Related
 
 - [EPIC-02-theme-editor-polish.md](./EPIC-02-theme-editor-polish.md) — migrated themes can be opened in the editor for further tuning
-- [feedback_no_js_in_package.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/feedback_no_js_in_package.md) — confirms CLI in `bin/` doesn't violate the rule
+- Project notes (kept outside this repo) — confirms CLI in `bin/` doesn't violate the rule

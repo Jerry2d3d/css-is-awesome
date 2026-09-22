@@ -34,7 +34,7 @@
  *     "mcpServers": {
  *       "css-is-awesome": {
  *         "command": "node",
- *         "args": ["K:/Repo/css-is-awesome/mcp/server.cjs"]
+ *         "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
  *       }
  *     }
  *   }

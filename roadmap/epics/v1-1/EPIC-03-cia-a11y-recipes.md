@@ -228,4 +228,4 @@ Gemini's warning still holds: **don't reinvent state machines**. This package sh
 - [v1.0 EPIC-01-recipes-book.md](../v1-0/EPIC-01-recipes-book.md) — base recipes this package extends
 - [v1.1 EPIC-01-additional-recipes.md](./EPIC-01-additional-recipes.md) — v1.1 base recipes
 - [v1.1 EPIC-02-install-wizard.md](./EPIC-02-install-wizard.md) — wizard offers this package
-- [project_v1_architecture_recipes.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_v1_architecture_recipes.md) — architecture lock with the "no state-machine vendor" rule
+- Project notes (kept outside this repo) — architecture lock with the "no state-machine vendor" rule
