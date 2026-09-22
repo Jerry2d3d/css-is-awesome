@@ -89,7 +89,7 @@ inline.
 **I want** a pagination recipe with first/prev/next/last + page numbers
 **So that** I ship a keyboard-accessible pager with proper ARIA
 
-**Reference (2026-09-10):** `boiler-project-ai/packages/react/src/components/Pagination`
+**Reference (2026-09-10):** boiler-project-ai's `Pagination` component
 is a real, working implementation — its `admin/page.tsx` uses it directly
 alongside a search bar and data table. Start from it.
 
@@ -114,7 +114,7 @@ alongside a search bar and data table. Start from it.
 **I want** a recipe that handles native `<input type="file">` + drag-and-drop drop-zone styling
 **So that** I get accessible-by-default behavior with progressive enhancement
 
-**Reference (2026-09-10):** `boiler-project-ai/packages/react/src/components/Upload`
+**Reference (2026-09-10):** boiler-project-ai's `Upload` component
 (399 lines) is a real, working implementation — drag/drop + keyboard
 "browse" fallback, per-file progress, accept/max-size/max-count
 validation. Its own doc comment frames it as closing a "Tier 2 gap vs.
@@ -141,7 +141,7 @@ KendoReact." Start from it.
 **I want** a toast recipe using `[popover]` (or fallback for older browsers) with auto-dismiss and pause-on-hover
 **So that** I ship transient notifications without a JS library
 
-**Reference (2026-09-10):** `boiler-project-ai/packages/react/src/components/Toast`
+**Reference (2026-09-10):** boiler-project-ai's `Toast` component
 (80 lines) is a real, working implementation — built on Boiler's `Alert`
 variants/icons, auto-dismiss + an actions row. Start from it.
 
