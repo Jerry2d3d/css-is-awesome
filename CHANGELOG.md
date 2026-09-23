@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.1...v1.19.2) (2026-09-23)
+
+
+### Bug Fixes
+
+* **themes:** clear 56 of 88 contrast warnings, none of them visible ([b756dcb](https://github.com/Jerry2d3d/css-is-awesome/commit/b756dcbb6e959868299095f009b4227104406c00))
+
 ## [1.19.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.0...v1.19.1) (2026-09-23)
 
 
