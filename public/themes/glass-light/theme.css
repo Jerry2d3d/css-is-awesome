@@ -241,6 +241,6 @@
   /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
   --page-hero-bg: #ebe5fd;
   --page-hero-ink: #1d1d1f;
-  --page-band-bg: #efe9fe;
+  --page-band-bg: #eee9fe;
   --page-band-ink: #1d1d1f;
 }

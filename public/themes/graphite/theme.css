@@ -165,8 +165,8 @@
   --z-tooltip: 1070;
 
   /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
-  --page-hero-bg: light-dark(#e8ebef, #19202a);
+  --page-hero-bg: light-dark(#e8ebef, #1a212a);
   --page-hero-ink: light-dark(#1a1f26, #f5f5f7);
-  --page-band-bg: light-dark(#eceff2, #191e24);
+  --page-band-bg: light-dark(#eceff2, #1a1e24);
   --page-band-ink: light-dark(#1a1f26, #f5f5f7);
 }
