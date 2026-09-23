@@ -52,14 +52,14 @@
   --ink-soft: #C7C7CC;
   --ink-faint: #98989D;
   --graphite: #AEAEB2;
-  --muted: #6A6A6E;
+  --muted: #818286;
   /* Construction lines — translucent white hairlines */
   --guide: rgba(255, 255, 255, 0.16);
   --guide-soft: rgba(255, 255, 255, 0.08);
   --hair: rgba(255, 255, 255, 0.12);
   --hair-soft: rgba(255, 255, 255, 0.06);
   /* Primary accent — Apple dark-mode system blue */
-  --ai: #0A84FF;
+  --ai: #178aff;
   --ai-ink: #409CFF;
   --ai-wash: rgba(10, 132, 255, 0.14);
   /* Seal — Apple dark-mode red (reserve for emphasis) */

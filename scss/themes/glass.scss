@@ -29,7 +29,7 @@
   --ink-soft:  light-dark(#3A3A3C, #C8CFE0);
   --ink-faint: light-dark(#65656A, #8A92A8);
   --graphite:  light-dark(#2C2C2E, #DCE2F0);
-  --muted:     light-dark(#6E6E73, #5A627A);
+  --muted:     light-dark(#6E6E73, #727b93);
 
   /* Construction lines — translucent */
   --guide:      light-dark(rgba(29, 29, 31, 0.14), rgba(240, 244, 255, 0.16));
@@ -38,12 +38,12 @@
   --hair-soft:  light-dark(rgba(29, 29, 31, 0.04), rgba(240, 244, 255, 0.06));
 
   /* Primary accent — iOS indigo / vibrant dark blue */
-  --ai:      light-dark(#5957E2, #6FA9FF);
+  --ai:      light-dark(#5653de, #6FA9FF);
   --ai-ink:  light-dark(#3634A3, #93C2FF);
   --ai-wash: light-dark(rgba(89, 87, 226, 0.12), rgba(111, 169, 255, 0.16));
 
   /* Seal — iOS system pink */
-  --shu:      light-dark(#FF375F, #FF6B8A);
+  --shu:      light-dark(#f32856, #FF6B8A);
   --shu-wash: light-dark(rgba(255, 55, 95, 0.12), rgba(255, 107, 138, 0.16));
 
   /* Draft / marginalia — iOS orange */
@@ -55,7 +55,7 @@
   --code-ink:    light-dark(#F5F5F7, #F0F4FF);
   --code-muted:  light-dark(#BCBCC0, #8A92A8);
   --code-accent: #FFD60A;
-  --code-green:  light-dark(#30D158, #5FE37F);
+  --code-green:  light-dark(#3ad85e, #5FE37F);
   --code-blue:   light-dark(#64D2FF, #93C2FF);
 
   /* Typography — SF stack, identical */

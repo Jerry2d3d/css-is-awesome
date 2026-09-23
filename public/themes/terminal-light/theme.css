@@ -10,9 +10,9 @@
   /* Ink — near-black mono */
   --ink: #1A1A1A;
   --ink-soft: #404040;
-  --ink-faint: #666;
+  --ink-faint: #626161;
   --graphite: #0A0A0A;
-  --muted: #7C7C7C;
+  --muted: #696868;
   /* Hairlines — medium gray */
   --guide: #B8B8B8;
   --guide-soft: #C8C8C8;
@@ -31,9 +31,9 @@
   /* Code surface */
   --code-bg: #DDD;
   --code-ink: #1A1A1A;
-  --code-muted: #5B5B5B;
+  --code-muted: #5b5a5a;
   --code-accent: #934407;
-  --code-green: #006A28;
+  --code-green: #006928;
   --code-blue: #0451A5;
   /* Typography — mono everywhere */
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;

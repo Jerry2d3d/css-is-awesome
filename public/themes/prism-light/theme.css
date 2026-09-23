@@ -45,10 +45,10 @@
   /* Code — light syntax surface */
   --code-bg: #fafafa;
   --code-ink: #18181b;
-  --code-muted: #71717a;
-  --code-accent: #c2410c;
+  --code-muted: #6c6b74;
+  --code-accent: #c1400b;
   --code-green: #117C38;
-  --code-blue: #2563eb;
+  --code-blue: #2462e9;
   /* Typography */
   --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-script: 'Inter', cursive;
@@ -134,7 +134,7 @@
   /* Status — success */
   --success-default: #16a34a;
   --success-subtle: #f0fdf4;
-  --success-text: #15803d;
+  --success-text: #0e7c3a;
   /* Status — warning */
   --warning-default: #ca8a04;
   --warning-subtle: #fefce8;
