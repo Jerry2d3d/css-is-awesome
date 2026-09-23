@@ -148,7 +148,7 @@ Authoring template (in your own project — a theme file is a global stylesheet,
 
 `$standalone` defaults to `true` (emit `:root, :root[data-theme="<name>"]`). Pass `$standalone: false` only when your block is going into a multi-theme bundle where the bare `:root` would collide.
 
-The validator (`node scripts/theme-validator.js`) enforces the token contract — **127 required + 41 optional = 168 slots** — plus WCAG 2.2 AA contrast (**22 audited pairs per theme**, including five `--code-*` pairs). Themes that miss required tokens or fail contrast cannot ship without `--allow-a11y-fail`.
+The validator (`node scripts/theme-validator.js`) enforces the token contract — **127 required + 49 optional = 176 slots** — plus WCAG 2.2 AA contrast (**24 audited pairs per theme**, including five `--code-*` pairs). Themes that miss required tokens or fail contrast cannot ship without `--allow-a11y-fail`.
 
 ### Theming spacing (new — read this before you set a size token)
 
@@ -343,7 +343,7 @@ Either way it exposes **33 tools** across 8 families:
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
 - **Functions** — `list_functions`, `get_function`, `search_functions`
-- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (127 required + 41 optional contract tokens)
+- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (127 required + 49 optional contract tokens)
 - **Animations** — `list_animations`, `get_animation`
 - **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`

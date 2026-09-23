@@ -2,6 +2,58 @@
 
 Breaking changes between css-is-awesome versions, and how to migrate.
 
+## Page surfaces — contract 1.3 (no action required)
+
+**Nothing changes on your site when you upgrade.** Two new optional surfaces
+exist — a `hero` for a landing page and a `band` for section stripes — and
+every shipped theme now declares a background and an ink colour for both. That
+sounds like a visual change and is not one, for a single reason: **cia never
+applies a page surface on its own.**
+
+A page takes a surface only when you ask for it:
+
+```scss
+.landing { @include cia.surface(hero); }   // or <body data-surface="hero">
+```
+
+Until then the tokens sit unread, exactly as `--background-hero` has since it
+was added. `scripts/test-no-auto-surface.mjs` compiles every shipped bundle and
+fails if any rule reads a page-surface token or emits a `[data-surface]` rule,
+so the guarantee is enforced rather than promised.
+
+### What changed at a glance
+
+| Area | Before | After |
+|---|---|---|
+| Contract version | `1.2` | **`1.3`** — eight optional tokens, one new `page-surfaces` feature |
+| Required tokens | 127 | 127, unchanged |
+| `--background-hero` | optional, read by nothing | **deprecated**; `--page-hero-bg` falls back through it, so an existing declaration keeps working until contract 2 |
+| Your custom theme | validates | validates — the new tokens are optional, and missing optional tokens report as info |
+
+### If you want a hero
+
+Declare the tokens your theme needs and apply the surface where you want it:
+
+```css
+:root[data-theme="brand"] {
+  --page-hero-bg:  light-dark(#f2f6fe, #121d36);
+  --page-hero-ink: light-dark(#09090b, #fafafa);
+  /* optional */
+  --page-hero-image: url("/hero.jpg");
+}
+```
+
+An image is a `url()` you host or a gradient, because a theme is one CSS file.
+Contrast over a photo cannot be measured, so pass the image through the mixin
+(`cia.surface(hero, $image: url("/hero.jpg"))`) and it lays 50% black between
+the picture and your text. A colour-only surface gets no scrim — a wash over a
+flat colour would only darken it.
+
+### If you declared `--background-hero`
+
+Nothing to do. It still resolves. Rename it to `--page-hero-bg` whenever it
+suits you; the tooling will flag it as deprecated in the meantime.
+
 ## v1.0 — mixin-first goes stable (published as 1.1.0)
 
 **There are no breaking changes between v0.8.1/0.8.2 and v1.0.0.** 1.0.0
