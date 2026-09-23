@@ -180,3 +180,116 @@ test('boilerplate DTCG layout: top-level light/dark modes, font.family roles, co
   assert.deepEqual(r.report.unmapped, [], 'nothing in the boilerplate layout should be unmapped');
   assert.equal(r.validation.ok, true);
 });
+
+// ── Consumer-reported regressions, 2026-09-19 ───────────────────────────────
+
+// A `light`/`dark` pair names a MODE, so the group holds a FULL token set.
+// Wrapping it in `color.` mis-routed every non-colour group and did it
+// silently: the required token was inherited from the base theme, so
+// validation.ok stayed true while the design's value landed on a bystander.
+test('paired light/dark: non-colour groups inside the mode survive the split', () => {
+  const c = (v) => ({ $value: v, $type: 'color' });
+  const dim = (v) => ({ $value: { value: v, unit: 'px' }, $type: 'dimension' });
+  const doc = {
+    light: {
+      color: { brand: { primary: c('#3A5FCD'), 'primary-hover': c('#1D4ED8') }, text: { primary: c('#111111') } },
+      spacing: { unit: dim(4), 4: dim(16) },
+      font: { family: { primary: { $value: 'Inter', $type: 'fontFamily' } } },
+      radius: { md: dim(8) },
+      component: { 'btn-radius': dim(6) },
+    },
+    dark: {
+      color: { brand: { primary: c('#8FB0FF'), 'primary-hover': c('#93B4FF') }, text: { primary: c('#EEEEEE') } },
+    },
+  };
+  const wrapped = themeFromTokens({ tokens: doc, name: 'paired-wrapped', ciaRoot: ROOT });
+  const split = themeFromTokens({ tokens: doc.light, dark: doc.dark, name: 'paired-split', ciaRoot: ROOT });
+
+  assert.deepEqual(wrapped.report.unmapped, [], 'whole-document form should leave nothing unmapped');
+  assert.equal(wrapped.report.darkMode, true);
+  assert.deepEqual(wrapped.report.pairedGroups, ['light', 'dark']);
+  // The two documented call shapes must agree on every token.
+  assert.deepEqual(
+    [...wrapped.report.fromTokens].sort(),
+    [...split.report.fromTokens].sort(),
+    'passing the whole document must equal passing light + dark separately',
+  );
+  // The specific silent failure: density lost, design value on a bystander.
+  assert.match(wrapped.css, /--space-unit:/, '--space-unit must be declared, not inherited');
+  assert.doesNotMatch(wrapped.css, /--spacing-unit:/, 'must not emit the mis-routed --spacing-unit');
+  assert.doesNotMatch(wrapped.css, /--color-brand-primary-hover:/, 'must not emit the mis-routed colour');
+  assert.match(wrapped.css, /--brand-primary-hover: light-dark\(#1D4ED8, #93B4FF\)/);
+  assertValid(wrapped, 'paired-wrapped');
+});
+
+// The other convention must keep its old meaning: `color-light` names a COLOUR
+// SET, so its children are colours and still nest under `color.`.
+test('paired color-light/color-dark: group children stay colours', () => {
+  const c = (v) => ({ value: v, type: 'color' });
+  const doc = {
+    'color-light': { brand: { primary: c('#3A5FCD') }, text: { primary: c('#111111') } },
+    'color-dark': { brand: { primary: c('#8FB0FF') }, text: { primary: c('#EEEEEE') } },
+  };
+  const r = themeFromTokens({ tokens: doc, name: 'paired-colorset', ciaRoot: ROOT });
+  assert.deepEqual(r.report.pairedGroups, ['color-light', 'color-dark']);
+  assert.ok(r.report.fromTokens.includes('--brand-primary'), 'brand.primary should resolve through the color. wrap');
+  assert.ok(r.report.fromTokens.includes('--text-primary'));
+  assert.match(r.css, /--brand-primary: light-dark\(#3A5FCD, #8FB0FF\)/);
+  assertValid(r, 'paired-colorset');
+});
+
+// Exporters flatten the component group; the explicit table carries the nested
+// shape. Both must land on the same contract token. Radius trails the
+// component (`--card-radius`) but shadow/border/duration lead it
+// (`--shadow-card`), so the flat form needs the swap too.
+test('component overrides map flat and nested alike', () => {
+  const expected = {
+    'component.btn-radius': '--btn-radius',
+    'component.input-radius': '--input-radius',
+    'component.modal-radius': '--modal-radius',
+    'component.badge-radius': '--badge-radius',
+    'component.tag-radius': '--tag-radius',
+    'component.card-shadow': '--shadow-card',
+    'component.dropdown-shadow': '--shadow-dropdown',
+    'component.input-focus-shadow': '--shadow-input-focus',
+    'component.card-border': '--border-card',
+    'component.touch-target-min': '--touch-target-min',
+    'component.button.radius': '--btn-radius',
+    'component.card.shadow': '--shadow-card',
+    'components.input.radius': '--input-radius',
+  };
+  for (const [path, token] of Object.entries(expected)) {
+    const r = mapPath(path);
+    assert.equal(r.token, token, `${path} should map to ${token}`);
+    assert.equal(r.mapped, true, `${path} should be mapped`);
+    assert.ok(
+      contract.required.includes(token) || contract.optional.includes(token),
+      `${token} should be a real contract token`,
+    );
+  }
+  // A name that is not a contract token stays unmapped rather than inventing one.
+  const miss = mapPath('component.made-up-thing');
+  assert.equal(miss.mapped, false);
+  assert.equal(miss.token, '--component-made-up-thing');
+});
+
+// mapPath's contract argument was only read on the generic-rule branch, so an
+// explicit-table path appeared to work without it and the mistake surfaced
+// later as a TypeError somewhere else.
+test('mapPath: contract is optional, bad input fails clearly', () => {
+  assert.equal(mapPath('spacing.4').token, '--space-4');
+  assert.equal(mapPath('color.text.primary').token, '--text-primary');
+  assert.throws(() => mapPath(''), /non-empty token path/);
+  assert.throws(() => mapPath(null), /non-empty token path/);
+  assert.throws(() => mapPath('a.b', {}), /contract from loadContract/);
+});
+
+// The in-process entry point is documented, so the exports map must expose it:
+// shipping the file is not enough, Node blocks an unlisted subpath.
+test('package exports expose the documented in-process entry points', () => {
+  const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+  for (const sub of ['./scripts/tokens-to-theme.cjs', './scripts/tokens-to-theme']) {
+    assert.equal(pkg.exports[sub], './scripts/tokens-to-theme.cjs', `${sub} must be exported`);
+  }
+  assert.ok(pkg.files.some((f) => f === 'scripts/tokens-to-theme.cjs' || f === 'scripts'), 'the file must also ship');
+});

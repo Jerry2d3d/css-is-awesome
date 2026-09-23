@@ -157,7 +157,12 @@ export default function AuthoringThemesPage() {
           group names are rewritten (<code>spacing.</code> → <code>space.</code>,{" "}
           <code>border-radius.</code> → <code>radius.</code>, <code>elevation.</code> →{" "}
           <code>shadow.</code>, <code>zIndex.</code> → <code>z.</code>,{" "}
-          <code>fontFamilies.</code> / <code>font.family.</code> → <code>font.</code>, <code>components.</code> → <code>component.</code>), and the segments are joined with{" "}
+          <code>fontFamilies.</code> / <code>font.family.</code> → <code>font.</code>, <code>components.</code> → <code>component.</code>). Per-component overrides are accepted flat or nested, and
+          both land on the same contract token: <code>component.btn-radius</code>{" "}
+          and <code>component.button.radius</code> both give{" "}
+          <code>--btn-radius</code>, and because the contract names some of
+          these the other way round, <code>component.card-shadow</code> gives{" "}
+          <code>--shadow-card</code>, and the segments are joined with{" "}
           <code>-</code>. If that name is in the contract it is used: <code>space.4</code> →{" "}
           <code>--space-4</code>, <code>brand.primary</code> → <code>--brand-primary</code>,{" "}
           <code>text.primary</code> → <code>--text-primary</code>, <code>code.bg</code> →{" "}

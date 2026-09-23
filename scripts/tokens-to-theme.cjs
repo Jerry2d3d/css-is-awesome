@@ -48,8 +48,11 @@
 // LIGHT + DARK
 //   Pass `dark` (a second tokens object, same format) and every colour token
 //   that differs becomes `light-dark(light, dark)` with `color-scheme: light dark`.
-//   A single Tokens Studio file with paired top-level groups (`color-light` +
-//   `color-dark`, or `light` + `dark`) is split the same way automatically.
+//   A single file with paired top-level groups is split automatically, and the
+//   two conventions mean different things: `color-light`/`color-dark` name a
+//   COLOUR SET (children are colours), while `light`/`dark` name a MODE whose
+//   group holds a FULL token set — colours, spacing, fonts, component
+//   overrides — which merges beside any groups shared outside the pair.
 //   Without a dark side the block is single-mode: `color-scheme: <mode>`
 //   (`mode`, default light).
 // ============================================================================
@@ -490,6 +493,17 @@ function applyPathAliases(p) {
 
 /** Returns { token, mapped: true } or { token, mapped: false } (verbatim fallback). */
 function mapPath(tokenPath, contract) {
+  if (typeof tokenPath !== 'string' || !tokenPath.trim()) {
+    throw new Error('mapPath: first argument must be a non-empty token path, e.g. "color.text.primary"');
+  }
+  // The contract is optional: omit it and the installed one is loaded. It used
+  // to be required, but only the generic-rule branch touched it — so a path in
+  // the explicit table appeared to work and the mistake surfaced later as a
+  // TypeError on some other path. Fail clearly or not at all.
+  if (contract == null) contract = loadContract(path.join(__dirname, '..'));
+  else if (!contract.all || typeof contract.all.has !== 'function') {
+    throw new Error('mapPath: second argument must be a contract from loadContract(); omit it to load the installed contract automatically');
+  }
   if (TOKEN_MAP[tokenPath]) return { token: TOKEN_MAP[tokenPath], mapped: true };
   const aliased = applyPathAliases(tokenPath);
   if (TOKEN_MAP[aliased]) return { token: TOKEN_MAP[aliased], mapped: true };
@@ -498,6 +512,26 @@ function mapPath(tokenPath, contract) {
   // camelCase segments → kebab (linkHover → link-hover), one more try.
   const kebab = `--${aliased.replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/\./g, '-').toLowerCase()}`;
   if (contract.all.has(kebab)) return { token: kebab, mapped: true };
+  // Flat per-component form: `component.btn-radius` → `--btn-radius`. The
+  // explicit table carries the nested shape (`component.button.radius`), and
+  // it is tried first; this catches exporters that flatten the group instead.
+  // Generic-rule first means this can never shadow a real `--component-*`.
+  const flat = aliased.replace(/^components?\./, '');
+  if (flat !== aliased) {
+    const body = flat.replace(/\./g, '-').toLowerCase();
+    // `component.btn-radius` → `--btn-radius`.
+    if (contract.all.has(`--${body}`)) return { token: `--${body}`, mapped: true };
+    // The contract names per-component overrides two ways: radius trails the
+    // component (`--card-radius`) but shadow, border and duration lead it
+    // (`--shadow-card`). A flat exporter cannot know which, so try the swap:
+    // `card-shadow` → `--shadow-card`, `button-hover-duration` →
+    // `--duration-button-hover`. Only accepted if it is a real token.
+    const cut = body.lastIndexOf('-');
+    if (cut > 0) {
+      const swapped = `--${body.slice(cut + 1)}-${body.slice(0, cut)}`;
+      if (contract.all.has(swapped)) return { token: swapped, mapped: true };
+    }
+  }
   return { token: generic, mapped: false };
 }
 
@@ -530,16 +564,35 @@ function loadBase(ciaRoot, base) {
 // ---------------------------------------------------------------------------
 // Paired-mode detection for a single Tokens Studio / DTCG file
 // ---------------------------------------------------------------------------
-const PAIRS = [['color-light', 'color-dark'], ['light', 'dark'], ['colors-light', 'colors-dark']];
+// Two different conventions look alike and must NOT be treated alike:
+//
+//   `color-light` / `color-dark`  name a COLOUR SET. The group's children are
+//        colours (`color-light.brand.primary`), so they nest under `color.`.
+//   `light` / `dark`              name a MODE. The group holds a FULL token
+//        set — `color.*`, `spacing.*`, `font.*`, `component.*` — so its
+//        children merge at the TOP level, beside any shared groups.
+//
+// Wrapping a mode group in `color.` (which this did for every pair until
+// 2026-09-19) silently mis-routed every non-colour group: `spacing.unit`
+// became `color.spacing.unit` → `--spacing-unit`, so the theme lost its
+// density knob while `validation.ok` stayed true, because the required token
+// was quietly inherited from the base theme instead. Reported by a consumer
+// against boilerplate's canonical DTCG layout.
+const PAIRS = [
+  { light: 'color-light', dark: 'color-dark', wrap: 'color' },
+  { light: 'colors-light', dark: 'colors-dark', wrap: 'color' },
+  { light: 'light', dark: 'dark', wrap: null },
+];
 
 function splitPairedModes(tokens) {
   if (!isPlainObject(tokens)) return null;
-  for (const [l, d] of PAIRS) {
+  for (const { light: l, dark: d, wrap } of PAIRS) {
     if (isPlainObject(tokens[l]) && isPlainObject(tokens[d])) {
       const rest = {};
       for (const [k, v] of Object.entries(tokens)) if (k !== l && k !== d) rest[k] = v;
-      const light = { ...rest, color: tokens[l] };
-      const dark = { ...rest, color: tokens[d] };
+      // Mode-specific groups win over shared ones on a key collision.
+      const light = wrap ? { ...rest, [wrap]: tokens[l] } : { ...rest, ...tokens[l] };
+      const dark = wrap ? { ...rest, [wrap]: tokens[d] } : { ...rest, ...tokens[d] };
       return { light, dark, groups: [l, d] };
     }
   }
