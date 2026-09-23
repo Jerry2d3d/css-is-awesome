@@ -122,7 +122,7 @@ export default function McpPage() {
               <code>search_tokens</code>
             </td>
             <td>
-              127 required + 36 optional contract tokens. <code>get_token</code>{" "}
+              127 required + 49 optional contract tokens. <code>get_token</code>{" "}
               returns sample values across themes plus the list of
               mixins/functions that reference it
             </td>

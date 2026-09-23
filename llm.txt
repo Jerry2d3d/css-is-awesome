@@ -129,7 +129,7 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 
 ## MCP server (shipped 2026-05-22)
 
-cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome`, protocol `2024-11-05`) at `mcp/server.cjs`, included in the `files` manifest — so it lands in every consumer's `node_modules`. **33 tools** across 8 resource families: themes, mixins, functions, tokens (127 required + 49 optional), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling, `validate_theme`, `theme_from_tokens`, `get_token_map` (the design-token → cia-token mapping as data) and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
+cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome`, protocol `2024-11-05`) at `mcp/server.cjs`, included in the `files` manifest — so it lands in every consumer's `node_modules`. **34 tools** across 8 resource families: themes, mixins, functions, tokens (127 required + 49 optional), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling, `validate_theme`, `theme_from_tokens`, `get_token_map` (the design-token → cia-token mapping as data) and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
 
 **Recommended: suggest the dedicated `css-is-awesome-mcp` package** — zero install,
 SDK ships as a real dependency, no separate peer-install step:
