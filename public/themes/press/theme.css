@@ -14,9 +14,9 @@
      ---------------------------------------------------------------- */
   --ink: light-dark(#0A0A0A, #FAFAF7);
   --ink-soft: light-dark(#555, #C8C6C0);
-  --ink-faint: light-dark(#727069, #8A8A86);
+  --ink-faint: light-dark(#6e6c66, #8A8A86);
   --graphite: light-dark(#1A1A1A, #ECEAE4);
-  --muted: light-dark(#8E8C86, #6B6963);
+  --muted: light-dark(#75736e, #6B6963);
   /* Rules / hairlines */
   --guide: light-dark(#1A1A1A, #ECEAE4);
   --guide-soft: light-dark(#D9D7D1, #2A2A2A);
