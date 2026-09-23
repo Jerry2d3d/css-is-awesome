@@ -218,4 +218,10 @@
     --print-muted: #6B6963; /* warm editorial gray */
     /* stylelint-enable no-invalid-position-declaration */
   }
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#ededea, #1c1c1c);
+  --page-hero-ink: light-dark(#0a0a0a, #fafaf7);
+  --page-band-bg: light-dark(#f2f2ef, #161616);
+  --page-band-ink: light-dark(#0a0a0a, #fafaf7);
 }

@@ -595,3 +595,132 @@ $_flow: (
     margin-inline-start: auto;
   }
 }
+
+// ============================================================================
+// PAGE SURFACES — hero + band
+// ============================================================================
+// Two page-level backgrounds a theme can own outright: `hero` for a landing
+// page, `band` for a section stripe or a footer. Each slot carries four
+// optional tokens — background colour, image, ink, scrim.
+//
+// NOTHING HERE RUNS UNTIL YOU ASK FOR IT. cia never applies a page surface
+// automatically: not on `body`, not from a layout mixin, not from the reset.
+// That guarantee is why adding these tokens to every shipped theme cannot
+// change an existing consumer's page, and `tests/no-auto-surface.test.mjs`
+// asserts it against the compiled bundles so it cannot be broken by accident.
+//
+// Every token falls back, so a theme that declares none of them still renders:
+//   background → the deprecated --background-hero, then the page surface
+//   ink        → --text-primary
+//   image      → none  (and with no image, no scrim is drawn)
+//
+// The scrim is layered as a gradient in the SAME background-image as the
+// image rather than as a pseudo-element or an extra wrapper, so `surface`
+// works identically on <body> and on a <section>, and stacking context,
+// overflow and child positioning are left alone.
+
+$_surface-slots: (hero, band) !default;
+
+@mixin surface($slot: hero, $image: null, $scrim: null) {
+  @if not list.index($_surface-slots, $slot) {
+    @error "surface(): unknown slot '#{$slot}'. Expected one of: hero, band.";
+  }
+
+  $bg: var(--page-#{$slot}-bg, var(--background-#{$slot}, var(--surface-default, var(--paper))));
+  $ink: var(--page-#{$slot}-ink, var(--text-primary, var(--ink)));
+
+  // The scrim only paints when there is an image UNDER it. Defaulting it to a
+  // colour would put a 50% black wash over every colour-only hero — which is
+  // both wrong and a silent visual change for anyone who sets just a colour.
+  //
+  //   $image given   → the caller has an image, so the scrim defaults to the
+  //                    50% black that keeps text legible over a photo.
+  //   $image omitted → the image comes from the token (or is absent), so the
+  //                    scrim defaults to `transparent` and the token carries
+  //                    the value. The theme editor writes a scrim whenever it
+  //                    writes an image, so the safe default still arrives.
+  $img: var(--page-#{$slot}-image, none);
+  $scrim-default: transparent;
+  @if $image != null {
+    $img: $image;
+    $scrim-default: rgb(0 0 0 / 0.5);
+  }
+  $scrim-color: var(--page-#{$slot}-scrim, #{$scrim-default});
+  @if $scrim != null {
+    $scrim-color: $scrim;
+  }
+
+  background-color: #{$bg};
+  background-image: linear-gradient(#{$scrim-color}, #{$scrim-color}), #{$img};
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #{$ink};
+}
+
+// The attribute form of the same thing, for consumers with no Sass build.
+// Emitted only when this mixin is called — it is not part of the reset.
+@mixin surface-attributes {
+  @each $slot in $_surface-slots {
+    [data-surface='#{$slot}'] {
+      @include surface($slot);
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// WAVE DIVIDER — a curved edge between two sections, pure CSS
+// ----------------------------------------------------------------------------
+// Draws the curve with a radial-gradient mask on a ::before/::after, so there
+// is no SVG file to host and the shape inherits whatever colour you give it.
+// `$direction: down` curves the edge INTO the element (a valley at the top);
+// `up` bulges it outward. `$flip: true` puts the wave on the bottom edge.
+//
+//   .hero   { @include cia.surface(hero); @include cia.wave-divider($height: 4rem); }
+//
+// The wave paints in `$color`, which defaults to the NEXT section's surface so
+// the curve reads as that section rising into this one.
+@mixin wave-divider(
+  $height: 3rem,
+  $color: var(--surface-default, var(--paper)),
+  $direction: down,
+  $flip: false,
+  $position: after
+) {
+  @if $direction != down and $direction != up {
+    @error "wave-divider(): $direction must be `down` or `up`, got `#{$direction}`.";
+  }
+  @if $position != after and $position != before {
+    @error "wave-divider(): $position must be `after` or `before`, got `#{$position}`.";
+  }
+
+  position: relative;
+  isolation: isolate;
+
+  &::#{$position} {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    block-size: $height;
+    pointer-events: none;
+    z-index: 1;
+
+    @if $flip {
+      inset-block-start: calc(100% - #{$height});
+    } @else {
+      inset-block-end: calc(100% - #{$height});
+    }
+
+    // An ellipse wider than the box gives a shallow, natural curve rather
+    // than the circular arc a border-radius would produce.
+    @if $direction == down {
+      background: #{$color};
+      // stylelint-disable-next-line function-no-unknown
+      mask: radial-gradient(120% #{$height} at 50% 0%, transparent 99%, #000 100%);
+    } @else {
+      background: #{$color};
+      // stylelint-disable-next-line function-no-unknown
+      mask: radial-gradient(120% #{$height} at 50% 100%, #000 99%, transparent 100%);
+    }
+  }
+}

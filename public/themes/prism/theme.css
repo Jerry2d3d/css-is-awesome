@@ -167,4 +167,10 @@
   --card-border: 1px solid var(--hair);
   --input-radius: var(--r-md);
   --modal-radius: var(--r-lg);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#f2f6fe, #0c1019);
+  --page-hero-ink: light-dark(#09090b, #fafafa);
+  --page-band-bg: light-dark(#f7fafe, #0b0d13);
+  --page-band-ink: light-dark(#09090b, #fafafa);
 }

@@ -1,6 +1,6 @@
 {
-  "version": "1.2",
-  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Tokens in `optional` are reported by the validator as info, never as failures \u2014 the library or the theme generator supplies a default. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference). Contract 1.1 (2026-09-18): --space-unit relaxed from required to optional; it had been added as required in library 1.12.0, which VERSIONING.md forbids in a MINOR. Contract 1.2 (2026-09-18): `features` groups every optional token by the capability it enables, so a validator or installer can say \"missing the tokens for print\" instead of listing all optional tokens.",
+  "version": "1.3",
+  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Tokens in `optional` are reported by the validator as info, never as failures — the library or the theme generator supplies a default. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference). Contract 1.3 (2026-09-24): the page-surfaces feature adds eight optional tokens for the hero and band surfaces, and --background-hero is deprecated in favour of --page-hero-bg (kept valid, removed no earlier than contract 2).",
   "required": [
     "--action-primary-active",
     "--action-primary-default",
@@ -151,6 +151,14 @@
     "--logo-monochrome",
     "--logo-wordmark",
     "--modal-radius",
+    "--page-band-bg",
+    "--page-band-image",
+    "--page-band-ink",
+    "--page-band-scrim",
+    "--page-hero-bg",
+    "--page-hero-image",
+    "--page-hero-ink",
+    "--page-hero-scrim",
     "--print-ink",
     "--print-line",
     "--print-muted",
@@ -181,7 +189,7 @@
       ]
     },
     "spacing-aliases": {
-      "enables": "T-shirt spacing names (2xs\u2013xl) for consumer CSS that prefers them; the library reads the numbered scale, so these are pure aliases.",
+      "enables": "T-shirt spacing names (2xs–xl) for consumer CSS that prefers them; the library reads the numbered scale, so these are pure aliases.",
       "tokens": [
         "--space-2xs",
         "--space-xs",
@@ -236,7 +244,6 @@
       "enables": "Extra background layers (elevated, hero, overlay, scrim) for themes that want more than the required surface set; each falls back to a required surface.",
       "tokens": [
         "--background-elevated",
-        "--background-hero",
         "--background-overlay",
         "--background-scrim"
       ]
@@ -264,6 +271,28 @@
       "tokens": [
         "--touch-target-min"
       ]
+    },
+    "page-surfaces": {
+      "enables": "Two page-level surfaces a theme owns outright: a hero for the front page and a band for section stripes and footers. Each carries a background colour, an optional gradient or url() image, an ink colour for text on it, and a scrim that keeps that text legible over an image. Applied only via cia.surface() or [data-surface] - declaring them changes nothing on its own.",
+      "tokens": [
+        "--page-hero-bg",
+        "--page-hero-image",
+        "--page-hero-ink",
+        "--page-hero-scrim",
+        "--page-band-bg",
+        "--page-band-image",
+        "--page-band-ink",
+        "--page-band-scrim",
+        "--background-hero"
+      ]
+    }
+  },
+  "deprecated": {
+    "--background-hero": {
+      "replacedBy": "--page-hero-bg",
+      "since": "1.3",
+      "removeIn": "2",
+      "note": "Was never read by the library. --page-hero-bg falls back through it, so an existing declaration keeps working untouched."
     }
   }
 }

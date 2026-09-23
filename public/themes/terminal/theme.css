@@ -167,4 +167,10 @@
   --input-radius: 0;
   --card-shadow: var(--glow-sm);
   --card-border: 1px solid var(--ink-faint);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #111a19;
+  --page-hero-ink: #4fe078;
+  --page-band-bg: #0e1513;
+  --page-band-ink: #4fe078;
 }
