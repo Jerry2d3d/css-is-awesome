@@ -354,7 +354,24 @@ function validateTokenSet(declared, contract) {
     const f = featureOf[t] || 'other';
     (optionalMissingByFeature[f] = optionalMissingByFeature[f] || []).push(t);
   }
-  return { ok: missing.length === 0, missing, optionalMissing, optionalMissingByFeature, declaredCount: declared.size };
+  // Contract 1.3+: a token this theme declares that has since been superseded.
+  // Reported separately from the optional-token info line — "you declared
+  // something that still works but has a better name now" is a different
+  // message from "you left a default to the library", and it comes with an
+  // action: `cia fix-theme`.
+  const deprecatedMap = contract.deprecated && typeof contract.deprecated === 'object' ? contract.deprecated : {};
+  const deprecatedUsed = [];
+  for (const [token, def] of Object.entries(deprecatedMap)) {
+    if (declared.has(token)) {
+      deprecatedUsed.push({
+        token,
+        replacedBy: (def && def.replacedBy) || null,
+        since: (def && def.since) || null,
+        removeIn: (def && def.removeIn) || null,
+      });
+    }
+  }
+  return { ok: missing.length === 0, missing, optionalMissing, optionalMissingByFeature, deprecatedUsed, declaredCount: declared.size };
 }
 
 // -----------------------------------------------------------
@@ -380,6 +397,7 @@ function validateText(text, contract, options) {
     missing: [],
     optionalMissing: [],
     optionalMissingByFeature: {},
+    deprecatedUsed: [],
     themes: null,
     a11y: null,
     error: null,
@@ -403,6 +421,7 @@ function validateText(text, contract, options) {
         missing: v.missing,
         optionalMissing: v.optionalMissing,
         optionalMissingByFeature: v.optionalMissingByFeature,
+        deprecatedUsed: v.deprecatedUsed,
         a11y: null,
       };
       if (wantA11y) theme.a11y = a11y.auditThemeTokens({ name: b.name, values: b.values });
@@ -432,6 +451,7 @@ function validateText(text, contract, options) {
   result.missing = v.missing;
   result.optionalMissing = v.optionalMissing;
   result.optionalMissingByFeature = v.optionalMissingByFeature;
+  result.deprecatedUsed = v.deprecatedUsed;
   result.ok = v.ok;
   if (wantA11y) {
     const inferredName = label !== '(pasted CSS)' ? (path.basename(path.dirname(label)) || path.basename(label, '.css')) : 'theme';
@@ -471,6 +491,21 @@ function relForDisplay(p) {
 
 // Optional tokens a theme leaves to the library default. Info only — shown as
 // a count, or listed with --show-optional. Never affects the exit code.
+// A token the theme declares that has been superseded. Never a failure — the
+// old value still works — but it names the replacement and the way to apply it.
+function deprecationInfo(deprecatedUsed, indent) {
+  const list = Array.isArray(deprecatedUsed) ? deprecatedUsed : [];
+  if (!list.length) return;
+  for (const d of list) {
+    console.log(
+      `${indent}${yellow('~')} ${d.token} is deprecated` +
+        (d.since ? ` (since contract ${d.since}` + (d.removeIn ? `, removed in ${d.removeIn}` : '') + ')' : '') +
+        (d.replacedBy ? ` — use ${d.replacedBy}` : '')
+    );
+    console.log(`${indent}  ${dim('your value still works; `npx cia fix-theme <file>` renames it for you')}`);
+  }
+}
+
 function optionalInfo(optionalMissing, byFeature, indent) {
   const list = Array.isArray(optionalMissing) ? optionalMissing : [];
   if (!list.length) return;
@@ -506,6 +541,7 @@ function reportResult(result) {
           `    ${green('✓')} [data-theme="${t.name}"] ${dim(`(${t.declaredCount} tokens)`)}`
         );
         optionalInfo(t.optionalMissing, t.optionalMissingByFeature, '      ');
+        deprecationInfo(t.deprecatedUsed, '      ');
       } else {
         const n = t.missing.length;
         console.log(
@@ -514,6 +550,7 @@ function reportResult(result) {
         for (const token of t.missing) {
           console.log(`        ${red(token)}`);
         }
+        deprecationInfo(t.deprecatedUsed, '      ');
       }
     }
     return;
@@ -525,6 +562,7 @@ function reportResult(result) {
       `${green('✓')} ${bold(rel)} ${dim(`passes (${result.declaredCount} tokens declared)`)}`
     );
     optionalInfo(result.optionalMissing, result.optionalMissingByFeature, '    ');
+    deprecationInfo(result.deprecatedUsed, '    ');
     return;
   }
 
@@ -535,6 +573,7 @@ function reportResult(result) {
   for (const token of result.missing) {
     console.log(`     ${red(token)}`);
   }
+  deprecationInfo(result.deprecatedUsed, '    ');
 }
 
 // -----------------------------------------------------------

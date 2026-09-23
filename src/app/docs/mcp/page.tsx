@@ -66,7 +66,7 @@ export default function McpPage() {
 }`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 33 total: 28 across 8 families + 5 specialty tools</h2>
+      <h2 id="tools">Tools — 34 total: 28 across 8 families + 6 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -122,7 +122,7 @@ export default function McpPage() {
               <code>search_tokens</code>
             </td>
             <td>
-              127 required + 36 optional contract tokens. <code>get_token</code>{" "}
+              127 required + 49 optional contract tokens. <code>get_token</code>{" "}
               returns sample values across themes plus the list of
               mixins/functions that reference it
             </td>
@@ -372,6 +372,37 @@ get_token_map()
 //      targets: { required: [ …127 ], optional: [ …41 ] } }`}</Example.Code>
       </Example>
 
+      <h2 id="fix-theme">
+        <code>fix_theme</code>
+      </h2>
+      <p>
+        Upgrade a theme that still uses a <strong>deprecated</strong> token. cia
+        deprecates rather than deletes, so the old declaration keeps resolving — but
+        there is a better name now, and this rewrites it. Only the property moves:
+        values, comments, ordering and whitespace survive byte-for-byte, so applying
+        it cannot change how the theme renders. A block that already declares the
+        replacement is reported as a conflict and left alone, because choosing between
+        two values is a judgement call.
+      </p>
+      <p>
+        <strong>It never writes to disk.</strong> It returns text and the caller
+        decides — the same contract as <code>theme_from_tokens</code>. The result
+        carries <code>applied: false</code> precisely so an agent cannot report
+        &ldquo;I updated your theme&rdquo; when nothing was saved. Same function as{" "}
+        <code>npx cia fix-theme</code>; reachable in-process as{" "}
+        <code>handlers.fix_theme</code>.
+      </p>
+      <Example>
+        <Example.Code>{`fix_theme({ css: ":root { --background-hero: #eee; }" })
+// →  { css: ":root { --page-hero-bg: #eee; }",
+//      changes: [{ line: 1, from: "--background-hero", to: "--page-hero-bg",
+//                  kind: "rewrite", reason: "…deprecated since contract 1.3…" }],
+//      unchanged: false, applied: false,
+//      summary: "1 declaration(s) renamed. Write the returned css yourself…" }
+
+fix_theme({ css: ":root { --page-hero-bg: #eee; }" })
+// →  { unchanged: true, changes: [], summary: "No deprecated tokens found …" }`}</Example.Code>
+      </Example>
       <h2 id="security">Security + portability</h2>
       <p>
         Discovery is pure filesystem scan. The server reads files inside the

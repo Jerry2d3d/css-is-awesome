@@ -239,6 +239,34 @@ try {
     return null;
   });
 
+  // The deprecation fixer, both shapes: a theme on the old token is rewritten
+  // (and the tool must never claim it wrote anything), and a theme already on
+  // the new name comes back untouched.
+  await call(
+    "fix_theme",
+    { css: ":root {\n  --background-hero: #eee;\n}" },
+    (b) => {
+      const r = JSON.parse(b);
+      if (r.unchanged !== false) return "expected a deprecated token to be rewritten";
+      if (!/--page-hero-bg:/.test(r.css)) return "expected --page-hero-bg in the returned css";
+      if (/--background-hero:/.test(r.css)) return "expected the deprecated declaration to be gone";
+      if (r.applied !== false) return "fix_theme must never report that it wrote a file";
+      const rw = (r.changes || []).filter((c) => c.kind === "rewrite");
+      if (rw.length !== 1 || rw[0].to !== "--page-hero-bg") return "expected one rewrite change naming the replacement";
+      if (!Array.isArray(r.knownDeprecations) || !r.knownDeprecations.length) return "expected knownDeprecations";
+      return null;
+    }
+  );
+  await call(
+    "fix_theme",
+    { css: ":root {\n  --page-hero-bg: #eee;\n}" },
+    (b) => {
+      const r = JSON.parse(b);
+      if (r.unchanged !== true) return "expected a current theme to be left alone";
+      if ((r.changes || []).length !== 0) return "expected no changes for a current theme";
+      return null;
+    }
+  );
   // ─── Report ───────────────────────────────────────────────────────────────
   const tested = new Set(results.map((r) => r.name));
   const untested = advertised.filter((t) => !tested.has(t));

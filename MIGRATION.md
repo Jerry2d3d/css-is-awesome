@@ -30,6 +30,12 @@ so the guarantee is enforced rather than promised.
 | `--background-hero` | optional, read by nothing | **deprecated**; `--page-hero-bg` falls back through it, so an existing declaration keeps working until contract 2 |
 | Your custom theme | validates | validates — the new tokens are optional, and missing optional tokens report as info |
 
+Nothing here needs doing. If you would rather move onto the current name now,
+`npx cia fix-theme <your-theme.css>` shows what it would change and
+`--write` applies it. It renames the property and nothing else, so the theme
+renders identically; a block already declaring `--page-hero-bg` is reported
+rather than merged.
+
 ### If you want a hero
 
 Declare the tokens your theme needs and apply the surface where you want it:

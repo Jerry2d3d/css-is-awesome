@@ -635,3 +635,10 @@ A PR that adds a new contract glyph must:
 Per-theme override glyphs are NEVER required by the contract — themes
 opt in glyph-by-glyph by declaring `--cia-icon-<name>` and shipping the
 replacement file alongside.
+>
+> **Deprecations are machine-readable.** Every one lives in the `deprecated` map in
+> [`scripts/theme-contract.json`](./scripts/theme-contract.json) with the token it replaces,
+> when it was deprecated and when it goes. The validator prints it, `get_token` returns it,
+> `npx cia analyze` flags it in your stylesheets, and `npx cia fix-theme <file> --write`
+> renames it for you — property only, so the theme renders identically. `check:contract`
+> fails the build if a deprecation points at a token that does not exist.

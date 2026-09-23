@@ -373,6 +373,39 @@ export default function AuthoringThemesPage() {
         declaration keeps working until contract 2.
       </p>
 
+      <h3 id="upgrading-a-theme">Upgrading a theme</h3>
+      <p>
+        You never have to. cia deprecates a token instead of deleting it, so
+        an old declaration keeps resolving until the next major. When you do
+        want to move, one command does it:
+      </p>
+      <Example>
+        <Example.Code>
+          <span className="tok-com">{"# show me what would change"}</span>
+          {"\n"}
+          <span className="tok-sel">npx</span>{" "}
+          <span className="tok-val">cia fix-theme src/styles/acme.css</span>
+          {"\n"}
+          {"\n"}
+          <span className="tok-com">{"# apply it"}</span>
+          {"\n"}
+          <span className="tok-sel">npx</span>{" "}
+          <span className="tok-val">
+            cia fix-theme src/styles/acme.css --write
+          </span>
+        </Example.Code>
+      </Example>
+      <p>
+        It renames the property and nothing else — your values, comments,
+        ordering and whitespace survive byte-for-byte, so the theme renders
+        exactly as it did. If a block already declares the replacement, that
+        line is left alone and reported: deciding which of two values you
+        meant is your call, not the tool&rsquo;s. Agents reach the same
+        function as the MCP <code>fix_theme</code> tool, and{" "}
+        <code>npx cia analyze</code> points here when it finds a deprecated
+        token in your stylesheets.
+      </p>
+
       <h2 id="density-knob">The density knob — three levels of power</h2>
       <p>
         Every shipped theme derives its 9 spacing steps from one master

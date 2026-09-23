@@ -49,7 +49,7 @@ export default function AboutPage() {
           <TimelineItem date="now — zero install" title="A dedicated MCP package.">
             <code>npx css-is-awesome-mcp</code> — a standalone companion package, so wiring an
             agent up to cia takes one line in <code>.mcp.json</code> and no manual dependency
-            install. Same 33 tools, always resolves your installed cia version&apos;s real source.
+            install. Same 34 tools, always resolves your installed cia version&apos;s real source.
           </TimelineItem>
           <TimelineItem date="2026 — the launch" title="Published, public, live.">The first release lands on npm — <code>npm install css-is-awesome</code> is real, jsDelivr and unpkg mirror it, the GitHub repo is public, and this docs site is live at cssisawesome.com.</TimelineItem>
         </ol>

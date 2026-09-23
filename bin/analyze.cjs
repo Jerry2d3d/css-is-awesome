@@ -33,6 +33,18 @@ function loadContractTokens() {
   }
 }
 
+// Tokens the contract has superseded. They still resolve — cia deprecates
+// rather than deletes — so this is a warning with a one-command fix, not an
+// error. Read from the same map `cia fix-theme` and the validator use.
+function loadDeprecated() {
+  try {
+    const c = JSON.parse(fs.readFileSync(CONTRACT_PATH, 'utf8'));
+    return c.deprecated && typeof c.deprecated === 'object' ? c.deprecated : {};
+  } catch {
+    return {};
+  }
+}
+
 // Tiny Levenshtein (zero-dep). Only called on var(--x) misses, so cost is trivial.
 function editDistance(a, b) {
   const m = a.length, n = b.length;
@@ -256,7 +268,7 @@ function missingFocusVisible(strippedSrc) {
   return [{ level: 'info', rule: 'missing-focus-visible', detail: 'interactive :hover/:active styling with no :focus-visible or focus-ring anywhere in this file — keyboard users may get no visible feedback' }];
 }
 
-function analyzeFile(file, symbols, contractTokens, extraNs) {
+function analyzeFile(file, symbols, contractTokens, extraNs, deprecated) {
   const raw = fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
   const src = stripComments(raw);
   const ns = detectNamespaces(src, extraNs);
@@ -280,6 +292,37 @@ function analyzeFile(file, symbols, contractTokens, extraNs) {
       }
     }
   }
+  // deprecated-token: still resolves, but the contract names a successor.
+  // Catches both a declaration (--old: value) and a reference (var(--old)).
+  // A plain scan, not a built regex: custom-property names are distinctive
+  // enough that a substring plus a name-boundary check is exact, and it does
+  // not depend on escaping a token name into a pattern.
+  if (deprecated && Object.keys(deprecated).length) {
+    const isNameChar = (ch) => /[A-Za-z0-9_-]/.test(ch);
+    for (const [tok, def] of Object.entries(deprecated)) {
+      let at = src.indexOf(tok);
+      let hit = false;
+      while (at !== -1) {
+        const after = src[at + tok.length];
+        // Reject a longer name that merely starts with this one.
+        if (after === undefined || !isNameChar(after)) { hit = true; break; }
+        at = src.indexOf(tok, at + 1);
+      }
+      if (!hit) continue;
+      const to = (def && def.replacedBy) || null;
+      let since = '';
+      if (def && def.since) {
+        since = ' (contract ' + def.since + (def.removeIn ? ', removed in ' + def.removeIn : '') + ')';
+      }
+      findings.push({
+        level: 'warn',
+        rule: 'deprecated-token',
+        detail: tok + ' is deprecated' + since + (to ? ' — use ' + to : '') +
+          '; your value still works. Run `npx cia fix-theme <file>` to rename it.',
+      });
+    }
+  }
+
   // off-contract-token: a var(--x) that's a near-miss of a real contract token
   // (a typo → the declaration silently fails). Pure custom tokens — not close to
   // any contract token — are the consumer's own and are left alone.
@@ -325,6 +368,7 @@ const RULE_CATEGORY = {
   'unknown-symbol': 'API',
   'space-scale': 'Spacing',
   'off-contract-token': 'Contract',
+  'deprecated-token': 'Contract',
   'off-scale-length': 'Spacing',
   'hard-coded-color': 'Color',
   bem: 'Naming',
@@ -364,8 +408,9 @@ async function run(args) {
 
   const symbols = collectSymbols();
   const contractTokens = loadContractTokens();
+  const deprecated = loadDeprecated();
   const files = walkScss(target);
-  const results = files.map((f) => analyzeFile(f, symbols, contractTokens, extraNs)).filter((r) => r.findings.length || r.namespaces.length);
+  const results = files.map((f) => analyzeFile(f, symbols, contractTokens, extraNs, deprecated)).filter((r) => r.findings.length || r.namespaces.length);
 
   const counts = { error: 0, warn: 0, info: 0 };
   for (const r of results) for (const f of r.findings) counts[f.level]++;

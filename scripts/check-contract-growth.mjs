@@ -83,6 +83,31 @@ const optionalAdded = diff(optA, optB).filter((t) => !reqB.has(t));
 const optionalRemoved = diff(optB, optA).filter((t) => !reqA.has(t));
 
 const problems = [];
+// Contract 1.3+: the `deprecated` map is what `cia fix-theme`, the validator
+// and `get_token` all read. A stale entry there is worse than none: the fixer
+// would offer a rename onto a token that does not exist, or quietly deprecate
+// something it also recommends. Guard all three ways it can rot.
+if (after.deprecated && typeof after.deprecated === 'object') {
+  const dep = after.deprecated;
+  const targets = new Set();
+  for (const [token, def] of Object.entries(dep)) {
+    if (!reqA.has(token) && !optA.has(token)) {
+      problems.push(`deprecated: ${token} is not in the contract at all — a deprecated token must stay listed until it is removed at a major`);
+    }
+    const to = def && def.replacedBy;
+    if (!to) {
+      problems.push(`deprecated: ${token} has no replacedBy — every deprecation must name what supersedes it`);
+    } else {
+      if (!reqA.has(to) && !optA.has(to)) {
+        problems.push(`deprecated: ${token} is replaced by ${to}, which is not a contract token`);
+      }
+      targets.add(to);
+    }
+  }
+  for (const to of targets) {
+    if (dep[to]) problems.push(`deprecated: ${to} is a replacement target AND itself deprecated — that chain sends a consumer to a dead end`);
+  }
+}
 // Contract 1.2: every optional token belongs to exactly one feature, and a
 // feature may only name optional tokens. Otherwise "missing the tokens for X"
 // would lie.
