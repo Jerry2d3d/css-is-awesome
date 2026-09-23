@@ -433,7 +433,7 @@ export default function TokensPage() {
         they read.
       </p>
       <p>
-        A further <strong>36 optional tokens</strong> (163 in total) are
+        A further <strong>49 optional tokens</strong> (176 in total) are
         recognised but not demanded. These are the per-component radius
         overrides (<code>--btn-radius</code>, <code>--card-radius</code>,{" "}
         <code>--input-radius</code>, <code>--modal-radius</code>,{" "}

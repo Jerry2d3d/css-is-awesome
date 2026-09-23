@@ -641,12 +641,12 @@ $_surface-slots: (hero, band) !default;
   //                    writes an image, so the safe default still arrives.
   $img: var(--page-#{$slot}-image, none);
   $scrim-default: transparent;
-  @if $image != null {
+  @if $image {
     $img: $image;
     $scrim-default: rgb(0 0 0 / 0.5);
   }
   $scrim-color: var(--page-#{$slot}-scrim, #{$scrim-default});
-  @if $scrim != null {
+  @if $scrim {
     $scrim-color: $scrim;
   }
 
