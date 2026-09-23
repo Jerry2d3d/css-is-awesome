@@ -199,4 +199,10 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #e8ebef;
+  --page-hero-ink: #1a1f26;
+  --page-band-bg: #eceff2;
+  --page-band-ink: #1a1f26;
 }

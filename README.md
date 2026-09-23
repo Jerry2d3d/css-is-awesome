@@ -145,7 +145,9 @@ node scripts/theme-validator.js public/themes/midnight/theme.css
 #    <link rel="stylesheet" href="/themes/midnight/theme.css">
 ```
 
-Full authoring walkthrough: [`/docs/authoring/themes`](https://cssisawesome.com/docs/authoring/themes/). The contract (127 required + 41 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
+A theme can also own the page behind your components: optional **hero** and **band** surfaces carry a background, an image or gradient, an ink colour and a scrim, applied with `@include cia.surface(hero)` or `<body data-surface="hero">`. Nothing is applied automatically, so adding them never moves a pixel until you ask.
+
+Full authoring walkthrough: [`/docs/authoring/themes`](https://cssisawesome.com/docs/authoring/themes/). The contract (127 required + 49 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
 
 ## Token contract
 

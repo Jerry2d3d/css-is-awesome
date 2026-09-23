@@ -243,4 +243,10 @@
   --card-border: 1px solid var(--hair); /* thin ink rule instead */
   --input-radius: var(--r-sm); /* 2px — text field */
   --modal-radius: var(--r-md); /* 3px — still tight */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #ededea;
+  --page-hero-ink: #0a0a0a;
+  --page-band-bg: #f2f2ef;
+  --page-band-ink: #0a0a0a;
 }

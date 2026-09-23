@@ -172,4 +172,10 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #121e36;
+  --page-hero-ink: #f8fafc;
+  --page-band-bg: #111b31;
+  --page-band-ink: #f8fafc;
 }

@@ -162,4 +162,10 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#f2f6fe, #121e36);
+  --page-hero-ink: light-dark(#0f172a, #f8fafc);
+  --page-band-bg: light-dark(#f7fafe, #111b31);
+  --page-band-ink: light-dark(#0f172a, #f8fafc);
 }

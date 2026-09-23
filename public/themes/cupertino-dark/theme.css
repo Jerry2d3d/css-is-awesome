@@ -208,4 +208,10 @@
   --input-radius: var(--r-sm); /* 8px — text field */
   --modal-radius: var(--r-lg); /* matches panel */
   --tooltip-radius: var(--r-sm); /* bezel tooltip */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1e252c;
+  --page-hero-ink: #f5f5f7;
+  --page-band-bg: #1e2226;
+  --page-band-ink: #f5f5f7;
 }

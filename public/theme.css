@@ -189,6 +189,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#f2f6fe, #121e36);
+  --page-hero-ink: light-dark(#0f172a, #f8fafc);
+  --page-band-bg: light-dark(#f7fafe, #111b31);
+  --page-band-ink: light-dark(#0f172a, #f8fafc);
 }
 :root[data-theme=boilerplate-dark] {
   color-scheme: dark;
@@ -363,6 +369,12 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #121e36;
+  --page-hero-ink: #f8fafc;
+  --page-band-bg: #111b31;
+  --page-band-ink: #f8fafc;
 }
 :root[data-theme=boilerplate-light] {
   color-scheme: light;
@@ -537,6 +549,12 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #f2f6fe;
+  --page-hero-ink: #0f172a;
+  --page-band-bg: #f7fafe;
+  --page-band-ink: #0f172a;
 }
 :root[data-theme=cupertino] {
   color-scheme: light dark;
@@ -711,6 +729,12 @@
   --input-radius: var(--r-sm);
   --modal-radius: var(--r-lg);
   --tooltip-radius: var(--r-sm);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#e6ecf3, #1e252c);
+  --page-hero-ink: light-dark(#1d1d1f, #f5f5f7);
+  --page-band-bg: light-dark(#ecf0f5, #1e2226);
+  --page-band-ink: light-dark(#1d1d1f, #f5f5f7);
 }
 :root[data-theme=cupertino-dark] {
   color-scheme: dark;
@@ -902,6 +926,12 @@
   --input-radius: var(--r-sm); /* 8px — text field */
   --modal-radius: var(--r-lg); /* matches panel */
   --tooltip-radius: var(--r-sm); /* bezel tooltip */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1e252c;
+  --page-hero-ink: #f5f5f7;
+  --page-band-bg: #1e2226;
+  --page-band-ink: #f5f5f7;
 }
 :root[data-theme=cupertino-light] {
   color-scheme: light;
@@ -1109,6 +1139,12 @@
   --input-radius: var(--r-sm); /* 8px — text field */
   --modal-radius: var(--r-lg); /* matches panel */
   --tooltip-radius: var(--r-sm); /* bezel tooltip */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #e6ecf3;
+  --page-hero-ink: #1d1d1f;
+  --page-band-bg: #ecf0f5;
+  --page-band-ink: #1d1d1f;
 }
 :root[data-theme=glass] {
   color-scheme: light dark;
@@ -1308,6 +1344,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#ebe5fd, #101828);
+  --page-hero-ink: light-dark(#1d1d1f, #f0f4ff);
+  --page-band-bg: light-dark(#eee9fe, #0e1422);
+  --page-band-ink: light-dark(#1d1d1f, #f0f4ff);
 }
 :root[data-theme=glass-dark] {
   color-scheme: dark;
@@ -1499,6 +1541,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #101828;
+  --page-hero-ink: #f0f4ff;
+  --page-band-bg: #0e1422;
+  --page-band-ink: #f0f4ff;
 }
 :root[data-theme=glass-light] {
   color-scheme: light;
@@ -1701,6 +1749,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #ebe5fd;
+  --page-hero-ink: #1d1d1f;
+  --page-band-bg: #eee9fe;
+  --page-band-ink: #1d1d1f;
 }
 :root[data-theme=graphite] {
   color-scheme: light dark;
@@ -1865,6 +1919,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#e8ebef, #1a212a);
+  --page-hero-ink: light-dark(#1a1f26, #f5f5f7);
+  --page-band-bg: light-dark(#eceff2, #1a1e24);
+  --page-band-ink: light-dark(#1a1f26, #f5f5f7);
 }
 :root[data-theme=graphite-dark] {
   color-scheme: dark;
@@ -2057,6 +2117,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1a212a;
+  --page-hero-ink: #f5f5f7;
+  --page-band-bg: #1a1e24;
+  --page-band-ink: #f5f5f7;
 }
 :root[data-theme=graphite-light] {
   color-scheme: light;
@@ -2239,6 +2305,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #e8ebef;
+  --page-hero-ink: #1a1f26;
+  --page-band-bg: #eceff2;
+  --page-band-ink: #1a1f26;
 }
 :root[data-theme=press] {
   color-scheme: light dark;
@@ -2649,6 +2721,12 @@
   --card-border: 1px solid var(--hair); /* thin rule instead */
   --input-radius: var(--r-sm); /* 2px */
   --modal-radius: var(--r-md); /* 3px */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1c1c1c;
+  --page-hero-ink: #fafaf7;
+  --page-band-bg: #161616;
+  --page-band-ink: #fafaf7;
 }
 :root[data-theme=press-light] {
   color-scheme: light;
@@ -2859,6 +2937,12 @@
   --card-border: 1px solid var(--hair); /* thin ink rule instead */
   --input-radius: var(--r-sm); /* 2px — text field */
   --modal-radius: var(--r-md); /* 3px — still tight */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #ededea;
+  --page-hero-ink: #0a0a0a;
+  --page-band-bg: #f2f2ef;
+  --page-band-ink: #0a0a0a;
 }
 :root[data-theme=prism] {
   color-scheme: light dark;
@@ -3027,6 +3111,12 @@
   --card-border: 1px solid var(--hair);
   --input-radius: var(--r-md);
   --modal-radius: var(--r-lg);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#f2f6fe, #0c1019);
+  --page-hero-ink: light-dark(#09090b, #fafafa);
+  --page-band-bg: light-dark(#f7fafe, #0b0d13);
+  --page-band-ink: light-dark(#09090b, #fafafa);
 }
 :root[data-theme=prism-dark] {
   color-scheme: dark;
@@ -3210,6 +3300,12 @@
   --card-border: 1px solid var(--hair);
   --input-radius: var(--r-md);
   --modal-radius: var(--r-lg);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #0c1019;
+  --page-hero-ink: #fafafa;
+  --page-band-bg: #0b0d13;
+  --page-band-ink: #fafafa;
 }
 :root[data-theme=prism-light] {
   color-scheme: light;
@@ -3393,6 +3489,12 @@
   --card-border: 1px solid var(--hair);
   --input-radius: var(--r-md);
   --modal-radius: var(--r-lg);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #f2f6fe;
+  --page-hero-ink: #09090b;
+  --page-band-bg: #f7fafe;
+  --page-band-ink: #09090b;
 }
 :root[data-theme=sketchbook] {
   color-scheme: light dark;
@@ -3554,6 +3656,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#eae8e2, #1f1f1f);
+  --page-hero-ink: light-dark(#2a241e, #f4efe2);
+  --page-band-bg: light-dark(#efede5, #1d1c1b);
+  --page-band-ink: light-dark(#2a241e, #f4efe2);
 }
 :root[data-theme=sketchbook-dark] {
   color-scheme: dark;
@@ -3736,6 +3844,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1f1f1f;
+  --page-hero-ink: #f4efe2;
+  --page-band-bg: #1d1c1b;
+  --page-band-ink: #f4efe2;
 }
 :root[data-theme=sketchbook-light] {
   color-scheme: light;
@@ -3927,6 +4041,12 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #eae8e2;
+  --page-hero-ink: #2a241e;
+  --page-band-bg: #efede5;
+  --page-band-ink: #2a241e;
 }
 :root[data-theme=terminal] {
   color-scheme: dark;
@@ -4095,6 +4215,12 @@
   --input-radius: 0;
   --card-shadow: var(--glow-sm);
   --card-border: 1px solid var(--ink-faint);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #111a19;
+  --page-hero-ink: #4fe078;
+  --page-band-bg: #0e1513;
+  --page-band-ink: #4fe078;
 }
 :root[data-theme=terminal-dark] {
   color-scheme: dark;
@@ -4298,6 +4424,12 @@
   --input-radius: 0;
   --card-shadow: var(--glow-sm);
   --card-border: 1px solid var(--ink-faint);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #111a19;
+  --page-hero-ink: #4fe078;
+  --page-band-bg: #0e1513;
+  --page-band-ink: #4fe078;
 }
 :root[data-theme=terminal-light] {
   color-scheme: light;
@@ -4459,4 +4591,10 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #dadfe4;
+  --page-hero-ink: #1a1a1a;
+  --page-band-bg: #e0e3e6;
+  --page-band-ink: #1a1a1a;
 }

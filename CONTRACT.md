@@ -321,7 +321,10 @@ Every optional token belongs to exactly one **feature** in `scripts/theme-contra
 | `surfaces-extended` | `--background-elevated`, `--background-hero`, `--background-overlay`, `--background-scrim` | Extra background layers (elevated, hero, overlay, scrim) for themes that want more than the required surface set; each falls back to a required surface. |
 | `borders-extended` | `--border-card`, `--border-divider`, `--border-focus-ring`, `--border-input` | Per-context border colours (card, divider, focus ring, input); each falls back to --border-default / --border-focus. |
 | `logo` | `--logo-default`, `--logo-mark`, `--logo-monochrome`, `--logo-wordmark` | Theme-aware logo assets (default, mark, monochrome, wordmark) as url() or SVG data values for the icon/brand mixins. |
+| `page-surfaces` | `--page-hero-bg`, `--page-hero-image`, `--page-hero-ink`, `--page-hero-scrim`, `--page-band-bg`, `--page-band-image`, `--page-band-ink`, `--page-band-scrim`, `--background-hero` *(deprecated)* | Two page-level surfaces a theme owns outright: a **hero** for a landing page and a **band** for section stripes and footers. Each carries a background colour, an optional gradient or `url()` image, an ink colour, and a scrim that keeps text legible over an image. **Declaring them changes nothing on its own** - a page only picks a surface up through `cia.surface(hero|band)` or `data-surface`, which is why every shipped theme defines them without moving a pixel on an existing site. Contrast over an *image* cannot be measured, so the scrim carries that weight: the mixin applies 50% black whenever an image is passed to it. |
 | `touch-target` | `--touch-target-min` | Minimum interactive target size read by form and button mixins (WCAG 2.2 SC 2.5.8); the library default is 24px. |
+
+> **Deprecated - `--background-hero`.** It sat in the contract unread: no mixin consumed it, the editor could not set it, and nothing documented it. `--page-hero-bg` replaces it and **falls back through it**, so an existing declaration keeps working untouched. It stays valid until contract 2, per the lifecycle in [`VERSIONING.md`](./VERSIONING.md).
 
 ---
 

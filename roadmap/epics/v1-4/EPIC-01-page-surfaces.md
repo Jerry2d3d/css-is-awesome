@@ -1,6 +1,22 @@
 # EPIC v1.4-01 — Page surfaces (`hero` + `band`)
 
-**Status:** 📐 Planned — design locked with Jerry 2026-09-19, not started. Four open questions below block the first commit.
+**Status:** ✅ Complete — built 2026-09-24. All four open questions answered (see below); one design decision changed during the build and is recorded there.
+
+> ## Built 2026-09-24
+>
+> Contract **1.3**: eight optional tokens in a new `page-surfaces` feature, with `--background-hero` deprecated rather than removed — `--page-hero-bg` falls back through it, so an existing declaration keeps working until contract 2.
+>
+> `cia.surface(hero|band)` and `cia.surface-attributes()` apply a surface; **nothing applies one automatically**. `scripts/test-no-auto-surface.mjs` compiles every shipped bundle and fails if any rule reads a page-surface token or emits a `[data-surface]` rule. That test is the reason it was safe to give all 24 themes a hero: declaring the tokens moves no pixel on an existing consumer's site.
+>
+> `cia.wave-divider()` ships alongside — a pure-CSS curved edge between sections, drawn with a radial-gradient mask so there is no SVG to host.
+>
+> **Answers to the four questions:** (1) `--page-*` naming, with `--background-hero` kept as a deprecated fallback. (2) Home feature stripe **and** site footer. (3) URL field only — a theme is one CSS file. (4) 50% scrim.
+>
+> **Changed during the build — the scrim is conditional.** The spec defaulted the scrim to 50% black. Applied literally that put a 50% black wash over every *colour-only* hero, which is both wrong and a silent visual change for anyone who sets just a background. The scrim now defaults to `transparent` on the token path and to 50% black only when an image is passed to the mixin.
+>
+> **Changed during the build — derivation runs in Node, not SCSS.** Values are derived rather than hand-picked: each theme's hero is its own page surface nudged 6% toward its own brand accent (band 3.5%), ink left as `--text-primary`. That could not live in the SCSS generator for two reasons: Sass cannot see a value behind a `var()` chain, and `scripts/theme-a11y.js` throws `UnsupportedColor` on `color-mix`, so a surface expressed that way would be **skipped by the contrast audit rather than graded**. `scripts/derive-page-surfaces.mjs` runs after the themes compile, reusing the auditor's own resolver, and writes a literal `light-dark()` pair — so the number the audit grades is the number the browser paints. All 96 new pairs measure **10.35:1 or better**, none skipped, none in the warning band; the suite's warning count is unchanged at 176. Sketchbook and Terminal are computed like every other theme; no theme file was hand-edited.
+>
+> **Dogfood.** The landing page's hero area, moat stripe and footer go through the mixin, with the surfaces pinned to `transparent` on `.landing` — which is what those elements actually paint today, because `body::before` lays a fixed noise texture under the content. All six landing-page visual snapshots pass unchanged, which is the proof the adoption is visually neutral.
 **Effort estimate:** ~2-3 working days
 **Stories:** 8
 

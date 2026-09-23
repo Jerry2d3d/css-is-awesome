@@ -42,6 +42,11 @@ if (existsSync(resolve(PUBLIC, 'theme.css'))) {
 let failed = false;
 try {
   execFileSync('node', [resolve(__dirname, 'build-themes.mjs')], { stdio: 'ignore' });
+  // Same order as the `build:css:themes` script: the page surfaces are derived
+  // into each theme BEFORE the bundle is assembled, or the bundle would be
+  // built from theme files that do not have them yet and this check would
+  // compare unlike things.
+  execFileSync('node', [resolve(__dirname, 'derive-page-surfaces.mjs')], { stdio: 'ignore' });
   execFileSync('node', [resolve(__dirname, 'build-theme-bundle.mjs')], { stdio: 'ignore' });
 
   // Compare declaration-by-declaration rather than byte-by-byte, so a

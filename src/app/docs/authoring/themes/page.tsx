@@ -313,6 +313,66 @@ export default function AuthoringThemesPage() {
         with live swatches and current values for each shipped theme.
       </p>
 
+      <h2 id="page-surfaces">Page surfaces — hero and band</h2>
+      <p>
+        A theme reskins components, but the page behind them used to be one
+        flat colour: a landing page and a docs page looked the same
+        underneath. Two optional surfaces fix that — a <strong>hero</strong>{" "}
+        for a front page and a <strong>band</strong> for a section stripe or a
+        footer. Each has four tokens, all optional.
+      </p>
+      <Example>
+        <Example.Code><span className="tok-prop">--page-hero-bg</span>:     <span className="tok-val">light-dark(#f2f6fe, #121d36)</span>;
+{"\n"}<span className="tok-prop">--page-hero-ink</span>:    <span className="tok-val">light-dark(#09090b, #fafafa)</span>;
+{"\n"}<span className="tok-prop">--page-hero-image</span>:  <span className="tok-val">url(&quot;/hero.jpg&quot;)</span>;  <span className="tok-com">{"/* gradient or url() you host */"}</span>
+{"\n"}<span className="tok-prop">--page-hero-scrim</span>:  <span className="tok-val">rgb(0 0 0 / 0.5)</span>;  <span className="tok-com">{"/* only paints over an image */"}</span>
+{"\n"}<span className="tok-com">{"/* --page-band-* takes the same four */"}</span></Example.Code>
+      </Example>
+
+      <h3>Nothing happens until you ask</h3>
+      <p>
+        Declaring these changes no pixel. A page only takes a surface when you
+        apply one, which is why every shipped theme can define them without
+        touching an existing site. cia never applies a page surface on its own
+        — not on <code>body</code>, not from a layout mixin, not from the
+        reset — and a test compiles every shipped bundle to prove it.
+      </p>
+      <Example>
+        <Example.Code><span className="tok-com">{"// SCSS — on any element"}</span>
+{"\n"}<span className="tok-sel">.landing</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">cia.surface(hero)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// …or no SCSS at all, for a whole page"}</span>
+{"\n"}<span className="tok-sel">{"<body"}</span> <span className="tok-prop">data-surface</span>=<span className="tok-val">&quot;hero&quot;</span><span className="tok-sel">{">"}</span></Example.Code>
+      </Example>
+      <p>
+        The attribute form needs one call to{" "}
+        <code>cia.surface-attributes()</code> in a global stylesheet. Both
+        paths read the same custom properties, so there is one place to
+        maintain.
+      </p>
+
+      <h3>Images and the scrim</h3>
+      <p>
+        A theme is a single CSS file, so an image is a <code>url()</code> you
+        host or a gradient, which needs nothing external. Contrast over a
+        photo cannot be measured, so the scrim is the safety net: pass an
+        image to the mixin and it lays 50% black between the picture and your
+        text. A colour-only surface gets no scrim, because a wash over a flat
+        colour would just darken it.
+      </p>
+      <p>
+        Every shipped theme already carries a derived <code>bg</code> and{" "}
+        <code>ink</code> pair — its own page surface nudged a few percent
+        toward its own brand accent. That keeps the contrast relationship the
+        theme already passes, so all 24 land above 10:1. Override either token
+        to design a hero deliberately.
+      </p>
+      <p>
+        <code>--background-hero</code> is deprecated in favour of{" "}
+        <code>--page-hero-bg</code>, which falls back through it, so an old
+        declaration keeps working until contract 2.
+      </p>
+
       <h2 id="density-knob">The density knob — three levels of power</h2>
       <p>
         Every shipped theme derives its 9 spacing steps from one master
