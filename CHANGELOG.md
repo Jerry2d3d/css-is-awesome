@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.21.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.20.0...v1.21.0) (2026-09-23)
+
+
+### Features
+
+* **cli:** cia fix-theme — rename deprecated tokens to their replacements ([665d871](https://github.com/Jerry2d3d/css-is-awesome/commit/665d87129f578d1ac38f410ce7461f37bbe24357))
+
 # [1.20.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.2...v1.20.0) (2026-09-23)
 
 
