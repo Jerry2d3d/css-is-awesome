@@ -1,5 +1,18 @@
 # Changelog
 
+# [1.20.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.2...v1.20.0) (2026-09-23)
+
+
+### Bug Fixes
+
+* **site:** correct the stale optional-token count on /docs/tokens ([c0d4db0](https://github.com/Jerry2d3d/css-is-awesome/commit/c0d4db047c858854cf54d34affc792e0c52f4427))
+
+
+### Features
+
+* **site:** dogfood page surfaces on the home page; add them to the theme editor ([8dc3a65](https://github.com/Jerry2d3d/css-is-awesome/commit/8dc3a65778e28b57aeb67824062f26d7494e3f60))
+* **themes:** page surfaces — hero and band, derived for every theme ([b984d86](https://github.com/Jerry2d3d/css-is-awesome/commit/b984d865e3463ae15e95083ff0697df0a109cf88))
+
 ## [1.19.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.1...v1.19.2) (2026-09-23)
 
 
