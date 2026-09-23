@@ -43,6 +43,9 @@ Commands:
                           theme.css. \`cia theme from-tokens --help\`.
   theme map               The path → token mapping from-tokens applies, as
                           data: a table, \`--json\`, or \`--path <p>\` for one.
+  fix-theme <file>        Move a theme onto current token names: rewrites
+                          deprecated tokens to their replacements. Prints by
+                          default, \`--write\` applies.
 
 Examples:
   cia migrate tailwind ./tailwind.config.js
@@ -50,6 +53,7 @@ Examples:
   cia analyze src/styles
   cia theme from-tokens tokens.json --name acme --out src/styles/acme.css
   cia theme map --path color.text.primary
+  cia fix-theme src/styles/acme.css --write
 
 Run \`cia <command> --help\` for command-specific help.
 `;
@@ -154,6 +158,12 @@ async function main() {
 
   if (command === 'analyze') {
     const { run } = require('./analyze.cjs');
+    await run(rest);
+    return;
+  }
+
+  if (command === 'fix-theme') {
+    const { run } = require('./fix-theme.cjs');
     await run(rest);
     return;
   }

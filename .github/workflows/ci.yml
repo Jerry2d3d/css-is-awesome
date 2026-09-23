@@ -81,6 +81,9 @@ jobs:
       - name: Design-tokens → theme converter
         run: npm run test:tokens
 
+      - name: Deprecation fixer (rename, never write)
+        run: npm run test:fix-theme
+
       - name: Validate icon pack
         run: npm run validate-icons
 

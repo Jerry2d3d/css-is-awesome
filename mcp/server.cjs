@@ -21,9 +21,10 @@
  *   Sizing:        resolve_size
  *   Themes (build): theme_from_tokens — design-tokens JSON → validated theme.css
  *                   get_token_map     — the path → token mapping as data (or one path)
+ *   Themes (fix):   fix_theme         — rewrite deprecated tokens to their replacements
  *   Prompt:        assemble_prompt(intent[, args])
  *
- * 33 tools total.
+ * 34 tools total.
  *
  * Discovery model: filesystem scan, no database. Parses SCSS files with
  * focused regex (no full SCSS AST). Tokens come from the authoritative
@@ -471,7 +472,8 @@ function loadTokenContract() {
     (byCategory[category] = byCategory[category] || []).push(t);
   }
 
-  return { required: contract.required, optional, features, byName, byCategory };
+  const deprecated = contract.deprecated && typeof contract.deprecated === 'object' ? contract.deprecated : {};
+  return { required: contract.required, optional, features, deprecated, byName, byCategory };
 }
 
 /**
@@ -726,14 +728,51 @@ const handlers = {
   // source token the same way without re-deriving the rules.
   get_token_map({ path: tokenPath } = {}) {
     const { tokenMap, resolvePath } = require(path.join(SCRIPTS_DIR, 'tokens-to-theme.cjs'));
-    if (tokenPath == null || tokenPath === '') return tokenMap({ ciaRoot: PROJECT_ROOT });
+    const deprecated = getTokens().deprecated;
+    if (tokenPath == null || tokenPath === '') {
+      // `deprecated` rides along so an agent translating a design file lands
+      // on the CURRENT name in one call, instead of mapping to a token that
+      // is on its way out and finding out later.
+      return { ...tokenMap({ ciaRoot: PROJECT_ROOT }), deprecated };
+    }
     const r = resolvePath(String(tokenPath), { ciaRoot: PROJECT_ROOT });
     const entry = getTokens().byName[r.token] || null;
+    const dep = deprecated[r.token] || null;
     return {
       ...r,
       required: entry ? entry.required : null,
       feature: entry && !entry.required ? (entry.feature || null) : null,
       category: entry ? entry.category : null,
+      deprecated: dep ? { replacedBy: dep.replacedBy || null, since: dep.since || null, removeIn: dep.removeIn || null, note: dep.note || null } : null,
+    };
+  },
+
+  // Rewrite a theme's DEPRECATED token declarations to their replacements.
+  // Returns the corrected text and a per-line account of what moved and why;
+  // it never touches disk, so an agent can show the diff, ask, and only then
+  // write. Renames the property only — a value is never altered, so applying
+  // this cannot change how the theme looks.
+  fix_theme({ css, apply } = {}) {
+    if (typeof css !== 'string' || !css.trim()) {
+      throw new Error('fix_theme: css is required (the compiled theme CSS, not .scss source)');
+    }
+    const { fixTheme, deprecations } = require(path.join(SCRIPTS_DIR, 'fix-theme.cjs'));
+    const result = fixTheme({ css });
+    const rewrites = result.changes.filter((c) => c.kind === 'rewrite');
+    const conflicts = result.changes.filter((c) => c.kind === 'conflict');
+    return {
+      ...result,
+      // `apply` is the caller's stated intent, echoed back. This tool has no
+      // filesystem access in either case — saying so plainly stops an agent
+      // reporting "I updated your theme" when nothing was written.
+      applied: false,
+      requestedApply: Boolean(apply),
+      summary: result.unchanged
+        ? (conflicts.length
+            ? `Nothing rewritten: ${conflicts.length} collision(s) need a human decision.`
+            : 'No deprecated tokens found — this theme is already current.')
+        : `${rewrites.length} declaration(s) renamed${conflicts.length ? `, ${conflicts.length} left for you to resolve` : ''}. Write the returned css yourself; nothing was saved.`,
+      knownDeprecations: deprecations(),
     };
   },
 
@@ -876,10 +915,16 @@ const handlers = {
         referencedBy.push({ name: d.name, kind: d.kind, path: d.path });
       }
     }
+    const dep = getTokens().deprecated[entry.name] || null;
     return {
       name: entry.name,
       category: entry.category,
       required: entry.required,
+      // Contract 1.3+: null unless this token has been superseded. The old
+      // value keeps working — `fix_theme` renames it when the caller asks.
+      deprecated: dep
+        ? { replacedBy: dep.replacedBy || null, since: dep.since || null, removeIn: dep.removeIn || null, note: dep.note || null }
+        : null,
       // Contract 1.2: the feature an OPTIONAL token enables (null for required).
       feature: entry.required ? null : (entry.feature || null),
       themeValues,
@@ -1416,6 +1461,22 @@ async function startServer() {
       validate: z.boolean().optional().describe('Run the validator + WCAG audit (default true).'),
     },
   }, async (a) => ok(handlers.theme_from_tokens(a || {})));
+
+  server.registerTool('fix_theme', {
+    description:
+      'Upgrade a theme that uses a DEPRECATED token. cia deprecates a token rather than deleting it, so the ' +
+      'old declaration keeps working — but there is a better name now, and this rewrites it for you. Pass the ' +
+      'compiled theme CSS; get back { css, changes, unchanged, summary } where every change names the line, the ' +
+      'old token, its replacement and why it moved. Only the property name changes — values, comments, ordering ' +
+      'and whitespace survive byte-for-byte, so applying it cannot alter how the theme looks. If a block already ' +
+      'declares the replacement the old line is left alone and reported as a conflict, because merging two values ' +
+      'is a judgement call. NOTHING IS WRITTEN TO DISK: this returns text, and the caller decides whether to save ' +
+      'it. Use get_token to see what supersedes a given token, or read knownDeprecations in the result.',
+    inputSchema: {
+      css: z.string().describe('Compiled theme CSS — the :root/[data-theme] block(s), not .scss source.'),
+      apply: z.boolean().optional().describe('Your stated intent, echoed back as requestedApply. This tool cannot write files either way; you save the returned css yourself.'),
+    },
+  }, async (a) => ok(handlers.fix_theme(a || {})));
 
   server.registerTool('get_token_map', {
     description:
