@@ -9,7 +9,7 @@ export default function InstallPage() {
       <p className="lead">
         cia is mixin-first. The primary API is <code>@use 'css-is-awesome/api' as cia;</code> +{" "}
         <code>@include cia.btn(primary)</code> on whatever selector you choose. Utility classes are an
-        opt-in convenience for non-Sass consumers — the npm package ships zero JavaScript.
+        opt-in convenience for non-Sass consumers — nothing the npm package ships is loaded by a page.
       </p>
 
       <h2 id="quick-start">Quick start (Sass)</h2>

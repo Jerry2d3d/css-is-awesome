@@ -240,7 +240,7 @@ export default function FaqPage() {
         Yes. 1.0 has shipped and the package is published on npm
         (<code>npm install css-is-awesome</code>). The mixin API is stable
         under SemVer, and the token contract is locked (127 required slots
-        plus 36 optional, validated on every theme).
+        plus 49 optional, validated on every theme).
       </p>
       <p>
         We also eat our own dogfood: every pixel on this docs

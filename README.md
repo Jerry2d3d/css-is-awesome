@@ -79,7 +79,7 @@ Author your own class names; the mixin handles the styling. Mixins for buttons, 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css">
 ```
 
-Theme first (sets the tokens), library second. **No `data-theme` attribute needed** — a single theme file styles the page on its own. Swap the URL to swap the theme; the HTML never changes. Bundle tiers — `dist/tokens.css` (2.2 KB gz, `:where(:root)` vars only), `dist/css-is-awesome.core.min.css` (2.4 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (7.3 KB gz, full).
+Theme first (sets the tokens), library second. **No `data-theme` attribute needed** — a single theme file styles the page on its own. Swap the URL to swap the theme; the HTML never changes. Bundle tiers — `dist/tokens.css` (2.2 KB gz, `:where(:root)` vars only), `dist/css-is-awesome.core.min.css` (2.4 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (8.0 KB gz, full).
 
 ### 3. Bare tags (opt-in Pico-mode)
 
@@ -151,7 +151,7 @@ Full authoring walkthrough: [`/docs/authoring/themes`](https://cssisawesome.com/
 
 ## Token contract
 
-Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · space · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else. 127 required, 36 optional.
+Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · space · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else. 127 required, 49 optional.
 
 **Themes own the spacing scale.** A theme declares the numbered scale `--space-0` … `--space-9` (contract-required), which is exactly what `cia.space(4)` compiles to — so a theme can ship tighter or airier rhythm without touching a component. The six t-shirt names (`--space-2xs/xs/sm/md/lg/xl`) are optional; the library emits them as references (`--space-md: var(--space-4)`), so they track the numbered scale automatically.
 
@@ -366,6 +366,8 @@ It also hosts the **[playground](https://cssisawesome.com/playground/)**: write 
 | `npm run build:css:all` | Compile all bundles (full + core + utilities + minified) + themes + token types |
 | `npm run build:css:themes` | Rebuild the 24 per-theme CSS files in `public/themes/` **and** regenerate the all-in-one `public/theme.css` bundle |
 | `npm run check:theme-drift` | Rebuild the themes into a scratch copy and fail if the committed artifacts don't match their SCSS sources |
+| `npm run check:contract` | Diff the token contract against the last release tag and fail if the required/optional lists changed without the version bump [`VERSIONING.md`](./VERSIONING.md) requires |
+| `npm run check:rtl` | Audit the SCSS for physical properties that should be logical (`margin-left` → `margin-inline-start`) |
 | `npm run build:token-types` | Generate `dist/tokens.d.ts` from the contract |
 | `npm run dtcg-to-scss` | Convert DTCG-format design tokens into cia SCSS |
 | `npm run lint` | ESLint on the Next.js app |
@@ -374,6 +376,9 @@ It also hosts the **[playground](https://cssisawesome.com/playground/)**: write 
 | `npm run validate-icons` | Validate the `core` icon pack against the 49-glyph contract |
 | `npm run validate-api` | Assert the `css-is-awesome/api` barrel stays zero-emit |
 | `npm run validate-package` | Pack + install into a temp project and compile every documented `@use` form — catches breakage that in-repo checks can't see |
+| `npm run test:surfaces` | Assert cia never applies a page surface automatically — the guarantee that adding hero/band tokens changes nobody's existing page |
+| `npm run test:tokens` | Exercise the design-tokens converter (DTCG / Tokens Studio / flat) against fixtures |
+| `npm run verify:playground` | Compile real samples through the playground's in-browser Sass path in Node |
 | `npm run pack:consumer` | Pack and install this build into a local consumer (defaults to `../boiler-project-ai`); `--dry-run` supported |
 | `npm test` | Playwright suite — axe a11y checks + per-theme visual snapshots |
 
@@ -408,11 +413,11 @@ Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 | Bundle | Size | Use case |
 |---|---|---|
-| `dist/tokens.css` | 2.25 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
-| `dist/css-is-awesome.core.min.css` | 2.38 KB | Tokens + resets, no utilities or components |
-| `dist/css-is-awesome.utilities.min.css` | 4.75 KB | Every `cia-*` utility class, nothing else |
-| `dist/css-is-awesome.min.css` | 7.96 KB | Full bundle (everything) |
-| Per-theme `themes/<name>/theme.css` | 1.9–3.7 KB | One file per theme, both modes via `light-dark()`, drop-in with no markup change |
+| `dist/tokens.css` | 2.26 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
+| `dist/css-is-awesome.core.min.css` | 2.42 KB | Tokens + resets, no utilities or components |
+| `dist/css-is-awesome.utilities.min.css` | 4.79 KB | Every `cia-*` utility class, nothing else |
+| `dist/css-is-awesome.min.css` | 7.99 KB | Full bundle (everything) |
+| Per-theme `themes/<name>/theme.css` | 2.0–3.8 KB | One file per theme, both modes via `light-dark()`, drop-in with no markup change |
 | **Runtime JavaScript shipped in package** | **0 KB** | Nothing in the package is loaded by a page. The Node tooling (`cia` CLI, MCP server, validators) never reaches the browser; JS-driven UI features ship as separate add-on packages. |
 
 ## Status

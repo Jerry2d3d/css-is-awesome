@@ -303,7 +303,7 @@ export default function AuthoringThemesPage() {
         </li>
       </ul>
       <p>
-        <strong>127 tokens are required; 36 more are optional</strong>, 163 in
+        <strong>127 tokens are required; 49 more are optional</strong>, 176 in
         total. The optional set is the per-component radius and shadow
         overrides, the logo hooks, the named durations, the touch-target
         minimum, and the t-shirt spacing aliases.
