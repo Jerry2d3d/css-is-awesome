@@ -211,11 +211,12 @@ sources already in the repo
 
 ## Open questions — need Jerry's call before build
 
-1. **Scope of "what I'm working on".** cia only, or your other projects too?
-   If it spans projects, the privacy rule gets much harder, because the whole
-   September sweep was about getting other projects' details *out* of this
-   repo. My recommendation: cia only here, and if you want a cross-project
-   log it belongs on a personal site, not in this repository.
+1. ~~**Scope of "what I'm working on".**~~ **DECIDED 2026-09-24: this project
+   only.** The log covers css-is-awesome and nothing else. A cross-project
+   log would put the privacy rule under constant pressure, which is the
+   opposite of what the September sweep achieved; if one is ever wanted it
+   belongs on a personal site, not in this repository. This is a hard
+   constraint on every note, not a default to drift from.
 2. **Is `/notes` a fourth blog track, or its own surface?** Recommendation: its
    own surface. Blog posts are narrative and permanent; notes are dated and
    disposable. Mixing them makes the blog index harder to scan and pressures
