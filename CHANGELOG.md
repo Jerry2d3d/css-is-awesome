@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.19.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.0...v1.19.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* **cli:** paired light/dark modes carried only colours; export the in-process entry point ([f1fe71f](https://github.com/Jerry2d3d/css-is-awesome/commit/f1fe71f8a91a8e7bf59e0b9e830585701beb9160))
+
+
+### Features
+
+* **site:** cross-link the posts that explain a browser-support row (B6.4) ([44f40d8](https://github.com/Jerry2d3d/css-is-awesome/commit/44f40d8bf278113a81f7f2b643ad52390fb1af25))
+
 # [1.19.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.18.0...v1.19.0) (2026-09-19)
 
 
