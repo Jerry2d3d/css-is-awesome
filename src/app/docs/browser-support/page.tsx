@@ -12,7 +12,7 @@ export default function BrowserSupportPage() {
     <>
       <h1>Browser support</h1>
       <p className="lead">
-        cia ships zero JavaScript, so its browser floor is set by the native
+        cia ships no runtime JavaScript, so its browser floor is set by the native
         primitives it rides — not by a polyfill budget. This page is the dated
         matrix: the <strong>CIA Baseline</strong> every shipped feature
         requires, and the <strong>progressive enhancements</strong> that layer

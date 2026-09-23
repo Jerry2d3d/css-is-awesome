@@ -168,7 +168,7 @@ Why it matters: components call `cia.space(4)`, which resolves to `var(--space-4
 
 Two `<link media>` themes still work under the new selector model: a stylesheet whose `media` doesn't match is loaded but never applied, so only the matching file's `:root` block lands.
 
-Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every required contract token (127 required in contract 1.1; missing required tokens always fail, missing optional ones are reported as info). The audit also runs a WCAG 2.2 AA contrast check over 22 pairs; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
+Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every required contract token (127 required in contract 1.3; missing required tokens always fail, missing optional ones are reported as info). The audit also runs a WCAG 2.2 AA contrast check over 22 pairs; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
 
 ### Theme init (Next.js / SSR consumers)
 
