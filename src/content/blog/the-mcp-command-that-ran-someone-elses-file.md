@@ -40,7 +40,7 @@ node_modules/.bin/css-is-awesome-mcp → ../css-is-awesome/mcp/server.cjs
 
 Core's old bin won. `npx css-is-awesome-mcp` — the entire pitch of the new package — was silently running the *other* package's file. It still answered MCP calls correctly, by coincidence: core's copy resolves its own paths relative to itself, and nested inside another package's `node_modules` that still happened to land on the right files. `serverInfo.version` gave it away — `1.12.0`, cia's version, when the new package's own `server.cjs` would have reported `1.0.0`. A tool that reports the wrong number wasn't `resolve_size`'s trap from the last post; it was this one's smoke detector.
 
-Fixed the obvious way: `css-is-awesome`'s own `bin` entry lost the `css-is-awesome-mcp` key. Nothing that depended on the *file* broke — every project actually wired up to it (three separate `.mcp.json` configs, checked before touching anything) pointed at `node K:/path/to/css-is-awesome/mcp/server.cjs` directly, never the bin shortcut. Only the shortcut itself, which nothing was using, and which now belongs to exactly one package instead of two.
+Fixed the obvious way: `css-is-awesome`'s own `bin` entry lost the `css-is-awesome-mcp` key. Nothing that depended on the *file* broke — every project actually wired up to it (three separate `.mcp.json` configs, checked before touching anything) pointed at `node path/to/css-is-awesome/mcp/server.cjs` directly, never the bin shortcut. Only the shortcut itself, which nothing was using, and which now belongs to exactly one package instead of two.
 
 ## The test that proved nothing
 

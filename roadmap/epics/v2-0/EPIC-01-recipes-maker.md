@@ -237,4 +237,4 @@ Jerry's idea 2026-05-23, scoped to v2.0 (post v1.0-v1.5 stabilization). Closes t
 - [v1.0 EPIC-01-recipes-book.md](../v1-0/EPIC-01-recipes-book.md) — recipe schema this respects
 - [v1.0 EPIC-04-playground.md](../v1-0/EPIC-04-playground.md) — in-browser Sass + preview pattern shared
 - [v1.3 EPIC-02-theme-marketplace.md](../v1-3/EPIC-02-theme-marketplace.md) — submission flow pattern
-- [project_recipes_maker_idea.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_recipes_maker_idea.md) — original idea memory
+- Project notes (kept outside this repo) — the original idea

@@ -1,6 +1,6 @@
 # EPIC v1.1-02 — `npm create cia` Install Wizard
 
-**Status:** Planned (v1.1)
+**Status:** 🟡 BUILT, PUBLISH-BLOCKED — the `create-cia` package is complete in its own repo (zero runtime dependencies, 33 tests, CI green on Ubuntu + Windows / Node 20 + 24). It is not on npm: that needs a publish-capable `NPM_TOKEN`. Its docs PR stays a draft until the package publishes, so the command it documents is never a 404.
 **Effort estimate:** ~3-5 working days
 **Stories:** 7
 
@@ -150,4 +150,4 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 
 - [v1.1 EPIC-04-framework-pack-react.md](./EPIC-04-framework-pack-react.md) — `@cia/react` is what wizard installs when React chosen
 - [v1.1 EPIC-03-cia-a11y-recipes.md](./EPIC-03-cia-a11y-recipes.md) — ~~add-on the wizard offers~~ retired 2026-09-17; nothing to offer
-- [project_install_wizard.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_install_wizard.md) — original idea memory
+- Project notes (kept outside this repo) — the original idea

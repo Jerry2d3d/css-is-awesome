@@ -6,8 +6,8 @@
 > nothing here is built yet except the foundations noted as shipped.
 >
 > **Update 2026-09-10 — Phase F1 is being built, outside this repo.**
-> [`K:/Repo/figma-import-export`](../../figma-import-export) (sibling repo,
-> not a subfolder of css-is-awesome) is a standalone MCP server implementing
+> `figma-import-export` (a sibling repo, not a subfolder of
+> css-is-awesome) is a standalone MCP server implementing
 > the token bridge this section describes — `figma_export_tokens` /
 > `figma_import_tokens` in place of the `cia figma export` / `cia theme
 > from-figma` CLI verbs originally imagined below. Deliberately kept out of

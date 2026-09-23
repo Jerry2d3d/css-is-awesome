@@ -20,11 +20,9 @@ running code instead of hand-typed pseudocode.
 ## Why now
 
 Surveyed `boiler-project-ai` (2026-09-10) two ways: a file/page read, then
-**Boiler's own MCP server** (`boiler-project-ai/mcp/server.cjs` — it ships
-one, same pattern as cia's `list_components`/`get_component`/
-`search_components`), which returned its **full catalog: 98 documented
-components** with descriptions and `packages/react/src/components/<Name>/README.md`
-detail. That second pass changed the priority order — two components
+**Boiler's own MCP server** (it ships one, same pattern as cia's
+`list_components`/`get_component`/`search_components`), which returned its
+full component catalogue with per-component descriptions. That second pass changed the priority order — two components
 turned out to be exactly the recipes the original v1.0 plan queued and
 never built:
 
@@ -79,7 +77,7 @@ calendar grid, built on native `Date` with no date library
 
 **Acceptance criteria:**
 - [x] Recipe at `scss/recipes/datepicker.md`
-- [x] Reference: `boiler-project-ai/packages/react/src/components/DatePicker`
+- [x] Reference: boiler-project-ai's `DatePicker` component
   (composes a `Popup` anchored-positioning primitive + a `Calendar`
   month-grid, both on native `Date`) and `.../Calendar`
 - [x] A read-only-trigger **button** (not a text input — avoids parsing a
@@ -116,7 +114,7 @@ rendering + pagination), with a note on choosing `<table>` vs. a CSS Grid
 
 **Acceptance criteria:**
 - [x] Recipe at `scss/recipes/data-table.md`
-- [x] Reference: `boiler-project-ai/packages/react/src/components/DataTable`
+- [x] Reference: boiler-project-ai's `DataTable` component
   (two layout engines sharing one props interface — `DataTable` on a real
   `<table>`, `DataTableGrid` on CSS Grid + `role="table"` for virtualization/
   pinned-column cases an HTML table can't do)
@@ -166,7 +164,7 @@ surface instead of stretching `app-shell` to fit
 
 **Acceptance criteria:**
 - [x] Recipe at `scss/recipes/admin-dashboard-layout.md`
-- [x] Reference: `boiler-project-ai/packages/react/src/components/AdminLayout`
+- [x] Reference: boiler-project-ai's `AdminLayout` component
   (CSS Grid, sidebar spans full height, optional footer) and `AdminHeader`
   (stats-focused header with key metrics/user counts)
 - [x] Explicitly notes the choice vs. [`app-shell`](./app-shell.md):
@@ -202,7 +200,7 @@ recipe, plus an inline-popover variant for lower-stakes confirmations
 
 **Acceptance criteria:**
 - [x] Recipe at `scss/recipes/confirm-dialog.md`
-- [x] Reference: `boiler-project-ai/packages/react/src/components/ConfirmDialog`
+- [x] Reference: boiler-project-ai's `ConfirmDialog` component
   (built on `Modal`) and `.../ConfirmPopup` (an anchored, inline "are you
   sure?" for a lower-stakes action, thinner than a full modal)
 - [x] Cross-links [`dialog`](./dialog.md) — this recipe is a thin,
@@ -240,7 +238,7 @@ cookie-vs-token handling right the first time
 
 **Acceptance criteria:**
 - [x] Recipe at `scss/recipes/auth-flow.md`
-- [x] Reference: `boiler-project-ai/packages/react/src/components/LoginForm`,
+- [x] Reference: boiler-project-ai's `LoginForm` component,
   `.../RegisterForm`
 - [x] Distinct scope from `form-validation-*`: this is the flow AROUND the
   form (submit → loading → success redirect with a `?registered=true`-style
@@ -277,7 +275,7 @@ already exists
 
 **Acceptance criteria:**
 - [x] Recipe at `scss/recipes/multi-step-wizard.md`
-- [x] Reference: `boiler-project-ai/packages/react/src/components/MultiStepForm`
+- [x] Reference: boiler-project-ai's `MultiStepForm` component
   (stepper navigation, directional slide animations, a container-query
   compact stepper variant, per-step validation gating)
 - [x] Uses cia's `stepper` mixin for the visual indicator — cross-link
@@ -316,7 +314,7 @@ hand-rolling it
 
 **Acceptance criteria:**
 - [x] Recipe at `scss/recipes/otp-input.md`
-- [x] Reference: `boiler-project-ai/packages/react/src/components/InputOtp`
+- [x] Reference: boiler-project-ai's `InputOtp` component
   (per-cell boxes, auto-advance on input, backspace-retreat, arrow-key
   navigation, full-code paste distributes across cells, mask mode)
 - [x] Native `<input inputmode="numeric" pattern="[0-9]*">` per cell, not a
@@ -349,11 +347,11 @@ second signal shows up (a consumer asks, or the pattern's usage in Boiler
 grows more elaborate) — matches [[project_ship_then_see_rule]].
 
 - **search-results** — `SearchBar` + a filtered/grouped results layout
-  (`boiler-project-ai/src/app/wiki/page.tsx` + `WikiViewer.tsx`). Real, but
+  (its wiki page). Real, but
   composes cleanly enough from `SearchBar` + `admin-dashboard-layout`/
   `app-shell` that a dedicated recipe may be redundant once those ship.
 - **Chart** — dependency-free SVG bar/line/area/pie
-  (`packages/react/src/components/Chart`). Notable and distinct, but
+  (its `Chart` component). Notable and distinct, but
   chart-specific enough (data-shape decisions) to warrant its own scoping
   pass rather than folding into this batch.
 - **Form-field composition group** — `InputGroup`, `FloatLabel`,

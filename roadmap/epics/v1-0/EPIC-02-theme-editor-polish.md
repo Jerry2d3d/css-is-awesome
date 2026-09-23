@@ -238,5 +238,5 @@ The theme editor is one of cia's three v1.0 differentiators. Tailwind Play does 
 
 ## Related
 
-- [project_theme_editor_state.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_theme_editor_state.md) — current state of the editor (memory snapshot)
+- Project notes (kept outside this repo) — current state of the editor
 - [EPIC-01-recipes-book.md](./EPIC-01-recipes-book.md) — recipes will reference the theme editor as the way to customize the recipe's appearance

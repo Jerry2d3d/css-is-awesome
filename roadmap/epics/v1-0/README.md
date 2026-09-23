@@ -20,11 +20,11 @@ The v1.0 release reframes cia as **humans-first, AI-second** and ships the recip
 
 | # | Epic | Mission | Effort | Stories | Status (2026-07-16) |
 |---|---|---|---|---|---|
-| [01](./EPIC-01-recipes-book.md) | **Recipes Book** | Ship the recipe format + first 5 recipes (dialog, combobox, datepicker, data-table, command-palette). Expose via MCP. | ~5-7 days | 13 | 🟡 PARTIAL — 7/13 (schema, catalog, dynamic route, MCP done; only 2/5 recipes shipped + 1 bonus print-to-pdf; authoring page & validate-recipes not built) |
+| [01](./EPIC-01-recipes-book.md) | **Recipes Book** | Ship the recipe format + first 5 recipes (dialog, combobox, datepicker, data-table, command-palette). Expose via MCP. | ~5-7 days | 13 | 🟡 PARTIAL — 12/13 (re-audited 2026-09-21; all five named recipes shipped, plus the validator. Only the authoring-guide *page* is outstanding) |
 | [02](./EPIC-02-theme-editor-polish.md) | **Theme Editor Polish** | Download `mytheme.scss`/`.css`, share URL, inline contrast validator, reset/diff view. | ~3-4 days | 9 | 🟡 PARTIAL — 5/9 (share URL + name + .css download done; .scss download, contrast validator not built; reset/diff partial) |
 | [03](./EPIC-03-migration-on-ramp.md) | **Migration On-Ramp** | `npx cia migrate` converts Tailwind config + Bootstrap variables into a cia theme. | ~3-5 days | 6 | ✅ DONE — 6/6 (both converters + docs pages shipped, PRs #6/#7/#8) |
 | [04](./EPIC-04-playground.md) | **Playground** *(moved 2026-09-10)* | Relocated to [v1-1 EPIC-09](../v1-1/EPIC-09-playground.md) — still 0/7, now part of the active recipes-momentum backlog instead of carried-forward limbo. | ~4-6 days | 0 (moved) | 📦 MOVED — see v1-1 EPIC-09 |
-| [05](./EPIC-05-bug-fixes-mcp-polish.md) | **Bug Fixes + MCP Polish** | Round 8 audit cleanup, MCP server tests, /docs/composition page. | ~3-4 days | 7 | 🟡 PARTIAL — 5/7 (all audit fixes + /docs/composition + /docs/mcp done; MCP server tests not built) |
+| [05](./EPIC-05-bug-fixes-mcp-polish.md) | **Bug Fixes + MCP Polish** | Round 8 audit cleanup, MCP server tests, /docs/composition page. | ~3-4 days | 7 | ✅ SHIPPED — 7/7 (re-audited 2026-09-21; F5.2 landed as `coverage:mcp`, CI-gated at >= 98%) |
 
 **Total v1.0 effort:** ~18-26 focused working days. **Total stories:** 42 as originally scoped (**24 shipped, 18 carried forward** as of 2026-07-16; of those 18, the 7-story Playground epic **moved to v1-1 EPIC-09 on 2026-09-10** — see below — leaving 11 stories still tracked natively in this folder).
 

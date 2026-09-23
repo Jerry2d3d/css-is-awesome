@@ -9,11 +9,11 @@
 
 | # | Epic | Mission | Effort | Stories |
 |---|---|---|---|---|
-| [01](./EPIC-01-figma-plugin.md) | **Figma Plugin** ⚠️ _superseded, token bridge now external_ | Original scope superseded by [`roadmap/figma-pipeline.md`](../../figma-pipeline.md) (2026-09-05). Its Phase F1 (token bridge) is now being built **outside this repo**, at sibling project `K:/Repo/figma-import-export` (an MCP server, not a Figma-side plugin) — in progress as of 2026-09-10. The in-Figma plugin UI + Community publish (Phase F2) remains future, unstarted work. | ~2 weeks | 12 |
+| [01](./EPIC-01-figma-plugin.md) | **Figma Plugin** ⚠️ _superseded, token bridge now external_ | Original scope superseded by [`roadmap/figma-pipeline.md`](../../figma-pipeline.md) (2026-09-05). Its Phase F1 (token bridge) is now being built **outside this repo**, at sibling project `figma-import-export` (an MCP server, not a Figma-side plugin) — in progress as of 2026-09-10. The in-Figma plugin UI + Community publish (Phase F2) remains future, unstarted work. | ~2 weeks | 12 |
 | [02](./EPIC-02-theme-marketplace.md) | **Theme Marketplace** | `/themes/community` gallery. Submission via GitHub PR (no backend in v1.3). Moderation tooling for the maintainer. | ~1 week | 8 |
 | [03](./EPIC-03-dtcg-migration.md) | **DTCG / Style Dictionary CLI** | ⛔ **Superseded 2026-09-19** — shipped as a superset: `npx cia theme from-tokens` (1.17.0) + `npx cia theme map` (1.19.0), see [v1-4 EPIC-02](../v1-4/EPIC-02-design-tokens-on-ramp.md). | — | 4 (retired) |
-| [04](./EPIC-04-framework-pack-angular.md) | **`@cia/angular` v0.1** | Apply codegen pattern from v1.1 EPIC-04 to Angular. First batch of generated components. | ~2 weeks | 10 |
-| [05](./EPIC-05-ai-token-diff.md) | **AI-assisted token diff** | Prompt → a contract-limited, validator-checked, preview-before-accept token diff. No backend, no shipped key (MCP-agent path; optional BYOK dock). GATED on v1.2 EPIC-07. From the 2026-09-07 external review. | ~3-5 days | 4 |
+| [04](./EPIC-04-framework-pack-angular.md) | **`@cia/angular` v0.1** ⛔ _gate failed_ | Was to apply the v1.1 EPIC-04 codegen pattern to Angular. That epic was **deferred permanently** 2026-09-19 when its spike failed, so the precondition is gone; does not proceed as written. | — | 10 (blocked) |
+| [05](./EPIC-05-ai-token-diff.md) | **AI-assisted token diff** | Prompt → a contract-limited, validator-checked, preview-before-accept token diff. No backend, no shipped key (MCP-agent path; optional BYOK dock). Gate now **OPEN** - v1.2 EPIC-07 completed 2026-09-09; still unbuilt. From the 2026-09-07 external review. | ~3-5 days | 4 |
 
 **Total v1.3 effort:** ~31-40 working days. **Total stories:** 38.
 
