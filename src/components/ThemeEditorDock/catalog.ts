@@ -38,6 +38,7 @@ const G = {
   code: "Code & syntax",
   interactive: "Interactive states",
   guide: "Guides (margin / column rules)",
+  pageSurface: "Page surfaces (hero / band)",
   misc: "Miscellaneous palette",
   radius: "Radii",
   rLegacy: "Radii (legacy r-*)",
@@ -259,6 +260,19 @@ export const CATALOG: TokenSpec[] = [
   number("--z-modal",    "z modal",    G.z, 0, 9999),
   number("--z-popover",  "z popover",  G.z, 0, 9999),
   number("--z-tooltip",  "z tooltip",  G.z, 0, 9999),
+  // ===== Page surfaces (optional, contract 1.3) =====
+  // Declaring these changes nothing on its own — a page only picks up a
+  // surface when it calls cia.surface() or carries data-surface. Every
+  // shipped theme already has a derived bg/ink pair; image and scrim are
+  // empty until an author sets them.
+  color("--page-hero-bg",    "Hero background",  G.pageSurface),
+  color("--page-hero-ink",   "Hero ink",         G.pageSurface),
+  str("--page-hero-image",   "Hero image (url)", G.pageSurface),
+  str("--page-hero-scrim",   "Hero scrim",       G.pageSurface),
+  color("--page-band-bg",    "Band background",  G.pageSurface),
+  color("--page-band-ink",   "Band ink",         G.pageSurface),
+  str("--page-band-image",   "Band image (url)", G.pageSurface),
+  str("--page-band-scrim",   "Band scrim",       G.pageSurface),
 ];
 
 // Distinct group order for the dock body.
@@ -293,6 +307,7 @@ const GROUP_CATEGORY: Record<string, Category> = {
   [G.interactive]: "color",
   [G.guide]:       "color",
   [G.misc]:        "color",
+  [G.pageSurface]: "color",
   [G.radius]:      "layout",
   [G.rLegacy]:     "layout",
   [G.space]:       "layout",
@@ -326,7 +341,7 @@ export const SUB_PAGES: Record<Category, SubPage[]> = {
     {
       id: "foundation",
       label: "Foundation",
-      groups: [G.paper, G.ink, G.surface, G.border],
+      groups: [G.paper, G.ink, G.surface, G.pageSurface, G.border],
     },
     {
       id: "components",
