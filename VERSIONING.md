@@ -163,12 +163,27 @@ Deprecations are announced in the deprecating commit's body (and land in the rel
 
 ## 6. Release process
 
-The policy in this document tells you **what** a version number means. The mechanics are automated: on every push to `main` that contains a releasable commit, semantic-release computes the next version from the commit messages, regenerates `CHANGELOG.md`, builds the bundles (`prepublishOnly` runs `build:css:all`), tags `vX.Y.Z`, and publishes to npm. Nobody hand-types a version number anywhere — the hero, the MCP server, and the docs all read it from `package.json`.
+The policy in this document tells you **what** a version number means. The mechanics are automated, but they run at the end of a promotion chain rather than on every merge:
+
+```
+feature branch  →  main  →  qa  →  prod-css-is-awesome
+(your work)        (CI)     (look    (public site + npm publish)
+                             at it)
+```
+
+`main` is the integration branch. Merging into it runs CI and reaches nobody — no website change, no npm version. Promotion is a manual click: the **Promote** workflow in the Actions tab takes a `stage` from a dropdown (`status`, `qa`, `prod`) and merges one branch into the next.
+
+Reaching `prod-css-is-awesome` is what publishes. At that point semantic-release computes the next version from the commit messages, regenerates `CHANGELOG.md`, builds the bundles (`prepublishOnly` runs `build:css:all`), tags `vX.Y.Z`, and publishes to npm; Vercel rebuilds the public site from the same branch. Nobody hand-types a version number anywhere — the hero, the MCP server, and the docs all read it from `package.json`.
+
+**Why npm sits behind the strictest gate:** a website can be corrected by promoting again, but an npm version cannot be unpublished after 72 hours, and never once anyone depends on it. The irreversible step is the deliberate one. It also keeps the version on the site and the version on npm in agreement.
+
+The cost of that gate is that you have to remember to promote, or releases quietly stop. Running **Promote** with `stage: status` changes nothing and prints how many commits are waiting at each hop.
 
 What remains manual:
 
 1. Bumping `version` in `scripts/theme-contract.json` when the contract itself changes (§7).
-2. The CI gates (lint, validators, coverage, size budget, Playwright) — a red PR never reaches `main`, so a release is never cut from a failing tree.
+2. Promoting through `qa` to `prod-css-is-awesome` when a batch of work is ready to be public.
+3. The CI gates (lint, validators, coverage, size budget, Playwright) — a red PR never reaches `main`, and CI runs again on `qa` and on the production branch, so a release is never cut from a failing tree.
 
 Contributor-facing workflow detail lives in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
