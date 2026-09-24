@@ -47,8 +47,8 @@ on:
     workflows: ["CI"]
     types: [completed]
     # Publishing follows the PROMOTED branch, not the integration branch.
-    # Merging to `main` no longer publishes; running "Promote to prod
-    # (manual)" does. Reason: a website can be corrected by promoting
+    # Merging to `main` no longer publishes; running the "Promote"
+    # workflow with stage `prod` does. Reason: a website can be corrected by promoting
     # again, an npm version cannot be unpublished after 72 hours and never
     # once anyone depends on it — so the irreversible step gets the gate.
     branches: [prod-css-is-awesome]
