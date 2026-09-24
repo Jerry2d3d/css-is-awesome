@@ -1,36 +1,23 @@
 # Manual gate — promote main to prod-css-is-awesome.
 #
-# STATUS 2026-09-17: dormant. Verified that cssisawesome.com tracks `main`
-# directly (the live site showed 1.16.0 two minutes after the release
-# commit landed on main, while this branch sat at 1.11.1, 93 commits
-# behind). So Vercel's Production Branch is evidently `main` now, not
-# prod-css-is-awesome. Kept for the flags.json-override path described
-# below; confirm the Production Branch in the Vercel project settings
-# before relying on this gate again.
+# STATUS 2026-09-24: REVIVED. This is the deploy gate again.
 #
-# Trigger: ONLY runs when you click "Run workflow" in the Actions tab.
-# Pushes to main do NOT auto-mirror to prod. This is the deploy button —
-# click it when you're ready for cssisawesome.com to move.
+# The intended shape: feature branches merge into `main` for integration,
+# and `main` is promoted to `prod-css-is-awesome` by running this workflow
+# when the work is actually ready to be public. `main` can carry finished
+# work that has not shipped yet; the public site follows `prod`.
 #
-# Hosting (since 2026-09-04): Vercel, with prod-css-is-awesome as the
-# project's Production Branch. Vercel auto-builds and deploys as soon as
-# this workflow pushes the branch — there is no further manual step.
-# (Do NOT set NEXT_BASE_PATH on Vercel; that env is only for the GitHub
-# Pages mirror, which serves under /css-is-awesome/.)
+# ONE SETTING MAKES THIS REAL: the Vercel project's Production Branch must
+# be `prod-css-is-awesome`. Between 2026-09-04 and 2026-09-24 it was `main`,
+# which is why the live site tracked every merge and this workflow changed
+# nothing (verified: the site served 1.21.0 while prod sat at 1.11.1, fifteen
+# versions behind, from 2026-09-09). If the site ever updates without this
+# workflow having run, that setting has drifted back to `main`.
 #
-# By default the workflow mirrors origin/main. Pass a different ref or
-# SHA via the input box if you want to ship from an earlier point.
+# NOTE: npm publishing is still tied to `main`, not `prod` — a merge to main
+# publishes the package while the website waits for a promotion. Deliberate,
+# and worth revisiting if the two should move together.
 #
-# Conflict policy: public/flags.json is owned by the prod branch
-# (prod-only flag flips like comingSoon and announcements live there,
-# not on main). The .gitattributes file on prod-css-is-awesome maps
-# that path to `merge=ours`; this workflow wires the corresponding
-# merge driver before merging so the prod copy always wins.
-#
-# Other conflicts fail the workflow loudly — manual intervention is
-# the right call there, since the prod branch isn't supposed to drift
-# from main on anything except flags.json.
-
 name: Promote to prod (manual)
 
 on:
