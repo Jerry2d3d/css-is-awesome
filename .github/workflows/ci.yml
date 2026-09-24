@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    # `main` is the integration branch; `prod-css-is-awesome` is what the public site
+    # and npm now follow. CI runs on both so the release gate always has a
+    # green run to wait for — promoting never skips verification.
+    branches: [main, prod-css-is-awesome]
   pull_request:
     branches: [main]
 

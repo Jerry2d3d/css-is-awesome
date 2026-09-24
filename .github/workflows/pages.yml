@@ -24,7 +24,9 @@ on:
   workflow_run:
     workflows: ["Release"]
     types: [completed]
-    branches: [main]
+    # Follows Release, which now runs on the promoted branch — so the Pages
+    # mirror shows what is actually public rather than what is merely merged.
+    branches: [prod-css-is-awesome]
   workflow_dispatch:
 
 permissions:
