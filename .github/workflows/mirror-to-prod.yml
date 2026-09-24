@@ -2,10 +2,19 @@
 #
 # STATUS 2026-09-24: REVIVED. This is the deploy gate again.
 #
-# The intended shape: feature branches merge into `main` for integration,
-# and `main` is promoted to `prod-css-is-awesome` by running this workflow
-# when the work is actually ready to be public. `main` can carry finished
-# work that has not shipped yet; the public site follows `prod`.
+# The release chain:
+#
+#     feature branch  →  main  →  qa  →  prod-css-is-awesome
+#     (your work)        (CI)     (look   (public site + npm publish)
+#                                  at it)
+#
+# `main` is integration and reaches nobody. "Promote to qa (manual)" stages
+# it where Vercel builds a branch preview. THIS workflow then promotes `qa`
+# to production, which updates the website and publishes the package.
+#
+# The default ref is `qa` so the chain is the path of least resistance. It
+# still accepts any ref, which is the hotfix escape hatch — promoting
+# something that skipped qa is possible, just never accidental.
 #
 # ONE SETTING MAKES THIS REAL: the Vercel project's Production Branch must
 # be `prod-css-is-awesome`. Between 2026-09-04 and 2026-09-24 it was `main`,
@@ -24,9 +33,9 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: "Commit SHA, branch, or tag to promote onto prod (default: main)"
+        description: "Commit SHA, branch, or tag to promote onto prod (default: qa)"
         required: false
-        default: "main"
+        default: "qa"
 
 permissions:
   contents: write
