@@ -2,6 +2,212 @@
 
 Breaking changes between css-is-awesome versions, and how to migrate.
 
+## Page surfaces — contract 1.3 (no action required)
+
+**Nothing changes on your site when you upgrade.** Two new optional surfaces
+exist — a `hero` for a landing page and a `band` for section stripes — and
+every shipped theme now declares a background and an ink colour for both. That
+sounds like a visual change and is not one, for a single reason: **cia never
+applies a page surface on its own.**
+
+A page takes a surface only when you ask for it:
+
+```scss
+.landing { @include cia.surface(hero); }   // or <body data-surface="hero">
+```
+
+Until then the tokens sit unread, exactly as `--background-hero` has since it
+was added. `scripts/test-no-auto-surface.mjs` compiles every shipped bundle and
+fails if any rule reads a page-surface token or emits a `[data-surface]` rule,
+so the guarantee is enforced rather than promised.
+
+### What changed at a glance
+
+| Area | Before | After |
+|---|---|---|
+| Contract version | `1.2` | **`1.3`** — eight optional tokens, one new `page-surfaces` feature |
+| Required tokens | 127 | 127, unchanged |
+| `--background-hero` | optional, read by nothing | **deprecated**; `--page-hero-bg` falls back through it, so an existing declaration keeps working until contract 2 |
+| Your custom theme | validates | validates — the new tokens are optional, and missing optional tokens report as info |
+
+Nothing here needs doing. If you would rather move onto the current name now,
+`npx cia fix-theme <your-theme.css>` shows what it would change and
+`--write` applies it. It renames the property and nothing else, so the theme
+renders identically; a block already declaring `--page-hero-bg` is reported
+rather than merged.
+
+### If you want a hero
+
+Declare the tokens your theme needs and apply the surface where you want it:
+
+```css
+:root[data-theme="brand"] {
+  --page-hero-bg:  light-dark(#f2f6fe, #121d36);
+  --page-hero-ink: light-dark(#09090b, #fafafa);
+  /* optional */
+  --page-hero-image: url("/hero.jpg");
+}
+```
+
+An image is a `url()` you host or a gradient, because a theme is one CSS file.
+Contrast over a photo cannot be measured, so pass the image through the mixin
+(`cia.surface(hero, $image: url("/hero.jpg"))`) and it lays 50% black between
+the picture and your text. A colour-only surface gets no scrim — a wash over a
+flat colour would only darken it.
+
+### If you declared `--background-hero`
+
+Nothing to do. It still resolves. Rename it to `--page-hero-bg` whenever it
+suits you; the tooling will flag it as deprecated in the meantime.
+
+## v1.0 — mixin-first goes stable (published as 1.1.0)
+
+**There are no breaking changes between v0.8.1/0.8.2 and v1.0.0.** 1.0.0
+(tagged 2026-08-17) is the point at which the v0.8 mixin-first surface —
+mixins, functions, token contract, theme architecture — became stable under
+strict SemVer (see [`VERSIONING.md`](./VERSIONING.md)). Every mixin you called
+in v0.8.1 compiles unchanged in v1.x; `npm run validate-api` guards the barrel
+surface on every commit. The 67 commits between 0.8.2 and 1.0.0 carry no
+rename, removal or signature change.
+
+1.0.0 itself was never published to npm. The first published release is
+**1.1.0 (2026-09-01)**, so upgrading from v0.8 in practice means landing on
+1.1.x — and that release does carry **one action-required change for authors
+of custom themes** (section 2 below). Consumers of the shipped themes have
+nothing to do.
+
+### What changed at a glance
+
+| Area | v0.8.x | v1.x |
+|---|---|---|
+| Component stylesheet import | `@use 'css-is-awesome/scss/mixins' as m` (deep path) or the emitting bundle | **`@use 'css-is-awesome/api' as cia`** — zero-emit barrel, safe in CSS Modules (additive; the deep paths still work) |
+| Root-level `@use 'css-is-awesome'` | Worked only via the deep `scss/…` paths on a clean install | **Resolves on a clean install** — root shims `api.scss` + `_index.scss` shipped (Sass ignores `package.json` `exports`) |
+| Custom-theme contract | `--space-{2xs,xs,sm,md,lg,xl}` required | **`--space-0` … `--space-9` required**, t-shirt names optional (1.1.0 — validator fails an unconverted theme) |
+| Six `--radius-{button,card,input,modal,badge,avatar}` tokens | Required of every theme, read by nothing | **Dropped from the contract** — the live knobs are `--btn-radius`, `--card-radius`, … |
+| Library defaults selector | `:root { … }` (tied a drop-in theme at 0,1,0 — library won) | **`:where(:root) { … }`** — a theme's bare `:root` always wins |
+| `theme()` mixin output | Inconsistent (`:root`, `[data-theme]`, or `:root[data-theme]`) | **`:root, :root[data-theme="<name>"]`** — drop-in with no markup change; `$standalone: false` for bundles |
+| `spinner` / `skeleton` keyframes | Emitted at module top level on import (leaked; CSS Modules renamed them) | **Emitted via `@at-root` inside the mixin** — only when called |
+| Print / PDF | — | **New**: `print`, `print-base`, `print-hidden`, `print-only` mixins + `print-to-pdf` recipe |
+
+### 1. Adopt the two-import model (recommended, not required)
+
+v0.8 consumers typically imported the whole library into every component
+stylesheet, or reached for the deep `scss/mixins` path. Both still compile.
+The v1 shape separates the two jobs:
+
+```scss
+// app/globals.scss — loaded ONCE at the app root. Emits :root tokens + base.
+@use 'css-is-awesome';
+
+// Card.module.scss — per component. Emits NOTHING until a mixin is called,
+// so it is safe under Next.js CSS Modules "pure" mode.
+@use 'css-is-awesome/api' as cia;
+.card { @include cia.card-base($shadow: 2); background: cia.color(surface-default); }
+```
+
+If you were on the deep path, the swap is one line:
+
+```scss
+// v0.8
+@use 'css-is-awesome/scss/mixins' as m;
+.btn { @include m.btn(primary); }
+
+// v1.x — same mixins, one namespace for the whole API (layout + components too)
+@use 'css-is-awesome/api' as cia;
+.btn { @include cia.btn(primary); }
+```
+
+`m.` was only ever the `_mixins.scss` leaf; `cia.` forwards every module, so
+`cia.stack`, `cia.card-base` and `cia.print-base` are all reachable without a
+second import. Deep paths remain supported for anyone who prefers them.
+
+### 2. Custom themes: declare `--space-0` … `--space-9` (1.1.0, action required)
+
+In v0.8 a theme could satisfy the contract with the six t-shirt spacing
+names, but components read the numbered scale (`space(4)` → `var(--space-4)`),
+so a theme's spacing was never actually applied. 1.1.0 makes the numbered
+scale the required source of truth and turns the t-shirt names into optional
+aliases that reference it.
+
+```css
+/* v0.8 custom theme — passes the old validator, but components ignored it */
+:root[data-theme="brand"] {
+  --space-xs: 4px;  --space-sm: 8px;  --space-md: 16px;
+  --space-lg: 24px; --space-xl: 32px; --space-2xs: 2px;
+}
+
+/* v1.x custom theme — required. `npm run validate-themes` fails without it. */
+:root[data-theme="brand"] {
+  --space-0: 0;    --space-1: 4px;  --space-2: 8px;  --space-3: 12px;
+  --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px;
+  --space-8: 64px; --space-9: 96px;
+  /* optional aliases — keep them only if your own CSS reads them */
+  --space-md: var(--space-4);
+}
+```
+
+Shipped themes were all converted; if you copied one as a starting point,
+re-copy its spacing block. `--space-unit` (the density knob, 1.12.0) is
+**optional** — since contract 1.1 (library 1.16.1) the validator reports a
+missing optional token as info, never a failure; between 1.12.0 and 1.16.0 it
+was wrongly listed as required, which is why a custom theme could fail
+validation after a minor upgrade. (Later 1.x releases derive the whole scale from a
+single `--space-unit`; see the theme authoring docs for the current shape.)
+
+While you are in the file: the six `--radius-button` / `-card` / `-input` /
+`-modal` / `-badge` / `-avatar` tokens can be deleted. Nothing read them. The
+per-component radius knobs that do work are `--btn-radius`, `--card-radius`,
+`--input-radius`, `--modal-radius`, `--badge-radius` and `--tag-radius`.
+
+### 3. Drop-in themes need no markup (1.1.0, behaviour change, no action)
+
+Two changes make a single theme file work when dropped into any page:
+
+- Library defaults now emit under `:where(:root)` (specificity 0,0,0). In
+  v0.8 the library's own `:root` tied a theme's `:root` and, loading second,
+  won — so a drop-in theme rendered an untokenised page unless you also set
+  `<html data-theme>`. Specificity only *decreased*, so nothing that used to
+  win can start losing.
+- `cia.theme('name')` now emits `:root, :root[data-theme="name"]`. If you build
+  a multi-theme bundle yourself, pass `$standalone: false` so twenty blocks
+  don't all claim `:root`.
+
+If your app overrode a library default with a bare `:root` rule that only
+worked because of source order, it now works by specificity instead.
+
+### 4. `spinner` / `skeleton` in CSS Modules (fix, no action)
+
+v0.8 defined those mixins' `@keyframes` at module top level, so importing the
+file leaked CSS and CSS Modules renamed the keyframes away from the
+`animation-name` that referenced them. They now emit via `@at-root` inside the
+mixin, co-located with the reference, so CSS Modules renames both together.
+If you had worked around it by importing `animations-utilities` globally,
+that workaround is harmless and can stay.
+
+### New mixins/features (additive, no migration needed)
+
+- `css-is-awesome/api` — the zero-emit authoring barrel (section 1)
+- `cia.print`, `cia.print-base($freeze-animations, $size, $margin)`,
+  `cia.print-hidden`, `cia.print-only` — pure-CSS print/PDF layer;
+  `print-base` is root-only (emits `@page`) and exposes `--is-print`,
+  `--print-hide`, `--print-show`. Recipe: `scss/recipes/print-to-pdf.md`
+- The recipes book (`scss/recipes/*.md`) and the MCP server (`mcp/server.cjs`)
+  ship in the package; `npx cia add <recipe>` copies a recipe into your project
+- `npm run validate-package` — packs, installs into a temp project and compiles
+  every documented `@use` specifier, which is how the root-shim break was found
+- Theme build + drift gates (`check:theme-drift`), a corrected contrast
+  validator (it previously skipped unquoted `[data-theme=x]` blocks), and
+  24 shipped themes all passing the contract and the a11y audit
+
+### Where to read more
+
+- [`CHANGELOG.md`](./CHANGELOG.md) — `[1.0.0]` and `[1.1.0]` entries carry the
+  full detail and the reasoning behind each change
+- [`VERSIONING.md`](./VERSIONING.md) — what counts as MAJOR from 1.0 on
+- [`CONTRACT.md`](./CONTRACT.md) — the current required/optional token list
+
+---
+
 ## v0.8.1 — animations split + small renames
 
 Patch release with one real fix (animations CSS Modules bug) and two small

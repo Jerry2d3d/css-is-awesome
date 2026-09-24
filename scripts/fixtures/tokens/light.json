@@ -1,0 +1,8 @@
+{
+  "color": {
+    "text": { "primary": { "$type": "color", "$value": "#0f172a" } },
+    "surface": { "default": { "$type": "color", "$value": "#ffffff" } },
+    "brand": { "primary": { "$type": "color", "$value": "#3a5fcd" } }
+  },
+  "space": { "4": { "$type": "dimension", "$value": 16 } }
+}

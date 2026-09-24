@@ -1,0 +1,94 @@
+@use 'components/buttons' as buttons;
+@use 'components/data' as data;
+@use 'layout' as layout;
+@use 'mixins' as m;
+
+.demo {
+  margin-block-end: m.space(5);
+}
+
+.sortable {
+  @include m.list-reset;
+  @include layout.stack($gap: 1);
+  max-inline-size: 28rem;
+
+  li {
+    @include data.list-item($py: 2, $px: 2);
+    position: relative;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md, 8px);
+    background: var(--surface-default);
+    @include m.transition(box-shadow, opacity);
+
+    // Insertion line, driven by the data-drop-position attribute the JS sets.
+    &::before {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      block-size: 2px;
+      background: var(--action-primary-default);
+      opacity: 0;
+      pointer-events: none;
+    }
+    &[data-drop-position="before"]::before {
+      inset-block-start: -3px;
+      opacity: 1;
+    }
+    &[data-drop-position="after"]::before {
+      inset-block-end: -3px;
+      opacity: 1;
+    }
+
+    &[data-grabbed] {
+      @include m.elevation(2);
+      border-color: var(--action-primary-default);
+      opacity: 0.85;
+    }
+  }
+
+  [data-slot="handle"] {
+    @include buttons.btn-icon($size: 2rem, $r: sm);
+    cursor: grab;
+    color: var(--text-muted);
+    touch-action: none;
+    font-size: 1.1rem;
+
+    &[aria-pressed="true"] {
+      cursor: grabbing;
+      color: var(--action-primary-default);
+    }
+  }
+
+  [data-slot="position"] {
+    inline-size: 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    @include m.font(medium, 1);
+  }
+
+  [data-slot="label"] {
+    flex: 1;
+    @include m.font(reg, 2);
+  }
+}
+
+.footer {
+  @include layout.cluster($gap: 3, $justify: space-between);
+  max-inline-size: 28rem;
+  margin-block-start: m.space(3);
+}
+
+.status {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.resetBtn {
+  @include buttons.btn(outline);
+}
+
+.srOnly {
+  @include m.sr-only;
+}

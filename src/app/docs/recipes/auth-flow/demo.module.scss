@@ -1,0 +1,86 @@
+@use 'components/forms' as forms;
+@use 'components/buttons' as buttons;
+@use 'mixins' as m;
+
+.wrap {
+  max-width: 24rem;
+}
+
+.simulateBtn {
+  @include buttons.btn(ghost);
+  margin-block-end: m.space(3);
+  font-size: 0.8rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(4);
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+
+  code {
+    font-size: 0.8rem;
+  }
+}
+
+.banner {
+  padding: m.space(3);
+  border-radius: var(--radius-md, 8px);
+  font-size: 0.875rem;
+
+  &[data-variant="success"] {
+    background: var(--success-subtle);
+    color: var(--success-text);
+  }
+  &[data-variant="error"] {
+    background: var(--error-subtle);
+    color: var(--error-text);
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(1);
+
+  label {
+    @include m.font(medium, 1);
+  }
+  input {
+    @include forms.input-base;
+  }
+}
+
+.submitBtn {
+  @include buttons.btn(primary);
+
+  &[disabled] {
+    cursor: progress;
+    opacity: 0.7;
+  }
+}
+
+.authedPanel {
+  @include m.pad(4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 8px);
+  background: var(--success-subtle);
+  color: var(--success-text);
+  display: flex;
+  flex-direction: column;
+  gap: m.space(3);
+
+  p {
+    margin: 0;
+  }
+}
+
+.resetBtn {
+  @include buttons.btn(outline);
+  align-self: flex-start;
+}

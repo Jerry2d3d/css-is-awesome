@@ -4,11 +4,11 @@ This file is the entry point for AI coding agents (Aider, Codex, Cursor, Claude 
 
 ## What this library is
 
-A token-driven SCSS design system with a **single mixin-router per component**. **Mixin-first since v0.8** — the mixin is the API; the class/tag/selector is the consumer's choice. The npm package ships **zero JavaScript** by hard rule.
+A token-driven SCSS design system with a **single mixin-router per component**. **Mixin-first since v0.8** — the mixin is the API; the class/tag/selector is the consumer's choice. The npm package ships **zero runtime JavaScript** by hard rule — nothing in it is loaded by a page; the Node tooling (`cia` CLI, MCP server, validators) never reaches the browser.
 
 **Every mixin is a knob-board.** Each look/feel dimension is an *input*, so a consumer can restyle any mixin at any time by changing an argument — row→column is just `@include cia.flex($direction: column)`, never a hand-written `flex-direction`. Customization lives in the mixin's arguments; the consumer stays one line. **If a visual dimension can only be reached by overriding in CSS, that's a missing input — add it to the mixin.** Fewer SCSS lines always wins.
 
-**v1.0 architecture (locked 2026-05-23):** humans-first, AI-second. The 5-pillar priority is **(1) users first, (2) tokens, (3) theme editor on the website, (4) mixin-first speed, (5) AI as composer via recipes book + MCP server**. v1.0 shipped the recipes book + theme editor polish + Tailwind/Bootstrap migration CLI + playground + MCP polish. No separate React component library (Jerry's call — recipes are the deliverable). Full backlog: [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/).
+**v1.0 architecture (locked 2026-05-23):** humans-first, AI-second. The 5-pillar priority is **(1) users first, (2) tokens, (3) theme editor on the website, (4) mixin-first speed, (5) AI as composer via recipes book + MCP server**. v1.0 shipped the recipes book + theme editor polish + Tailwind/Bootstrap migration CLI + MCP polish (the playground was carried forward to v1.1 EPIC-09, still unbuilt). No separate React component library (Jerry's call — recipes are the deliverable). Full backlog: [`roadmap/epics/v1-0/`](./roadmap/epics/v1-0/).
 
 Three authoring tiers, in primary-to-fallback order:
 
@@ -25,7 +25,7 @@ When asked to add a UI element, follow this order:
 3. **Never invent `cia-*` class names.** That prefix is library-owned. Consumer code uses its own naming.
 4. **All values come from tokens.** Never hardcode `#3A5FCD`, `1rem`, `8px`. Use `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`.
 5. **No BEM.** No `__element` / `--modifier` chains. `cia-` is a single-class namespace prefix, not BEM.
-6. **No JavaScript.** Cia ships zero JS in the npm package. The 6 interactive components (accordion, modal, tooltip, dropdown, tabs, copy-button) use native HTML primitives — `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`. Mobile navigation follows the same doctrine: the `hamburger` / `drawer` / `sheet` / `dock` mixin family rides `[popover]` + CSS Grid — see the `mobile-nav` recipe (hamburger + drawer) and the `bottom-nav` recipe (dock + sheets). **This rule binds cia, not you.** If you're *consuming* cia (building an app/component library on top of it), write JavaScript/framework components freely — React, SVG charts, interactivity, all of it — and use cia purely for styling (mixins + tokens). Compose the mixins to build any visual you want; you are not limited to cia's pre-made component mixins.
+6. **No runtime JavaScript.** Nothing in the npm package is loaded by a page — the Node tooling (`cia` CLI, MCP server, validators) never reaches the browser. The 6 interactive components (accordion, modal, tooltip, dropdown, tabs, copy-button) use native HTML primitives — `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`. Mobile navigation follows the same doctrine: the `hamburger` / `drawer` / `sheet` / `dock` mixin family rides `[popover]` + CSS Grid — see the `mobile-nav` recipe (hamburger + drawer) and the `bottom-nav` recipe (dock + sheets). **This rule binds cia, not you.** If you're *consuming* cia (building an app/component library on top of it), write JavaScript/framework components freely — React, SVG charts, interactivity, all of it — and use cia purely for styling (mixins + tokens). Compose the mixins to build any visual you want; you are not limited to cia's pre-made component mixins.
 7. **Grid is the skeleton; Flex is the quick moves.** Three levels, strictly:
    - **The page shell is CSS Grid with landmark-named areas.** The body's areas ARE the document's landmarks — `nav`, `main`, `footer` — so the area map reads like the page and screen readers get the structure for free. Declared once via `cia.page-layout(default | sidebar-left | sidebar-right | holy-grail)` (100dvh, sticky footer, auto mobile collapse) or `cia.layout((sidebar content toc), $tracks: …)`; children claim slots with `cia.page-header` / `cia.page-main` / `cia.page-footer` / `cia.area(name)`. Baseline since 2020.
    - **The doctrine scales inward: any control-dense region gets its own named-area grid.** A docs article (`header / demo / usage / tabs / footer`), a selections rail (`filter / list`), a dashboard — when a region has many controls, name its rows with `cia.layout(...)` too. Nested grids all the way down where density warrants; the grid's `gap` is the region's entire vertical rhythm (children carry no rhythm margins).
@@ -148,7 +148,7 @@ Authoring template (in your own project — a theme file is a global stylesheet,
 
 `$standalone` defaults to `true` (emit `:root, :root[data-theme="<name>"]`). Pass `$standalone: false` only when your block is going into a multi-theme bundle where the bare `:root` would collide.
 
-The validator (`node scripts/theme-validator.js`) enforces the token contract — **127 required + 36 optional = 163 slots** — plus WCAG 2.2 AA contrast (**22 audited pairs per theme**, including five `--code-*` pairs). Themes that miss required tokens or fail contrast cannot ship without `--allow-a11y-fail`.
+The validator (`node scripts/theme-validator.js`) enforces the token contract — **127 required + 49 optional = 176 slots** — plus WCAG 2.2 AA contrast (**24 audited pairs per theme**, including five `--code-*` pairs). Themes that miss required tokens or fail contrast cannot ship without `--allow-a11y-fail`.
 
 ### Theming spacing (new — read this before you set a size token)
 
@@ -168,7 +168,7 @@ Why it matters: components call `cia.space(4)`, which resolves to `var(--space-4
 
 Two `<link media>` themes still work under the new selector model: a stylesheet whose `media` doesn't match is loaded but never applied, so only the matching file's `:root` block lands.
 
-Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every required contract token (127 required in v1; missing tokens always fail). The audit also runs a WCAG 2.2 AA contrast check over 22 pairs; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
+Validator: `node scripts/theme-validator.js path/to/theme.css` (or `--all` for every shipped theme). Every theme must declare every required contract token (127 required in contract 1.3; missing required tokens always fail, missing optional ones are reported as info). The audit also runs a WCAG 2.2 AA contrast check over 22 pairs; **a11y FAILs are fatal by default** as of v0.7. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning (the older `--strict` flag is accepted as a no-op alias). `--border-default` is treated as decorative per WCAG 2.2 SC 1.4.11 and reports as info, not FAIL.
 
 ### Theme init (Next.js / SSR consumers)
 
@@ -308,9 +308,24 @@ Inside this package (all whitelisted in `files`):
 
 ## MCP server (SHIPPED — use it)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` (version read from package.json), protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. **Prefer querying it over guessing** — it returns cia's real mixin signatures, tokens, themes, and recipes.
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome`, protocol `2024-11-05`) at `mcp/server.cjs`. It's in the `files` manifest, so it lands in every consumer's `node_modules`. **Prefer querying it over guessing** — it returns cia's real mixin signatures, tokens, themes, and recipes.
 
-Wire it into your MCP client's `.mcp.json`:
+Two ways to run it — prefer the dedicated `npx css-is-awesome-mcp` package (zero install, SDK is a real dependency, no separate peer-install step):
+
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
+    }
+  }
+}
+```
+
+No install step needed — `npx` fetches it on first run. To pin an exact version instead, `npm install css-is-awesome-mcp` first; `npx` then uses that local copy.
+
+Or run this in-repo copy directly — needs its SDK peer deps installed manually first (`npm install -D @modelcontextprotocol/sdk zod` in the client project, since they're optional peers):
 
 ```json
 {
@@ -323,21 +338,22 @@ Wire it into your MCP client's `.mcp.json`:
 }
 ```
 
-The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zod` in the client project to run it. It exposes **30 tools** across 8 families:
+Either way it exposes **34 tools** across 8 families:
 
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
 - **Functions** — `list_functions`, `get_function`, `search_functions`
-- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (127 required + 36 optional contract tokens)
+- **Tokens** — `list_tokens`, `get_token`, `search_tokens` (127 required + 49 optional contract tokens)
 - **Animations** — `list_animations`, `get_animation`
 - **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`
+- **Theme upgrades** — `fix_theme` (rewrite deprecated tokens to their replacements; returns text, never writes)
 - **Doc readers** — `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme`, `read_versioning`
-- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value)
+- **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value), `validate_theme` (run the real theme validator — contract + contrast — on a CSS string before you ship it), `theme_from_tokens` (DTCG / Tokens Studio / flat token JSON → a complete theme.css, base-inherited and validated; same function as `cia theme from-tokens`), `get_token_map` (that path → token mapping as data, or how one path resolves — read it instead of re-deriving the rules)
 
 ## Other tooling (shipped)
 
-- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. Three verbs:
+- **`cia` CLI** — ships as `bin/cia.cjs`, exposed as the `cia` bin. Four verbs (`theme` has two subcommands: `from-tokens` and `map`, the latter printing the path → token mapping as a table, `--json`, or `--path <p>` for one name):
   `npx cia migrate tailwind|bootstrap [path]` parses another system's config and
   dumps a cia theme; `npx cia add <recipe>` (`--list` to browse) copies a recipe
   from the book into the project — own the pattern; `npx cia analyze [path]`
@@ -345,9 +361,19 @@ The SDK is an optional peer dep — `npm install -D @modelcontextprotocol/sdk zo
   the `space()` 1–9 scale trap, off-contract tokens (near-miss typos only), hard-coded
   hex colors, BEM chains — with a health score and CI-ready exit codes. Low-noise on
   color: a hex in a `var(--token, #hex)` fallback is token-driven, and a literal inside
-  `@media print` is an intentional paper colour — neither is flagged. Run any verb with `--help`. (`cia init` remains
-  planned.)
-- **JSON token export** — DTCG-format token list in `figma-tokens/`.
+  `@media print` is an intentional paper colour — neither is flagged; `npx cia theme from-tokens <tokens.json> --name <slug>`
+  turns a design-tokens file (DTCG v2025.10, Tokens Studio for Figma, or a flat `--token` map; format auto-detected)
+  into a complete theme.css — every required token the file lacks inherits from a shipped base theme (`--base`,
+  default boilerplate), unmapped paths pass through verbatim and are reported, a `--dark` file or paired
+  `color-light`/`color-dark` groups become `light-dark()`, and the validator + WCAG audit run before anything is
+  written. Same function as the MCP `theme_from_tokens` tool; `npx cia theme map [--json] [--path <token.path>]` prints the design-token → cia-token mapping that verb applies (same data as the MCP `get_token_map` tool), for anyone who needs to map one token name the way the converter would. Run any verb with `--help`. (`cia init` remains
+  planned.) `npx cia fix-theme <theme.css> [--write]` moves a theme onto
+  current token names: it renames any DEPRECATED token to its replacement,
+  changing the property only — values, comments and ordering survive, so the
+  rendered theme is identical. Prints by default; writes only with `--write`;
+  a block already declaring the replacement is reported, never merged. Same
+  function as the MCP `fix_theme` tool.
+- **JSON token export** — Tokens Studio-format sample in `figma-tokens/tokens.json`; it round-trips through `cia theme from-tokens` (paired light/dark groups → one `light-dark()` theme).
 - **`llm.txt`** — at the repo root and served from the docs site; single-fetch
   summary for any AI agent. Also readable over MCP via `read_llm_txt`.
 

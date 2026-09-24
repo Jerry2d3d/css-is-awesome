@@ -66,7 +66,15 @@
   background-repeat: no-repeat;
   background-position: right m.space-raw(2) center;
   background-size: 1em;
-  padding-right: m.space-raw(6);
+  padding-inline-end: m.space-raw(6);
+
+  // background-position has no reliable logical-keyword equivalent across
+  // browsers, so the physical value above (correct for LTR) needs an
+  // explicit flip — padding-inline-end already moved with direction, this
+  // is the one declaration here that can't.
+  [dir="rtl"] & {
+    background-position: left m.space-raw(2) center;
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -138,7 +146,7 @@
     content: '';
     position: absolute;
     top: 1px;
-    left: 1px;
+    inset-inline-start: 1px;
     width: calc(#{$h} - 4px);
     height: calc(#{$h} - 4px);
     border-radius: 50%;
@@ -151,8 +159,14 @@
     background: m.color($color);
     border-color: m.color($color);
   }
+  // translateX isn't direction-aware — the knob rests at inset-inline-start
+  // (which flips correctly on its own) and needs to travel TOWARD
+  // inline-end, which is a negative X distance in RTL.
   &:checked::before {
     transform: translateX(calc(#{$w} - #{$h}));
+  }
+  [dir="rtl"] &:checked::before {
+    transform: translateX(calc(-1 * (#{$w} - #{$h})));
   }
   &:disabled {
     opacity: 0.5;

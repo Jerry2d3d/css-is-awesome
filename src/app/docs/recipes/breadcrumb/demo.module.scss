@@ -1,0 +1,38 @@
+@use 'mixins' as m;
+@use 'components/navigation' as nav;
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(2);
+  margin-block-end: m.space(5);
+}
+
+.caption {
+  margin: m.space(3) 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+
+  &:first-child {
+    margin-block-start: 0;
+  }
+}
+
+// The whole pattern is one mixin; the separator glyph is its input.
+.breadcrumb {
+  @include nav.breadcrumb($gap: 1, $separator: "›");
+}
+
+// The collapsed variant's "…" toggle — a real button, styled like a link.
+.expand {
+  @include m.button-reset;
+  cursor: pointer;
+  color: var(--text-link);
+  padding-inline: m.space(2xs);
+  border-radius: var(--radius-sm, 4px);
+  @include m.focus-ring;
+
+  &:hover {
+    background: var(--interactive-hover);
+  }
+}

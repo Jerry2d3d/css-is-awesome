@@ -1,0 +1,50 @@
+@use 'components/forms' as forms;
+@use 'components/feedback' as feedback;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-block-end: 1rem;
+  max-width: 22rem;
+}
+
+.inputWrap {
+  position: relative;
+
+  input {
+    @include forms.input-base;
+    padding-inline-end: 2.5rem;
+  }
+}
+
+.spinner {
+  display: none;
+  position: absolute;
+  inset-inline-end: 0.75rem;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+
+  .field[data-status="checking"] & {
+    display: block;
+    @include feedback.spinner($size: 1em);
+  }
+}
+
+.field[data-status="available"] input {
+  border-color: var(--success-default);
+}
+.field[data-status="taken"] input {
+  border-color: var(--error-default);
+}
+
+.status {
+  font-size: 0.85em;
+
+  .field[data-status="available"] & {
+    color: var(--success-text);
+  }
+  .field[data-status="taken"] & {
+    color: var(--error-text);
+  }
+}

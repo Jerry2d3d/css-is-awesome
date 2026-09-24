@@ -1,6 +1,6 @@
 {
-  "version": "1",
-  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference).",
+  "version": "1.3",
+  "description": "Authoritative token contract for css-is-awesome themes. Every theme.css MUST declare every token in `required`. Tokens in `optional` are reported by the validator as info, never as failures — the library or the theme generator supplies a default. Source of truth is CONTRACT.md (human-readable) and public/theme.css (Sketchbook reference). Contract 1.3 (2026-09-24): the page-surfaces feature adds eight optional tokens for the hero and band surfaces, and --background-hero is deprecated in favour of --page-hero-bg (kept valid, removed no earlier than contract 2).",
   "required": [
     "--action-primary-active",
     "--action-primary-default",
@@ -151,6 +151,14 @@
     "--logo-monochrome",
     "--logo-wordmark",
     "--modal-radius",
+    "--page-band-bg",
+    "--page-band-image",
+    "--page-band-ink",
+    "--page-band-scrim",
+    "--page-hero-bg",
+    "--page-hero-image",
+    "--page-hero-ink",
+    "--page-hero-scrim",
     "--print-ink",
     "--print-line",
     "--print-muted",
@@ -167,9 +175,124 @@
     "--space-lg",
     "--space-md",
     "--space-sm",
+    "--space-unit",
     "--space-xl",
     "--space-xs",
     "--tag-radius",
     "--touch-target-min"
-  ]
+  ],
+  "features": {
+    "density": {
+      "enables": "The density knob: shipped themes derive every --space-N from this one unit via calc(); set it to tighten or open up the whole UI (theme editor slider).",
+      "tokens": [
+        "--space-unit"
+      ]
+    },
+    "spacing-aliases": {
+      "enables": "T-shirt spacing names (2xs–xl) for consumer CSS that prefers them; the library reads the numbered scale, so these are pure aliases.",
+      "tokens": [
+        "--space-2xs",
+        "--space-xs",
+        "--space-sm",
+        "--space-md",
+        "--space-lg",
+        "--space-xl"
+      ]
+    },
+    "print": {
+      "enables": "A themed printed page: cia.print-base rebinds ink/surface/border/code tokens onto this palette inside @media print. Without them the ink-on-white default applies.",
+      "tokens": [
+        "--print-ink",
+        "--print-paper",
+        "--print-line",
+        "--print-muted"
+      ]
+    },
+    "component-radius": {
+      "enables": "Per-component corner radius overrides (buttons, cards, inputs, modals, badges, tags) without rebuilding SCSS; each falls back to the generic --radius-* scale.",
+      "tokens": [
+        "--btn-radius",
+        "--card-radius",
+        "--input-radius",
+        "--modal-radius",
+        "--badge-radius",
+        "--tag-radius"
+      ]
+    },
+    "component-shadows": {
+      "enables": "Per-component elevation overrides; each falls back to the generic --shadow-* scale.",
+      "tokens": [
+        "--shadow-button",
+        "--shadow-card",
+        "--shadow-dropdown",
+        "--shadow-input-focus",
+        "--shadow-modal",
+        "--shadow-popover",
+        "--shadow-tooltip",
+        "--shadow-text"
+      ]
+    },
+    "component-motion": {
+      "enables": "Per-component durations for button hover, modal open and toast slide; each falls back to the generic --duration-* scale.",
+      "tokens": [
+        "--duration-button-hover",
+        "--duration-modal-open",
+        "--duration-toast-slide"
+      ]
+    },
+    "surfaces-extended": {
+      "enables": "Extra background layers (elevated, hero, overlay, scrim) for themes that want more than the required surface set; each falls back to a required surface.",
+      "tokens": [
+        "--background-elevated",
+        "--background-overlay",
+        "--background-scrim"
+      ]
+    },
+    "borders-extended": {
+      "enables": "Per-context border colours (card, divider, focus ring, input); each falls back to --border-default / --border-focus.",
+      "tokens": [
+        "--border-card",
+        "--border-divider",
+        "--border-focus-ring",
+        "--border-input"
+      ]
+    },
+    "logo": {
+      "enables": "Theme-aware logo assets (default, mark, monochrome, wordmark) as url() or SVG data values for the icon/brand mixins.",
+      "tokens": [
+        "--logo-default",
+        "--logo-mark",
+        "--logo-monochrome",
+        "--logo-wordmark"
+      ]
+    },
+    "touch-target": {
+      "enables": "Minimum interactive target size read by form and button mixins (WCAG 2.2 SC 2.5.8); the library default is 24px.",
+      "tokens": [
+        "--touch-target-min"
+      ]
+    },
+    "page-surfaces": {
+      "enables": "Two page-level surfaces a theme owns outright: a hero for the front page and a band for section stripes and footers. Each carries a background colour, an optional gradient or url() image, an ink colour for text on it, and a scrim that keeps that text legible over an image. Applied only via cia.surface() or [data-surface] - declaring them changes nothing on its own.",
+      "tokens": [
+        "--page-hero-bg",
+        "--page-hero-image",
+        "--page-hero-ink",
+        "--page-hero-scrim",
+        "--page-band-bg",
+        "--page-band-image",
+        "--page-band-ink",
+        "--page-band-scrim",
+        "--background-hero"
+      ]
+    }
+  },
+  "deprecated": {
+    "--background-hero": {
+      "replacedBy": "--page-hero-bg",
+      "since": "1.3",
+      "removeIn": "2",
+      "note": "Was never read by the library. --page-hero-bg falls back through it, so an existing declaration keeps working untouched."
+    }
+  }
 }

@@ -4,6 +4,67 @@ import styles from "./PrintPreviewModal.module.scss";
 
 // The print-base defaults — the palette every theme inherits on paper.
 const DEFAULTS = { ink: "#000000", paper: "#ffffff", line: "#999999", muted: "#666666" };
+type Palette = typeof DEFAULTS;
+
+// Per-family palette + letterhead choice, persisted so the modal remembers
+// what a family looked like last time (mirrors ThemeEditorDock's own
+// per-family override store).
+const STORAGE_KEY = "cia-print-overrides";
+type StoredPalette = Palette & { letterhead: boolean };
+type Store = Record<string, StoredPalette>;
+
+function readStore(): Store {
+  if (typeof localStorage === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+function writeStore(store: Store): void {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  } catch {
+    // quota / private mode — silently skip
+  }
+}
+
+// A theme may restyle paper via its own `@media print { [data-theme="x"] {
+// --print-*: …; } }` block (see press.scss). Those rules only apply while
+// actually printing, so getComputedStyle can't see them on screen — read
+// the declared values straight off the CSSOM instead.
+function seedFromTheme(family: string): Palette {
+  const out: Palette = { ...DEFAULTS };
+  if (typeof document === "undefined") return out;
+  try {
+    for (const sheet of Array.from(document.styleSheets)) {
+      let rules: CSSRuleList;
+      try {
+        rules = sheet.cssRules;
+      } catch {
+        continue; // cross-origin sheet — can't introspect
+      }
+      for (const rule of Array.from(rules)) {
+        if (!(rule instanceof CSSMediaRule) || !rule.media.mediaText.includes("print")) continue;
+        for (const inner of Array.from(rule.cssRules)) {
+          if (!(inner instanceof CSSStyleRule)) continue;
+          if (!inner.selectorText.includes(`[data-theme="${family}"]`)) continue;
+          for (const key of ["ink", "paper", "line", "muted"] as const) {
+            const v = inner.style.getPropertyValue(`--print-${key}`).trim();
+            if (v) out[key] = v;
+          }
+        }
+      }
+    }
+  } catch {
+    // ignore — fall back to defaults
+  }
+  return out;
+}
 
 type Props = { open: boolean; onClose: () => void; family: string };
 
@@ -30,6 +91,26 @@ export default function PrintPreviewModal({ open, onClose, family }: Props) {
     else if (!open && d.open) d.close();
   }, [open]);
 
+  // Hydrate this family's palette: a previously-saved edit wins, otherwise
+  // seed from the theme's own in-file print override (or the B/W default).
+  useEffect(() => {
+    const stored = readStore()[family];
+    const base = stored ?? seedFromTheme(family);
+    setInk(base.ink);
+    setPaper(base.paper);
+    setLine(base.line);
+    setMuted(base.muted);
+    setLetterhead(stored?.letterhead ?? true);
+  }, [family]);
+
+  // Persist every edit so reopening this family later picks up where you
+  // left off.
+  useEffect(() => {
+    const store = readStore();
+    store[family] = { ink, paper, line, muted, letterhead };
+    writeStore(store);
+  }, [family, ink, paper, line, muted, letterhead]);
+
   const paperVars = {
     "--print-ink": ink,
     "--print-paper": paper,
@@ -38,10 +119,11 @@ export default function PrintPreviewModal({ open, onClose, family }: Props) {
   } as CSSProperties;
 
   function reset() {
-    setInk(DEFAULTS.ink);
-    setPaper(DEFAULTS.paper);
-    setLine(DEFAULTS.line);
-    setMuted(DEFAULTS.muted);
+    const base = seedFromTheme(family);
+    setInk(base.ink);
+    setPaper(base.paper);
+    setLine(base.line);
+    setMuted(base.muted);
   }
 
   function block() {

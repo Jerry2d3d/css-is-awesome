@@ -38,6 +38,7 @@ const G = {
   code: "Code & syntax",
   interactive: "Interactive states",
   guide: "Guides (margin / column rules)",
+  pageSurface: "Page surfaces (hero / band)",
   misc: "Miscellaneous palette",
   radius: "Radii",
   rLegacy: "Radii (legacy r-*)",
@@ -56,8 +57,8 @@ const G = {
 function color(token: string, label: string, group: string, mode: "both" | "shared" = "both"): TokenSpec {
   return { token, label, group, mode, type: "color" };
 }
-function length(token: string, label: string, group: string, max = 64, min = 0, step = 1): TokenSpec {
-  return { token, label, group, mode: "shared", type: "length", unit: "px", min, max, step };
+function length(token: string, label: string, group: string, max = 64, min = 0, step = 1, unit = "px"): TokenSpec {
+  return { token, label, group, mode: "shared", type: "length", unit, min, max, step };
 }
 function duration(token: string, label: string): TokenSpec {
   return { token, label, group: G.duration, mode: "shared", type: "duration", unit: "ms", min: 0, max: 1000, step: 10 };
@@ -190,12 +191,19 @@ export const CATALOG: TokenSpec[] = [
 
   // ===== Spacing (shared) =====
   //
+  // --space-unit is the density knob (v1.1 EPIC-05): every step below is
+  // calc(var(--space-unit) * N) in the shipped theme, so dragging this ONE
+  // slider rescales all nine proportionally. It's listed first for that
+  // reason — it's the "just try this" control, the nine below it are for
+  // deliberately breaking the ramp on one step.
+  //
   // The NUMBERED scale, not the t-shirt names. Components call space(4), which
   // compiles to var(--space-4); the t-shirt names are library-emitted aliases
   // (--space-md: var(--space-4)) and are contract-OPTIONAL. Editing a t-shirt
   // name here used to produce a theme that changed nothing, because the token
   // being set and the token components read were different variables — and a
   // downloaded theme would now fail validate-themes, which requires these ten.
+  length("--space-unit", "Space unit (density)", G.space, 0.25, 0.0625, 0.0125, "rem"),
   length("--space-0", "Space 0 (flush)",     G.space, 16),
   length("--space-1", "Space 1 (tight)",     G.space, 16),
   length("--space-2", "Space 2 (control)",   G.space, 24),
@@ -252,6 +260,19 @@ export const CATALOG: TokenSpec[] = [
   number("--z-modal",    "z modal",    G.z, 0, 9999),
   number("--z-popover",  "z popover",  G.z, 0, 9999),
   number("--z-tooltip",  "z tooltip",  G.z, 0, 9999),
+  // ===== Page surfaces (optional, contract 1.3) =====
+  // Declaring these changes nothing on its own — a page only picks up a
+  // surface when it calls cia.surface() or carries data-surface. Every
+  // shipped theme already has a derived bg/ink pair; image and scrim are
+  // empty until an author sets them.
+  color("--page-hero-bg",    "Hero background",  G.pageSurface),
+  color("--page-hero-ink",   "Hero ink",         G.pageSurface),
+  str("--page-hero-image",   "Hero image (url)", G.pageSurface),
+  str("--page-hero-scrim",   "Hero scrim",       G.pageSurface),
+  color("--page-band-bg",    "Band background",  G.pageSurface),
+  color("--page-band-ink",   "Band ink",         G.pageSurface),
+  str("--page-band-image",   "Band image (url)", G.pageSurface),
+  str("--page-band-scrim",   "Band scrim",       G.pageSurface),
 ];
 
 // Distinct group order for the dock body.
@@ -286,6 +307,7 @@ const GROUP_CATEGORY: Record<string, Category> = {
   [G.interactive]: "color",
   [G.guide]:       "color",
   [G.misc]:        "color",
+  [G.pageSurface]: "color",
   [G.radius]:      "layout",
   [G.rLegacy]:     "layout",
   [G.space]:       "layout",
@@ -319,7 +341,7 @@ export const SUB_PAGES: Record<Category, SubPage[]> = {
     {
       id: "foundation",
       label: "Foundation",
-      groups: [G.paper, G.ink, G.surface, G.border],
+      groups: [G.paper, G.ink, G.surface, G.pageSurface, G.border],
     },
     {
       id: "components",

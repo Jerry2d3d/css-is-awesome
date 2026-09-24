@@ -18,6 +18,7 @@
    ============================================================ */
 
 @use '../mixins' as m;
+@use '../spacing-scale' as ss;
 
 @import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
 
@@ -33,7 +34,7 @@
     --ink-soft:   #3A4048;
     --ink-faint:  #5E646D;
     --graphite:   #2A2F36;
-    --muted:      #878D95;
+    --muted:      #6a7078;
 
     /* Construction lines — translucent ink hairlines */
     --guide:      rgba(26, 31, 38, 0.16);
@@ -59,7 +60,7 @@
     --code-ink:    #1A1F26;
     --code-muted:  #656A72;
     --code-accent: #86642B;
-    --code-green:  #3F7A48;
+    --code-green:  #3c7645;
     --code-blue:   #4A6585;
 
     /* Typography — match Graphite (SF system stack) */
@@ -166,7 +167,7 @@
     /* Status — success (Apple light-mode green) */
     --success-default: #28A745;
     --success-subtle:  rgba(40, 167, 69, 0.10);
-    --success-text:    #1B7530;
+    --success-text:    #1b7530;
 
     /* Status — warning */
     --warning-default: var(--ochre);
@@ -190,16 +191,7 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0;          /* flush            */
-  --space-1: 0.5rem;     /* tight inner gap  */
-  --space-2: 0.75rem;    /* control padding  */
-  --space-3: 0.875rem;   /* (no t-shirt)     */
-  --space-4: 1rem;       /* default rhythm   */
-  --space-5: 1.5rem;     /* section gap      */
-  --space-6: 2rem;       /* block gap        */
-  --space-7: 3rem;       /* major gap        */
-  --space-8: 4rem;       /* page section     */
-  --space-9: 6rem;       /* hero rhythm      */
+  @include ss.space-scale;
 
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */

@@ -17,6 +17,13 @@
 // .cia-m-md, .cia-mt-lg, .cia-mx-xl, .cia-p-sm, .cia-py-2xl, etc.
 // ============================================================================
 
+// Physical-direction utilities (cia-ml-*/cia-mr-*/cia-pl-*/cia-pr-*/cia-mx-*/
+// cia-px-*) are intentional, not RTL drift — they mirror Tailwind/
+// Bootstrap's own ml/mr convention for consumers who want a specific
+// visual side regardless of text direction (e.g. aligning to a fixed edge
+// on a map or chart). cia-rtl-allow: physical utilities kept for consumer
+// choice; see the logical set (cia-ms-*/cia-me-*/cia-ps-*/cia-pe-*/cia-mi-*/
+// cia-pi-*) below for RTL-aware layouts.
 $_space-props: (
   m:  margin,
   mt: margin-top,
@@ -48,6 +55,25 @@ $_space-axis: (
   }
 }
 
+// Logical-direction equivalents — flip automatically with `dir`/
+// `writing-mode`. Prefer these for layout that should mirror in RTL;
+// reach for the physical set above only when the direction is meant to
+// stay fixed regardless of text direction.
+$_space-props-logical: (
+  ms: margin-inline-start,
+  me: margin-inline-end,
+  ps: padding-inline-start,
+  pe: padding-inline-end,
+);
+
+@each $key, $value in s.$spacing {
+  @each $prefix, $prop in $_space-props-logical {
+    .cia-#{$prefix}-#{$key} { #{$prop}: $value; }
+  }
+  .cia-mi-#{$key} { margin-inline: $value; }
+  .cia-pi-#{$key} { padding-inline: $value; }
+}
+
 // ============================================================================
 // ACCESSIBILITY UTILITIES
 // ============================================================================
@@ -55,12 +81,15 @@ $_space-axis: (
 
 // Auto margin utilities
 .cia-m-auto { margin: auto; }
-.cia-mx-auto { margin-left: auto; margin-right: auto; }
+.cia-mx-auto { margin-left: auto; margin-right: auto; } // cia-rtl-allow: physical, see cia-mi-auto below
 .cia-my-auto { margin-top: auto; margin-bottom: auto; }
-.cia-ml-auto { margin-left: auto; }
-.cia-mr-auto { margin-right: auto; }
+.cia-ml-auto { margin-left: auto; } // cia-rtl-allow: physical, see cia-ms-auto below
+.cia-mr-auto { margin-right: auto; } // cia-rtl-allow: physical, see cia-me-auto below
 .cia-mt-auto { margin-top: auto; }
 .cia-mb-auto { margin-bottom: auto; }
+.cia-mi-auto { margin-inline: auto; }
+.cia-ms-auto { margin-inline-start: auto; }
+.cia-me-auto { margin-inline-end: auto; }
 
 // Gap utilities
 @each $key, $value in s.$spacing {
@@ -89,10 +118,12 @@ $_space-axis: (
   .cia-tracking-#{$key} { letter-spacing: $value; }
 }
 
-.cia-text-left { text-align: left; }
+.cia-text-left { text-align: left; } // cia-rtl-allow: physical, see cia-text-start below
 .cia-text-center { text-align: center; }
-.cia-text-right { text-align: right; }
+.cia-text-right { text-align: right; } // cia-rtl-allow: physical, see cia-text-end below
 .cia-text-justify { text-align: justify; }
+.cia-text-start { text-align: start; }
+.cia-text-end { text-align: end; }
 
 .cia-uppercase { text-transform: uppercase; }
 .cia-lowercase { text-transform: lowercase; }
@@ -257,9 +288,11 @@ $_border-tokens: (border-default, border-subtle, border-emphasis, border-focus);
 
 .cia-inset-0 { inset: 0; }
 .cia-top-0 { top: 0; }
-.cia-right-0 { right: 0; }
+.cia-right-0 { right: 0; } // cia-rtl-allow: physical, see cia-end-0 below
 .cia-bottom-0 { bottom: 0; }
-.cia-left-0 { left: 0; }
+.cia-left-0 { left: 0; } // cia-rtl-allow: physical, see cia-start-0 below
+.cia-start-0 { inset-inline-start: 0; }
+.cia-end-0 { inset-inline-end: 0; }
 
 // ============================================================================
 // SIZING
@@ -291,9 +324,11 @@ $_border-tokens: (border-default, border-subtle, border-emphasis, border-focus);
 .cia-border { border: 1px solid var(--border-default); }
 .cia-border-0 { border: 0; }
 .cia-border-t { border-top: 1px solid var(--border-default); }
-.cia-border-r { border-right: 1px solid var(--border-default); }
+.cia-border-r { border-right: 1px solid var(--border-default); } // cia-rtl-allow: physical, see cia-border-e below
 .cia-border-b { border-bottom: 1px solid var(--border-default); }
-.cia-border-l { border-left: 1px solid var(--border-default); }
+.cia-border-l { border-left: 1px solid var(--border-default); } // cia-rtl-allow: physical, see cia-border-s below
+.cia-border-s { border-inline-start: 1px solid var(--border-default); }
+.cia-border-e { border-inline-end: 1px solid var(--border-default); }
 
 @each $key, $value in t.$theme-radius {
   .cia-rounded-#{$key} { border-radius: var(--radius-#{$key}, #{$value}); }

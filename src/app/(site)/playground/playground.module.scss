@@ -1,0 +1,217 @@
+@use 'mixins' as m;
+@use 'layout' as layout;
+@use 'components/buttons' as buttons;
+@use 'components/forms' as forms;
+
+/* ============================================================
+   /playground — editors left, preview right; stacked on phones.
+   Editor chrome (CodeMirror) is re-skinned with cia tokens here so
+   it follows the site theme instead of shipping its own palette.
+   ============================================================ */
+
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: m.space(6) m.space(4) m.space(8);
+}
+
+.intro {
+  margin-block-end: m.space(5);
+
+  h1 {
+    margin: 0 0 m.space(2);
+  }
+  :global(.lead) {
+    max-width: 70ch;
+  }
+}
+
+.hint {
+  @include forms.form-help;
+  max-width: 70ch;
+  margin: m.space(2) 0 0;
+}
+
+.playground {
+  @include layout.stack(3);
+}
+
+/* ── Toolbar ─────────────────────────────────────────────── */
+.toolbar {
+  @include layout.cluster(3, $align: end, $justify: space-between);
+}
+
+.themeField {
+  @include layout.stack(1);
+
+  > span {
+    @include forms.label-base($size: 1);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+.themeSelect {
+  @include forms.select-base;
+  min-inline-size: 14rem;
+}
+
+.actions {
+  @include layout.cluster(2);
+}
+
+.btnPrimary {
+  @include buttons.btn(primary);
+
+  &[data-copied] {
+    background: var(--success-default);
+  }
+}
+
+.btnGhost {
+  @include buttons.btn(ghost);
+}
+
+.meta {
+  @include forms.form-help;
+  margin: 0;
+  min-inline-size: 9rem;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  @include m.pad(3);
+  margin: 0;
+  border: 1px solid var(--warning-default);
+  border-radius: var(--radius-md, 8px);
+  background: var(--warning-subtle);
+  color: var(--warning-text);
+  @include m.font(reg, 2);
+}
+
+/* ── Panes ───────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: m.space(4);
+
+  @include m.media-down(lg) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.editors {
+  @include layout.stack(3);
+  min-width: 0;
+}
+
+.pane,
+.previewPane {
+  @include layout.stack(1);
+  min-width: 0;
+}
+
+.paneTitle {
+  @include m.font(semibold, 1);
+  margin: 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.editor {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 8px);
+  background: var(--surface-default);
+  overflow: hidden;
+
+  // CodeMirror fills the box; the box owns the height so nothing jumps
+  // while the editor chunk is still loading.
+  :global(.cm-editor) {
+    block-size: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    background: transparent;
+  }
+  :global(.cm-editor.cm-focused) {
+    outline: none;
+  }
+  :global(.cm-scroller) {
+    font-family: inherit;
+    line-height: 1.5;
+  }
+  :global(.cm-gutters) {
+    background: var(--surface-muted);
+    color: var(--text-muted);
+    border-inline-end: 1px solid var(--border-default);
+  }
+  :global(.cm-activeLine),
+  :global(.cm-activeLineGutter) {
+    background: var(--interactive-hover);
+  }
+  :global(.cm-selectionBackground),
+  :global(.cm-content ::selection) {
+    background: var(--interactive-active) !important;
+  }
+  :global(.cm-cursor) {
+    border-inline-start-color: var(--text-primary);
+  }
+  &:focus-within {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-focus) 20%, transparent);
+  }
+}
+
+.editorHtml {
+  block-size: 12rem;
+}
+
+.editorScss {
+  block-size: 28rem;
+}
+
+.errorPane {
+  @include layout.cluster(2, $align: baseline);
+  @include m.pad(2);
+  border: 1px solid var(--error-default);
+  border-radius: var(--radius-md, 8px);
+  background: var(--error-subtle);
+  color: var(--error-text);
+  @include m.font(reg, 2);
+}
+
+.errorJump {
+  @include m.button-reset;
+  @include m.font(semibold, 2);
+  font-variant-numeric: tabular-nums;
+  text-decoration: underline;
+  cursor: pointer;
+  @include m.focus-ring;
+
+  &:disabled {
+    text-decoration: none;
+    cursor: default;
+  }
+}
+
+.errorMessage {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+/* ── Preview ─────────────────────────────────────────────── */
+.preview {
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 41.5rem; // matches the two stacked editors + gap
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 8px);
+  background: var(--surface-default);
+
+  @include m.media-down(lg) {
+    min-block-size: 24rem;
+  }
+}

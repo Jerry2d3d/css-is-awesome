@@ -48,7 +48,7 @@
       content: '';
       width: 0.55em;
       height: 0.55em;
-      border-right: 2px solid currentColor;
+      border-inline-end: 2px solid currentColor;
       border-bottom: 2px solid currentColor;
       transform: rotate(45deg);
       transition: transform var(--duration-fast, 180ms) var(--ease, ease);

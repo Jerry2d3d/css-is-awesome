@@ -8,7 +8,8 @@
 
 A token-driven SCSS design system. **Mixin-first** (since v0.8) — the mixin
 is the API, the class/tag/selector is the consumer's choice. The npm package
-ships **zero JavaScript** by hard rule.
+ships **zero runtime JavaScript** by hard rule — nothing in it is loaded by a
+page; its Node tooling (`cia` CLI, MCP server, validators) never reaches the browser.
 
 ## How consumers install it (the primary path)
 
@@ -48,16 +49,16 @@ silent.
 - **Mixins** — `cia.btn`, `cia.card`, `cia.accordion`, `cia.modal`, `cia.tooltip`, `cia.dropdown`, `cia.tabs`, `cia.copy-button`, `cia.hamburger`, `cia.drawer`, `cia.sheet`, `cia.dock`, `cia.stepper`, `cia.progress`, `cia.wizard-shell`, `cia.sidebar`, `cia.toolbar`, `cia.stack`, `cia.cluster`, `cia.switcher`, `cia.cover`, `cia.frame`, `cia.media`, `cia.contain`, `cia.focus-ring`, `cia.sr-only`, `cia.print`, `cia.print-base`, `cia.print-hidden`, `cia.print-only`, `cia.color`, `cia.space`, `cia.radius`, `cia.shadow`, `cia.font`, `cia.transition`, `cia.animate`, plus many more. **`cia.print-base` always forces `color-scheme: light` in print (paired `light-dark()` themes print their light branch), defines a themeable print palette (`--print-ink` / `--print-paper` / `--print-line` / `--print-muted`, default ink-on-white with grays) and rebinds the theme's own colour tokens (`--ink`, `--surface-*`, `--border-*`, `--code-*`) onto it — so every theme, dark-only (Terminal) included, prints legible ink-on-paper, and overriding a `--print-*` token restyles paper (a letterhead) without touching a component. Three opt-in flags, all default OFF:** `$link-urls` + `$link-origin` (print each link's full destination via `attr(href)`), `$page-numbers` (sheet numbers in the `@page` footer). `$legible` is a DEPRECATED no-op — the token rebind supersedes it and passing it warns.
 - **24 themes / 8 families** — boilerplate, sketchbook, press, prism, cupertino, glass, graphite, terminal. Each family ships three files: an unsuffixed dual-mode base (both modes via `light-dark()`) plus pinned `-light` and `-dark` single-mode variants for `<link media>` pairing. Every one has exactly one SCSS source under `scss/themes/`; `public/themes/<name>/theme.css` is BUILD OUTPUT and is gated against its source by `npm run check:theme-drift` — never hand-edit it. MCP `list_themes` returns **24**. Say **24 themes across 8 families** when you need one number.
 - **6 zero-JS interactive components** — accordion (`<details name>`), modal (`<dialog>`), tooltip (`popover="hint"`), dropdown (`[popover]` — the mixin re-asserts the UA's closed state and restores `display: flex` only under `:popover-open`, so menus never render permanently open on popover markup), tabs (radio + `:has()`), copy-button (Clipboard API via consumer-wired JS).
-- **CLI** (`npx cia`) — `migrate tailwind|bootstrap` (config → cia theme), `add <recipe>` (copy a recipe from the book into the project), `analyze [path]` (audit stylesheets against the installed API: dead `cia.*` symbols, the `space()` 1–9 trap, off-contract tokens (near-miss typos of real tokens only, never your own custom tokens), hard-coded hex, BEM; health score, CI exit codes). Low-noise on color: a hex in a `var(--token, #hex)` fallback is token-driven and a literal inside `@media print` is an intentional paper colour — neither is flagged.
+- **CLI** (`npx cia`) — `migrate tailwind|bootstrap|mui|chakra` (config → cia theme), `theme from-tokens <tokens.json> --name <slug>` (DTCG v2025.10 / Tokens Studio / flat `--token` JSON → a complete theme.css: required tokens the file lacks inherit from a shipped base, unmapped paths pass through and are reported, light/dark pairs become `light-dark()`, validator + WCAG audit run first; same function as the MCP `theme_from_tokens` tool), `theme map [--json | --path <p>]` (the path → token mapping from-tokens applies, as data; same as MCP `get_token_map`), `add <recipe>` (copy a recipe from the book into the project), `analyze [path]` (audit stylesheets against the installed API: dead `cia.*` symbols, the `space()` 1–9 trap, off-contract tokens (near-miss typos of real tokens only, never your own custom tokens), hard-coded hex, BEM; health score, CI exit codes). Low-noise on color: a hex in a `var(--token, #hex)` fallback is token-driven and a literal inside `@media print` is an intentional paper colour — neither is flagged. `fix-theme <theme.css> [--write]` renames DEPRECATED tokens to their replacements (property only — values, comments and ordering survive, so the theme renders identically; prints by default, writes with `--write`; a block already declaring the replacement is reported, never merged).
 - **Mobile navigation family** — `cia.hamburger` / `cia.drawer` / `cia.sheet` / `cia.dock` ride `[popover]` + CSS Grid, zero JS; recipes `mobile-nav` (hamburger + drawer) and `bottom-nav` (dock + sheets). House rule: **on phones things take the space they're in** — a `cia.dropdown` menu opens 1px under its full-width trigger at the trigger's exact width via CSS anchor positioning (`position-try-fallbacks: flip-block` flips it above at the screen bottom; set `width: auto` at `&[popover]` specificity or the UA's `[popover] { width: fit-content }` and the mixin's inset reset win). Full spec: AGENTS.md quick decision #8 and `/docs/mobile`.
-- **163 contract tokens — 127 required + 36 optional** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
+- **176 contract tokens — 127 required + 49 optional** — surfaces, ink, lines, colors, type, radius, shadow, blur, glow, motion, z-index, spacing, semantic aliases.
 - **Spacing is themeable, and the numbered scale is the knob.** Themes declare `--space-0` … `--space-9` (contract-required). The t-shirt names (`--space-md`, `--space-lg` …) are contract-OPTIONAL and emitted by the library as `var()` aliases onto the numbered steps. `space(4)` compiles to `var(--space-4)`, so **theme the numbered step, never the alias** — setting `--space-md` alone leaves every component untouched. Library defaults emit under `:where(:root)` (specificity 0,0,0) so any theme declaration outranks them regardless of load order.
 - **Per-component shape knobs are `--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius`** — they cascade from the generic radii (`--btn-radius: var(--radius-md, 0.25rem)`). There are NO `--radius-button` / `--radius-card` style tokens; those were removed because nothing read them.
 - **Icons — two systems.** `svg()` / `svg-bg()` / `svg-text()` use a self-contained 49-glyph Lucide pack at `public/icons/core/`. Adding a glyph is drop-in: put `star.svg` in the folder and `cia.icon-svg(star)` works, no registration. Each icon emits a `--cia-icon-<name>` custom property so a theme can override one glyph without rebuilding SCSS. **`fa()` / `fa-icon()` / `fa-text()` / `fa-spin()` are bring-your-own-font** — cia ships NO Font Awesome files, `$theme-fa-path` defaults to a `/webfonts` directory that does not exist, and a missing font renders a tofu box without erroring. Default to `svg()` unless the user says they use Font Awesome.
 
 ## Hard rules (do not violate)
 
-1. **No JavaScript in the cia npm package.** Zero `.js`/`.mjs` files ship. JS-augmented features (CopyButton handler, future force-mode) ship as separate add-on packages. **This binds the package, not the consumer:** apps built ON cia should write JS/framework components freely (React, SVG charts, interactivity) and use cia only for styling — mixins + tokens. Don't over-apply "zero-JS" to your own app code.
+1. **No runtime JavaScript in the cia npm package.** Nothing in it is loaded by a page — the Node tooling (`cia` CLI, MCP server, validators) never reaches the browser. JS-augmented UI features (CopyButton handler, future force-mode) ship as separate add-on packages. **This binds the package, not the consumer:** apps built ON cia should write JS/framework components freely (React, SVG charts, interactivity) and use cia only for styling — mixins + tokens. Don't over-apply "zero-JS" to your own app code.
 2. **No `@layer`.** Tier 3 bare-tags use `:where()` (specificity 0,0,0). Cascade pollution kills the consumer experience. Corollary: **the `!important` in the print mixins is load-bearing — do not remove it.** `@media` contributes no specificity, so `print-hidden` only carries the specificity of the selector it is included in, and a later equal-specificity `display` wins in print. `@layer` would make this worse, not better: layered CSS always loses to unlayered CSS, so a layered print rule loses to any unlayered consumer stylesheet. Scope is 8 declarations, all inside `@media print`, all variable-driven (`--print-hide` / `--print-show`).
 3. **No BEM.** No `__element` / `--modifier` chains in cia source. Consumers pick their own selector names — cia has no opinion.
 4. **No Storybook.** Docs site + the `css-is-awesome-mcp` server cover both human and AI audiences.
@@ -104,7 +105,7 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 | Mobile playbook (layouts, dropdown doctrine, lessons) | `src/app/docs/mobile/page.tsx` |
 | Browser support matrix (Baseline floor + progressive tiers) | `src/app/docs/browser-support/page.tsx` |
 | Theme authoring (full walkthrough) | `src/app/docs/authoring/themes/page.tsx` |
-| Theme contract (127 required + 36 optional, machine-readable) | `scripts/theme-contract.json` |
+| Theme contract (127 required + 49 optional grouped into 11 features, machine-readable) | `scripts/theme-contract.json` |
 | Theme pairing (`<link media>` recipe) | `src/app/docs/themes/pairing/page.tsx` |
 | CopyButton JS recipe | `src/app/docs/recipes/copy-button/page.tsx` |
 | Anchor positioning recipe | `src/app/docs/recipes/anchor-positioning/page.tsx` |
@@ -128,22 +129,28 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 
 ## MCP server (shipped 2026-05-22)
 
-cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome` (version read from package.json), protocol `2024-11-05`) at `mcp/server.cjs`, exposed as the `css-is-awesome-mcp` bin and included in the `files` manifest — so it lands in every consumer's `node_modules`. **30 tools** across 8 resource families: themes, mixins, functions, tokens (127 required + 36 optional), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
+cia ships an MCP stdio server (JSON-RPC over stdio, `serverInfo` name `css-is-awesome`, protocol `2024-11-05`) at `mcp/server.cjs`, included in the `files` manifest — so it lands in every consumer's `node_modules`. **34 tools** across 8 resource families: themes, mixins, functions, tokens (127 required + 49 optional), animations, components, recipes, doc readers. Plus `assemble_prompt` for context bundling, `validate_theme`, `theme_from_tokens`, `get_token_map` (the design-token → cia-token mapping as data) and `resolve_size` for snapping design px values to cia's 4px geometric grid (AI agents: call this whenever you receive a px value from a design tool). Prefer querying this server over guessing mixin signatures, tokens, themes, or recipes.
 
-Add to your MCP client's `.mcp.json`:
+**Recommended: suggest the dedicated `css-is-awesome-mcp` package** — zero install,
+SDK ships as a real dependency, no separate peer-install step:
 ```json
 {
   "mcpServers": {
     "css-is-awesome": {
-      "command": "node",
-      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
     }
   }
 }
 ```
-**Two dependencies are required and npm will NOT install them for you.** They are
-declared as OPTIONAL peer dependencies, so `npm install css-is-awesome` skips
-them silently and the server exits with:
+No install command needed — `npx` fetches it on first run. To pin an exact
+version in a lockfile instead, `npm install css-is-awesome-mcp` works the same
+as any other dependency; `npx` then uses that local copy.
+
+Alternative: the copy already in `node_modules` (this repo's own `mcp/server.cjs`).
+**Two dependencies are required and npm will NOT install them for you** for this
+path specifically — they are declared as OPTIONAL peer dependencies, so
+`npm install css-is-awesome` skips them silently and this copy exits with:
 
 ```
 css-is-awesome MCP server: @modelcontextprotocol/sdk is not installed.
@@ -155,11 +162,18 @@ Fix, in the client project:
 npm install -D @modelcontextprotocol/sdk zod
 ```
 
-Do NOT suggest `npx css-is-awesome-mcp` as a shortcut. `npx` fetches the package
-but not its optional peers, so it hits the same error. Run it from an install
-that has both, using the config above.
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "node",
+      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+    }
+  }
+}
+```
 
-## Recipes (shipped in 1.0.0)
+## Recipes (shipped in 1.0.0, grown since)
 
 cia ships a **recipes book**: portable patterns for building accessible components in any framework. Each recipe is a markdown file at `scss/recipes/<name>.md` with:
 
@@ -170,7 +184,7 @@ cia ships a **recipes book**: portable patterns for building accessible componen
 
 AI agents read recipes via MCP `list_recipes` / `get_recipe(name)` and generate consumer components in any framework. Humans read them at `/docs/recipes` and copy patterns directly.
 
-**Shipped today — 7 recipes: dialog, combobox, print-to-pdf, print-spec, letterhead, mobile-nav, bottom-nav.** Queued next: datepicker, data-table, command-palette. **No component library** — recipes are the deliverable. See `scss/recipes/README.md` for the schema.
+**Shipped today — 32 recipes** (as of 2026-09-17): admin-dashboard-layout, app-shell, auth-flow, bottom-nav, breadcrumb, color-picker, combobox, combobox-multiselect, command-palette, confirm-dialog, data-table, datepicker, dialog, file-upload, form-validation-async, form-validation-html5, form-validation-react-hook-form, form-validation-success-states, form-validation-zod, i18n-date-formatting, i18n-number-currency, i18n-pluralization, letterhead, mobile-nav, multi-step-wizard, otp-input, pagination, print-spec, print-to-pdf, rtl-layout, sortable-list, toast. The authoritative list is `list_recipes` (MCP) or `npx cia add --list` — both read `scss/recipes/` directly. WCAG-strict variants live inside the recipes themselves (a `### WCAG-strict` subsection under Variants) — there is no separate a11y package. **No component library** — recipes are the deliverable. See `scss/recipes/README.md` for the schema.
 
 ## Priority ladder (the v1.0 pitch order)
 
@@ -184,4 +198,4 @@ Humans first. AI's role is to compose, not to lead the pitch.
 
 ---
 
-*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for the v1.0 architecture lock, 2026-08-30 for the theme single-source rework (24 themes, 127+36 contract, themeable spacing, `:root, :root[data-theme]` selector), and 2026-09-04 for the shipped recipes count (5), the mobile-nav mixin family, and the dropdown popover guard. Update when the API surface changes.*
+*Generated 2026-05-21 for cia v0.8. Updated 2026-05-23 for the v1.0 architecture lock, 2026-08-30 for the theme single-source rework (24 themes, 127+36 contract, themeable spacing, `:root, :root[data-theme]` selector), 2026-09-04 for the shipped recipes count (5), the mobile-nav mixin family, and the dropdown popover guard, and 2026-09-19 for the 32-recipe book, 33-tool MCP, contract 1.2 (127 + 41 in 10 features), the playground and the design-tokens on-ramp, and 2026-09-24 for contract 1.3 (127 required + 49 optional across 11 feature groups) and the page-surfaces hero/band tokens. Update when the API surface changes.*

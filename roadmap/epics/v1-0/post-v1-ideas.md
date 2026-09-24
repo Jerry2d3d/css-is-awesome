@@ -55,6 +55,8 @@ v1.0 ships 5 starter recipes. The next batch closes the shadcn-coverage gap:
 
 ### `@cia/a11y-recipes` add-on package
 
+> **Retired 2026-09-17** — folded into the core recipe book; see [v1-1 EPIC-03](../v1-1/EPIC-03-cia-a11y-recipes.md) for the decision.
+
 A separate npm package that bundles WCAG-strict recipes for the harder cases (combobox with announcement, command palette with focus trap library, datepicker with screen-reader month navigation). Optionally includes tiny JS shims only where the recipe needs them.
 
 **Why deferred from v1.0:** v1.0 recipes ship a11y checklists inline. The add-on becomes valuable once there are enough complex recipes to bundle. Gemini warned against cia becoming a "state machine vendor" — the add-on stays small and recipe-driven, never reinventing Radix/React Aria.

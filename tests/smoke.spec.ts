@@ -1,4 +1,6 @@
 import { test, expect, type ConsoleMessage, type Page } from "@playwright/test";
+import { readdirSync } from "node:fs";
+import path from "node:path";
 import { flatNav } from "../src/app/docs/nav.config";
 
 /**
@@ -17,7 +19,7 @@ import { flatNav } from "../src/app/docs/nav.config";
 
 // Top-level routes we always want smoke-tested. The `/docs` route is also in
 // flatNav (as "Introduction") so we avoid double-counting below.
-const TOP_LEVEL_ROUTES = ["/", "/examples", "/themes"] as const;
+const TOP_LEVEL_ROUTES = ["/", "/examples", "/themes", "/playground"] as const;
 
 const DOCS_ROUTES = flatNav().map((item) => item.href);
 
@@ -44,26 +46,40 @@ const UNLISTED_ROUTES = [
   "/docs/components/modal",
   "/docs/components/tabs",
   "/docs/components/tooltip",
+  // Hand-built recipe pages (no `.md` behind them — see RECIPE_ROUTES for
+  // the markdown-backed ones).
   "/docs/recipes/anchor-positioning",
-  "/docs/recipes/combobox",
   "/docs/recipes/copy-button",
-  "/docs/recipes/dialog",
-  "/docs/recipes/print-to-pdf",
   "/docs/recipes/tabs-aria",
+  // Individual posts are derived from disk — see BLOG_ROUTES below.
   "/blog",
-  "/blog/a-barrel-that-emits-nothing",
-  "/blog/an-mcp-server-for-a-css-library",
-  "/blog/from-0-8-to-1-0",
-  "/blog/print-to-pdf-with-zero-javascript",
-  "/blog/recipes-not-components",
-  "/blog/the-import-in-our-readme-did-not-work",
-  "/blog/the-validator-that-wasnt-looking",
-  "/blog/your-brand-comes-with-you",
 ] as const;
+
+/**
+ * Every markdown-backed recipe page, derived from `scss/recipes/*.md` with the
+ * same skip rule as src/lib/recipes.ts (no `_` prefix, no README). This list
+ * used to be hand-maintained and had silently fallen behind — none of the
+ * batch-2 recipes were ever smoke-tested. Now a new recipe is covered the
+ * moment its `.md` lands.
+ */
+const RECIPE_ROUTES = readdirSync(path.join(process.cwd(), "scss", "recipes"))
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+  .map((f) => `/docs/recipes/${f.replace(/\.md$/, "")}`);
+
+/**
+ * Every blog post, derived from `src/content/blog/*.md` with the same skip
+ * rule as src/lib/blog.ts (no `_` prefix, no README). Same lesson as the
+ * recipes above: the hand-maintained list covered 8 of 18 posts, so the three
+ * Track B discovery posts (EPIC-06) were never smoke-tested. A new post is
+ * now covered the moment its `.md` lands.
+ */
+const BLOG_ROUTES = readdirSync(path.join(process.cwd(), "src", "content", "blog"))
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+  .map((f) => `/blog/${f.replace(/\.md$/, "")}`);
 
 // Dedupe and preserve order (top-level first, then docs, then the rest).
 const ROUTES = Array.from(
-  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES]),
+  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES, ...RECIPE_ROUTES, ...BLOG_ROUTES]),
 );
 
 /**
@@ -72,6 +88,22 @@ const ROUTES = Array.from(
  * entry — if it grows, something real is probably broken.
  */
 const IGNORED_CONSOLE_PATTERNS: RegExp[] = [];
+
+/**
+ * The browser reports a failed resource as a console error whose text never
+ * names the URL ("Failed to load resource: the server responded with a status
+ * of 404"). Under `npx serve out` every page fires ~17 of those for Next's
+ * RSC prefetch payloads (`__next.<route>.__PAGE__.txt?_rsc=…`) — files a
+ * static export never emits, so the request 404s on any static host. That is
+ * a Next static-export quirk, not a broken page, and it made the suite fail
+ * locally at random depending on prefetch timing (documented 2026-09-09).
+ *
+ * So: drop the URL-less console line and judge 404s by URL instead — any
+ * 404 response that is NOT an RSC prefetch payload is still an error, which
+ * keeps a genuinely missing stylesheet, font or image failing the smoke.
+ */
+const RSC_PREFETCH_404 = /[?&]_rsc=|\/__next\.[^/]*__PAGE__\.txt/;
+const RESOURCE_404_TEXT = /status of 404/;
 
 function attachConsoleErrorWatcher(page: Page): { errors: string[] } {
   const errors: string[] = [];
@@ -82,7 +114,14 @@ function attachConsoleErrorWatcher(page: Page): { errors: string[] } {
     if (msg.type() !== "error") return;
     const text = msg.text();
     if (isIgnored(text)) return;
+    if (RESOURCE_404_TEXT.test(text)) return; // judged by URL below instead
     errors.push(text);
+  });
+  page.on("response", (res) => {
+    if (res.status() !== 404) return;
+    const url = res.url();
+    if (RSC_PREFETCH_404.test(url)) return;
+    errors.push(`[404] ${url}`);
   });
   page.on("pageerror", (err) => {
     const text = `[pageerror] ${err.message}`;

@@ -30,6 +30,7 @@ Any change that can break a consumer upgrading blindly.
 | SCSS mixin renamed, removed, or breaking signature change                 | `m.btn($variant)` now requires `$size`                 |
 | SCSS mixin default changes rendered output                                | `m.card()` default radius flips from `md` → `lg`       |
 | Contract: required token renamed or removed                               | `--surface-default` → `--surface-base`                 |
+| Contract: **new required token added** (existing custom themes stop validating) | `--space-unit` added as required in 1.12.0 — a mistake, relaxed in contract 1.1 |
 | Contract: `version` field bumps to a new major (`"1"` → `"2"`)            | Required-token removal in `scripts/theme-contract.json` |
 | Optional-peer floor rises                                                 | `@modelcontextprotocol/sdk` minimum raised             |
 
@@ -42,6 +43,8 @@ Additive, non-breaking changes.
 | New public CSS class                                         | `.cia-grid-auto-fit` added                        |
 | New public SCSS mixin                                        | `m.cluster($gap)` added                           |
 | New optional token added to contract (`"1"` → `"1.1"`)       | `--dropdown-offset-y` added to component section  |
+| Contract metadata added (e.g. the `features` map, `"1.1"` → `"1.2"`, 2026-09-18) | Additive keys — old validators ignore them |
+| Required token relaxed to optional (contract minor bump)      | `--space-unit` required → optional, contract `"1"` → `"1.1"` (2026-09-18) |
 | New theme or recipe shipped                                  | `prism` family added; `mobile-nav` recipe added   |
 | New utility class (`.cia-*`)                                 | `.cia-text-balance` added                         |
 
@@ -67,6 +70,8 @@ While the library was pre-1.0 (`0.x.x`), the rules above applied with one carve-
 2. Called out again in the release notes with a migration snippet.
 
 **`1.0.0` locked the contract** (cut 2026-08-17). Breaking changes now require a MAJOR bump, no exceptions.
+
+`npm run check:contract` (CI-gated since 2026-09-18) diffs `scripts/theme-contract.json` against the last release tag and fails the build when the required/optional lists change without the version bump these tables demand. It exists because 1.12.0 shipped a new *required* token in a MINOR and nothing caught it until a consumer's validator broke.
 
 ---
 

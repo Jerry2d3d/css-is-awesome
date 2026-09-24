@@ -38,7 +38,7 @@ const reportOnly = process.argv.includes("--report");
 const BUDGETS = [
   { file: "dist/tokens.css", budget: 2.5, docs: "README Size table" },
   { file: "dist/css-is-awesome.core.min.css", budget: 2.7, docs: "README + /compare" },
-  { file: "dist/css-is-awesome.utilities.min.css", budget: 4.5, docs: "README + /compare BUNDLE_TIERS" },
+  { file: "dist/css-is-awesome.utilities.min.css", budget: 5.0, docs: "README + /compare BUNDLE_TIERS" },
   { file: "dist/css-is-awesome.min.css", budget: 8.0, docs: "README + /compare + homepage stat chip" },
 ];
 

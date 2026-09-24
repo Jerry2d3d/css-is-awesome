@@ -1,0 +1,129 @@
+@use 'components/feedback' as feedback;
+@use 'components/buttons' as buttons;
+@use 'animations' as a;
+@use 'layout' as layout;
+@use 'mixins' as m;
+
+.triggers {
+  @include layout.cluster($gap: 2);
+  margin-block-end: m.space(3);
+}
+
+.triggerInfo    { @include buttons.btn(info); }
+.triggerSuccess { @include buttons.btn(success); }
+.triggerWarning { @include buttons.btn(warning); }
+.triggerError   { @include buttons.btn(error); }
+
+// The demo stage stands in for the viewport: the region is pinned to ITS
+// bottom-right corner instead of the real viewport's, so toasts never cover
+// the docs site chrome.
+.stage {
+  position: relative;
+  min-block-size: 18rem;
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-md, 8px);
+  background: var(--surface-muted);
+  overflow: hidden;
+}
+
+.stageHint {
+  margin: 0;
+  padding: m.space(3);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.region {
+  position: absolute;
+  inset-block-end: m.space(3);
+  inset-inline-end: m.space(3);
+  inline-size: min(22rem, calc(100% - #{m.space(6)}));
+  pointer-events: none;
+  @include layout.stack($gap: 2);
+}
+
+.toast {
+  @include feedback.toast-base;
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto;
+  align-items: flex-start;
+  border-inline-start: 4px solid var(--toast-accent, var(--info-default));
+  @include a.animate(slide-up, fast);
+
+  &[data-status="info"]    { --toast-accent: var(--info-default); }
+  &[data-status="success"] { --toast-accent: var(--success-default); }
+  &[data-status="warning"] { --toast-accent: var(--warning-default); }
+  &[data-status="error"]   { --toast-accent: var(--error-default); }
+}
+
+.icon {
+  flex: none;
+  inline-size: 1.25rem;
+  text-align: center;
+  color: var(--toast-accent);
+  @include m.font(semibold, 3);
+}
+
+.body {
+  flex: 1;
+  min-inline-size: 0;
+  @include layout.stack($gap: 2xs);
+}
+
+.title {
+  @include m.font(semibold, 2);
+}
+
+.message {
+  color: var(--text-secondary);
+}
+
+.action {
+  @include buttons.btn(ghost);
+  flex: none;
+}
+
+.close {
+  @include buttons.btn-icon($size: 2rem);
+  flex: none;
+  color: var(--text-muted);
+}
+
+// Countdown bar. `--toast-duration` is set per toast from the demo; hover or
+// focus-within pauses it (mirroring the JS timer pause).
+.progress {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  block-size: 3px;
+  inline-size: 100%;
+  background: var(--toast-accent);
+  transform-origin: left;
+  animation: toast-countdown var(--toast-duration, 5s) linear forwards;
+}
+
+.toast:hover .progress,
+.toast:focus-within .progress,
+.toast[data-paused] .progress {
+  animation-play-state: paused;
+}
+
+@keyframes toast-countdown {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
+.status {
+  min-block-size: 1.5em;
+  margin: m.space(3) 0 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}

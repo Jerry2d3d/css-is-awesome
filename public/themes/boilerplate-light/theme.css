@@ -30,10 +30,10 @@
   /* Code — neutral light syntax surface */
   --code-bg: #f8fafc;
   --code-ink: #0f172a;
-  --code-muted: #64748b;
-  --code-accent: #c2410c;
-  --code-green: #15803d;
-  --code-blue: #2563eb;
+  --code-muted: #5e6d84;
+  --code-accent: #c04009;
+  --code-green: #0e7c3a;
+  --code-blue: #2461e9;
   /* Typography — system stacks only (no @import) */
   --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-script: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -119,11 +119,11 @@
   /* Status — success */
   --success-default: #16a34a;
   --success-subtle: #f0fdf4;
-  --success-text: #15803d;
+  --success-text: #0e7c3a;
   /* Status — warning */
   --warning-default: var(--ochre);
   --warning-subtle: var(--ochre-wash);
-  --warning-text: #b45309;
+  --warning-text: #b15003;
   /* Status — error */
   --error-default: var(--shu);
   --error-subtle: var(--shu-wash);
@@ -161,14 +161,21 @@
      var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions. */
+  --space-unit: 0.125rem;
   --space-0: 0;
-  --space-1: 0.5rem;
-  --space-2: 0.75rem;
-  --space-3: 0.875rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 6rem;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #f2f6fe;
+  --page-hero-ink: #0f172a;
+  --page-band-bg: #f7fafe;
+  --page-band-ink: #0f172a;
 }

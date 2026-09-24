@@ -1,0 +1,95 @@
+@use 'components/stepper' as stepper;
+@use 'components/forms' as forms;
+@use 'components/buttons' as buttons;
+@use 'mixins' as m;
+
+.stepper {
+  @include stepper.stepper;
+  margin-block-end: m.space(5);
+}
+
+.stepStatus {
+  @include m.sr-only;
+}
+
+.errorSummary {
+  @include m.pad(3);
+  border-radius: var(--radius-md, 8px);
+  background: var(--error-subtle);
+  color: var(--error-text);
+  margin-block-end: m.space(4);
+  font-size: 0.875rem;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(4);
+  margin-block-end: m.space(5);
+  min-height: 5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(1);
+
+  label {
+    @include m.font(medium, 1);
+  }
+  input {
+    @include forms.input-base;
+  }
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(2);
+  margin: 0;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: m.space(3);
+  }
+  dt {
+    color: var(--text-muted);
+  }
+  dd {
+    margin: 0;
+    @include m.font(medium, 2);
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: m.space(3);
+}
+.backBtn {
+  @include buttons.btn(ghost);
+}
+.nextBtn,
+.submitBtn {
+  @include buttons.btn(primary);
+}
+
+.successPanel {
+  @include m.pad(4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 8px);
+  background: var(--success-subtle);
+  color: var(--success-text);
+  display: flex;
+  flex-direction: column;
+  gap: m.space(3);
+
+  p {
+    margin: 0;
+  }
+}
+.resetBtn {
+  @include buttons.btn(outline);
+  align-self: flex-start;
+}

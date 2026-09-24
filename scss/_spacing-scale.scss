@@ -1,0 +1,25 @@
+// ============================================================================
+// SPACING SCALE — the 9-step scale as calc() over one master unit
+// ============================================================================
+// --space-unit is the density knob (v1.1 EPIC-05): override it — per-theme,
+// from a consumer's own stylesheet, or via the theme editor's density
+// slider — and all 9 steps rescale together, proportionally, at runtime.
+//
+// Multipliers are DERIVED from _system.scss's $spacing-scale (the existing,
+// documented source of truth), not hand-typed a second time. At the default
+// unit (0.125rem) this reproduces every shipped theme's current literal
+// values exactly — verified zero visual diff.
+//
+// A theme (or consumer) can still override a single --space-N with a
+// literal to break the ramp on one step; a literal always wins over calc().
+// ============================================================================
+@use 'sass:math';
+@use './system' as s;
+
+@mixin space-scale($unit: 0.125rem) {
+  --space-unit: #{$unit};
+  --space-0: 0;
+  @each $step, $value in s.$spacing-scale {
+    --space-#{$step}: calc(var(--space-unit) * #{math.div($value, $unit)});
+  }
+}

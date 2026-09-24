@@ -21,6 +21,7 @@ export const docsNav: DocsNavSection[] = [
       { label: "Testing", href: "/docs/testing" },
       { label: "Browser support", href: "/docs/browser-support" },
       { label: "MCP server", href: "/docs/mcp" },
+      { label: "Analyzer", href: "/docs/analyzer" },
     ],
   },
   {
@@ -29,6 +30,7 @@ export const docsNav: DocsNavSection[] = [
       { label: "Composition", href: "/docs/composition" },
       { label: "Mobile", href: "/docs/mobile" },
       { label: "Print", href: "/docs/print" },
+      { label: "RTL", href: "/docs/rtl" },
       { label: "Recipes", href: "/docs/recipes" },
     ],
   },
@@ -44,6 +46,8 @@ export const docsNav: DocsNavSection[] = [
     items: [
       { label: "From Bootstrap", href: "/docs/migration-bootstrap" },
       { label: "From Tailwind", href: "/docs/migration-tailwind" },
+      { label: "From MUI", href: "/docs/migration-mui" },
+      { label: "From Chakra", href: "/docs/migration-chakra" },
     ],
   },
   {

@@ -163,6 +163,7 @@ those names were removed because nothing read them.)
 | `--z-*` | `hide`, `base`, `dropdown`, `sticky`, `fixed`, `backdrop`, `modal`, `popover`, `tooltip`, `toast` |
 | `--duration-*` | `instant`, `fast`, `normal`, `slow`, `slower` |
 | `--opacity-*` | `0` through `100` |
+| `--print-*` | `ink`, `paper`, `line`, `muted` — optional, override in your own `@media print` block to restyle paper (defaults to ink-on-white; see [`CONTRACT.md`](./CONTRACT.md#print-optional)) |
 
 ---
 

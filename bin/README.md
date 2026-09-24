@@ -6,18 +6,18 @@ cia's CLI entry points. **These are the only JavaScript files cia ships** — th
 
 | Bin | File | What it does |
 |---|---|---|
-| `css-is-awesome-mcp` | `../mcp/server.cjs` | MCP stdio server for AI agents (themes, mixins, recipes, etc.) |
-| `cia` | `./cia.cjs` | The CLI router — `migrate` (tailwind/bootstrap), `add` (recipe registry), `analyze` (design-system health) |
+| `cia` | `./cia.cjs` | The CLI router — `migrate` (tailwind/bootstrap/mui/chakra), `add` (recipe registry), `analyze` (design-system health) |
 
-Invoke either via `npx` from a consumer project that has cia installed:
+Invoke via `npx` from a consumer project that has cia installed:
 
 ```bash
-npx css-is-awesome-mcp        # MCP server (stdio; configure via .mcp.json)
 npx cia --help                # CLI help
 npx cia migrate tailwind ./tailwind.config.js
 npx cia add bottom-nav        # copy a recipe into the project — own the pattern
 npx cia analyze src/styles    # health check: dead symbols, space() trap, hex, BEM
 ```
+
+**MCP server is NOT registered here** — `../mcp/server.cjs` ships in the `files` manifest but deliberately has no `bin` entry. It used to (`css-is-awesome-mcp`), but that collided with the separate [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package's own identically-named bin: since that package depends on `css-is-awesome`, npm links both packages' bins into the same `node_modules/.bin/`, and whichever wins is undefined — in practice it silently ran this repo's copy instead of the dedicated package's. Removed here so there's exactly one owner of that command name. Run this in-repo copy directly via `node mcp/server.cjs` (see the README's MCP section for both invocation paths).
 
 ## Subcommand files
 

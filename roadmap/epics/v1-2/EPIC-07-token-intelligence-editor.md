@@ -5,7 +5,8 @@
 > used by buttons, active tabs, links, focus ring") and warn on **contrast**
 > while you edit — turning a color picker into a design-system assistant.
 
-**Status:** Planned (v1.2)
+**Status:** Complete (2026-09-09), except F2.2 which is explicitly deferred
+per its own "ship the list first, the highlight as a follow-on" call.
 **Effort estimate:** ~3-5 working days
 **Stories:** 5
 
@@ -40,31 +41,60 @@ into a reason to pick cia.
 
 ### F1 — The relationship map (data)
 
-- **US-V12.07.1.1** (M) — Build-time script scans `scss/components/*.scss`,
-  `scss/_mixins.scss`, `scss/_layout.scss` for `var(--token)` references and
-  emits a `token → consumers` JSON (which mixins/components read each token).
-  Acceptance: `--primary` lists button/tabs/link/focus-ring consumers; the
-  map is regenerated in the build, not hand-maintained.
-- **US-V12.07.1.2** (S) — CI guard: the map is derived, so a token with **zero**
-  consumers is either dead or a naming bug — surface it (ties into the
-  analyzer's `off-contract-token` thinking).
+- **US-V12.07.1.1** (M) — ✅ DONE 2026-09-09. New
+  `scripts/build-token-consumer-map.mjs` scans `scss/components/*.scss`,
+  `scss/_mixins.scss`, `scss/_layout.scss` and emits
+  `src/lib/generated/token-consumers.json` (committed, like `public/theme.css`
+  — regenerated via `npm run build:token-consumers`, chained into
+  `build:css:all`). Turned out most component code doesn't write literal
+  `var(--token)` at all — it calls a wrapper function (`m.color(ink)` →
+  `var(--ink, …)`, `m.radius(lg)` → `var(--radius-lg, …)`). The script derives
+  a function→token-prefix table by reading `_mixins.scss`'s own `@function`
+  bodies (generic, self-updating), then resolves both patterns. A call with a
+  dynamic argument (`m.color($bg)`, `#{$status}-subtle`) is skipped, not
+  guessed — same stance `bin/analyze.cjs` already takes.
+- **US-V12.07.1.2** (S) — ✅ DONE 2026-09-09, **descoped from the original
+  ask**. New `scripts/check-token-consumer-map.mjs` runs in CI: it hard-fails
+  on drift (committed map vs. freshly regenerated — same class of bug just
+  fixed in `build-theme-bundle.mjs` this session) and prints a zero-consumer
+  report, but **the zero-consumer report never fails the build**, not even
+  behind a flag. Measured on cia's own source: 85 of ~123 required contract
+  tokens — including `--ink`, `--paper`, `--ai`, `--code-bg` — show zero
+  consumers, because the mixins that read them do so through their own
+  parameter (`focus-ring($color: border-focus) { color($color) }`), which the
+  static scanner correctly declines to guess through. A pass/fail gate at that
+  false-positive rate would be permanently red on objectively fine tokens —
+  worse than no gate. The original "surface it" framing survives as an
+  informational list for a human to skim, not a check.
 
 ### F2 — The relationship map (UI)
 
-- **US-V12.07.2.1** (M) — Each editor row gains a "used by" disclosure reading
-  from the map. Acceptance: editing Primary shows its consumer list; the list
-  is keyboard-reachable and doesn't shift layout when opened.
-- **US-V12.07.2.2** (M, OPTIONAL) — Click a consumer → highlight that component
-  in the live preview. Harder (needs preview-node addressing); ship the list
-  first, the highlight as a follow-on.
+- **US-V12.07.2.1** (M) — ✅ DONE 2026-09-09. `RowLabel` (shared by every row
+  type in `ThemeEditorDock/rows.tsx`) gains a "used by N ▸" disclosure reading
+  the generated map. Verified live: `--text-primary` shows "used by 10 ▸",
+  expands to the consumer list, `aria-expanded` on a real `<button>`. Appended
+  below the row content rather than inside its 2-column grid, so it doesn't
+  disturb existing layout.
+- **US-V12.07.2.2** (M, OPTIONAL) — Not built. Click a consumer → highlight
+  that component in the live preview. Deferred per the epic's own call —
+  ship the list first, the highlight as a follow-on.
 
 ### F3 — Live contrast
 
-- **US-V12.07.3.1** (M) — Reuse `theme-a11y.js`'s ratio computation client-side
-  for the key ink-on-surface pairs; show the live ratio on color rows and a
-  warning below AA (with the exact "needs 4.5:1" copy and a nearest-passing
-  suggestion). Acceptance: dropping `--ink` toward `--surface` trips the
-  warning at the WCAG boundary; the suggestion, applied, passes.
+- **US-V12.07.3.1** (M) — ✅ DONE 2026-09-09. Color rows show a live ratio
+  against the relevant `AUDIT_PAIRS` partner, with a `needs 4.5:1` warning and
+  a one-click "use #hex" nearest-passing suggestion when failing. `AUDIT_PAIRS`
+  is now a genuinely shared file (`scripts/audit-pairs.json`, imported by both
+  `scripts/theme-a11y.js` for CI and `src/lib/contrast.ts` for the browser).
+  The relative-luminance/contrast-ratio **math** is a deliberate TS port, not
+  a live import — `tsconfig.json` sets `allowJs: false`, so importing a CJS
+  `.js` module into `.ts` needs a fragile ambient `declare module` shim; the
+  math is WCAG's fixed spec, not something that drifts, so porting it once
+  and verifying it byte-matches `theme-a11y.js` on the same test cases (done)
+  was the lower-risk call than adding that shim. Verified live: setting
+  `--text-primary` to Paper's own colour shows `1.00:1 — needs 4.5:1 — use
+  #716f6b`; clicking it sets the value and the readout flips to `4.53:1 —
+  passes 4.5:1`.
 
 ## What changes
 
@@ -95,7 +125,10 @@ into a reason to pick cia.
 
 Editing a token shows its direct consumers from a build-derived map; color
 rows show a live WCAG ratio and warn below AA with a passing suggestion; the
-contrast math is shared with CI; the npm package remains zero-JS.
+contrast **pairs** are shared with CI (the math is a verified TS port, see F3
+above — `allowJs: false` made a live cross-runtime import impractical); the
+npm package remains zero-JS. **Met 2026-09-09**, F2.2 excluded per its own
+deferral.
 
 ## Related
 

@@ -41,7 +41,7 @@
   @include m.font(reg, 2);
 
   th, td {
-    text-align: left;
+    text-align: start;
     padding: m.space(if(sass($compact): 1; else: 2)) m.space(if(sass($compact): 2; else: 4));
     border-bottom: 1px solid m.color(border-default);
   }
@@ -184,7 +184,7 @@
   display: flex;
 
   > * + * {
-    margin-left: $overlap;
+    margin-inline-start: $overlap;
     border: 2px solid m.color(surface-default);
   }
 }

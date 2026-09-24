@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Example from "@/components/Example";
 
 export default function McpPage() {
@@ -14,8 +15,46 @@ export default function McpPage() {
 
       <h2 id="setup">Setup</h2>
       <p>
-        Add cia to your client&rsquo;s <code>.mcp.json</code>:
+        <strong>Recommended — zero install.</strong> Use the dedicated{" "}
+        <code>css-is-awesome-mcp</code> package. It depends on{" "}
+        <code>css-is-awesome</code> and always resolves your installed
+        version&rsquo;s real source, and the MCP SDK ships as a real
+        dependency — no separate install step:
       </p>
+      <Example>
+        <Example.Code>{`{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
+    }
+  }
+}`}</Example.Code>
+      </Example>
+      <p>
+        No install command needed — <code>npx</code> fetches and caches the
+        package the first time your MCP client runs it. Prefer a pinned
+        version in your own lockfile instead? Install it like any other
+        dependency:
+      </p>
+      <Example>
+        <Example.Code>{`npm install css-is-awesome-mcp`}</Example.Code>
+      </Example>
+      <p>
+        <code>npx</code> then runs the locally installed copy instead of
+        fetching one.
+      </p>
+      <p>
+        <strong>Alternative — the copy already in your <code>node_modules</code>.</strong>{" "}
+        cia&rsquo;s own package ships <code>mcp/server.cjs</code> too, for anyone
+        who&rsquo;d rather not add a second package. This copy needs its SDK
+        installed manually first, since it&rsquo;s an{" "}
+        <strong>optional peer dependency</strong> (so a plain CSS-only install
+        never pulls JS in):
+      </p>
+      <Example>
+        <Example.Code>{`npm install -D @modelcontextprotocol/sdk zod`}</Example.Code>
+      </Example>
       <Example>
         <Example.Code>{`{
   "mcpServers": {
@@ -26,21 +65,8 @@ export default function McpPage() {
   }
 }`}</Example.Code>
       </Example>
-      <p>
-        Or run it directly via the wired-in <code>bin</code>:
-      </p>
-      <Example>
-        <Example.Code>{`npx css-is-awesome-mcp`}</Example.Code>
-      </Example>
-      <p>
-        The MCP SDK is an <strong>optional peer dependency</strong> — install it
-        in the client&rsquo;s project if you want to actually run the server:
-      </p>
-      <Example>
-        <Example.Code>{`npm install -D @modelcontextprotocol/sdk zod`}</Example.Code>
-      </Example>
 
-      <h2 id="tools">Tools — 30 total: 28 across 8 families + 2 specialty tools</h2>
+      <h2 id="tools">Tools — 34 total: 28 across 8 families + 6 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -96,7 +122,7 @@ export default function McpPage() {
               <code>search_tokens</code>
             </td>
             <td>
-              127 required + 36 optional contract tokens. <code>get_token</code>{" "}
+              127 required + 49 optional contract tokens. <code>get_token</code>{" "}
               returns sample values across themes plus the list of
               mixins/functions that reference it
             </td>
@@ -130,8 +156,9 @@ export default function McpPage() {
             </td>
             <td>
               Recipes under <code>scss/recipes/</code> — both markdown pattern
-              recipes (dialog, combobox, print-to-pdf) and opt-in SCSS recipes
-              (e.g. bare-tags, consumed via <code>@use</code>)
+              recipes (dialog, combobox, print-to-pdf, print-spec, letterhead,
+              mobile-nav, bottom-nav) and opt-in SCSS recipes (e.g. bare-tags,
+              consumed via <code>@use</code>)
             </td>
           </tr>
           <tr>
@@ -170,6 +197,18 @@ export default function McpPage() {
         <li>
           <code>theme:&lt;name&gt;</code> — the theme&rsquo;s tokens + SCSS
           source (e.g. <code>theme:terminal</code>)
+        </li>
+        <li>
+          <code>derive-theme:&lt;base&gt;</code> — everything needed to
+          hand-build a new theme file from an existing one in one round
+          trip: the base theme&rsquo;s full source (the correct starting
+          template — copy it, edit only what changes), the{" "}
+          <code>theme()</code> mixin&rsquo;s wrapper contract, the
+          required/optional token checklist, and the rules for doing it
+          safely. This server never writes files — the response is
+          everything an agent needs to build the content and write it
+          itself (e.g. <code>derive-theme:sketchbook</code> to start a new
+          theme from Sketchbook)
         </li>
         <li>
           <code>tokens</code> — the full token contract
@@ -220,6 +259,150 @@ resolve_size({ px: 17 })
 // design intent specifically requires the off-grid value.`}</Example.Code>
       </Example>
 
+      <h2 id="validate-theme">
+        <code>validate_theme</code>
+      </h2>
+      <p>
+        Validate ANY theme CSS against cia&rsquo;s real token contract and
+        WCAG contrast audit — the same check{" "}
+        <code>npm run validate-themes</code> runs, exposed as a tool call
+        instead of a shell command. Not scoped to cia&rsquo;s own shipped
+        themes: pass a fully custom theme you (or another agent) just
+        built — for example, the output of the{" "}
+        <code>derive-theme:&lt;base&gt;</code> <code>assemble_prompt</code>{" "}
+        intent above — and get back a real pass/fail before you write it
+        anywhere.
+      </p>
+      <p>
+        Pass compiled CSS (a <code>:root</code> or{" "}
+        <code>[data-theme=&quot;...&quot;]</code> block) — this does not
+        compile Sass, so give it the output, not <code>.scss</code> source.
+      </p>
+      <Example>
+        <Example.Code>{`validate_theme({ css: theCssYouJustBuilt, label: "boilerplatev2" })
+// →  { ok: false, mode: "consolidated",
+//      themes: [{ name: "boilerplatev2", ok: false,
+//        missing: ["--space-unit", "--space-0"], a11y: [...] }] }
+//
+// ok: false means required tokens are missing, or an a11y pair failed —
+// fix and re-validate before writing the file anywhere.`}</Example.Code>
+      </Example>
+
+      <h2 id="theme-from-tokens">
+        <code>theme_from_tokens</code>
+      </h2>
+      <p>
+        Turn a design-tokens file into a complete, validated cia theme in one
+        call. Accepts <strong>DTCG v2025.10</strong> (<code>$value</code> /{" "}
+        <code>$type</code> leaves, <code>{"{aliases}"}</code> resolved),{" "}
+        <strong>Tokens Studio for Figma</strong> exports (<code>value</code> /{" "}
+        <code>type</code> leaves, single set or multi-set with{" "}
+        <code>$metadata.tokenSetOrder</code>), or a flat{" "}
+        <code>{"{ \"--token\": value }"}</code> map. The format is auto-detected.
+      </p>
+      <p>
+        There is no minimum content. Every required contract token the file does
+        not supply is inherited from a shipped base theme (default{" "}
+        <code>boilerplate</code>) and listed in <code>report.inherited</code>, so
+        the output is always contract-complete; paths that are not cia tokens are
+        emitted verbatim and listed in <code>report.unmapped</code>, never
+        dropped. Pass <code>dark</code> (same format), or a single file with
+        paired <code>color-light</code> / <code>color-dark</code> groups, and the
+        differing colours become <code>light-dark()</code>. The result carries
+        the same <code>validation</code> object <code>validate_theme</code>{" "}
+        returns, run on the CSS before you write it anywhere. Same function as{" "}
+        <code>npx cia theme from-tokens</code>, and reachable in-process as{" "}
+        <code>handlers.theme_from_tokens</code>.
+      </p>
+      <Example>
+        <Example.Code>{`theme_from_tokens({
+  name: "acme",
+  tokens: {                                   // DTCG v2025.10
+    color: { brand: { primary: { $value: "#3a5fcd" } },
+             text:  { primary: { $value: "#0f172a" } } },
+    space: { "4": { $type: "dimension", $value: { value: 16, unit: "px" } } }
+  }
+})
+// →  { css: ':root, :root[data-theme="acme"] { color-scheme: light; --action-primary-active: …',
+//      report: { format: "dtcg", base: "boilerplate", darkMode: false,
+//                fromTokens: ["--brand-primary", "--space-4", "--text-primary"],
+//                inherited: [ …the other 124 required tokens… ], unmapped: [] },
+//      validation: { ok: true, mode: "consolidated", themes: [ … ], a11ySummary: { fail: 0, … } } }`}</Example.Code>
+      </Example>
+      <p>
+        Path rules: an explicit table covers Figma-style names that do not spell
+        the cia token (<code>typography.font.body</code> →{" "}
+        <code>--font-sans</code>); otherwise a leading <code>color.</code> is
+        stripped, common group names are rewritten (<code>spacing.</code> →{" "}
+        <code>space.</code>, <code>border-radius.</code> → <code>radius.</code>,{" "}
+        <code>zIndex.</code> → <code>z.</code>), and the segments are joined with{" "}
+        <code>-</code> — so <code>space.4</code> → <code>--space-4</code> and{" "}
+        <code>brand.primary</code> → <code>--brand-primary</code>. Full contract in
+        the <Link href="/docs/authoring/themes#from-design-tokens">theme authoring guide</Link>.
+      </p>
+
+      <h2 id="get-token-map">
+        <code>get_token_map</code>
+      </h2>
+      <p>
+        The mapping <code>theme_from_tokens</code> applies, as <strong>data</strong>, so a
+        second implementation (a boilerplate registry, an inventory builder, another agent)
+        maps the same source token the same way without re-deriving the rules. Without{" "}
+        <code>path</code> it returns the whole map: the explicit table, the prefix rewrites
+        (as regex sources), the generic rule in one paragraph, and the contract&rsquo;s
+        required and optional token lists. With <code>path</code> it returns how that one
+        name resolves, plus the contract&rsquo;s view of the target. Same data as{" "}
+        <code>npx cia theme map --json</code>; reachable in-process as{" "}
+        <code>handlers.get_token_map</code>.
+      </p>
+      <Example>
+        <Example.Code>{`get_token_map({ path: "spacing.4" })
+// →  { path: "spacing.4", token: "--space-4", mapped: true, via: "generic",
+//      status: "required", required: true, feature: null, category: "space" }
+
+get_token_map({ path: "typography.size.lg" })
+// →  { token: "--typography-size-lg", mapped: false, via: "passthrough", status: null, … }
+//     (cia's type scale is a Sass map, not tokens — the path is carried verbatim)
+
+get_token_map()
+// →  { generatorVersion, contractVersion: "1.2",
+//      explicit: { "typography.font.body": "--font-sans", …115 entries },
+//      aliases: [{ pattern: "^colors?\\.", replaceWith: "" }, …20],
+//      genericRule: "If a path is not in explicit …",
+//      targets: { required: [ …127 ], optional: [ …41 ] } }`}</Example.Code>
+      </Example>
+
+      <h2 id="fix-theme">
+        <code>fix_theme</code>
+      </h2>
+      <p>
+        Upgrade a theme that still uses a <strong>deprecated</strong> token. cia
+        deprecates rather than deletes, so the old declaration keeps resolving — but
+        there is a better name now, and this rewrites it. Only the property moves:
+        values, comments, ordering and whitespace survive byte-for-byte, so applying
+        it cannot change how the theme renders. A block that already declares the
+        replacement is reported as a conflict and left alone, because choosing between
+        two values is a judgement call.
+      </p>
+      <p>
+        <strong>It never writes to disk.</strong> It returns text and the caller
+        decides — the same contract as <code>theme_from_tokens</code>. The result
+        carries <code>applied: false</code> precisely so an agent cannot report
+        &ldquo;I updated your theme&rdquo; when nothing was saved. Same function as{" "}
+        <code>npx cia fix-theme</code>; reachable in-process as{" "}
+        <code>handlers.fix_theme</code>.
+      </p>
+      <Example>
+        <Example.Code>{`fix_theme({ css: ":root { --background-hero: #eee; }" })
+// →  { css: ":root { --page-hero-bg: #eee; }",
+//      changes: [{ line: 1, from: "--background-hero", to: "--page-hero-bg",
+//                  kind: "rewrite", reason: "…deprecated since contract 1.3…" }],
+//      unchanged: false, applied: false,
+//      summary: "1 declaration(s) renamed. Write the returned css yourself…" }
+
+fix_theme({ css: ":root { --page-hero-bg: #eee; }" })
+// →  { unchanged: true, changes: [], summary: "No deprecated tokens found …" }`}</Example.Code>
+      </Example>
       <h2 id="security">Security + portability</h2>
       <p>
         Discovery is pure filesystem scan. The server reads files inside the
@@ -231,9 +414,22 @@ resolve_size({ px: 17 })
 
       <h2 id="versioning">Versioning</h2>
       <p>
-        The MCP server ships in the cia package itself; its version is cia&rsquo;s
-        version. When cia&rsquo;s mixin API changes, the server reports the new
-        API on the next read. No separate semver, no client config to update.
+        Two ways to run this server, two versioning stories. The in-repo copy
+        (<code>mcp/server.cjs</code>) ships inside the cia package itself, so
+        its <code>serverInfo.version</code> is cia&rsquo;s own version — when
+        cia&rsquo;s mixin API changes, it reports the new API on the next
+        read, no separate semver, no client config to update.
+      </p>
+      <p>
+        The dedicated{" "}
+        <code>css-is-awesome-mcp</code> package tracks its own, independent
+        release cadence instead (packaging fixes don&rsquo;t need a cia
+        release, and vice versa) — its{" "}
+        <code>serverInfo.version</code> reports its own version, not
+        cia&rsquo;s. It always resolves whatever version of{" "}
+        <code>css-is-awesome</code> you actually have installed as a real
+        dependency, so the mixin data it serves is never stale even though
+        the version number reported is a different one.
       </p>
     </>
   );

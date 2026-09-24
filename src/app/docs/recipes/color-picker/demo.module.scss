@@ -1,0 +1,127 @@
+@use 'mixins' as m;
+@use 'components/forms' as forms;
+@use 'layout' as layout;
+
+/* Live demo styling for the color-picker recipe — the same mixin calls the
+   recipe's Styling section documents, against the docs site's own class
+   names. The swatch's colour arrives on the element as `--swatch` (a data
+   binding set by the component), and is consumed here, never set inline. */
+
+.demo {
+  @include layout.stack(5);
+  margin-block-end: m.space(5);
+}
+
+.block {
+  @include layout.stack(3);
+}
+
+.blockTitle {
+  margin: 0;
+  @include m.font(semibold, 3);
+}
+
+.myColor {
+  @include layout.stack(3);
+  max-inline-size: 22rem;
+}
+
+.label {
+  @include forms.label-base;
+}
+
+.row {
+  @include layout.cluster(2);
+}
+
+/* Native variant: the swatch button is the only styleable part */
+.native {
+  @include forms.input-base;
+  inline-size: 3rem;
+  block-size: 2.5rem;
+  padding: m.space(2xs);
+  cursor: pointer;
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  &::-webkit-color-swatch {
+    border: 0;
+    border-radius: m.radius(sm);
+  }
+  &::-moz-color-swatch {
+    border: 0;
+    border-radius: m.radius(sm);
+  }
+}
+
+.text {
+  @include forms.input-base;
+  font-family: var(--font-mono, monospace);
+  flex: 1;
+  min-inline-size: 0;
+
+  &[aria-invalid="true"] {
+    border-color: var(--error-default);
+  }
+}
+
+/* Custom variant */
+.preview {
+  @include layout.cluster(3);
+}
+
+.swatch {
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: m.radius(md);
+  border: 1px solid var(--border-default);
+  box-shadow: m.shadow(1);
+  background: var(--swatch);
+  /* Checkerboard under the colour so alpha is visible */
+  background-image: linear-gradient(var(--swatch), var(--swatch)),
+    repeating-conic-gradient(var(--surface-muted) 0 25%, var(--surface-default) 0 50%);
+  background-size: 100% 100%, 0.75rem 0.75rem;
+}
+
+.readout {
+  @include layout.stack(1);
+}
+
+.value {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.nearest {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.field {
+  @include layout.stack(1);
+
+  > span {
+    @include forms.label-base($size: 1, $color: text-secondary);
+  }
+}
+
+.range {
+  @include forms.slider-base;
+
+  /* Hue gets a real rainbow track so the slider explains itself */
+  &[id$='hue'] {
+    &::-webkit-slider-runnable-track,
+    &::-moz-range-track {
+      background: linear-gradient(in oklch longer hue, oklch(70% 0.15 0), oklch(70% 0.15 360));
+    }
+  }
+}
+
+.error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--error-text);
+}

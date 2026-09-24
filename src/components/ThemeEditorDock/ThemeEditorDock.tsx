@@ -8,13 +8,16 @@ import {
   type Category,
   type TokenSpec,
 } from "./catalog";
-import { ColorRow, FontRow, LengthRow, NumberRow, StringRow } from "./rows";
+import { ColorRow, FontRow, LengthRow, NumberRow, StringRow, type Contrast } from "./rows";
 import PrintPreviewModal from "./PrintPreviewModal";
+import { AUDIT_PAIRS, parseColor, contrastRatio, nearestPassingColor } from "@/lib/contrast";
 import { setTheme, useThemeAttribute } from "@/lib/themeState";
 import {
   extractDataThemeBlocks,
+  extractPrefersDarkOverrides,
   extractRootBlock,
   isConsolidated,
+  splitLightDark,
   type ParsedBlock,
 } from "@/lib/theme-parse";
 import {
@@ -28,6 +31,9 @@ import {
 } from "@/lib/theme-share";
 
 type Mode = "light" | "dark";
+// Readable label for a token, for the live-contrast readout's "vs Paper"
+// text. Built once at module scope — CATALOG doesn't change at runtime.
+const LABEL_BY_TOKEN = new Map(CATALOG.map((s) => [s.token, s.label]));
 const STYLE_TAG_ID = "cia-theme-overrides";
 const STORAGE_KEY = "cia-theme-overrides";
 // Paginate when a sub-page has more groups than this. Keeps the scroll
@@ -75,15 +81,23 @@ function getMode(theme: string): Mode {
 }
 
 // Build the override <style> string from current overrides.
+//
+// Selector MUST be `:root[data-theme="…"]`, not the bare attribute — every
+// shipped theme (scss/_mixins.scss's theme() mixin) emits
+// `:root, :root[data-theme="name"]`, which is specificity (0,2,0). A bare
+// `[data-theme="…"]` override is only (0,1,0) and LOSES to the base theme
+// regardless of DOM order (specificity is compared before source order) —
+// found 2026-09-10 while verifying the density-knob slider: every row in
+// the dock, not just spacing, was silently failing to visually apply.
 function buildCSS(family: string, ov: OverridesByMode): string {
   const lightLines = Object.entries(ov.light).map(([k, v]) => `  ${k}: ${v};`);
   const darkLines = Object.entries(ov.dark).map(([k, v]) => `  ${k}: ${v};`);
   let css = "";
   if (lightLines.length) {
-    css += `[data-theme="${family}-light"] {\n${lightLines.join("\n")}\n}\n`;
+    css += `:root[data-theme="${family}-light"] {\n${lightLines.join("\n")}\n}\n`;
   }
   if (darkLines.length) {
-    css += `[data-theme="${family}-dark"] {\n${darkLines.join("\n")}\n}\n`;
+    css += `:root[data-theme="${family}-dark"] {\n${darkLines.join("\n")}\n}\n`;
   }
   return css;
 }
@@ -108,7 +122,18 @@ function readDefault(token: string, themeId: string): string {
   probe.style.pointerEvents = "none";
   probe.setAttribute("data-theme", themeId);
   document.body.appendChild(probe);
-  const v = getComputedStyle(probe).getPropertyValue(token).trim();
+  let v = getComputedStyle(probe).getPropertyValue(token).trim();
+  // getPropertyValue() textually substitutes var() references but does NOT
+  // arithmetically resolve calc() — a token like --space-1
+  // (calc(var(--space-unit) * 4), see v1.1 EPIC-05) comes back as the literal
+  // string "calc(0.125rem * 4)", not "0.5rem". Rows that expect a plain
+  // number (length/duration/number types) would show that raw text or NaN.
+  // Force real resolution by letting an actual CSS length property consume
+  // it — that DOES evaluate calc() — then read the result back.
+  if (v.includes("calc(")) {
+    probe.style.paddingInlineStart = `var(${token})`;
+    v = getComputedStyle(probe).paddingInlineStart;
+  }
   probe.remove();
   return v;
 }
@@ -189,6 +214,12 @@ function buildDownloadCSS(
     ` * Drop in as theme.css — no markup change needed.\n` +
     ` * To switch between several themes, load them together and set\n` +
     ` *   <html data-theme="${name}">\n` +
+    ` *\n` +
+    ` * --space-unit is the density knob. In this downloaded snapshot every\n` +
+    ` * token below — including --space-0..9 — is a plain literal (the editor\n` +
+    ` * always exports resolved values, same as every other token). To keep\n` +
+    ` * the knob live in your own fork, replace the nine --space-N lines with\n` +
+    ` * calc(var(--space-unit) * N) — see scss/_spacing-scale.scss upstream.\n` +
     ` */\n\n`;
   let body =
     `${selector} {\n  color-scheme: light dark;\n${tokenLines.join("\n")}\n}\n`;
@@ -464,6 +495,20 @@ export default function ThemeEditorDock() {
   //   1. A pair sharing a base name that matches the active family.
   //   2. Otherwise the first complete pair.
   //   3. Otherwise the first block (single-mode import to active tab).
+  // Groups parsed blocks by base name (stripping a -light/-dark suffix) and
+  // picks the best pair for the currently-edited family, preferring an
+  // exact family match, then any base with both a light and dark block.
+  //
+  // An UNSUFFIXED block (cia's real shipped shape — one
+  // `:root, :root[data-theme="<name>"]` block per theme, both modes inside
+  // via `light-dark()`) is assigned to BOTH light and dark, pointing at the
+  // SAME block object — never gated on which editor tab happens to be open.
+  // tabMode is UI state, not a property of the file being parsed; using it
+  // here silently dropped the other mode's data on every import of a
+  // standard single-file theme (the common case), regardless of whether
+  // the file's own name matched the currently-edited family. The caller
+  // detects `light === dark` (same reference) to know it needs to split
+  // light-dark() values out of that one shared block.
   function pickPair(blocks: ParsedBlock[]): {
     base: string;
     light?: ParsedBlock;
@@ -478,7 +523,7 @@ export default function ThemeEditorDock() {
       const entry = byBase.get(base) ?? {};
       if (mode === "light") entry.light = b;
       else if (mode === "dark") entry.dark = b;
-      else entry.light = entry.light ?? b; // unsuffixed: treat as light placeholder
+      else { entry.light = b; entry.dark = b; }
       byBase.set(base, entry);
     }
 
@@ -490,11 +535,7 @@ export default function ThemeEditorDock() {
       if (entry.light && entry.dark) return { base, ...entry };
     }
     const first = blocks[0];
-    return {
-      base: baseNameOf(first.name ?? ""),
-      light: tabMode === "light" ? first : undefined,
-      dark: tabMode === "dark" ? first : undefined,
-    };
+    return { base: baseNameOf(first.name ?? ""), light: first, dark: first };
   }
 
   function applyImport(baseName: string, light?: Map<string, string>, dark?: Map<string, string>) {
@@ -506,6 +547,34 @@ export default function ThemeEditorDock() {
     if (baseName) setNameInput(baseName);
   }
 
+  // Splits a block's raw values into real light/dark maps: light-dark(A, B)
+  // values split into A/B, mode-invariant values (radius, font, spacing,
+  // duration, …) applied to both unchanged. Used whenever only ONE block's
+  // worth of source data is available for both modes — cia's real shipped
+  // theme shape (one :root[data-theme] block per theme, not a pair of
+  // -light/-dark files).
+  function splitBlockValues(values: Map<string, string>): {
+    light: Map<string, string>;
+    dark: Map<string, string>;
+    splitCount: number;
+  } {
+    const light = new Map<string, string>();
+    const dark = new Map<string, string>();
+    let splitCount = 0;
+    for (const [token, raw] of values) {
+      const split = splitLightDark(raw);
+      if (split) {
+        light.set(token, split.light);
+        dark.set(token, split.dark);
+        splitCount++;
+      } else {
+        light.set(token, raw);
+        dark.set(token, raw);
+      }
+    }
+    return { light, dark, splitCount };
+  }
+
   async function importTheme(file: File) {
     setImportMsg(null);
     try {
@@ -514,6 +583,19 @@ export default function ThemeEditorDock() {
         setImportMsg({ kind: "err", text: "File is empty." });
         return;
       }
+      // Dark-mode overrides for NON-color tokens live in a separate
+      // `@media (prefers-color-scheme: dark)` block in files the editor's
+      // own Download button produces (emitTokenLines only uses light-dark()
+      // for color tokens). Neither branch below looks inside @media blocks
+      // on its own, so compute this once and layer it over whichever dark
+      // map each branch builds — it always wins, since it's an explicit
+      // dark-only override, not a guess.
+      const mediaDark = extractPrefersDarkOverrides(text);
+      const mergeMediaDark = (dark: Map<string, string>) => {
+        for (const [k, v] of mediaDark) dark.set(k, v);
+        return dark;
+      };
+
       if (isConsolidated(text)) {
         const blocks = extractDataThemeBlocks(text);
         if (blocks.length === 0) {
@@ -521,9 +603,23 @@ export default function ThemeEditorDock() {
           return;
         }
         const { base, light, dark } = pickPair(blocks);
-        applyImport(base, light?.values, dark?.values);
-        const which = light && dark ? "light + dark" : light ? "light only" : "dark only";
-        setImportMsg({ kind: "ok", text: `Imported "${base}" (${which}, ${blocks.length} block${blocks.length === 1 ? "" : "s"} in file).` });
+        const mediaNote = mediaDark.size ? `, ${mediaDark.size} dark-only via @media` : "";
+        if (light && dark && light !== dark) {
+          // Genuinely separate light/dark blocks (the older two-file-per-mode
+          // shape) — each already holds real per-mode values, use directly.
+          applyImport(base, light.values, mergeMediaDark(new Map(dark.values)));
+          setImportMsg({ kind: "ok", text: `Imported "${base}" (light + dark, ${blocks.length} block${blocks.length === 1 ? "" : "s"} in file${mediaNote}).` });
+        } else if (light || dark) {
+          // Same block for both (cia's real shipped shape: one combined
+          // block, values may use light-dark()) — split it into both modes
+          // instead of only the block "light" happens to alias to.
+          const only = (light ?? dark)!;
+          const { light: lv, dark: dv, splitCount } = splitBlockValues(only.values);
+          applyImport(base, lv, mergeMediaDark(dv));
+          setImportMsg({ kind: "ok", text: `Imported "${base}" into both modes (${only.values.size} tokens, ${splitCount} via light-dark()${mediaNote}).` });
+        } else {
+          setImportMsg({ kind: "err", text: 'No [data-theme="…"] blocks parsed.' });
+        }
         return;
       }
       const block = extractRootBlock(text);
@@ -532,14 +628,16 @@ export default function ThemeEditorDock() {
         return;
       }
       const base = sanitizeName(nameInput, `${family}-custom`);
-      applyImport(
-        base,
-        tabMode === "light" ? block.values : undefined,
-        tabMode === "dark" ? block.values : undefined,
-      );
+      // A bare `:root` block with no [data-theme] at all — same "one block,
+      // both modes inside via light-dark()" shape as above, just without a
+      // data-theme selector wrapping it.
+      const { light: lightValues, dark: darkValues, splitCount } = splitBlockValues(block.values);
+      mergeMediaDark(darkValues);
+      applyImport(base, lightValues, darkValues);
+      const mediaNote = mediaDark.size ? `, ${mediaDark.size} dark-only via @media` : "";
       setImportMsg({
         kind: "ok",
-        text: `Imported :root block into ${tabMode} mode (${block.values.size} tokens).`,
+        text: `Imported :root block into both modes (${block.values.size} tokens, ${splitCount} via light-dark()${mediaNote}).`,
       });
     } catch (err) {
       setImportMsg({ kind: "err", text: err instanceof Error ? err.message : "Import failed." });
@@ -560,6 +658,63 @@ export default function ThemeEditorDock() {
     return map;
   }, []);
 
+  // The current live value of ANY color token (not just the one a row is
+  // rendering) — same override/default resolution rowFor() uses for its own
+  // spec, generalized so contrastFor() below can read a pair partner's value
+  // too (e.g. --paper while rendering the --text-primary row).
+  function resolveColorToken(token: string): string {
+    const spec = CATALOG.find((s) => s.token === token && s.type === "color");
+    if (!spec) return "";
+    const bucket = spec.mode === "shared" ? overrides.light : overrides[tabMode];
+    const defaultBucket = spec.mode === "shared" ? defaultsByMode.light : defaultsByMode[tabMode];
+    return bucket[spec.token] || defaultBucket[spec.token] || "";
+  }
+
+  // Live contrast for a color row: the worst AUDIT_PAIRS match involving this
+  // token (as fg primarily; as bg only if it has no fg role, capped to one,
+  // so --paper doesn't sprout a dozen readouts). Unparsable/unsupported
+  // colors (an in-progress draft, oklch, etc.) simply produce no readout —
+  // same "stay quiet rather than guess" stance as the rest of the dock.
+  function contrastFor(token: string): Contrast | undefined {
+    const asFg = AUDIT_PAIRS.filter((p) => p.fg === token);
+    const pairs = asFg.length ? asFg : AUDIT_PAIRS.filter((p) => p.bg === token).slice(0, 1);
+    if (!pairs.length) return undefined;
+
+    let worst: { ratio: number; required: number; bgToken: string; bgLabel: string; fgHex: string; bgHex: string } | null = null;
+    for (const pair of pairs) {
+      const isFg = pair.fg === token;
+      const otherToken = isFg ? pair.bg : pair.fg;
+      const fgHex = resolveColorToken(isFg ? token : otherToken);
+      const bgHex = resolveColorToken(isFg ? otherToken : token);
+      if (!fgHex || !bgHex) continue;
+      try {
+        const ratio = contrastRatio(parseColor(fgHex), parseColor(bgHex));
+        if (!worst || ratio < worst.ratio) {
+          worst = {
+            ratio,
+            required: pair.required,
+            bgToken: otherToken,
+            bgLabel: LABEL_BY_TOKEN.get(otherToken) ?? otherToken,
+            fgHex: isFg ? fgHex : bgHex,
+            bgHex: isFg ? bgHex : fgHex,
+          };
+        }
+      } catch {
+        // unsupported/unparsable color — no readout for this pair
+      }
+    }
+    if (!worst) return undefined;
+
+    const passes = worst.ratio + 1e-6 >= worst.required;
+    return {
+      ratio: worst.ratio,
+      required: worst.required,
+      passes,
+      bgLabel: worst.bgLabel,
+      suggestion: passes ? null : nearestPassingColor(worst.fgHex, worst.bgHex, worst.required),
+    };
+  }
+
   function rowFor(spec: TokenSpec) {
     const bucket = spec.mode === "shared" ? overrides.light : overrides[tabMode];
     const value = bucket[spec.token] ?? "";
@@ -574,7 +729,7 @@ export default function ThemeEditorDock() {
     };
 
     switch (spec.type) {
-      case "color":    return <ColorRow key={spec.token} {...props} />;
+      case "color":    return <ColorRow key={spec.token} {...props} contrast={contrastFor(spec.token)} />;
       case "length":   return <LengthRow key={spec.token} {...props} />;
       case "duration": return <LengthRow key={spec.token} {...props} />;
       case "number":   return <NumberRow key={spec.token} {...props} />;

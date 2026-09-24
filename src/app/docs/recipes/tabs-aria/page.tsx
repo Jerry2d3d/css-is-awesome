@@ -1,10 +1,12 @@
 import Example from "@/components/Example";
 import Badge from "@/components/Badge";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export default function TabsAriaRecipePage() {
   return (
     <>
       <h1>Recipe — Tabs aria-selected sync</h1>
+      <TryInPlayground slug="tabs-aria" />
       <p className="lead">
         cia&rsquo;s <a href="/docs/components/tabs">Tabs</a> ship CSS-only — radio + label + <code>:has()</code>{" "}
         handle the active-panel switch with zero JavaScript. For full ARIA correctness, screen readers

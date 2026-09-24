@@ -1,0 +1,56 @@
+@use 'components/forms' as forms;
+@use 'mixins' as m;
+
+.wrap {
+  max-width: 28rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(3);
+  margin-block-end: m.space(4);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: m.space(3);
+
+  span {
+    @include m.font(medium, 1);
+    color: var(--text-secondary);
+    min-width: 6rem;
+  }
+  select {
+    @include forms.select-base;
+    flex: 1;
+  }
+  input[type="range"] {
+    flex: 1;
+  }
+}
+
+.result {
+  @include m.pad(4);
+  margin: 0 0 m.space(2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 8px);
+  @include m.font(medium, 3);
+  color: var(--text-primary);
+  // Direction isn't hardcoded — plaintext lets the browser's bidi algorithm
+  // pick LTR/RTL per the actual text content (Arabic vs. English/Polish),
+  // the same "let the algorithm handle it" guidance the rtl-layout recipe
+  // gives for mixed-direction content.
+  unicode-bidi: plaintext;
+}
+
+.category {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+
+  code {
+    color: var(--action-primary-default);
+  }
+}

@@ -1,6 +1,21 @@
 # EPIC v1.1-03 — `@cia/a11y-recipes` Add-on Package
 
-**Status:** Planned (v1.1)
+**Status:** ⛔ FOLDED INTO THE CORE RECIPE BOOK — 2026-09-17. No separate package will ship.
+
+> ## Decision 2026-09-17 — one book, one server
+>
+> The May reasoning for a separate `@cia/a11y-recipes` package was that WCAG-strict variants might need tiny JS shims, and core ships zero JS. The recipe book as it actually turned out makes that moot: every recipe already carries full React / Vue / Svelte / vanilla implementations as **code blocks** (the multiselect has live-region announcements, the sortable list has assertive move announcements, the toast switches `role` by severity). A code block in markdown is not shipped JavaScript, so nothing forces a second package. What a second package *would* cost is real: a second publish pipeline, peer-dep version sync, a detection path in the MCP server, split docs, and consumers asking "which recipe book do I read?". By the user-power test that is author tidiness, not user gain. Worse, a "base" vs "WCAG-strict" split implies the base recipes are not accessible — the opposite of cia's fail-by-default a11y positioning and the WCAG-cited checklist every recipe ships with.
+>
+> **Where the work goes instead:**
+> - Hard screen-reader edge cases live **inside the core recipe** as a `### WCAG-strict` subsection under `## Variants` (the extra markup, the live-region wiring, and — only where a native primitive genuinely can't do it — a shim as a code block the consumer copies).
+> - `command-palette` ships as a **core** recipe with its focus trap built in via native `<dialog>.showModal()` (the original F3.2 "command-palette-focus-trap" story). Shipped 2026-09-17.
+> - The combobox announcement pattern (F3.2 "combobox-aria-announcement") is already in `combobox-multiselect.md`; the datepicker screen-reader month-nav note (F3.2) becomes a Variants subsection on `datepicker.md` when it is next touched.
+> - "a11y-strict" survives only as an optional **tag** idea for the MCP, if agents ever need to filter on it. Not built.
+> - The MCP side was never a second server: US-V11.03.4.3 already described the one core server merging both layers. With one book there is nothing to merge.
+>
+> Size, for the record: recipes are markdown and never reach the browser. The packed tarball is ~498 KB with 31 recipes (~536 KB of markdown on disk). Moving files to a second package saves nothing a user would feel.
+>
+> The stories below are kept verbatim as the historical plan. None will be executed as written.
 **Effort estimate:** ~5-7 working days
 **Stories:** 10
 
@@ -213,4 +228,4 @@ Gemini's warning still holds: **don't reinvent state machines**. This package sh
 - [v1.0 EPIC-01-recipes-book.md](../v1-0/EPIC-01-recipes-book.md) — base recipes this package extends
 - [v1.1 EPIC-01-additional-recipes.md](./EPIC-01-additional-recipes.md) — v1.1 base recipes
 - [v1.1 EPIC-02-install-wizard.md](./EPIC-02-install-wizard.md) — wizard offers this package
-- [project_v1_architecture_recipes.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_v1_architecture_recipes.md) — architecture lock with the "no state-machine vendor" rule
+- Project notes (kept outside this repo) — architecture lock with the "no state-machine vendor" rule

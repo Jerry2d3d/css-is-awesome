@@ -4,34 +4,30 @@
 
 [![npm](https://img.shields.io/npm/v/css-is-awesome?logo=npm&color=cb3837)](https://www.npmjs.com/package/css-is-awesome) [![CI](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml/badge.svg)](https://github.com/Jerry2d3d/css-is-awesome/actions/workflows/ci.yml) [![Node](https://img.shields.io/badge/node-%E2%89%A520-43853d?logo=node.js&logoColor=white)](./package.json) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![semantic-release](https://img.shields.io/badge/semantic--release-enabled-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-**Bring your own selectors. We bring the design system.** One CSS file per theme — drop it in and the page restyles, no markup change. 24 themes. Zero JavaScript in the npm package. Six browser-native interactive components. Small enough to read in an afternoon.
+**Bring your own components. Bring your own selectors. We bring the design system.** No component library to fight, in React, Vue, Angular, Svelte, Web Components, Razor, SharePoint, or plain HTML — cia styles the markup you already own. One CSS file per theme — drop it in and the page restyles, no markup change. 24 themes. Zero runtime JavaScript — nothing in the package is loaded by a page. Six browser-native interactive components. Small enough to read in an afternoon.
 
 **Docs:** [cssisawesome.com](https://cssisawesome.com/) · **Install:** `npm install css-is-awesome`
 
-> **The recipes book:** build any component in any framework using cia mixins — seven recipes today (`dialog`, `combobox`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav`, `bottom-nav`), with `datepicker`, `data-table` and `command-palette` queued. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
+> **The recipes book:** build any component in any framework using cia mixins — 32 recipes today, including `dialog`, `command-palette`, `combobox`, `combobox-multiselect`, `datepicker`, `data-table`, `pagination`, `breadcrumb`, `toast`, `file-upload`, `sortable-list`, `color-picker`, `app-shell`, `admin-dashboard-layout`, `auth-flow`, `otp-input`, `multi-step-wizard`, `confirm-dialog`, five form-validation patterns (HTML5, react-hook-form, Zod, async, success-states), three i18n patterns, `rtl-layout`, `print-to-pdf`, `print-spec`, `letterhead`, `mobile-nav` and `bottom-nav`. AI agents read recipes via MCP and generate components in your stack; humans read them at [`/docs/recipes`](https://cssisawesome.com/docs/recipes/).
 
 ## For AI agents — start here
 
 **Read [`llm.txt`](./llm.txt) first.** One file, the whole system: install path, hard rules, the mixin vocabulary, and the traps that make agents write wrong cia code. It ships in the npm package, so it's at `node_modules/css-is-awesome/llm.txt` in any project that has cia.
 
-**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 30 tools covering themes, mixins, functions, tokens, recipes and components.
-
-```bash
-npm install -D @modelcontextprotocol/sdk zod   # required — npm will NOT install these for you
-```
+**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 34 tools covering themes, mixins, functions, tokens, recipes, components, theme validation, theme generation from design tokens and the token mapping itself.
 
 ```json
 {
   "mcpServers": {
     "css-is-awesome": {
-      "command": "node",
-      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
     }
   }
 }
 ```
 
-The SDK and `zod` are declared as *optional* peer dependencies, so a plain `npm install css-is-awesome` skips them and the server exits with `@modelcontextprotocol/sdk is not installed`. Install both. `npx css-is-awesome-mcp` does **not** work around this — npx fetches the package but not its optional peers.
+That's the whole setup — [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) is a dedicated zero-install package, no manual dependency step. `npx` fetches and caches it on first run with no install command needed; if you'd rather pin an exact version in your own `package.json`/lockfile, `npm install css-is-awesome-mcp` works too — `npx` then uses the locally installed copy instead of fetching. (The in-repo copy at `mcp/server.cjs` still works too, if you'd rather not add a second package — see the MCP section below for that path, which needs `npm install -D @modelcontextprotocol/sdk zod` first since those are optional peers here.)
 
 Why it matters more here than for older frameworks: no model has memorised cia's API the way it has memorised Tailwind's class names. Without `llm.txt` or MCP, an agent will confidently invent a Tailwind-shaped API. With them, it reads the real thing. Details at [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
@@ -83,7 +79,7 @@ Author your own class names; the mixin handles the styling. Mixins for buttons, 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css">
 ```
 
-Theme first (sets the tokens), library second. **No `data-theme` attribute needed** — a single theme file styles the page on its own. Swap the URL to swap the theme; the HTML never changes. Bundle tiers — `dist/tokens.css` (2.2 KB gz, `:where(:root)` vars only), `dist/css-is-awesome.core.min.css` (2.4 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (7.3 KB gz, full).
+Theme first (sets the tokens), library second. **No `data-theme` attribute needed** — a single theme file styles the page on its own. Swap the URL to swap the theme; the HTML never changes. Bundle tiers — `dist/tokens.css` (2.2 KB gz, `:where(:root)` vars only), `dist/css-is-awesome.core.min.css` (2.4 KB gz, tokens + resets), `dist/css-is-awesome.min.css` (8.0 KB gz, full).
 
 ### 3. Bare tags (opt-in Pico-mode)
 
@@ -149,11 +145,13 @@ node scripts/theme-validator.js public/themes/midnight/theme.css
 #    <link rel="stylesheet" href="/themes/midnight/theme.css">
 ```
 
-Full authoring walkthrough: [`/docs/authoring/themes`](https://cssisawesome.com/docs/authoring/themes/). The contract (127 required + 36 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
+A theme can also own the page behind your components: optional **hero** and **band** surfaces carry a background, an image or gradient, an ink colour and a scrim, applied with `@include cia.surface(hero)` or `<body data-surface="hero">`. Nothing is applied automatically, so adding them never moves a pixel until you ask.
+
+Full authoring walkthrough: [`/docs/authoring/themes`](https://cssisawesome.com/docs/authoring/themes/). The contract (127 required + 49 optional tokens) is at [`scripts/theme-contract.json`](./scripts/theme-contract.json).
 
 ## Token contract
 
-Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · space · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else. 127 required, 36 optional.
+Every theme declares the same slots: **surfaces · ink · lines · primary · seal · accent · code · type · space · radius · shadow · blur · glow · motion**. Components read tokens, themes set tokens, nothing else. 127 required, 49 optional.
 
 **Themes own the spacing scale.** A theme declares the numbered scale `--space-0` … `--space-9` (contract-required), which is exactly what `cia.space(4)` compiles to — so a theme can ship tighter or airier rhythm without touching a component. The six t-shirt names (`--space-2xs/xs/sm/md/lg/xl`) are optional; the library emits them as references (`--space-md: var(--space-4)`), so they track the numbered scale automatically.
 
@@ -225,13 +223,22 @@ The CLI also carries the registry and the health check:
 
 ```bash
 npx cia add --list          # browse the recipe book
+npx cia fix-theme t.css     # move a theme onto current token names (--write to apply)
 npx cia add bottom-nav      # copy a recipe into your project — you own the pattern
 npx cia analyze src/styles  # design-system health: dead cia.* symbols, the
                             # space() scale trap, off-contract tokens (typos),
-                            # hard-coded colors, BEM creep
+                            # off-scale lengths, hard-coded colors, BEM creep,
+                            # missing focus-visible styling
+npx cia theme from-tokens tokens.json --name acme --out src/styles/acme.css
+                            # design tokens (DTCG v2025.10, Tokens Studio, or a
+                            # flat --token map) → a complete, validated theme.css;
+                            # missing required tokens inherit from a shipped base
+npx cia theme map --path color.text.primary
+                            # the path → token mapping from-tokens applies, as
+                            # data: one path, or the whole table with --json
 ```
 
-`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens. The default output is a **graded report** — a health score, a section per concern (Contract / Spacing / Color / Naming / Layout / API) with a `✓` when clean, and a suggested fix on each finding; add `--verbose` for the flat per-file list or `--json` for the machine shape.
+`cia analyze` reads the real API surface from the installed package and exits non-zero on errors, so it slots straight into CI. It's deliberately low-noise about color: a hex used as a `var(--token, #hex)` fallback is token-driven (not flagged), and a literal inside `@media print` is an intentional paper colour (print escapes theme colours by design). Off-contract-token findings only fire on a **near-miss** of a real token — a typo like `--inkk` — never on your own custom tokens. Off-scale-length findings suggest the nearest named step (e.g. `--radius-md`) for a literal `border-radius`/`padding`/`margin`/`gap` value, as a hint toward using a token — never a claim about your active theme's exact pixel value, since themes are free to set their own numbers (Terminal sets every `--radius-*` to `0`, deliberately). The default output is a **graded report** — a health score, a section per concern (Contract / Spacing / Color / Naming / Layout / API / Accessibility) with a `✓` when clean, and a suggested fix on each finding; add `--verbose` for the flat per-file list or `--json` for the machine shape. Full rule reference: [`/docs/analyzer`](https://cssisawesome.com/docs/analyzer/).
 
 ## Print / PDF (zero JS)
 
@@ -297,34 +304,47 @@ The scope is kept narrow: 8 `!important` declarations, all inside `@media print`
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) at [`mcp/server.cjs`](./mcp/server.cjs), exposed as the `css-is-awesome-mcp` bin. It's in the `files` manifest, so it lands in every consumer's `node_modules`. Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Exposes **30 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) and `resolve_size` (snap design px values to cia's 4px grid). Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) exposing **34 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) , `resolve_size` (snap design px values to cia's 4px grid) `validate_theme` (run the real theme validator on CSS you just wrote) `theme_from_tokens` (design-tokens JSON → a complete, validated theme.css) and `get_token_map` (that mapping as data, or how one path resolves). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
-**Setup is two steps — do both, or the server won't start.**
+**Recommended — zero install:** use the dedicated [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package. It depends on `css-is-awesome` and resolves your installed version's real source, so it's never out of sync — and the MCP SDK ships as a real dependency, not an optional peer you have to remember to add.
 
-1. Install the SDK peer deps. The MCP SDK needs `@modelcontextprotocol/sdk` + `zod`; they're declared as *optional* peers so npm skips them by default. Without them the server exits and your MCP client shows only a generic "failed to connect":
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "npx",
+      "args": ["css-is-awesome-mcp"]
+    }
+  }
+}
+```
 
-   ```bash
-   npm install -D @modelcontextprotocol/sdk zod
-   ```
+No install command required — `npx` fetches and caches the package the first time your MCP client runs it. Prefer a pinned version in your own lockfile instead? `npm install css-is-awesome-mcp` works the same way as any other dependency; `npx` then runs the locally installed copy rather than fetching one:
 
-2. Add to your client's `.mcp.json` (the `npx` form uses the shipped bin and is CWD-independent):
+```bash
+npm install css-is-awesome-mcp
+```
 
-   ```json
-   {
-     "mcpServers": {
-       "css-is-awesome": {
-         "command": "npx",
-         "args": ["css-is-awesome-mcp"]
-       }
-     }
-   }
-   ```
+**Alternative — the copy already in your `node_modules`:** cia's own `files` manifest ships [`mcp/server.cjs`](./mcp/server.cjs) too, for anyone who'd rather not add a second package. This copy needs its SDK peer deps installed manually first, since they're declared as *optional* peers (so a plain `npm install css-is-awesome` doesn't pull JS into a CSS-only install):
 
-   Equivalent explicit path: `"command": "node", "args": ["node_modules/css-is-awesome/mcp/server.cjs"]`.
+```bash
+npm install -D @modelcontextprotocol/sdk zod
+```
+
+```json
+{
+  "mcpServers": {
+    "css-is-awesome": {
+      "command": "node",
+      "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
+    }
+  }
+}
+```
 
 ## Docs site
 
-The docs site is live at **https://cssisawesome.com** (production — Vercel, deployed from the `prod-css-is-awesome` branch), with a GitHub Pages mirror at **https://jerry2d3d.github.io/css-is-awesome/** that auto-deploys from `main`. To run it locally:
+The docs site is live at **https://cssisawesome.com** (production — Vercel, building `main` on every push), with a GitHub Pages mirror at **https://jerry2d3d.github.io/css-is-awesome/** that deploys after each release. To run it locally:
 
 ```bash
 git clone https://github.com/Jerry2d3d/css-is-awesome.git
@@ -334,6 +354,8 @@ npm run dev          # http://localhost:5173
 ```
 
 The docs site is a Next.js 16 app at `src/` that dogfoods the library — every page uses CSS Modules composed from the same tokens and mixins the library ships.
+
+It also hosts the **[playground](https://cssisawesome.com/playground/)**: write SCSS with cia mixins, see it render live against any of the 24 themes, and share the result as a link. Sass runs in your browser (dart-sass in a web worker against cia's own source), so nothing is uploaded and the site stays a static export. Every recipe page has a “Try in playground” button.
 
 ## Scripts
 
@@ -345,14 +367,19 @@ The docs site is a Next.js 16 app at `src/` that dogfoods the library — every 
 | `npm run build:css:all` | Compile all bundles (full + core + utilities + minified) + themes + token types |
 | `npm run build:css:themes` | Rebuild the 24 per-theme CSS files in `public/themes/` **and** regenerate the all-in-one `public/theme.css` bundle |
 | `npm run check:theme-drift` | Rebuild the themes into a scratch copy and fail if the committed artifacts don't match their SCSS sources |
+| `npm run check:contract` | Diff the token contract against the last release tag and fail if the required/optional lists changed without the version bump [`VERSIONING.md`](./VERSIONING.md) requires |
+| `npm run check:rtl` | Audit the SCSS for physical properties that should be logical (`margin-left` → `margin-inline-start`) |
 | `npm run build:token-types` | Generate `dist/tokens.d.ts` from the contract |
 | `npm run dtcg-to-scss` | Convert DTCG-format design tokens into cia SCSS |
 | `npm run lint` | ESLint on the Next.js app |
 | `npm run lint:scss` | Stylelint on the SCSS library |
-| `npm run validate-themes` | Validate every theme against the 127-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7; checks both `light-dark()` branches and reports the worse) |
+| `npm run validate-themes` | Validate every theme against the 127-required-token contract + WCAG 2.2 AA contrast (FAIL-by-default since v0.7; checks both `light-dark()` branches and reports the worse) |
 | `npm run validate-icons` | Validate the `core` icon pack against the 49-glyph contract |
 | `npm run validate-api` | Assert the `css-is-awesome/api` barrel stays zero-emit |
 | `npm run validate-package` | Pack + install into a temp project and compile every documented `@use` form — catches breakage that in-repo checks can't see |
+| `npm run test:surfaces` | Assert cia never applies a page surface automatically — the guarantee that adding hero/band tokens changes nobody's existing page |
+| `npm run test:tokens` | Exercise the design-tokens converter (DTCG / Tokens Studio / flat) against fixtures |
+| `npm run verify:playground` | Compile real samples through the playground's in-browser Sass path in Node |
 | `npm run pack:consumer` | Pack and install this build into a local consumer (defaults to `../boiler-project-ai`); `--dry-run` supported |
 | `npm test` | Playwright suite — axe a11y checks + per-theme visual snapshots |
 
@@ -387,20 +414,20 @@ Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 | Bundle | Size | Use case |
 |---|---|---|
-| `dist/tokens.css` | 2.2 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
-| `dist/css-is-awesome.core.min.css` | 2.4 KB | Tokens + resets, no utilities or components |
-| `dist/css-is-awesome.utilities.min.css` | 4.1 KB | Every `cia-*` utility class, nothing else |
-| `dist/css-is-awesome.min.css` | 7.3 KB | Full bundle (everything) |
-| Per-theme `themes/<name>/theme.css` | 1.5–3.4 KB | One file per theme, both modes via `light-dark()`, drop-in with no markup change |
-| **JavaScript shipped in package** | **0 KB** | Zero. Period. JS-driven features ship as separate add-on packages. |
+| `dist/tokens.css` | 2.26 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
+| `dist/css-is-awesome.core.min.css` | 2.42 KB | Tokens + resets, no utilities or components |
+| `dist/css-is-awesome.utilities.min.css` | 4.79 KB | Every `cia-*` utility class, nothing else |
+| `dist/css-is-awesome.min.css` | 7.99 KB | Full bundle (everything) |
+| Per-theme `themes/<name>/theme.css` | 2.0–3.8 KB | One file per theme, both modes via `light-dark()`, drop-in with no markup change |
+| **Runtime JavaScript shipped in package** | **0 KB** | Nothing in the package is loaded by a page. The Node tooling (`cia` CLI, MCP server, validators) never reaches the browser; JS-driven UI features ship as separate add-on packages. |
 
 ## Status
 
 **Stable, [published on npm](https://www.npmjs.com/package/css-is-awesome)** (first published 2026-09-01). The mixin API, functions, token contract, and theme architecture are stable and under strict SemVer — breaking changes require a major bump. See [`VERSIONING.md`](./VERSIONING.md) for the policy.
 
-The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, and the 30-tool MCP server. The npm package ships ZERO JavaScript by hard rule.
+The 1.0 surface is the v0.8 mixin-first reframe — twelve mixin renames, theme system collapsed to 8 single-file theme families, six zero-JS components, intrinsic-layout vocabulary, opt-in utilities — plus the recipes book, the Tailwind/Bootstrap migration on-ramp, print/PDF support, the in-browser [Playground](https://cssisawesome.com/playground/), the design-tokens on-ramp (`npx cia theme from-tokens` / `theme map`), and the 34-tool MCP server (now also available zero-install via the companion [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package). The npm package ships ZERO runtime JavaScript by hard rule — nothing in it is loaded by a page; its Node tooling (CLI, MCP server, validators) never reaches the browser.
 
-See [CHANGELOG.md](./CHANGELOG.md) for the full history and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 upgrade path.
+See [CHANGELOG.md](./CHANGELOG.md) for the full history and [MIGRATION.md](./MIGRATION.md) for the v0.7 → v0.8 and v0.8 → v1.0 upgrade paths.
 
 For the deep authoring reference (tier decisions, mixin contracts, agent rules), read [`AGENTS.md`](./AGENTS.md).
 

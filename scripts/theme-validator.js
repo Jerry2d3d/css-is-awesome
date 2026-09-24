@@ -334,35 +334,74 @@ function validateTokenSet(declared, contract) {
   for (const required of contract.required) {
     if (!declared.has(required)) missing.push(required);
   }
-  return { ok: missing.length === 0, missing, declaredCount: declared.size };
+  // Optional tokens (contract 1.1+) are reported as INFO, never as failures:
+  // the library or the theme generator supplies a default for each of them.
+  // `--space-unit` is the canonical case — it was wrongly listed as required
+  // in 1.12.0–1.16.0 and broke every consumer's custom theme on a MINOR.
+  const optionalMissing = [];
+  for (const optional of Array.isArray(contract.optional) ? contract.optional : []) {
+    if (!declared.has(optional)) optionalMissing.push(optional);
+  }
+  // Contract 1.2: group by the feature each optional token enables, so the
+  // report can say "missing the tokens for print" instead of listing 41 names.
+  const featureOf = {};
+  const features = contract.features && typeof contract.features === 'object' ? contract.features : {};
+  for (const [feature, def] of Object.entries(features)) {
+    for (const t of (def && Array.isArray(def.tokens)) ? def.tokens : []) featureOf[t] = feature;
+  }
+  const optionalMissingByFeature = {};
+  for (const t of optionalMissing) {
+    const f = featureOf[t] || 'other';
+    (optionalMissingByFeature[f] = optionalMissingByFeature[f] || []).push(t);
+  }
+  // Contract 1.3+: a token this theme declares that has since been superseded.
+  // Reported separately from the optional-token info line — "you declared
+  // something that still works but has a better name now" is a different
+  // message from "you left a default to the library", and it comes with an
+  // action: `cia fix-theme`.
+  const deprecatedMap = contract.deprecated && typeof contract.deprecated === 'object' ? contract.deprecated : {};
+  const deprecatedUsed = [];
+  for (const [token, def] of Object.entries(deprecatedMap)) {
+    if (declared.has(token)) {
+      deprecatedUsed.push({
+        token,
+        replacedBy: (def && def.replacedBy) || null,
+        since: (def && def.since) || null,
+        removeIn: (def && def.removeIn) || null,
+      });
+    }
+  }
+  return { ok: missing.length === 0, missing, optionalMissing, optionalMissingByFeature, deprecatedUsed, declaredCount: declared.size };
 }
 
 // -----------------------------------------------------------
-// Validate a single file. Auto-detects per-file vs consolidated.
+// Validate raw CSS text. Auto-detects per-file vs consolidated.
 // Returns a unified result shape with either a flat pass/fail
 // (per-file) or a list of per-theme pass/fails (consolidated).
+//
+// `options.label` names the result (shown as `result.file`) and, in the
+// legacy per-file branch, seeds the a11y report's inferred theme name —
+// there's no real file path when validating text handed over directly
+// (e.g. from an MCP tool call), so callers that have one should pass it
+// as label; callers that don't get '(pasted CSS)'.
 // -----------------------------------------------------------
-function validateFile(filePath, contract, options) {
+function validateText(text, contract, options) {
   const opts = options || {};
   const wantA11y = opts.a11y !== false;
+  const label = opts.label || '(pasted CSS)';
   const result = {
-    file: filePath,
+    file: label,
     mode: 'per-file',
     ok: false,
     declaredCount: 0,
     missing: [],
+    optionalMissing: [],
+    optionalMissingByFeature: {},
+    deprecatedUsed: [],
     themes: null,
     a11y: null,
     error: null,
   };
-
-  let text;
-  try {
-    text = fs.readFileSync(filePath, 'utf8');
-  } catch (err) {
-    result.error = err.message;
-    return result;
-  }
 
   if (isConsolidated(text)) {
     result.mode = 'consolidated';
@@ -380,6 +419,9 @@ function validateFile(filePath, contract, options) {
         ok: v.ok,
         declaredCount: v.declaredCount,
         missing: v.missing,
+        optionalMissing: v.optionalMissing,
+        optionalMissingByFeature: v.optionalMissingByFeature,
+        deprecatedUsed: v.deprecatedUsed,
         a11y: null,
       };
       if (wantA11y) theme.a11y = a11y.auditThemeTokens({ name: b.name, values: b.values });
@@ -407,12 +449,36 @@ function validateFile(filePath, contract, options) {
   const v = validateTokenSet(root.tokens, contract);
   result.declaredCount = v.declaredCount;
   result.missing = v.missing;
+  result.optionalMissing = v.optionalMissing;
+  result.optionalMissingByFeature = v.optionalMissingByFeature;
+  result.deprecatedUsed = v.deprecatedUsed;
   result.ok = v.ok;
   if (wantA11y) {
-    const inferredName = path.basename(path.dirname(filePath)) || path.basename(filePath, '.css');
+    const inferredName = label !== '(pasted CSS)' ? (path.basename(path.dirname(label)) || path.basename(label, '.css')) : 'theme';
     result.a11y = a11y.auditThemeTokens({ name: inferredName, values: root.values });
   }
   return result;
+}
+
+// Reads a file and delegates to validateText, with the file path as the
+// result's label (and a11y's inferred-name source in the legacy branch).
+function validateFile(filePath, contract, options) {
+  let text;
+  try {
+    text = fs.readFileSync(filePath, 'utf8');
+  } catch (err) {
+    return {
+      file: filePath,
+      mode: 'per-file',
+      ok: false,
+      declaredCount: 0,
+      missing: [],
+      themes: null,
+      a11y: null,
+      error: err.message,
+    };
+  }
+  return validateText(text, contract, Object.assign({}, options, { label: filePath }));
 }
 
 // -----------------------------------------------------------
@@ -421,6 +487,37 @@ function validateFile(filePath, contract, options) {
 function relForDisplay(p) {
   const rel = path.relative(REPO_ROOT, p).split(path.sep).join('/');
   return rel || p;
+}
+
+// Optional tokens a theme leaves to the library default. Info only — shown as
+// a count, or listed with --show-optional. Never affects the exit code.
+// A token the theme declares that has been superseded. Never a failure — the
+// old value still works — but it names the replacement and the way to apply it.
+function deprecationInfo(deprecatedUsed, indent) {
+  const list = Array.isArray(deprecatedUsed) ? deprecatedUsed : [];
+  if (!list.length) return;
+  for (const d of list) {
+    console.log(
+      `${indent}${yellow('~')} ${d.token} is deprecated` +
+        (d.since ? ` (since contract ${d.since}` + (d.removeIn ? `, removed in ${d.removeIn}` : '') + ')' : '') +
+        (d.replacedBy ? ` — use ${d.replacedBy}` : '')
+    );
+    console.log(`${indent}  ${dim('your value still works; `npx cia fix-theme <file>` renames it for you')}`);
+  }
+}
+
+function optionalInfo(optionalMissing, byFeature, indent) {
+  const list = Array.isArray(optionalMissing) ? optionalMissing : [];
+  if (!list.length) return;
+  const groups = byFeature && typeof byFeature === 'object' ? byFeature : {};
+  const summary = Object.entries(groups).map(([f, ts]) => `${f} ${ts.length}`).join(' · ');
+  console.log(`${indent}${dim(`i ${list.length} optional token(s) not declared — library default applies${summary ? ` (${summary})` : ''}`)}`);
+  if (SHOW_OPTIONAL) {
+    for (const [f, ts] of Object.entries(groups)) {
+      console.log(`${indent}    ${dim(f + ':')}`);
+      for (const token of ts) console.log(`${indent}      ${dim(token)}`);
+    }
+  }
 }
 
 function reportResult(result) {
@@ -443,6 +540,8 @@ function reportResult(result) {
         console.log(
           `    ${green('✓')} [data-theme="${t.name}"] ${dim(`(${t.declaredCount} tokens)`)}`
         );
+        optionalInfo(t.optionalMissing, t.optionalMissingByFeature, '      ');
+        deprecationInfo(t.deprecatedUsed, '      ');
       } else {
         const n = t.missing.length;
         console.log(
@@ -451,6 +550,7 @@ function reportResult(result) {
         for (const token of t.missing) {
           console.log(`        ${red(token)}`);
         }
+        deprecationInfo(t.deprecatedUsed, '      ');
       }
     }
     return;
@@ -461,6 +561,8 @@ function reportResult(result) {
     console.log(
       `${green('✓')} ${bold(rel)} ${dim(`passes (${result.declaredCount} tokens declared)`)}`
     );
+    optionalInfo(result.optionalMissing, result.optionalMissingByFeature, '    ');
+    deprecationInfo(result.deprecatedUsed, '    ');
     return;
   }
 
@@ -471,6 +573,7 @@ function reportResult(result) {
   for (const token of result.missing) {
     console.log(`     ${red(token)}`);
   }
+  deprecationInfo(result.deprecatedUsed, '    ');
 }
 
 // -----------------------------------------------------------
@@ -541,6 +644,7 @@ function printUsage() {
     '  --all              validate every theme.css under public/ (CI mode)',
     '  --no-a11y          skip the WCAG 2.2 AA contrast audit',
     '  --allow-a11y-fail  do NOT exit non-zero on a11y FAILs (report only)',
+    '  --show-optional    list optional contract tokens a theme leaves to the library default, grouped by feature (info only)',
     '  --strict           accepted for backwards compatibility (no-op; FAIL is now the default)',
     '',
     'Exit codes:',
@@ -553,8 +657,11 @@ function printUsage() {
   console.log(u);
 }
 
+let SHOW_OPTIONAL = false;
+
 function main(argv) {
   const argsRaw = argv.slice(2).filter(function (a) { return a !== '--watch'; });
+  SHOW_OPTIONAL = argsRaw.includes('--show-optional');
   if (argsRaw.length === 0 || argsRaw.includes('-h') || argsRaw.includes('--help')) {
     printUsage();
     process.exit(argsRaw.length === 0 ? 2 : 0);
@@ -563,7 +670,7 @@ function main(argv) {
   const wantLenient = argsRaw.includes('--allow-a11y-fail');
   // --strict is accepted as a no-op for backwards compatibility — a11y FAIL is now the default
   const args = argsRaw.filter(function (a) {
-    return a !== '--no-a11y' && a !== '--strict' && a !== '--allow-a11y-fail';
+    return a !== '--no-a11y' && a !== '--strict' && a !== '--allow-a11y-fail' && a !== '--show-optional';
   });
 
   const contract = loadContract();
@@ -665,7 +772,12 @@ module.exports = {
   extractDataThemeBlocks,
   isConsolidated,
   validateFile,
+  validateText,
   loadContract,
+  // Reporters — reused by `cia theme from-tokens` so its output reads exactly
+  // like `npm run validate-themes`.
+  reportResult,
+  reportA11yForTheme,
   a11y: a11y,
 };
 

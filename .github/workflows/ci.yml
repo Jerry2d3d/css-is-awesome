@@ -18,6 +18,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # check:contract diffs the token contract against the last release
+          # tag; a shallow clone has no tags and the check would skip itself.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,9 +51,38 @@ jobs:
       - name: Theme artifacts match their SCSS sources
         run: npm run check:theme-drift
 
+      # A required token added/removed without a contract MAJOR (or an optional
+      # one added without a MINOR) breaks every consumer's custom theme on
+      # upgrade — 1.12.0 did exactly that with --space-unit. This diffs the
+      # contract against the last release tag and fails on an unbumped change.
+      - name: Token contract changes carry their version bump
+        run: npm run check:contract
+
+      # Unlike the theme-drift check above, this regenerates entirely in
+      # memory (no disk write, no restore step needed) and diffs against the
+      # committed src/lib/generated/token-consumers.json. Also prints an
+      # informational zero-consumer list — see the script's own header for
+      # why that list never fails the build.
+      - name: Token-consumer map matches its scss/ sources
+        run: npm run check:token-consumers
+
+      # v1.2 EPIC-01: fails on any un-annotated physical-direction CSS
+      # (margin-left, text-align: left, …) in scss/, excluding themes/.
+      - name: RTL — no unannotated physical-direction CSS
+        run: npm run check:rtl
+
       # Now safe: the artifacts below are proven to match their sources.
       - name: Validate themes
         run: npm run validate-themes
+
+      # tokens-to-theme.cjs ships in the package and is the design-tool
+      # on-ramp (DTCG / Tokens Studio → theme.css). Its fixtures must keep
+      # producing contract-valid themes against the current contract.
+      - name: Design-tokens → theme converter
+        run: npm run test:tokens
+
+      - name: Deprecation fixer (rename, never write)
+        run: npm run test:fix-theme
 
       - name: Validate icon pack
         run: npm run validate-icons

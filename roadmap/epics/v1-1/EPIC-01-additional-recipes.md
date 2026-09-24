@@ -1,6 +1,6 @@
 # EPIC v1.1-01 — Additional Recipes (batch 1)
 
-**Status:** Planned (v1.1)
+**Status:** ✅ Complete — 7/7 recipes shipped 2026-09-16 (each with a live demo at `/docs/recipes/<slug>`; `validate-recipes` 31/31 green). Deviations from the criteria below are disclosed inline.
 **Effort estimate:** ~10-14 working days
 **Stories:** 14
 
@@ -10,11 +10,24 @@ Add 7 recipes to the v1.0 recipe book, prioritized by frequency of shadcn/MUI/Ra
 
 ## Why now
 
-v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-table, command-palette). This batch closes the next-most-common gaps so consumers stop saying "cia doesn't have X."
+**Correction (2026-09-10):** this originally said "v1.0 ships the 5
+highest-leverage recipes (dialog, combobox, datepicker, data-table,
+command-palette)." Only `dialog` and `combobox` actually shipped in v1.0 —
+`datepicker`, `data-table`, and `command-palette` were queued and never
+built. `datepicker` and `data-table` are now their own epic
+([`EPIC-08-additional-recipes-batch-2.md`](./EPIC-08-additional-recipes-batch-2.md)),
+each backed by a real reference implementation found in `boiler-project-ai`.
+`command-palette` remains genuinely unbuilt and un-referenced.
+
+This batch (batch 1) closes the next-most-common gaps beyond those five so
+consumers stop saying "cia doesn't have X." Three of its stories below
+(`F1.3` pagination, `F1.4` file-upload, `F1.5` toast) also gained a real
+Boiler reference implementation from the same 2026-09-10 survey — noted
+inline.
 
 ## Out of scope
 
-- Recipes requiring tiny JS shims (moved to [`EPIC-03-cia-a11y-recipes.md`](./EPIC-03-cia-a11y-recipes.md))
+- ~~Recipes requiring tiny JS shims (moved to EPIC-03)~~ — EPIC-03 was folded back into the core book 2026-09-17; shims, where unavoidable, are code blocks inside the recipe
 - Recipes that aren't generic across frameworks (e.g. framework-specific routing)
 
 ## Features
@@ -28,11 +41,11 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **So that** I don't reinvent the chip-removal + keyboard-nav UX
 
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/combobox-multiselect.md`
-- [ ] References the v1.0 combobox recipe via `## Related recipes`
-- [ ] Tag chips use `cia.tag` mixin
-- [ ] Keyboard nav: Arrow keys cycle options; Backspace removes last chip; Esc closes; Tab moves to next field
-- [ ] Framework examples: React, Vue, Svelte, vanilla
+- [x] Recipe at `scss/recipes/combobox-multiselect.md`
+- [x] References the v1.0 combobox recipe via `## Related recipes`
+- [x] Tag chips use `cia.tag` mixin
+- [x] Keyboard nav: Arrow keys cycle options; Backspace removes last chip; Esc closes; Tab moves to next field *(Tab is left native — blur closes the listbox, per APG — not scripted)*
+- [x] Framework examples: React, Vue, Svelte, vanilla
 
 **Effort:** L (1-2 days)
 **Depends on:** v1.0 US-01.2.2 (combobox)
@@ -40,9 +53,9 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 #### US-V11.01.1.2 — Render combobox-multiselect at /docs/recipes/combobox-multiselect
 
 **Acceptance criteria:**
-- [ ] Page renders via the v1.0 dynamic recipe route
-- [ ] Live demo with 3-5 sample options
-- [ ] Linked from combobox recipe page
+- [x] Page renders via the v1.0 dynamic recipe route
+- [x] Live demo with 3-5 sample options
+- [x] Linked from combobox recipe page
 
 **Effort:** S (≤4 hrs)
 
@@ -57,12 +70,12 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **So that** I ship an accessible breadcrumb without thinking about it
 
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/breadcrumb.md`
-- [ ] Semantic structure: `<nav aria-label="Breadcrumb"><ol>…</ol></nav>`
-- [ ] Last item uses `aria-current="page"` and is non-interactive
-- [ ] Separator handled via CSS `::before` (no `<span aria-hidden>` clutter)
-- [ ] Styling uses `cia.cluster` for layout
-- [ ] Framework examples: React, Vue, Svelte, vanilla
+- [x] Recipe at `scss/recipes/breadcrumb.md`
+- [x] Semantic structure: `<nav aria-label="Breadcrumb"><ol>…</ol></nav>`
+- [x] Last item uses `aria-current="page"` and is non-interactive
+- [x] Separator handled via CSS `::before` (no `<span aria-hidden>` clutter)
+- [x] Styling uses `cia.cluster` for layout
+- [x] Framework examples: React, Vue, Svelte, vanilla
 
 **Effort:** M (4-8 hrs)
 
@@ -76,14 +89,18 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **I want** a pagination recipe with first/prev/next/last + page numbers
 **So that** I ship a keyboard-accessible pager with proper ARIA
 
+**Reference (2026-09-10):** boiler-project-ai's `Pagination` component
+is a real, working implementation — its `admin/page.tsx` uses it directly
+alongside a search bar and data table. Start from it.
+
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/pagination.md`
-- [ ] Semantic: `<nav aria-label="Pagination"><ul>…</ul></nav>`
-- [ ] Current page marked `aria-current="page"` and visually distinct
-- [ ] Disabled buttons use `aria-disabled` and `tabindex="-1"`
-- [ ] Ellipsis (`…`) marked `aria-hidden` and shown when range collapsed
-- [ ] Mobile pattern: collapse to prev / page count / next
-- [ ] Framework examples
+- [x] Recipe at `scss/recipes/pagination.md`
+- [x] Semantic: `<nav aria-label="Pagination"><ul>…</ul></nav>`
+- [x] Current page marked `aria-current="page"` and visually distinct
+- [x] Disabled buttons use `aria-disabled` and `tabindex="-1"`
+- [x] Ellipsis (`…`) marked `aria-hidden` and shown when range collapsed
+- [x] Mobile pattern: collapse to prev / page count / next
+- [x] Framework examples
 
 **Effort:** M (4-8 hrs)
 
@@ -97,14 +114,20 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **I want** a recipe that handles native `<input type="file">` + drag-and-drop drop-zone styling
 **So that** I get accessible-by-default behavior with progressive enhancement
 
+**Reference (2026-09-10):** boiler-project-ai's `Upload` component
+(399 lines) is a real, working implementation — drag/drop + keyboard
+"browse" fallback, per-file progress, accept/max-size/max-count
+validation. Its own doc comment frames it as closing a "Tier 2 gap vs.
+KendoReact." Start from it.
+
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/file-upload.md`
-- [ ] Native `<input type="file">` is the source of truth (always present, sometimes visually hidden via `cia.sr-only`)
-- [ ] Drop-zone visual layer uses `cia.frame` + `cia.cluster`
-- [ ] Drag states (`dragenter`/`dragleave`/`drop`) toggle a `data-drag-over` attribute, NOT a class (consumers own the class)
-- [ ] A11y checklist covers screen-reader announcement of selected file count
-- [ ] Pitfalls: SSR-safe (no `FileReader` at module load), accept attribute, multiple files
-- [ ] Framework examples
+- [x] Recipe at `scss/recipes/file-upload.md`
+- [x] Native `<input type="file">` is the source of truth (always present, sometimes visually hidden via `cia.sr-only`)
+- [x] Drop-zone visual layer uses `cia.stack` + a dashed border *(`cia.frame` is an aspect-ratio media box; used only in the image-preview variant)*
+- [x] Drag states (`dragenter`/`dragleave`/`drop`) toggle a `data-drag-over` attribute, NOT a class (consumers own the class)
+- [x] A11y checklist covers screen-reader announcement of selected file count
+- [x] Pitfalls: SSR-safe (no `FileReader` at module load), accept attribute, multiple files
+- [x] Framework examples
 
 **Effort:** L (1-2 days)
 
@@ -118,14 +141,18 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **I want** a toast recipe using `[popover]` (or fallback for older browsers) with auto-dismiss and pause-on-hover
 **So that** I ship transient notifications without a JS library
 
+**Reference (2026-09-10):** boiler-project-ai's `Toast` component
+(80 lines) is a real, working implementation — built on Boiler's `Alert`
+variants/icons, auto-dismiss + an actions row. Start from it.
+
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/toast.md`
-- [ ] Primary pattern uses `[popover]` for browsers that support it; fallback uses position:fixed
-- [ ] `role="status"` or `role="alert"` based on severity (status for info/success, alert for warning/error)
-- [ ] Auto-dismiss timer pauses on hover/focus
-- [ ] Stacking: multiple toasts use `cia.stack` in a fixed container
-- [ ] Mobile pattern: full-width bottom or top
-- [ ] Framework examples
+- [x] Recipe at `scss/recipes/toast.md`
+- [x] Primary pattern uses `[popover]` for browsers that support it; fallback uses position:fixed
+- [x] `role="status"` or `role="alert"` based on severity (status for info/success, alert for warning/error)
+- [x] Auto-dismiss timer pauses on hover/focus
+- [x] Stacking: multiple toasts use `cia.stack` in a fixed container
+- [x] Mobile pattern: full-width bottom or top
+- [x] Framework examples
 
 **Effort:** L (1-2 days)
 
@@ -140,13 +167,13 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **So that** I don't need to invent drag UX but get cia-themed visuals
 
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/sortable-list.md`
-- [ ] Drag handle uses `cia.icon` + cursor-grab styling
-- [ ] Drop indicator uses `m.color(action-primary-default)` for the insertion line
-- [ ] Keyboard alternative: Up/Down arrows move item position (using built-in `aria-grabbed`/`aria-dropeffect` — or modern WAI-ARIA pattern)
-- [ ] Sections per library: native HTML5 drag, dnd-kit, react-beautiful-dnd alternative
-- [ ] A11y checklist covers keyboard reordering announcement
-- [ ] Framework examples (React + vanilla; Vue + Svelte if dnd-kit equivalent exists)
+- [x] Recipe at `scss/recipes/sortable-list.md`
+- [x] Drag handle uses a grip glyph in `cia.btn-icon` + cursor-grab styling *(`cia.icon` does not exist; `cia.svg`/`cia.fa-icon` swap shown in prose)*
+- [x] Drop indicator uses `m.color(action-primary-default)` for the insertion line
+- [x] Keyboard alternative: Up/Down arrows move item position *(modern pattern: `aria-pressed` on the handle + assertive live region; `aria-grabbed`/`aria-dropeffect` are deprecated)*
+- [x] Sections per library: native HTML5 drag, dnd-kit, pragmatic-drag-and-drop *(react-beautiful-dnd is deprecated; capped at 3 per the risk note)*
+- [x] A11y checklist covers keyboard reordering announcement
+- [x] Framework examples (React + vanilla; Vue + Svelte if dnd-kit equivalent exists)
 
 **Effort:** L (1-2 days)
 
@@ -161,24 +188,24 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 **So that** I pick the smallest viable surface
 
 **Acceptance criteria:**
-- [ ] Recipe at `scss/recipes/color-picker.md`
-- [ ] Native section: `<input type="color">` with cia styling (limited cross-browser polish)
-- [ ] Custom section: hue strip + saturation/lightness grid + alpha slider, using cia tokens
-- [ ] OKLCH support noted (preferred over HSL for perceptual uniformity, matches cia color-mix usage)
-- [ ] A11y checklist covers numeric input fallback for keyboard-only users
-- [ ] Cross-link to v1.0 theme editor where applicable
-- [ ] Framework examples
+- [x] Recipe at `scss/recipes/color-picker.md`
+- [x] Native section: `<input type="color">` with cia styling (limited cross-browser polish)
+- [x] Custom section: hue, chroma, lightness and alpha `<input type="range">` sliders using cia tokens *(a 2-D grid has no accessible native primitive; per-axis sliders are the APG form)*
+- [x] OKLCH support noted (preferred over HSL for perceptual uniformity, matches cia color-mix usage)
+- [x] A11y checklist covers numeric input fallback for keyboard-only users
+- [x] Cross-link to v1.0 theme editor where applicable
+- [x] Framework examples
 
 **Effort:** L (1-2 days)
 
 ## Definition of done
 
-- [ ] All 14 stories accepted
-- [ ] 7 new recipes shipped to `scss/recipes/`
-- [ ] `npm run validate-recipes` passes for all 12 total recipes
-- [ ] `/docs/recipes` catalog page shows 12 recipes with filtering
-- [ ] MCP server lists/returns all 12 recipes
-- [ ] At least 1 external AI agent verified fetching one new recipe end-to-end
+- [x] All 14 stories accepted
+- [x] 7 new recipes shipped to `scss/recipes/`
+- [x] `npm run validate-recipes` passes for all 31 total recipes
+- [x] `/docs/recipes` catalog page shows all 31 recipes (the catalog reads `scss/recipes/*.md` directly)
+- [x] MCP server lists/returns all 31 recipes (`list_recipes` reads the same folder)
+- [ ] At least 1 external AI agent verified fetching one new recipe end-to-end *(not yet — waits for a real consumer session)*
 
 ## Risks
 
@@ -189,4 +216,4 @@ v1.0 ships the 5 highest-leverage recipes (dialog, combobox, datepicker, data-ta
 ## Related
 
 - [v1.0 EPIC-01-recipes-book.md](../v1-0/EPIC-01-recipes-book.md) — schema + first 5 recipes
-- [v1.1 EPIC-03-cia-a11y-recipes.md](./EPIC-03-cia-a11y-recipes.md) — WCAG-strict variants that EXTEND these recipes
+- [v1.1 EPIC-03-cia-a11y-recipes.md](./EPIC-03-cia-a11y-recipes.md) — retired 2026-09-17; WCAG-strict content lives inside these recipes as Variants subsections

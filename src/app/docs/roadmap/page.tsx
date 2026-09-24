@@ -55,14 +55,32 @@ export default function RoadmapPage() {
           palette.
         </li>
         <li>
+          <strong>The density knob.</strong> One variable,{" "}
+          <code>--space-unit</code>, rescales the entire spacing system, so a
+          theme can feel compact or airy from a single line. A slider in the
+          theme editor drives it.
+        </li>
+        <li>
+          <strong>A design-tokens on-ramp.</strong>{" "}
+          <code>npx cia theme from-tokens</code> turns a DTCG or Tokens Studio
+          export into a complete, validated theme file; <code>cia theme map</code>{" "}
+          shows the mapping as data, and both are MCP tools too.
+        </li>
+        <li>
+          <strong>A playground.</strong> Paste SCSS that uses cia mixins, see
+          it render live against any theme, share it as a link; every recipe
+          page opens in it. <Link href="/playground">Try it</Link>.
+        </li>
+        <li>
           <strong>Accessibility enforced by default.</strong> Every theme is
           audited for WCAG 2.2 AA contrast across 22 token pairs, and a failing
           theme fails the build.{" "}
           <Link href="/docs/a11y">How that works</Link>.
         </li>
         <li>
-          <strong>Zero JavaScript in the package.</strong> Installing cia
-          downloads CSS and SCSS. Nothing else.
+          <strong>Zero runtime JavaScript in the package.</strong> Nothing
+          in it is loaded by a page. The Node tooling (the <code>cia</code>{" "}
+          CLI, the MCP server, the validators) never reaches the browser.
         </li>
         <li>
           <strong>An MCP server</strong> so AI agents can query the real API
@@ -70,9 +88,28 @@ export default function RoadmapPage() {
           <Link href="/docs/mcp">Tool reference</Link>.
         </li>
         <li>
-          <strong>A recipes book</strong> &mdash; five framework-agnostic
-          patterns: dialog, combobox, print-to-PDF, mobile-nav and bottom-nav.{" "}
+          <strong>A recipes book</strong> &mdash; 32 framework-agnostic
+          patterns spanning dialogs, a command palette, comboboxes, a datepicker and data table,
+          pagination, breadcrumbs, toasts, file upload, a sortable list, a
+          colour picker, app-shell and admin layouts, auth and wizard flows,
+          five form-validation approaches, three i18n patterns, an RTL layout
+          walkthrough, print/PDF, and mobile navigation.{" "}
           <Link href="/docs/recipes">Browse them</Link>.
+        </li>
+        <li>
+          <strong>RTL support, audited.</strong> The source is swept for
+          physical properties that should be logical, with a CI-gated
+          checker and a live left-to-right/right-to-left demo.{" "}
+          <Link href="/docs/rtl">RTL</Link>.
+        </li>
+        <li>
+          <strong>A themeable print surface.</strong> Four print tokens
+          (<code>--print-ink/-paper/-line/-muted</code>) give every theme a
+          clean ink-on-paper default and let a theme, or a letterhead recipe,
+          restyle paper without touching a component. The theme editor&rsquo;s
+          🖨 Print button previews it live, remembers your edits per theme, and
+          copies a ready-to-paste <code>@media print</code> block.{" "}
+          <Link href="/docs/print">Print</Link>.
         </li>
         <li>
           <strong>A zero-JS mobile toolkit</strong> &mdash; hamburger, drawer,
@@ -80,12 +117,21 @@ export default function RoadmapPage() {
           that ties them together. <Link href="/docs/mobile">Mobile</Link>.
         </li>
         <li>
-          <strong>A recipe registry and a health check in the CLI</strong>{" "}
+          <strong>A recipe registry and a graded health check in the CLI</strong>{" "}
           &mdash; <code>npx cia add &lt;recipe&gt;</code> copies a pattern from
           the book into your project so you own it, and{" "}
           <code>npx cia analyze</code> audits your stylesheets against the
           installed API (dead symbols, the spacing-scale trap, hard-coded
-          colors, BEM creep) with CI-ready exit codes.
+          colors, BEM creep, off-contract tokens, off-scale lengths, missing
+          focus-visible states) and prints a graded, categorized report with a
+          suggested fix on every finding, plus CI-ready exit codes.{" "}
+          <Link href="/docs/analyzer">Rule reference</Link>.
+        </li>
+        <li>
+          <strong>Token intelligence in the theme editor.</strong> Every
+          color/spacing/radius row shows a &ldquo;used by&rdquo; disclosure of
+          which mixins actually consume it, and color rows carry a live WCAG
+          contrast readout with a one-click nearest-passing-color fix.
         </li>
         <li>
           <strong>A dated browser-support matrix</strong> &mdash; the Baseline
@@ -113,8 +159,10 @@ export default function RoadmapPage() {
           through the validator.
         </li>
         <li>
-          <strong>The dropdown recipe</strong> &mdash; recipe #6, from the
-          reference implementation the docs already run.
+          <strong>Page surfaces</strong> &mdash; two theme-owned page
+          backgrounds, <em>hero</em> for the front page and <em>band</em> for
+          section stripes, each with an optional image and a scrim that keeps
+          text legible. One include or one body attribute applies them.
         </li>
       </ul>
 
@@ -127,35 +175,16 @@ export default function RoadmapPage() {
           the subject. <Link href="/blog">Blog</Link>.
         </li>
         <li>
-          <strong>The MCP server as its own installable package</strong> so it
-          takes one line of config and no install step. Today it needs
-          dependencies added by hand, which nobody should have to discover.
-        </li>
-        <li>
           <strong>The rest of the Figma pipeline</strong> &mdash; beyond the
           token bridge above: a published cia Figma Library whose component
           names mirror the mixins, and a machine-readable mapping served over
           MCP so AI agents translate Figma frames into cia calls directly.
         </li>
         <li>
-          <strong>More recipes</strong> &mdash; datepicker, data table,
-          command palette, multiselect combobox, breadcrumb, pagination, file
-          upload, toast, sortable list, colour picker.
-        </li>
-        <li>
           <strong>A guided installer.</strong> <code>npm create cia</code>{" "}
           &mdash; asks which framework and theme, then wires the SCSS entry
-          point for you.
-        </li>
-        <li>
-          <strong>The density knob.</strong> One variable that rescales the
-          entire spacing system, so a theme can feel compact or airy from a
-          single line.
-        </li>
-        <li>
-          <strong>Stricter accessibility recipes</strong> as an optional add-on
-          &mdash; WCAG-strict variants with live-region announcements and full
-          focus management.
+          point and the MCP server for you. Built and tested; publishing
+          next.
         </li>
         <li>
           <strong>Proving the codegen pipeline</strong> &mdash; generating React
@@ -167,13 +196,8 @@ export default function RoadmapPage() {
       <h2 id="later">Further out</h2>
       <ul>
         <li>
-          <strong>RTL audit</strong> &mdash; sweep the source for physical
-          properties that should be logical, with tests in a real RTL locale.
-        </li>
-        <li>
-          <strong>Form validation and i18n recipes</strong> &mdash; native
-          validation, popular form libraries, date and currency formatting,
-          pluralisation.
+          <strong>i18n recipes</strong> &mdash; date and currency formatting,
+          pluralisation, RTL flip patterns.
         </li>
         <li>
           <strong>More migration paths</strong> &mdash; reading MUI and Chakra

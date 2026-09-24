@@ -1,0 +1,48 @@
+@use 'mixins' as m;
+@use 'components/forms' as forms;
+@use 'components/buttons' as buttons;
+
+/* Live demo styling for the HTML5 form-validation recipe — the real
+   :user-invalid/:user-valid + :has() pattern the recipe documents, not a
+   lookalike. */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: m.space(1);
+  margin-block-end: m.space(4);
+  max-width: 22rem;
+
+  input {
+    @include forms.input-base;
+  }
+
+  &:has(input:user-invalid) input {
+    border-color: var(--error-default);
+  }
+  &:has(input:user-invalid) .fieldError {
+    display: block;
+  }
+  &:has(input:user-valid) input {
+    border-color: var(--success-default);
+  }
+}
+
+.fieldError {
+  display: none;
+  color: var(--error-text);
+  font-size: 0.85em;
+}
+
+.summary {
+  max-width: 22rem;
+  padding: m.space(3) m.space(4);
+  margin-block-end: m.space(4);
+  border-radius: var(--radius-md, 8px);
+  background: var(--error-subtle);
+  color: var(--error-text);
+}
+
+.submit {
+  @include buttons.btn(primary);
+}

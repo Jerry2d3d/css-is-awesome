@@ -1,0 +1,61 @@
+@use 'components/navigation' as nav;
+@use 'components/data' as data;
+@use 'components/forms' as forms;
+@use 'mixins' as m;
+
+/* Live RTL demo styling — the REAL cia mixins on native markup, rendered
+   twice (dir="ltr" and dir="rtl") so the page proves the mirror rather than
+   describing it. These four are the exact components this epic's audit
+   touched: breadcrumb (margin-inline-end separator), avatar-group
+   (margin-inline-start overlap), select (background-position + padding),
+   switch (inset-inline-start + a [dir="rtl"] transform override). */
+
+.stage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: m.space(6);
+}
+.panel {
+  flex: 1 1 260px;
+  min-width: 240px;
+  padding: m.space(4);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md, 8px);
+  background: var(--paper);
+}
+.panelLabel {
+  margin: 0 0 m.space(3);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint, var(--text-muted));
+}
+.row {
+  display: flex;
+  align-items: center;
+  margin-block-end: m.space(4);
+}
+.row:last-child {
+  margin-block-end: 0;
+}
+
+.breadcrumb {
+  @include nav.breadcrumb;
+}
+
+.avatarGroup {
+  @include data.avatar-group;
+}
+.avatar {
+  @include data.avatar;
+}
+
+.select {
+  @include forms.select-base;
+  width: 100%;
+}
+
+.switch {
+  @include forms.switch-base;
+}

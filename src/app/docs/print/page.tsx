@@ -116,7 +116,10 @@ export default function DocsPrintPage() {
         button that opens a paper preview. It simulates the printed page on
         screen (the same token rebind, applied live), lets you edit the four
         palette colours and toggle a letterhead, and copies the ready-to-paste{" "}
-        <code>@media print</code> block for your theme.
+        <code>@media print</code> block for your theme. It opens seeded from
+        that theme&rsquo;s own <code>@media print</code> override when it has
+        one (Press opens straight into newsprint), and remembers your edits
+        per theme family the next time you open it.
       </p>
 
       <h2 id="see">See it work</h2>

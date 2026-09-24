@@ -27,7 +27,7 @@ cia-version: ">=1.0.0"
 |---|---|---|
 | `name` | string | Must match the filename slug |
 | `description` | string | One sentence — what this recipe builds, no more |
-| `category` | enum | One of: `overlay`, `input`, `data`, `navigation`, `feedback`, `layout`, `auth` |
+| `category` | enum | One of: `overlay`, `input`, `data`, `navigation`, `feedback`, `layout`, `auth`, `forms`, `i18n` |
 | `complexity` | enum | One of: `simple`, `medium`, `complex` |
 | `cia-version` | semver range | Minimum cia version this recipe targets |
 

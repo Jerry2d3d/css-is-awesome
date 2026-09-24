@@ -19,9 +19,12 @@
  *                  read_theming, read_agents, read_contract,
  *                  read_three_tiers, read_readme, read_versioning
  *   Sizing:        resolve_size
+ *   Themes (build): theme_from_tokens — design-tokens JSON → validated theme.css
+ *                   get_token_map     — the path → token mapping as data (or one path)
+ *   Themes (fix):   fix_theme         — rewrite deprecated tokens to their replacements
  *   Prompt:        assemble_prompt(intent[, args])
  *
- * 30 tools total.
+ * 34 tools total.
  *
  * Discovery model: filesystem scan, no database. Parses SCSS files with
  * focused regex (no full SCSS AST). Tokens come from the authoritative
@@ -32,13 +35,13 @@
  *     "mcpServers": {
  *       "css-is-awesome": {
  *         "command": "node",
- *         "args": ["K:/Repo/css-is-awesome/mcp/server.cjs"]
+ *         "args": ["node_modules/css-is-awesome/mcp/server.cjs"]
  *       }
  *     }
  *   }
  *
- * Aligned with the canonical sibling MCP shape: ui-ux-builder, ideas-master,
- * video-maker. Response envelope is `{ total, items }` for list/search;
+ * Aligned with the canonical sibling MCP shape used across our other servers.
+ * Response envelope is `{ total, items }` for list/search;
  * get_* tools return the full record.
  */
 
@@ -87,7 +90,9 @@ function resolveMcp() {
   catch {
     throw new Error(
       'css-is-awesome MCP server: @modelcontextprotocol/sdk is not installed. ' +
-      'Install with: npm install @modelcontextprotocol/sdk zod'
+      'Easiest fix: run `npx css-is-awesome-mcp` instead — it has the SDK as ' +
+      'a real dependency, no manual install needed. ' +
+      'To use this in-repo copy directly anyway: npm install @modelcontextprotocol/sdk zod'
     );
   }
 }
@@ -95,7 +100,10 @@ function resolveMcp() {
 function resolveStdio() {
   try { return require('@modelcontextprotocol/sdk/server/stdio.js'); }
   catch {
-    throw new Error('css-is-awesome MCP server: @modelcontextprotocol/sdk (stdio) missing — reinstall.');
+    throw new Error(
+      'css-is-awesome MCP server: @modelcontextprotocol/sdk (stdio) missing. ' +
+      'Run `npx css-is-awesome-mcp` instead, or reinstall the peer deps here.'
+    );
   }
 }
 
@@ -420,6 +428,12 @@ function loadTokenContract() {
     return { required: [], optional: [], byName: {}, byCategory: {} };
   }
   const optional = Array.isArray(contract.optional) ? contract.optional : [];
+  // Contract 1.2: optional tokens are grouped by the feature they enable.
+  const features = contract.features && typeof contract.features === 'object' ? contract.features : {};
+  const featureOf = {};
+  for (const [feature, def] of Object.entries(features)) {
+    for (const t of (def && Array.isArray(def.tokens)) ? def.tokens : []) featureOf[t] = feature;
+  }
 
   const byName = {};
   const byCategory = {};
@@ -454,11 +468,12 @@ function loadTokenContract() {
   }
   for (const t of optional) {
     const category = categorize(t);
-    byName[t] = { name: t, category, required: false };
+    byName[t] = { name: t, category, required: false, feature: featureOf[t] || null };
     (byCategory[category] = byCategory[category] || []).push(t);
   }
 
-  return { required: contract.required, optional, byName, byCategory };
+  const deprecated = contract.deprecated && typeof contract.deprecated === 'object' ? contract.deprecated : {};
+  return { required: contract.required, optional, features, deprecated, byName, byCategory };
 }
 
 /**
@@ -680,6 +695,87 @@ const handlers = {
     return { total: matches.length, items: matches };
   },
 
+  // Validates ANY theme CSS against the real token contract + a11y audit —
+  // not scoped to cia's own shipped themes. Works on cia's themes, a fully
+  // custom one built by an agent (e.g. via the derive-theme assemble_prompt
+  // intent), anything — whatever CSS text is passed in. Reuses the same
+  // validateText() the CLI (`npm run validate-themes`) calls, so a pass/fail
+  // here is exactly what `node scripts/theme-validator.js` would report,
+  // not a reimplementation that could quietly drift from it.
+  validate_theme({ css, label } = {}) {
+    if (!css || typeof css !== 'string') throw new Error('validate_theme: css is required');
+    const { validateText, loadContract } = require(path.join(SCRIPTS_DIR, 'theme-validator.js'));
+    return validateText(css, loadContract(), { label: label || undefined });
+  },
+
+  // Design-tokens JSON (DTCG v2025.10 / Tokens Studio / flat --token map) →
+  // a complete theme.css in the shipped shape, validated + contrast-audited.
+  // Same function as `cia theme from-tokens`; reachable in-process through
+  // module.exports.handlers so an inventory builder can call it without a
+  // transport. See scripts/tokens-to-theme.cjs for the input contract.
+  theme_from_tokens({ tokens, name, format, base, dark, mode, validate } = {}) {
+    if (tokens == null) throw new Error('theme_from_tokens: tokens is required (object or JSON string)');
+    if (!name) throw new Error('theme_from_tokens: name is required');
+    const { themeFromTokens } = require(path.join(SCRIPTS_DIR, 'tokens-to-theme.cjs'));
+    return themeFromTokens({ tokens, name, format, base, dark, mode, validate });
+  },
+
+  // The design-token → cia-token mapping theme_from_tokens applies, as DATA:
+  // the explicit table, the prefix rewrites, the generic rule, and the target
+  // token lists — or, with `path`, how one path resolves plus the contract's
+  // view of the target (required/optional + contract-1.2 feature). Exists so
+  // two consumers (an inventory builder, a boilerplate registry) map the same
+  // source token the same way without re-deriving the rules.
+  get_token_map({ path: tokenPath } = {}) {
+    const { tokenMap, resolvePath } = require(path.join(SCRIPTS_DIR, 'tokens-to-theme.cjs'));
+    const deprecated = getTokens().deprecated;
+    if (tokenPath == null || tokenPath === '') {
+      // `deprecated` rides along so an agent translating a design file lands
+      // on the CURRENT name in one call, instead of mapping to a token that
+      // is on its way out and finding out later.
+      return { ...tokenMap({ ciaRoot: PROJECT_ROOT }), deprecated };
+    }
+    const r = resolvePath(String(tokenPath), { ciaRoot: PROJECT_ROOT });
+    const entry = getTokens().byName[r.token] || null;
+    const dep = deprecated[r.token] || null;
+    return {
+      ...r,
+      required: entry ? entry.required : null,
+      feature: entry && !entry.required ? (entry.feature || null) : null,
+      category: entry ? entry.category : null,
+      deprecated: dep ? { replacedBy: dep.replacedBy || null, since: dep.since || null, removeIn: dep.removeIn || null, note: dep.note || null } : null,
+    };
+  },
+
+  // Rewrite a theme's DEPRECATED token declarations to their replacements.
+  // Returns the corrected text and a per-line account of what moved and why;
+  // it never touches disk, so an agent can show the diff, ask, and only then
+  // write. Renames the property only — a value is never altered, so applying
+  // this cannot change how the theme looks.
+  fix_theme({ css, apply } = {}) {
+    if (typeof css !== 'string' || !css.trim()) {
+      throw new Error('fix_theme: css is required (the compiled theme CSS, not .scss source)');
+    }
+    const { fixTheme, deprecations } = require(path.join(SCRIPTS_DIR, 'fix-theme.cjs'));
+    const result = fixTheme({ css });
+    const rewrites = result.changes.filter((c) => c.kind === 'rewrite');
+    const conflicts = result.changes.filter((c) => c.kind === 'conflict');
+    return {
+      ...result,
+      // `apply` is the caller's stated intent, echoed back. This tool has no
+      // filesystem access in either case — saying so plainly stops an agent
+      // reporting "I updated your theme" when nothing was written.
+      applied: false,
+      requestedApply: Boolean(apply),
+      summary: result.unchanged
+        ? (conflicts.length
+            ? `Nothing rewritten: ${conflicts.length} collision(s) need a human decision.`
+            : 'No deprecated tokens found — this theme is already current.')
+        : `${rewrites.length} declaration(s) renamed${conflicts.length ? `, ${conflicts.length} left for you to resolve` : ''}. Write the returned css yourself; nothing was saved.`,
+      knownDeprecations: deprecations(),
+    };
+  },
+
   // ─── Mixins ────────────────────────────────────────────────────────────
 
   list_mixins({ category, component, limit = 500, offset = 0 } = {}) {
@@ -819,10 +915,18 @@ const handlers = {
         referencedBy.push({ name: d.name, kind: d.kind, path: d.path });
       }
     }
+    const dep = getTokens().deprecated[entry.name] || null;
     return {
       name: entry.name,
       category: entry.category,
       required: entry.required,
+      // Contract 1.3+: null unless this token has been superseded. The old
+      // value keeps working — `fix_theme` renames it when the caller asks.
+      deprecated: dep
+        ? { replacedBy: dep.replacedBy || null, since: dep.since || null, removeIn: dep.removeIn || null, note: dep.note || null }
+        : null,
+      // Contract 1.2: the feature an OPTIONAL token enables (null for required).
+      feature: entry.required ? null : (entry.feature || null),
       themeValues,
       referencedBy: referencedBy.slice(0, 20),
     };
@@ -1131,6 +1235,40 @@ const handlers = {
         }
         break;
       }
+      case 'derive-theme': {
+        if (!target) throw new Error('assemble_prompt: intent "derive-theme:" requires a base theme name');
+        const base = handlers.get_theme({ name: target });
+        const themeMixin = handlers.get_mixin({ name: 'theme' });
+        const tk = getTokens();
+        banner(`css-is-awesome — deriving a new theme from ${base.name}`);
+        sub('Base theme — copy this, then edit only what should change');
+        lines.push('```scss');
+        lines.push(base.raw_scss);
+        lines.push('```');
+        lines.push('');
+        sub('The `theme()` wrapper contract');
+        lines.push('```scss');
+        lines.push(themeMixin.signature);
+        lines.push('```');
+        if (themeMixin.doc) { lines.push(''); lines.push(themeMixin.doc); }
+        lines.push('');
+        sub('Required + optional tokens (must all still be present)');
+        lines.push(`Required: ${tk.required.length}. Optional: ${tk.optional.length}.`);
+        lines.push('');
+        const dtCats = Object.keys(tk.byCategory).sort();
+        for (const cat of dtCats) {
+          lines.push(`### ${cat} (${tk.byCategory[cat].length})`);
+          lines.push('');
+          for (const name of tk.byCategory[cat].sort()) lines.push(`- ${name}`);
+          lines.push('');
+        }
+        sub('Rules');
+        lines.push('1. This server never writes files. Build the new theme file\'s content from the above, then write it yourself with your own file tools — ask the user where it should go if it isn\'t obvious.');
+        lines.push('2. Keep the `:root, :root[data-theme="<new-name>"]` shape (the base theme above already has it) unless you are deliberately building a multi-theme-bundle entry, where `$standalone: false` applies instead.');
+        lines.push('3. Only change values that should actually differ for the new design — copy everything else from the base theme unchanged, including tokens you don\'t recognize.');
+        lines.push('4. Before calling it done: every required token listed above must still be present in the new file. If this repo is available locally, `node scripts/theme-validator.js <path-to-new-theme.css>` confirms it.');
+        break;
+      }
       case 'animations': {
         const a = getAnimations();
         banner('css-is-awesome — animations');
@@ -1170,7 +1308,7 @@ const handlers = {
         break;
       }
       default:
-        throw new Error(`assemble_prompt: unknown intent "${intent}". Try overview | mixin:<name> | component:<name> | theme:<name> | tokens | animations | recipe:<name>.`);
+        throw new Error(`assemble_prompt: unknown intent "${intent}". Try overview | mixin:<name> | component:<name> | theme:<name> | derive-theme:<base> | tokens | animations | recipe:<name>.`);
     }
 
     if (args && typeof args === 'string' && args.trim()) {
@@ -1287,6 +1425,71 @@ async function startServer() {
       limit: z.number().int().min(1).max(50).optional(),
     },
   }, async (a) => ok(handlers.search_themes(a || {})));
+
+  server.registerTool('validate_theme', {
+    description:
+      'Validate ANY theme CSS against cia\'s real token contract and WCAG contrast audit — the same check ' +
+      '`npm run validate-themes` runs, exposed as a tool call. Not scoped to cia\'s own themes: works on a ' +
+      'fully custom theme you (or another agent) just built, e.g. via the derive-theme assemble_prompt intent. ' +
+      'Pass compiled CSS (a :root or [data-theme="..."] block) — this does not compile Sass, so give it the ' +
+      'output, not .scss source. Returns missing required tokens (if any, mode "per-file" or "consolidated" ' +
+      'depending on shape) and a11y warnings per contrast pair.',
+    inputSchema: {
+      css: z.string().describe('Compiled theme CSS to validate — the :root/[data-theme] block(s), not .scss source.'),
+      label: z.string().optional().describe('Optional name for the result (e.g. the intended theme name); purely cosmetic.'),
+    },
+  }, async (a) => ok(handlers.validate_theme(a || {})));
+
+  server.registerTool('theme_from_tokens', {
+    description:
+      'Build a complete, validated cia theme.css from a design-tokens JSON — DTCG v2025.10 ({ $value, $type }, ' +
+      '{aliases} resolved), a Tokens Studio for Figma export ({ value, type }, single or multi-set), or a flat ' +
+      '{ "--token": value } map. Format is auto-detected. Every REQUIRED contract token the file does not supply ' +
+      'is inherited from a shipped base theme (default boilerplate) and listed in report.inherited, so the output ' +
+      'is always contract-complete; unmapped paths are emitted verbatim and listed in report.unmapped, never ' +
+      'dropped. Pass `dark` (same format), or one file with paired top-level groups — `light`/`dark` (each a full '
+      + 'token set) or `color-light`/`color-dark` (each a colour set) — to get ' +
+      'light-dark() values. Returns { css, report, validation } — validation is the same result validate_theme ' +
+      'gives, run on the CSS before you write it anywhere.',
+    inputSchema: {
+      tokens: z.union([z.record(z.any()), z.string()]).describe('The tokens JSON (object, or a JSON string).'),
+      name: z.string().describe('Theme name — kebab-case slug, becomes [data-theme="<name>"].'),
+      format: z.enum(['auto', 'dtcg', 'tokens-studio', 'cia-flat']).optional().describe('Default auto.'),
+      base: z.string().optional().describe('Shipped theme that supplies missing required tokens. Default boilerplate.'),
+      dark: z.union([z.record(z.any()), z.string()]).optional().describe('Optional dark-mode tokens (same format) → light-dark() values.'),
+      mode: z.enum(['light', 'dark']).optional().describe('Single-mode color-scheme when there is no dark side. Default light.'),
+      validate: z.boolean().optional().describe('Run the validator + WCAG audit (default true).'),
+    },
+  }, async (a) => ok(handlers.theme_from_tokens(a || {})));
+
+  server.registerTool('fix_theme', {
+    description:
+      'Upgrade a theme that uses a DEPRECATED token. cia deprecates a token rather than deleting it, so the ' +
+      'old declaration keeps working — but there is a better name now, and this rewrites it for you. Pass the ' +
+      'compiled theme CSS; get back { css, changes, unchanged, summary } where every change names the line, the ' +
+      'old token, its replacement and why it moved. Only the property name changes — values, comments, ordering ' +
+      'and whitespace survive byte-for-byte, so applying it cannot alter how the theme looks. If a block already ' +
+      'declares the replacement the old line is left alone and reported as a conflict, because merging two values ' +
+      'is a judgement call. NOTHING IS WRITTEN TO DISK: this returns text, and the caller decides whether to save ' +
+      'it. Use get_token to see what supersedes a given token, or read knownDeprecations in the result.',
+    inputSchema: {
+      css: z.string().describe('Compiled theme CSS — the :root/[data-theme] block(s), not .scss source.'),
+      apply: z.boolean().optional().describe('Your stated intent, echoed back as requestedApply. This tool cannot write files either way; you save the returned css yourself.'),
+    },
+  }, async (a) => ok(handlers.fix_theme(a || {})));
+
+  server.registerTool('get_token_map', {
+    description:
+      'The design-token → cia-token mapping that theme_from_tokens applies, as data. Without `path`: ' +
+      '{ generatorVersion, contractVersion, explicit: { "<path>": "--token" }, aliases: [{ pattern, ' +
+      'replaceWith }], genericRule, targets: { required, optional } }. With `path` (e.g. ' +
+      '"color.text.primary"): how that one path resolves — { token, mapped, via, status, required, ' +
+      'feature, category }. Use it to map a Figma / DTCG / Tokens Studio token name to the cia custom ' +
+      'property the same way the converter does, or to check a name before building a theme.',
+    inputSchema: {
+      path: z.string().optional().describe('One token path to resolve (dot-separated, e.g. spacing.4). Omit for the whole map.'),
+    },
+  }, async (a) => ok(handlers.get_token_map(a || {})));
 
   // Mixins
   server.registerTool('list_mixins', {

@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { Marked } from "marked";
+import { recipePlaygroundPayload } from "./playground/recipe-link";
 
 // ─── Where the recipes live ──────────────────────────────────────────────────
 // Recipes are authored as Markdown in `scss/recipes/*.md` so they ship inside
@@ -34,7 +35,7 @@ export type Recipe = RecipeMeta & { html: string };
 // Small acronyms that should stay upper-cased in a prettified title, and
 // joining words that stay lower-cased unless they lead. Shared by the recipe
 // index cards and the recipe page heading so both read identically.
-const ACRONYMS = new Set(["pdf", "css", "html", "aria", "url", "api", "ui"]);
+const ACRONYMS = new Set(["pdf", "css", "html", "html5", "aria", "url", "api", "ui"]);
 const SMALL_WORDS = new Set(["to", "of", "and", "a", "an", "the", "for", "from"]);
 
 /** "print-to-pdf" → "Print to PDF", "combobox" → "Combobox". */
@@ -62,7 +63,18 @@ const marked = new Marked({
       const langLabel = lang
         ? `<span class="recipe-codeblock-lang" aria-hidden="true">${escapeHtml(lang)}</span>`
         : "";
-      return `<div class="recipe-codeblock" data-lang="${escapeAttr(lang ?? "")}">${langLabel}<pre><code${langClass}>${escapeHtml(text)}\n</code></pre></div>`;
+      // tabindex + role/label: <pre> is horizontally scrollable, so a
+      // keyboard-only user needs a focusable, named region to pan it
+      // (axe `scrollable-region-focusable`) — same fix as the Example
+      // component's Code block (src/components/Example/Example.tsx).
+      return `<div class="recipe-codeblock" data-lang="${escapeAttr(lang ?? "")}">${langLabel}<pre tabindex="0" role="region" aria-label="Code sample"><code${langClass}>${escapeHtml(text)}\n</code></pre></div>`;
+    },
+    // GFM task-list checkboxes are disabled (non-interactive) and purely
+    // decorative — the adjacent text already conveys the item, so hide
+    // them from the accessibility tree instead of leaving an unlabeled
+    // form control behind (axe `label`, critical).
+    checkbox({ checked }) {
+      return `<input ${checked ? "checked " : ""}disabled aria-hidden="true" type="checkbox">`;
     },
   },
 });
@@ -161,4 +173,17 @@ export function getRecipe(slug: string): Recipe | null {
   const { data, body } = parseFrontmatter(raw);
   const html = rewriteRecipeMdLinks(marked.parse(body) as string);
   return { slug, ...toFrontmatter(data, slug), html };
+}
+
+/**
+ * `#code=` payload for the "Try in playground" link: the recipe's Structure
+ * HTML + Styling SCSS, gzip+base64url-encoded at build time. Null when the
+ * recipe has no extractable starter (the page then renders no button).
+ */
+export function getRecipePlaygroundPayload(slug: string): string | null {
+  if (!isRecipeFile(`${slug}.md`)) return null;
+  const file = path.join(RECIPES_DIR, `${slug}.md`);
+  if (!fs.existsSync(file)) return null;
+  const { body } = parseFrontmatter(fs.readFileSync(file, "utf8"));
+  return recipePlaygroundPayload(body);
 }

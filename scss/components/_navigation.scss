@@ -105,7 +105,7 @@
   li + li::before {
     content: $separator;
     color: m.color(text-muted);
-    margin-right: m.space($gap);
+    margin-inline-end: m.space($gap);
   }
 
   a {

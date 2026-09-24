@@ -38,14 +38,14 @@
   --ink-soft: light-dark(#1e293b, #e2e8f0);
   --ink-faint: light-dark(#475569, #94a3b8);
   --graphite: light-dark(#0f172a, #f1f5f9);
-  --muted: light-dark(#64748b, #64748b);
+  --muted: light-dark(#718299, #64748b);
   /* Lines */
   --guide: light-dark(#cbd5e1, #334155);
   --guide-soft: light-dark(#e2e8f0, #1e293b);
   --hair: light-dark(#e2e8f0, #1e293b);
   --hair-soft: light-dark(#f1f5f9, #0f172a);
   /* Primary accent */
-  --ai: light-dark(#2563eb, #3b82f6);
+  --ai: light-dark(#2563eb, #3d85f9);
   --ai-ink: light-dark(#1d4ed8, #60a5fa);
   --ai-wash: light-dark(#eff6ff, #1e3a8a);
   /* Seal — red */
@@ -58,9 +58,9 @@
   --code-bg: light-dark(#f8fafc, #020617);
   --code-ink: light-dark(#0f172a, #e2e8f0);
   --code-muted: light-dark(#5E6D83, #6F8098);
-  --code-accent: light-dark(#C1410C, #fb923c);
+  --code-accent: light-dark(#c0400b, #fb923c);
   --code-green: light-dark(#147C3B, #4ade80);
-  --code-blue: light-dark(#2362EB, #60a5fa);
+  --code-blue: light-dark(#2361ea, #60a5fa);
   /* Typography — system stacks, no @import, identical */
   --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-script: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -139,10 +139,10 @@
   --info-text: light-dark(var(--ai-ink), #85BFFF);
   --success-default: light-dark(#16a34a, #22c55e);
   --success-subtle: light-dark(#f0fdf4, #14532d);
-  --success-text: light-dark(#15803d, #4ade80);
+  --success-text: light-dark(#0e7c3a, #4ade80);
   --warning-default: var(--ochre);
   --warning-subtle: var(--ochre-wash);
-  --warning-text: light-dark(#b45309, #fbbf24);
+  --warning-text: light-dark(#b15003, #fbbf24);
   --error-default: var(--shu);
   --error-subtle: var(--shu-wash);
   --error-text: light-dark(#b91c1c, #fca5a5);
@@ -153,16 +153,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -188,6 +189,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#f2f6fe, #121e36);
+  --page-hero-ink: light-dark(#0f172a, #f8fafc);
+  --page-band-bg: light-dark(#f7fafe, #111b31);
+  --page-band-ink: light-dark(#0f172a, #f8fafc);
 }
 :root[data-theme=boilerplate-dark] {
   color-scheme: dark;
@@ -201,14 +208,14 @@
   --ink-soft: #e2e8f0;
   --ink-faint: #94a3b8;
   --graphite: #f1f5f9;
-  --muted: #64748b;
+  --muted: #718299;
   /* Lines — dark slate borders */
   --guide: #334155;
   --guide-soft: #1e293b;
   --hair: #1e293b;
   --hair-soft: #0f172a;
   /* Primary accent — brighter blue for dark surfaces */
-  --ai: #3b82f6;
+  --ai: #3d85f9;
   --ai-ink: #60a5fa;
   --ai-wash: #1e3a8a;
   /* Seal — red */
@@ -351,16 +358,23 @@
      var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions. */
+  --space-unit: 0.125rem;
   --space-0: 0;
-  --space-1: 0.5rem;
-  --space-2: 0.75rem;
-  --space-3: 0.875rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 6rem;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #121e36;
+  --page-hero-ink: #f8fafc;
+  --page-band-bg: #111b31;
+  --page-band-ink: #f8fafc;
 }
 :root[data-theme=boilerplate-light] {
   color-scheme: light;
@@ -393,10 +407,10 @@
   /* Code — neutral light syntax surface */
   --code-bg: #f8fafc;
   --code-ink: #0f172a;
-  --code-muted: #64748b;
-  --code-accent: #c2410c;
-  --code-green: #15803d;
-  --code-blue: #2563eb;
+  --code-muted: #5e6d84;
+  --code-accent: #c04009;
+  --code-green: #0e7c3a;
+  --code-blue: #2461e9;
   /* Typography — system stacks only (no @import) */
   --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-script: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -482,11 +496,11 @@
   /* Status — success */
   --success-default: #16a34a;
   --success-subtle: #f0fdf4;
-  --success-text: #15803d;
+  --success-text: #0e7c3a;
   /* Status — warning */
   --warning-default: var(--ochre);
   --warning-subtle: var(--ochre-wash);
-  --warning-text: #b45309;
+  --warning-text: #b15003;
   /* Status — error */
   --error-default: var(--shu);
   --error-subtle: var(--shu-wash);
@@ -524,16 +538,23 @@
      var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions. */
+  --space-unit: 0.125rem;
   --space-0: 0;
-  --space-1: 0.5rem;
-  --space-2: 0.75rem;
-  --space-3: 0.875rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 6rem;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #f2f6fe;
+  --page-hero-ink: #0f172a;
+  --page-band-bg: #f7fafe;
+  --page-band-ink: #0f172a;
 }
 :root[data-theme=cupertino] {
   color-scheme: light dark;
@@ -547,18 +568,18 @@
   --ink-soft: light-dark(#3A3A3C, #C7C7CC);
   --ink-faint: light-dark(#66666B, #98989D);
   --graphite: light-dark(#2C2C2E, #AEAEB2);
-  --muted: light-dark(#6E6E73, #6E6E73);
+  --muted: light-dark(#84858a, #6E6E73);
   /* Hairlines — solid in light, translucent white in dark */
   --guide: light-dark(#D2D2D7, rgba(255, 255, 255, 0.16));
   --guide-soft: light-dark(#E5E5EA, rgba(255, 255, 255, 0.08));
   --hair: light-dark(#D2D2D7, rgba(255, 255, 255, 0.12));
   --hair-soft: light-dark(#E5E5EA, rgba(255, 255, 255, 0.06));
   /* Primary accent — Apple system blue (dark variant brighter) */
-  --ai: light-dark(#005EBB, #0A84FF);
+  --ai: light-dark(#005EBB, #1e8eff);
   --ai-ink: light-dark(#0058B0, #409CFF);
   --ai-wash: light-dark(#E5F0FB, rgba(10, 132, 255, 0.16));
   /* Seal — Apple system red */
-  --shu: light-dark(#FF3B30, #FF453A);
+  --shu: light-dark(#f73229, #FF453A);
   --shu-wash: light-dark(#FFEAE8, rgba(255, 69, 58, 0.16));
   /* Accent — Apple system orange */
   --ochre: light-dark(#FF9F0A, #FF9F0A);
@@ -665,16 +686,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -707,6 +729,12 @@
   --input-radius: var(--r-sm);
   --modal-radius: var(--r-lg);
   --tooltip-radius: var(--r-sm);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#e6ecf3, #1e252c);
+  --page-hero-ink: light-dark(#1d1d1f, #f5f5f7);
+  --page-band-bg: light-dark(#ecf0f5, #1e2226);
+  --page-band-ink: light-dark(#1d1d1f, #f5f5f7);
 }
 :root[data-theme=cupertino-dark] {
   color-scheme: dark;
@@ -720,14 +748,14 @@
   --ink-soft: #C7C7CC;
   --ink-faint: #98989D;
   --graphite: #AEAEB2;
-  --muted: #6E6E73;
+  --muted: #84858a;
   /* Hairlines / guides — translucent white */
   --guide: rgba(255, 255, 255, 0.16);
   --guide-soft: rgba(255, 255, 255, 0.08);
   --hair: rgba(255, 255, 255, 0.12);
   --hair-soft: rgba(255, 255, 255, 0.06);
   /* Primary accent — Apple system blue (dark variant) */
-  --ai: #0A84FF;
+  --ai: #1e8eff;
   --ai-ink: #409CFF;
   --ai-wash: rgba(10, 132, 255, 0.16);
   /* Seal — Apple system red (dark variant) */
@@ -850,16 +878,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -897,6 +926,12 @@
   --input-radius: var(--r-sm); /* 8px — text field */
   --modal-radius: var(--r-lg); /* matches panel */
   --tooltip-radius: var(--r-sm); /* bezel tooltip */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1e252c;
+  --page-hero-ink: #f5f5f7;
+  --page-band-bg: #1e2226;
+  --page-band-ink: #f5f5f7;
 }
 :root[data-theme=cupertino-light] {
   color-scheme: light;
@@ -921,7 +956,7 @@
   --ai-ink: #0058B0;
   --ai-wash: #E5F0FB;
   /* Seal — system red */
-  --shu: #FF3B30;
+  --shu: #f73229;
   --shu-wash: #FFEAE8;
   /* Accent — system orange / amber */
   --ochre: #FF9F0A;
@@ -1047,16 +1082,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1103,6 +1139,12 @@
   --input-radius: var(--r-sm); /* 8px — text field */
   --modal-radius: var(--r-lg); /* matches panel */
   --tooltip-radius: var(--r-sm); /* bezel tooltip */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #e6ecf3;
+  --page-hero-ink: #1d1d1f;
+  --page-band-bg: #ecf0f5;
+  --page-band-ink: #1d1d1f;
 }
 :root[data-theme=glass] {
   color-scheme: light dark;
@@ -1116,18 +1158,18 @@
   --ink-soft: light-dark(#3A3A3C, #C8CFE0);
   --ink-faint: light-dark(#65656A, #8A92A8);
   --graphite: light-dark(#2C2C2E, #DCE2F0);
-  --muted: light-dark(#6E6E73, #5A627A);
+  --muted: light-dark(#6E6E73, #727b93);
   /* Construction lines — translucent */
   --guide: light-dark(rgba(29, 29, 31, 0.14), rgba(240, 244, 255, 0.16));
   --guide-soft: light-dark(rgba(29, 29, 31, 0.10), rgba(240, 244, 255, 0.08));
   --hair: light-dark(rgba(29, 29, 31, 0.08), rgba(240, 244, 255, 0.12));
   --hair-soft: light-dark(rgba(29, 29, 31, 0.04), rgba(240, 244, 255, 0.06));
   /* Primary accent — iOS indigo / vibrant dark blue */
-  --ai: light-dark(#5957E2, #6FA9FF);
+  --ai: light-dark(#5653de, #6FA9FF);
   --ai-ink: light-dark(#3634A3, #93C2FF);
   --ai-wash: light-dark(rgba(89, 87, 226, 0.12), rgba(111, 169, 255, 0.16));
   /* Seal — iOS system pink */
-  --shu: light-dark(#FF375F, #FF6B8A);
+  --shu: light-dark(#f32856, #FF6B8A);
   --shu-wash: light-dark(rgba(255, 55, 95, 0.12), rgba(255, 107, 138, 0.16));
   /* Draft / marginalia — iOS orange */
   --ochre: light-dark(#FF9500, #FFC56B);
@@ -1137,7 +1179,7 @@
   --code-ink: light-dark(#F5F5F7, #F0F4FF);
   --code-muted: light-dark(#BCBCC0, #8A92A8);
   --code-accent: #FFD60A;
-  --code-green: light-dark(#30D158, #5FE37F);
+  --code-green: light-dark(#3ad85e, #5FE37F);
   --code-blue: light-dark(#64D2FF, #93C2FF);
   /* Typography — SF stack, identical */
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
@@ -1183,6 +1225,25 @@
    * below are valid in compiled output (Sass hoists @media + scopes
    * the vars under the parent selector). */
   /* stylelint-disable no-invalid-position-declaration -- see comment above */
+}
+@media (prefers-color-scheme: dark) {
+:root[data-theme=glass] {
+    --blur-sm: blur(12px) saturate(160%);
+    --blur-md: blur(18px) saturate(180%);
+    --blur-lg: blur(20px) saturate(200%);
+    --glow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    --glow-md:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+      inset 1px 0 0 rgba(255, 255, 255, 0.10),
+      inset -1px 0 0 rgba(255, 255, 255, 0.06);
+    --glow-lg:
+      inset 0 2px 0 rgba(255, 255, 255, 0.28),
+      inset 0 -2px 0 rgba(255, 255, 255, 0.08),
+      inset 2px 0 0 rgba(255, 255, 255, 0.14),
+      inset -2px 0 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 40px rgba(111, 169, 255, 0.08);
+  }
 }
 :root[data-theme=glass] {
   /* stylelint-enable no-invalid-position-declaration */
@@ -1247,16 +1308,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1282,6 +1344,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#ebe5fd, #101828);
+  --page-hero-ink: light-dark(#1d1d1f, #f0f4ff);
+  --page-band-bg: light-dark(#eee9fe, #0e1422);
+  --page-band-ink: light-dark(#1d1d1f, #f0f4ff);
 }
 :root[data-theme=glass-dark] {
   color-scheme: dark;
@@ -1295,7 +1363,7 @@
   --ink-soft: #C8CFE0;
   --ink-faint: #8A92A8;
   --graphite: #DCE2F0;
-  --muted: #5A627A;
+  --muted: #727b93;
   /* Construction lines — translucent white hairlines */
   --guide: rgba(240, 244, 255, 0.16);
   --guide-soft: rgba(240, 244, 255, 0.08);
@@ -1434,16 +1502,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1472,6 +1541,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #101828;
+  --page-hero-ink: #f0f4ff;
+  --page-band-bg: #0e1422;
+  --page-band-ink: #f0f4ff;
 }
 :root[data-theme=glass-light] {
   color-scheme: light;
@@ -1492,11 +1567,11 @@
   --hair: rgba(29, 29, 31, 0.08);
   --hair-soft: rgba(29, 29, 31, 0.04);
   /* Primary accent — iOS indigo */
-  --ai: #5957E2;
+  --ai: #5653de;
   --ai-ink: #3634A3;
   --ai-wash: rgba(89, 87, 226, 0.12);
   /* Seal — iOS system pink (draft / emphasis) */
-  --shu: #FF375F;
+  --shu: #f32856;
   --shu-wash: rgba(255, 55, 95, 0.12);
   /* Draft / marginalia — iOS orange */
   --ochre: #FF9500;
@@ -1506,7 +1581,7 @@
   --code-ink: #F5F5F7;
   --code-muted: #BABABE;
   --code-accent: #FFD60A;
-  --code-green: #30D158;
+  --code-green: #3ad85e;
   --code-blue: #64D2FF;
   /* Typography — SF system stack */
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
@@ -1634,16 +1709,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1673,6 +1749,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #ebe5fd;
+  --page-hero-ink: #1d1d1f;
+  --page-band-bg: #eee9fe;
+  --page-band-ink: #1d1d1f;
 }
 :root[data-theme=graphite] {
   color-scheme: light dark;
@@ -1686,14 +1768,14 @@
   --ink-soft: light-dark(#3A4048, #C7C7CC);
   --ink-faint: light-dark(#5E646D, #98989D);
   --graphite: light-dark(#2A2F36, #AEAEB2);
-  --muted: light-dark(#878D95, #6A6A6E);
+  --muted: light-dark(#6a7078, #6A6A6E);
   /* Construction lines — translucent ink (light) / translucent white (dark) */
   --guide: light-dark(rgba(26, 31, 38, 0.16), rgba(255, 255, 255, 0.16));
   --guide-soft: light-dark(rgba(26, 31, 38, 0.08), rgba(255, 255, 255, 0.08));
   --hair: light-dark(rgba(26, 31, 38, 0.12), rgba(255, 255, 255, 0.12));
   --hair-soft: light-dark(rgba(26, 31, 38, 0.06), rgba(255, 255, 255, 0.06));
   /* Primary accent — cool blue-gray (light) / Apple dark blue (dark) */
-  --ai: light-dark(#4A6585, #0A84FF);
+  --ai: light-dark(#4A6585, #178aff);
   --ai-ink: light-dark(#2F4866, #409CFF);
   --ai-wash: light-dark(rgba(74, 101, 133, 0.10), rgba(10, 132, 255, 0.14));
   /* Seal */
@@ -1706,8 +1788,8 @@
   --code-bg: light-dark(#F6F7F9, #0D0D0F);
   --code-ink: light-dark(#1A1F26, #E8E8ED);
   --code-muted: light-dark(#666B73, #818186);
-  --code-accent: light-dark(#87652B, #FFB86C);
-  --code-green: light-dark(#3D7746, #A8E6A1);
+  --code-accent: light-dark(#86642a, #FFB86C);
+  --code-green: light-dark(#3d7646, #A8E6A1);
   --code-blue: light-dark(#4A6585, #9AD4F7);
   /* Typography — SF stack, identical */
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -1787,7 +1869,7 @@
   --info-text: light-dark(var(--ai-ink), #409CFF);
   --success-default: light-dark(#28A745, #30D158);
   --success-subtle: light-dark(rgba(40, 167, 69, 0.10), rgba(48, 209, 88, 0.14));
-  --success-text: light-dark(#1B7530, #5FE37F);
+  --success-text: light-dark(#1b7530, #5FE37F);
   --warning-default: var(--ochre);
   --warning-subtle: light-dark(rgba(181, 135, 58, 0.10), rgba(255, 159, 10, 0.14));
   --warning-text: light-dark(#7A5A22, #FFB340);
@@ -1801,16 +1883,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1836,6 +1919,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#e8ebef, #1a212a);
+  --page-hero-ink: light-dark(#1a1f26, #f5f5f7);
+  --page-band-bg: light-dark(#eceff2, #1a1e24);
+  --page-band-ink: light-dark(#1a1f26, #f5f5f7);
 }
 :root[data-theme=graphite-dark] {
   color-scheme: dark;
@@ -1849,14 +1938,14 @@
   --ink-soft: #C7C7CC;
   --ink-faint: #98989D;
   --graphite: #AEAEB2;
-  --muted: #6A6A6E;
+  --muted: #818286;
   /* Construction lines — translucent white hairlines */
   --guide: rgba(255, 255, 255, 0.16);
   --guide-soft: rgba(255, 255, 255, 0.08);
   --hair: rgba(255, 255, 255, 0.12);
   --hair-soft: rgba(255, 255, 255, 0.06);
   /* Primary accent — Apple dark-mode system blue */
-  --ai: #0A84FF;
+  --ai: #178aff;
   --ai-ink: #409CFF;
   --ai-wash: rgba(10, 132, 255, 0.14);
   /* Seal — Apple dark-mode red (reserve for emphasis) */
@@ -1988,16 +2077,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2027,6 +2117,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1a212a;
+  --page-hero-ink: #f5f5f7;
+  --page-band-bg: #1a1e24;
+  --page-band-ink: #f5f5f7;
 }
 :root[data-theme=graphite-light] {
   color-scheme: light;
@@ -2040,7 +2136,7 @@
   --ink-soft: #3A4048;
   --ink-faint: #5E646D;
   --graphite: #2A2F36;
-  --muted: #878D95;
+  --muted: #6a7078;
   /* Construction lines — translucent ink hairlines */
   --guide: rgba(26, 31, 38, 0.16);
   --guide-soft: rgba(26, 31, 38, 0.08);
@@ -2061,7 +2157,7 @@
   --code-ink: #1A1F26;
   --code-muted: #656A72;
   --code-accent: #86642B;
-  --code-green: #3F7A48;
+  --code-green: #3c7645;
   --code-blue: #4A6585;
   /* Typography — match Graphite (SF system stack) */
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -2151,7 +2247,7 @@
   /* Status — success (Apple light-mode green) */
   --success-default: #28A745;
   --success-subtle: rgba(40, 167, 69, 0.10);
-  --success-text: #1B7530;
+  --success-text: #1b7530;
   /* Status — warning */
   --warning-default: var(--ochre);
   --warning-subtle: rgba(181, 135, 58, 0.10);
@@ -2170,16 +2266,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2208,6 +2305,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #e8ebef;
+  --page-hero-ink: #1a1f26;
+  --page-band-bg: #eceff2;
+  --page-band-ink: #1a1f26;
 }
 :root[data-theme=press] {
   color-scheme: light dark;
@@ -2223,9 +2326,9 @@
      ---------------------------------------------------------------- */
   --ink: light-dark(#0A0A0A, #FAFAF7);
   --ink-soft: light-dark(#555, #C8C6C0);
-  --ink-faint: light-dark(#727069, #8A8A86);
+  --ink-faint: light-dark(#6e6c66, #8A8A86);
   --graphite: light-dark(#1A1A1A, #ECEAE4);
-  --muted: light-dark(#8E8C86, #6B6963);
+  --muted: light-dark(#75736e, #6B6963);
   /* Rules / hairlines */
   --guide: light-dark(#1A1A1A, #ECEAE4);
   --guide-soft: light-dark(#D9D7D1, #2A2A2A);
@@ -2361,16 +2464,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2414,6 +2518,19 @@
      Every other theme inherits print-base's plain ink-on-white.
      ---------------------------------------------------------------- */
 }
+@media print {
+:root[data-theme=press] {
+    /* stylelint-disable no-invalid-position-declaration -- these are custom-property
+       overrides scoped to the theme selector m.theme() supplies; the position is valid
+       once the mixin wraps them (emits `@media print { :root, :root[data-theme=press] }`),
+       but stylelint can't see the mixin's parent selector statically. */
+    --print-paper: #FBFAF6; /* faint warm newsprint stock */
+    --print-ink: #0A0A0A; /* warm near-black */
+    --print-line: #D93025; /* press red — the masthead rule */
+    --print-muted: #6B6963; /* warm editorial gray */
+    /* stylelint-enable no-invalid-position-declaration */
+  }
+}
 :root[data-theme=press-dark] {
   color-scheme: dark;
   /* Surfaces — near-ink newsroom */
@@ -2426,7 +2543,7 @@
   --ink-soft: #C8C6C0;
   --ink-faint: #8A8A86;
   --graphite: #ECEAE4;
-  --muted: #6B6963;
+  --muted: #7d7b74;
   /* Rules / hairlines — thin editorial rules on dark */
   --guide: #ECEAE4;
   --guide-soft: #2A2A2A;
@@ -2556,16 +2673,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2603,6 +2721,12 @@
   --card-border: 1px solid var(--hair); /* thin rule instead */
   --input-radius: var(--r-sm); /* 2px */
   --modal-radius: var(--r-md); /* 3px */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1c1c1c;
+  --page-hero-ink: #fafaf7;
+  --page-band-bg: #161616;
+  --page-band-ink: #fafaf7;
 }
 :root[data-theme=press-light] {
   color-scheme: light;
@@ -2614,9 +2738,9 @@
   /* Ink — warm near-black */
   --ink: #0A0A0A;
   --ink-soft: #555;
-  --ink-faint: #727069;
+  --ink-faint: #6e6c66;
   --graphite: #1A1A1A;
-  --muted: #8E8C86;
+  --muted: #75736e;
   /* Rules / hairlines — thin editorial rules */
   --guide: #1A1A1A;
   --guide-soft: #D9D7D1;
@@ -2757,16 +2881,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2812,6 +2937,12 @@
   --card-border: 1px solid var(--hair); /* thin ink rule instead */
   --input-radius: var(--r-sm); /* 2px — text field */
   --modal-radius: var(--r-md); /* 3px — still tight */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #ededea;
+  --page-hero-ink: #0a0a0a;
+  --page-band-bg: #f2f2ef;
+  --page-band-ink: #0a0a0a;
 }
 :root[data-theme=prism] {
   color-scheme: light dark;
@@ -2845,7 +2976,7 @@
   --code-bg: light-dark(#fafafa, #0a0a0a);
   --code-ink: light-dark(#18181b, #e4e4e7);
   --code-muted: light-dark(#6B6B73, #808089);
-  --code-accent: light-dark(#C1410C, #fb923c);
+  --code-accent: light-dark(#c0410b, #fb923c);
   --code-green: light-dark(#117D39, #4ade80);
   --code-blue: light-dark(#2462EB, #60a5fa);
   /* Typography — identical across modes */
@@ -2923,7 +3054,7 @@
   --info-text: light-dark(var(--ai-ink), #85BFFF);
   --success-default: light-dark(#16a34a, #22c55e);
   --success-subtle: light-dark(#f0fdf4, #14532d);
-  --success-text: light-dark(#15803d, #4ade80);
+  --success-text: light-dark(#0e7c3a, #4ade80);
   --warning-default: light-dark(#ca8a04, #eab308);
   --warning-subtle: light-dark(#fefce8, #422006);
   --warning-text: light-dark(#854d0e, #fde047);
@@ -2937,16 +3068,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2979,6 +3111,12 @@
   --card-border: 1px solid var(--hair);
   --input-radius: var(--r-md);
   --modal-radius: var(--r-lg);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#f2f6fe, #0c1019);
+  --page-hero-ink: light-dark(#09090b, #fafafa);
+  --page-band-bg: light-dark(#f7fafe, #0b0d13);
+  --page-band-ink: light-dark(#09090b, #fafafa);
 }
 :root[data-theme=prism-dark] {
   color-scheme: dark;
@@ -3116,16 +3254,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3161,6 +3300,12 @@
   --card-border: 1px solid var(--hair);
   --input-radius: var(--r-md);
   --modal-radius: var(--r-lg);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #0c1019;
+  --page-hero-ink: #fafafa;
+  --page-band-bg: #0b0d13;
+  --page-band-ink: #fafafa;
 }
 :root[data-theme=prism-light] {
   color-scheme: light;
@@ -3193,10 +3338,10 @@
   /* Code — light syntax surface */
   --code-bg: #fafafa;
   --code-ink: #18181b;
-  --code-muted: #71717a;
-  --code-accent: #c2410c;
+  --code-muted: #6c6b74;
+  --code-accent: #c1400b;
   --code-green: #117C38;
-  --code-blue: #2563eb;
+  --code-blue: #2462e9;
   /* Typography */
   --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-script: 'Inter', cursive;
@@ -3282,7 +3427,7 @@
   /* Status — success */
   --success-default: #16a34a;
   --success-subtle: #f0fdf4;
-  --success-text: #15803d;
+  --success-text: #0e7c3a;
   /* Status — warning */
   --warning-default: #ca8a04;
   --warning-subtle: #fefce8;
@@ -3298,16 +3443,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3343,6 +3489,12 @@
   --card-border: 1px solid var(--hair);
   --input-radius: var(--r-md);
   --modal-radius: var(--r-lg);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #f2f6fe;
+  --page-hero-ink: #09090b;
+  --page-band-bg: #f7fafe;
+  --page-band-ink: #09090b;
 }
 :root[data-theme=sketchbook] {
   color-scheme: light dark;
@@ -3354,9 +3506,9 @@
   /* Ink — warm pencil + sumi / warm cream */
   --ink: light-dark(#2A241E, #F4EFE2);
   --ink-soft: light-dark(#4A4037, #D8D0BE);
-  --ink-faint: light-dark(#726858, #A89E89);
+  --ink-faint: light-dark(#706757, #A89E89);
   --graphite: light-dark(#3A332B, #E8E0CE);
-  --muted: light-dark(#948977, #7A715F);
+  --muted: light-dark(#786e5d, #89806d);
   /* Construction lines */
   --guide: light-dark(#C9BDA5, #4A4239);
   --guide-soft: light-dark(#DDD4C0, #382F27);
@@ -3468,16 +3620,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3503,6 +3656,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#eae8e2, #1f1f1f);
+  --page-hero-ink: light-dark(#2a241e, #f4efe2);
+  --page-band-bg: light-dark(#efede5, #1d1c1b);
+  --page-band-ink: light-dark(#2a241e, #f4efe2);
 }
 :root[data-theme=sketchbook-dark] {
   color-scheme: dark;
@@ -3516,7 +3675,7 @@
   --ink-soft: #D8D0BE;
   --ink-faint: #A89E89;
   --graphite: #E8E0CE;
-  --muted: #7A715F;
+  --muted: #89806d;
   /* Construction lines — warm dark hairlines */
   --guide: #4A4239;
   --guide-soft: #382F27;
@@ -3646,16 +3805,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3684,6 +3844,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #1f1f1f;
+  --page-hero-ink: #f4efe2;
+  --page-band-bg: #1d1c1b;
+  --page-band-ink: #f4efe2;
 }
 :root[data-theme=sketchbook-light] {
   color-scheme: light;
@@ -3695,9 +3861,9 @@
   /* Ink — warm pencil + sumi */
   --ink: #2A241E;
   --ink-soft: #4A4037;
-  --ink-faint: #726858;
+  --ink-faint: #706757;
   --graphite: #3A332B;
-  --muted: #948977;
+  --muted: #786e5d;
   /* Construction lines */
   --guide: #C9BDA5;
   --guide-soft: #DDD4C0;
@@ -3864,16 +4030,23 @@
      var(--space-N), and the t-shirt aliases (--space-md, --space-lg …)
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions. */
+  --space-unit: 0.125rem;
   --space-0: 0;
-  --space-1: 0.5rem;
-  --space-2: 0.75rem;
-  --space-3: 0.875rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 6rem;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #eae8e2;
+  --page-hero-ink: #2a241e;
+  --page-band-bg: #efede5;
+  --page-band-ink: #2a241e;
 }
 :root[data-theme=terminal] {
   color-scheme: dark;
@@ -3884,7 +4057,7 @@
   --paper-glass: rgba(79, 224, 120, 0.06);
   /* Ink — phosphor green on the tube */
   --ink: #4FE078;
-  --ink-soft: #2A8B42;
+  --ink-soft: #34944a;
   --ink-faint: #3DAF4F;
   --graphite: #1A3D22;
   --muted: #2A8B42;
@@ -4000,16 +4173,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -4041,6 +4215,12 @@
   --input-radius: 0;
   --card-shadow: var(--glow-sm);
   --card-border: 1px solid var(--ink-faint);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #111a19;
+  --page-hero-ink: #4fe078;
+  --page-band-bg: #0e1513;
+  --page-band-ink: #4fe078;
 }
 :root[data-theme=terminal-dark] {
   color-scheme: dark;
@@ -4051,7 +4231,7 @@
   --paper-glass: rgba(79, 224, 120, 0.06);
   /* Ink — phosphor green on the tube */
   --ink: #4FE078;
-  --ink-soft: #2A8B42;
+  --ink-soft: #34944a;
   --ink-faint: #3DAF4F;
   --graphite: #1A3D22;
   --muted: #2A8B42;
@@ -4073,7 +4253,7 @@
   /* Code surface */
   --code-bg: #070A07;
   --code-ink: #4FE078;
-  --code-muted: #2A8B42;
+  --code-muted: #329248;
   --code-accent: #F0A030;
   --code-green: #8FFCA8;
   --code-blue: #7FDBFF;
@@ -4193,16 +4373,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -4243,6 +4424,12 @@
   --input-radius: 0;
   --card-shadow: var(--glow-sm);
   --card-border: 1px solid var(--ink-faint);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #111a19;
+  --page-hero-ink: #4fe078;
+  --page-band-bg: #0e1513;
+  --page-band-ink: #4fe078;
 }
 :root[data-theme=terminal-light] {
   color-scheme: light;
@@ -4254,9 +4441,9 @@
   /* Ink — near-black mono */
   --ink: #1A1A1A;
   --ink-soft: #404040;
-  --ink-faint: #666;
+  --ink-faint: #626161;
   --graphite: #0A0A0A;
-  --muted: #7C7C7C;
+  --muted: #696868;
   /* Hairlines — medium gray */
   --guide: #B8B8B8;
   --guide-soft: #C8C8C8;
@@ -4275,9 +4462,9 @@
   /* Code surface */
   --code-bg: #DDD;
   --code-ink: #1A1A1A;
-  --code-muted: #5B5B5B;
+  --code-muted: #5b5a5a;
   --code-accent: #934407;
-  --code-green: #006A28;
+  --code-green: #006928;
   --code-blue: #0451A5;
   /* Typography — mono everywhere */
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', ui-monospace, Consolas, Menlo, 'Courier New', monospace;
@@ -4368,16 +4555,17 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0; /* flush            */
-  --space-1: 0.5rem; /* tight inner gap  */
-  --space-2: 0.75rem; /* control padding  */
-  --space-3: 0.875rem; /* (no t-shirt)     */
-  --space-4: 1rem; /* default rhythm   */
-  --space-5: 1.5rem; /* section gap      */
-  --space-6: 2rem; /* block gap        */
-  --space-7: 3rem; /* major gap        */
-  --space-8: 4rem; /* page section     */
-  --space-9: 6rem; /* hero rhythm      */
+  --space-unit: 0.125rem;
+  --space-0: 0;
+  --space-1: calc(var(--space-unit) * 4);
+  --space-2: calc(var(--space-unit) * 6);
+  --space-3: calc(var(--space-unit) * 7);
+  --space-4: calc(var(--space-unit) * 8);
+  --space-5: calc(var(--space-unit) * 12);
+  --space-6: calc(var(--space-unit) * 16);
+  --space-7: calc(var(--space-unit) * 24);
+  --space-8: calc(var(--space-unit) * 32);
+  --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -4403,4 +4591,10 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #dadfe4;
+  --page-hero-ink: #1a1a1a;
+  --page-band-bg: #e0e3e6;
+  --page-band-ink: #1a1a1a;
 }

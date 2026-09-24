@@ -1,3 +1,198 @@
+# Changelog
+
+# [1.21.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.20.0...v1.21.0) (2026-09-23)
+
+
+### Features
+
+* **cli:** cia fix-theme — rename deprecated tokens to their replacements ([665d871](https://github.com/Jerry2d3d/css-is-awesome/commit/665d87129f578d1ac38f410ce7461f37bbe24357))
+
+# [1.20.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.2...v1.20.0) (2026-09-23)
+
+
+### Bug Fixes
+
+* **site:** correct the stale optional-token count on /docs/tokens ([c0d4db0](https://github.com/Jerry2d3d/css-is-awesome/commit/c0d4db047c858854cf54d34affc792e0c52f4427))
+
+
+### Features
+
+* **site:** dogfood page surfaces on the home page; add them to the theme editor ([8dc3a65](https://github.com/Jerry2d3d/css-is-awesome/commit/8dc3a65778e28b57aeb67824062f26d7494e3f60))
+* **themes:** page surfaces — hero and band, derived for every theme ([b984d86](https://github.com/Jerry2d3d/css-is-awesome/commit/b984d865e3463ae15e95083ff0697df0a109cf88))
+
+## [1.19.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.1...v1.19.2) (2026-09-23)
+
+
+### Bug Fixes
+
+* **themes:** clear 56 of 88 contrast warnings, none of them visible ([b756dcb](https://github.com/Jerry2d3d/css-is-awesome/commit/b756dcbb6e959868299095f009b4227104406c00))
+
+## [1.19.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.19.0...v1.19.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* **cli:** paired light/dark modes carried only colours; export the in-process entry point ([f1fe71f](https://github.com/Jerry2d3d/css-is-awesome/commit/f1fe71f8a91a8e7bf59e0b9e830585701beb9160))
+
+
+### Features
+
+* **site:** cross-link the posts that explain a browser-support row (B6.4) ([44f40d8](https://github.com/Jerry2d3d/css-is-awesome/commit/44f40d8bf278113a81f7f2b643ad52390fb1af25))
+
+# [1.19.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.18.0...v1.19.0) (2026-09-19)
+
+
+### Features
+
+* **cli:** cia theme map — the design-token → cia-token mapping as data ([283db9b](https://github.com/Jerry2d3d/css-is-awesome/commit/283db9b47b2195b8d8cb3afe9bad254c88e91cab))
+* **cli:** map boilerplate's canonical DTCG layout — font.family roles, component.* overrides ([8ae71fd](https://github.com/Jerry2d3d/css-is-awesome/commit/8ae71fd55b07bbf7da6d562f5388dcc489bcffb9))
+* **mcp:** get_token_map tool + in-process handler (33 tools) ([ff5610f](https://github.com/Jerry2d3d/css-is-awesome/commit/ff5610f5409bead49fa794a8c27967f602376c77))
+
+# [1.18.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.17.0...v1.18.0) (2026-09-19)
+
+
+### Bug Fixes
+
+* **site:** playground editor no longer boots from stale text when a share link decodes early ([3f0748f](https://github.com/Jerry2d3d/css-is-awesome/commit/3f0748f28b8a70471f1f61485733872c6ccdd6a9))
+
+
+### Features
+
+* **contract:** feature groups for optional tokens — contract 1.2 ([cc98e1f](https://github.com/Jerry2d3d/css-is-awesome/commit/cc98e1f9397ae89ef65b70557a942b5b561a0f85))
+
+# [1.17.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.16.1...v1.17.0) (2026-09-19)
+
+
+### Features
+
+* **cli:** cia theme from-tokens — design-tokens JSON → validated theme.css ([066b484](https://github.com/Jerry2d3d/css-is-awesome/commit/066b4849d2e937f0362e8f21cb212f3fcc144c5f))
+* **mcp:** theme_from_tokens tool + in-process handler (32 tools) ([9dc90c4](https://github.com/Jerry2d3d/css-is-awesome/commit/9dc90c40574a5e21b7b724f97792b0fd9c4182b0))
+
+## [1.16.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.16.0...v1.16.1) (2026-09-18)
+
+
+### Bug Fixes
+
+* **contract:** --space-unit is optional, not required — contract 1.1 + CI growth gate ([42292ff](https://github.com/Jerry2d3d/css-is-awesome/commit/42292ff995a3e6d7fa1623404614f3519e30a284))
+
+
+### Features
+
+* **site:** "Try in playground" on every recipe page ([9d2c7cc](https://github.com/Jerry2d3d/css-is-awesome/commit/9d2c7cc18399ff0c55c5c986ed70bdd9b6e1ddb5))
+* **site:** /playground — in-browser Sass compile, CodeMirror panes, live preview ([c1474e4](https://github.com/Jerry2d3d/css-is-awesome/commit/c1474e40bfecaa7bd7b742ca545bf7f8f6756021))
+* **site:** link the playground from the nav, the docs intro and the README ([9acabcc](https://github.com/Jerry2d3d/css-is-awesome/commit/9acabcc66f84e30f83cc8a7ff01e4845635ee2c4))
+* **site:** playground groundwork — scss source map, [@use](https://github.com/use) resolver, share codec ([f5fb619](https://github.com/Jerry2d3d/css-is-awesome/commit/f5fb619d5b3d11dff9c77beeb77cd192b4b6d090))
+
+# [1.16.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.15.0...v1.16.0) (2026-09-17)
+
+
+### Features
+
+* **recipes:** command-palette recipe + live demo ([6cc16b1](https://github.com/Jerry2d3d/css-is-awesome/commit/6cc16b104b625c8f73fda7631f72289b50e892ed))
+
+# [1.15.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.3...v1.15.0) (2026-09-16)
+
+
+### Features
+
+* **recipes:** breadcrumb recipe + live demo ([c50fdd2](https://github.com/Jerry2d3d/css-is-awesome/commit/c50fdd2c52940f85d53020d095c410f3a0cb84a7))
+* **recipes:** color-picker recipe + live demo ([4cc34f6](https://github.com/Jerry2d3d/css-is-awesome/commit/4cc34f6cf875fdcd3bbf92ed3e4c50aac4d83cb0))
+* **recipes:** combobox-multiselect recipe + live demo ([1b919e0](https://github.com/Jerry2d3d/css-is-awesome/commit/1b919e08a87fceca49d25b6d5d1f084bc2359317))
+* **recipes:** file-upload recipe + live demo ([74043c4](https://github.com/Jerry2d3d/css-is-awesome/commit/74043c4aa3b1301d5ebc49b40151ab91f715804e))
+* **recipes:** pagination recipe + live demo ([d93fa2a](https://github.com/Jerry2d3d/css-is-awesome/commit/d93fa2a37ff6f8927a5736c3110c3af25901b006))
+* **recipes:** sortable-list recipe + live demo ([9ddd71e](https://github.com/Jerry2d3d/css-is-awesome/commit/9ddd71ecab5ab8d2f72717083bcffb8b7df1fe68))
+* **recipes:** toast recipe + live demo ([45ead4d](https://github.com/Jerry2d3d/css-is-awesome/commit/45ead4d3bded5a99228486deabe8136056d1bf4e))
+
+## [1.14.3](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.2...v1.14.3) (2026-09-12)
+
+
+### Bug Fixes
+
+* **site:** disable prefetch on less-clicked header nav links ([12c8dc7](https://github.com/Jerry2d3d/css-is-awesome/commit/12c8dc71c987b784407f00de3e610b87fbcb9dab))
+
+## [1.14.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.1...v1.14.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* **site:** center the /about hero lead paragraph ([840dd13](https://github.com/Jerry2d3d/css-is-awesome/commit/840dd13dd4bb2d0721676679cf74658219779834))
+
+## [1.14.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.14.0...v1.14.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **package:** ship scripts/audit-pairs.json — the a11y module was broken on every real install ([d7e18ef](https://github.com/Jerry2d3d/css-is-awesome/commit/d7e18efdabfe8eaa9e722f1ac68e4b874d45077b))
+
+# [1.14.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.2...v1.14.0) (2026-09-11)
+
+
+### Features
+
+* **mcp:** add validate_theme tool — the real validator, exposed as a tool call ([7a8b497](https://github.com/Jerry2d3d/css-is-awesome/commit/7a8b4971640f6fd6b13148f05288e9e3e76ade10))
+
+## [1.13.2](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.1...v1.13.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* **themes:** fix theme-editor import losing the other mode's data (take 2) ([2d90aa9](https://github.com/Jerry2d3d/css-is-awesome/commit/2d90aa9cadfaae9ca285bcfbc8e668d81744b573))
+
+## [1.13.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.13.0...v1.13.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **themes:** import a single :root theme file into BOTH modes, not just the active tab ([96a860a](https://github.com/Jerry2d3d/css-is-awesome/commit/96a860a1482db67d5bbe9a8b7426308b24250ca6)), closes [#F7F3EA](https://github.com/Jerry2d3d/css-is-awesome/issues/F7F3EA) [#1A1815](https://github.com/Jerry2d3d/css-is-awesome/issues/1A1815)
+
+# [1.13.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.12.1...v1.13.0) (2026-09-11)
+
+
+### Features
+
+* **mcp:** add derive-theme:<base> intent to assemble_prompt ([576dfcb](https://github.com/Jerry2d3d/css-is-awesome/commit/576dfcb80363f281d13ecf0c9218de8915de6595))
+
+## [1.12.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.12.0...v1.12.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **mcp:** remove colliding css-is-awesome-mcp bin entry, point docs at the new package ([f2ac41c](https://github.com/Jerry2d3d/css-is-awesome/commit/f2ac41c4d6056a1d13c19c5dcb48386acfb0fcda))
+
+# [1.12.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.11.1...v1.12.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **a11y:** unlabeled checklist checkboxes and non-focusable code blocks ([d98a92c](https://github.com/Jerry2d3d/css-is-awesome/commit/d98a92c549a2b74c3cff976d0fdfd61031162585))
+* **ci:** raise utilities size budget to 5.0 KB, correct stale bundle-size docs ([0e447f1](https://github.com/Jerry2d3d/css-is-awesome/commit/0e447f16e33d5a39cbcedb3b44caab79e4920f23))
+* **theme-editor:** density slider + fix override specificity bug affecting every row ([3977043](https://github.com/Jerry2d3d/css-is-awesome/commit/39770434e5f1819b57c16e502de15e252c5cf0d5))
+* **theme:** recurse into at-rules when bundling themes ([ca6397b](https://github.com/Jerry2d3d/css-is-awesome/commit/ca6397bcdcbcfc6bcb784253855b0af74d94ae74))
+
+
+### Features
+
+* **cli:** npx cia migrate chakra — Chakra UI theme object -> cia theme.scss ([2bcc95c](https://github.com/Jerry2d3d/css-is-awesome/commit/2bcc95c32058b2b1f60378e6718b772363fd77a2))
+* **cli:** npx cia migrate mui — MUI theme object -> cia theme.scss ([4f1d682](https://github.com/Jerry2d3d/css-is-awesome/commit/4f1d6828fc13fa1929f78127ab7c94503f55afb0))
+* **cli:** off-scale-length and missing-focus-visible analyzer rules ([d7bb8d9](https://github.com/Jerry2d3d/css-is-awesome/commit/d7bb8d96598b9897f130a152ad024ccc13a0cbbb))
+* **editor:** print preview persists per theme and seeds from overrides ([404e494](https://github.com/Jerry2d3d/css-is-awesome/commit/404e494051b9d3893c8ab18762da8044a389f5fd))
+* **editor:** token-consumer map, used-by list, live contrast readout ([a52f74e](https://github.com/Jerry2d3d/css-is-awesome/commit/a52f74e968f340d1c9f6b2ed8a02b8f16457432b))
+* **recipes:** admin-dashboard-layout recipe + live demo ([6e79812](https://github.com/Jerry2d3d/css-is-awesome/commit/6e79812980abbd90391507bd06db06b65820c1e2))
+* **recipes:** app-shell recipe - navbar + control panel + footer + modal ([a5abd6e](https://github.com/Jerry2d3d/css-is-awesome/commit/a5abd6e68287a1d99978e8956d601c170cbff657))
+* **recipes:** auth-flow recipe + live demo ([7e566e2](https://github.com/Jerry2d3d/css-is-awesome/commit/7e566e274fd84be8eab0ae877e3c222a1adc8c1e))
+* **recipes:** confirm-dialog recipe + live demo ([24977c2](https://github.com/Jerry2d3d/css-is-awesome/commit/24977c2214efc5588d90c601da70c2db1ed3b1f5))
+* **recipes:** data-table recipe + live demo ([cbcdbb3](https://github.com/Jerry2d3d/css-is-awesome/commit/cbcdbb384f2d44f25071d593391d0cb4a6bd5d0d))
+* **recipes:** datepicker recipe + live demo ([90ea515](https://github.com/Jerry2d3d/css-is-awesome/commit/90ea515f8c2ab044a4957be642295d188cf60cb3))
+* **recipes:** form validation recipes + live demos ([78ae02d](https://github.com/Jerry2d3d/css-is-awesome/commit/78ae02d4c29458d60feb90f0135faaedd7684b26))
+* **recipes:** i18n-date-formatting recipe + live demo ([689152a](https://github.com/Jerry2d3d/css-is-awesome/commit/689152a4ebb55b5c19285bfcd6f4c81f1a090b1d))
+* **recipes:** i18n-number-currency recipe + live demo ([a4ec9a3](https://github.com/Jerry2d3d/css-is-awesome/commit/a4ec9a35b80d9a4d6fb8f5333107694ef9e5ccf3))
+* **recipes:** i18n-pluralization recipe + live demo ([fe6a3f0](https://github.com/Jerry2d3d/css-is-awesome/commit/fe6a3f0272de3d848b5306800e3ecbca84d09e1c))
+* **recipes:** multi-step-wizard recipe + live demo ([932358e](https://github.com/Jerry2d3d/css-is-awesome/commit/932358e54d0550ecf7017d48266f833646634d58))
+* **recipes:** otp-input recipe + live demo ([af99b86](https://github.com/Jerry2d3d/css-is-awesome/commit/af99b86ab08f8357e908bd19533ea3bd55eab548))
+* **rtl:** audit + fix non-logical CSS, add a logical utility set ([35704fd](https://github.com/Jerry2d3d/css-is-awesome/commit/35704fda8941c56eea16070813845d15295f897f))
+* **rtl:** recipe + /docs/rtl live demo ([b18bc04](https://github.com/Jerry2d3d/css-is-awesome/commit/b18bc04910b9db02c0091ccaa4e93ab551d13326))
+* **themes:** --space-unit density knob — one var drives all 9 spacing steps ([a1638c7](https://github.com/Jerry2d3d/css-is-awesome/commit/a1638c72338309055f752e6940220a9a8cd6be99))
+
 ## [1.11.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.11.0...v1.11.1) (2026-09-09)
 
 
@@ -290,132 +485,17 @@
 * **site:** print the story, not the chrome — dogfoods cia's print mixins ([ece519c](https://github.com/Jerry2d3d/css-is-awesome/commit/ece519c43f62230e1b3392538dae5148fc31ddf6))
 * **themes:** themes own the spacing rhythm, not just the palette ([4bc1e24](https://github.com/Jerry2d3d/css-is-awesome/commit/4bc1e24f1b64f33cacd35f3bab12327019634fea))
 
-# [1.1.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.0.0...v1.1.0) (2026-09-01)
+---
 
+## Hand-written history (before automated releases)
 
-### Bug Fixes
+> Everything above this line is generated by `semantic-release`. Everything
+> below was written by hand, up to and including the launch notes for 1.1.0
+> (the first version published to npm, 2026-09-01). The generated 1.1.0 entry
+> above is the terse commit list; the section right below is the same release
+> explained.
 
-* **a11y:** copy button used code-surface ink on a page-surface background ([bf84bf4](https://github.com/Jerry2d3d/css-is-awesome/commit/bf84bf4d6c23e3ebafdb5dc98a303d9961d68714))
-* **a11y:** validator ignored unquoted [data-theme]; grade the code palette ([2437f41](https://github.com/Jerry2d3d/css-is-awesome/commit/2437f4182ddccc01b372d9aacd898b6222fcabd3)), closes [#fafafa](https://github.com/Jerry2d3d/css-is-awesome/issues/fafafa) [#0a0a0a](https://github.com/Jerry2d3d/css-is-awesome/issues/0a0a0a)
-* **ci:** snapshot job installed chromium but ran all three engines ([f7b7fc9](https://github.com/Jerry2d3d/css-is-awesome/commit/f7b7fc9e29883863c6a525f44391e6eb4b4b9662))
-* **ci:** snapshot workflow silently discarded the baselines it created ([3358cac](https://github.com/Jerry2d3d/css-is-awesome/commit/3358cacb6fbf88d9dcf0109597bed301efeda483))
-* **compare:** correct every measurable claim on the comparison page ([3d1b602](https://github.com/Jerry2d3d/css-is-awesome/commit/3d1b602ff6074712a2e2d0aea5a1ad27128d2d70))
-* **pkg:** build dist/ on git installs via a prepare hook ([1a0deb1](https://github.com/Jerry2d3d/css-is-awesome/commit/1a0deb19e4fc6de15b7b3530847779920d01d784))
-* **print:** stop the freeze from flattening deliberate opacity and transform ([1af51d2](https://github.com/Jerry2d3d/css-is-awesome/commit/1af51d2e3a08cd61e51ac3b857eeaa261afd044e))
-* root barrel emitted no tokens; retract the false Turbopack claim ([d7f71e3](https://github.com/Jerry2d3d/css-is-awesome/commit/d7f71e366a1ef4b918cfcfd6dafcba8d352afcb5))
-* **sass:** stop using the deprecated if() function; sharpen the AI on-ramp ([61df05a](https://github.com/Jerry2d3d/css-is-awesome/commit/61df05a31228fce169664690c2562d128bf06958))
-* **site:** moat card uses grid; Tailwind sample updated to Headless UI v2 ([cb39e44](https://github.com/Jerry2d3d/css-is-awesome/commit/cb39e44b4eb8d7ab1a86377c1d828b1cde3ed58b))
-* **site:** moat code blocks now fill their card ([8e53d35](https://github.com/Jerry2d3d/css-is-awesome/commit/8e53d355b0f9279125b9dfd6f913851cf2ebcdc3))
-* six upstream bugs from the Boiler audit (BUG-1..7) ([84f4c4f](https://github.com/Jerry2d3d/css-is-awesome/commit/84f4c4fc6f6259bf74541a833fe0ad343821ab12))
-* **themes:** prism was missing from every theme picker ([4ce4f5f](https://github.com/Jerry2d3d/css-is-awesome/commit/4ce4f5f8a696728b513aa1adc148b33c5808e26e))
-
-
-### Features
-
-* **animate:** accept a raw duration; add letter-spacing() coverage fixture ([25b7cd6](https://github.com/Jerry2d3d/css-is-awesome/commit/25b7cd6cbc09d76b51c9dd0b74077ec1af78c327))
-* **blog:** real posts from real commits, replacing seven dead stubs ([f37c5be](https://github.com/Jerry2d3d/css-is-awesome/commit/f37c5be94cd64f99548a6a119820325d559e6920))
-* **site:** print the story, not the chrome — dogfoods cia's print mixins ([ece519c](https://github.com/Jerry2d3d/css-is-awesome/commit/ece519c43f62230e1b3392538dae5148fc31ddf6))
-* **themes:** themes own the spacing rhythm, not just the palette ([4bc1e24](https://github.com/Jerry2d3d/css-is-awesome/commit/4bc1e24f1b64f33cacd35f3bab12327019634fea))
-
-# [1.1.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.0.0...v1.1.0) (2026-09-01)
-
-
-### Bug Fixes
-
-* **a11y:** copy button used code-surface ink on a page-surface background ([bf84bf4](https://github.com/Jerry2d3d/css-is-awesome/commit/bf84bf4d6c23e3ebafdb5dc98a303d9961d68714))
-* **a11y:** validator ignored unquoted [data-theme]; grade the code palette ([2437f41](https://github.com/Jerry2d3d/css-is-awesome/commit/2437f4182ddccc01b372d9aacd898b6222fcabd3)), closes [#fafafa](https://github.com/Jerry2d3d/css-is-awesome/issues/fafafa) [#0a0a0a](https://github.com/Jerry2d3d/css-is-awesome/issues/0a0a0a)
-* **ci:** snapshot job installed chromium but ran all three engines ([f7b7fc9](https://github.com/Jerry2d3d/css-is-awesome/commit/f7b7fc9e29883863c6a525f44391e6eb4b4b9662))
-* **ci:** snapshot workflow silently discarded the baselines it created ([3358cac](https://github.com/Jerry2d3d/css-is-awesome/commit/3358cacb6fbf88d9dcf0109597bed301efeda483))
-* **compare:** correct every measurable claim on the comparison page ([3d1b602](https://github.com/Jerry2d3d/css-is-awesome/commit/3d1b602ff6074712a2e2d0aea5a1ad27128d2d70))
-* **pkg:** build dist/ on git installs via a prepare hook ([1a0deb1](https://github.com/Jerry2d3d/css-is-awesome/commit/1a0deb19e4fc6de15b7b3530847779920d01d784))
-* **print:** stop the freeze from flattening deliberate opacity and transform ([1af51d2](https://github.com/Jerry2d3d/css-is-awesome/commit/1af51d2e3a08cd61e51ac3b857eeaa261afd044e))
-* root barrel emitted no tokens; retract the false Turbopack claim ([d7f71e3](https://github.com/Jerry2d3d/css-is-awesome/commit/d7f71e366a1ef4b918cfcfd6dafcba8d352afcb5))
-* **sass:** stop using the deprecated if() function; sharpen the AI on-ramp ([61df05a](https://github.com/Jerry2d3d/css-is-awesome/commit/61df05a31228fce169664690c2562d128bf06958))
-* **site:** moat card uses grid; Tailwind sample updated to Headless UI v2 ([cb39e44](https://github.com/Jerry2d3d/css-is-awesome/commit/cb39e44b4eb8d7ab1a86377c1d828b1cde3ed58b))
-* **site:** moat code blocks now fill their card ([8e53d35](https://github.com/Jerry2d3d/css-is-awesome/commit/8e53d355b0f9279125b9dfd6f913851cf2ebcdc3))
-* six upstream bugs from the Boiler audit (BUG-1..7) ([84f4c4f](https://github.com/Jerry2d3d/css-is-awesome/commit/84f4c4fc6f6259bf74541a833fe0ad343821ab12))
-* **themes:** prism was missing from every theme picker ([4ce4f5f](https://github.com/Jerry2d3d/css-is-awesome/commit/4ce4f5f8a696728b513aa1adc148b33c5808e26e))
-
-
-### Features
-
-* **animate:** accept a raw duration; add letter-spacing() coverage fixture ([25b7cd6](https://github.com/Jerry2d3d/css-is-awesome/commit/25b7cd6cbc09d76b51c9dd0b74077ec1af78c327))
-* **blog:** real posts from real commits, replacing seven dead stubs ([f37c5be](https://github.com/Jerry2d3d/css-is-awesome/commit/f37c5be94cd64f99548a6a119820325d559e6920))
-* **site:** print the story, not the chrome — dogfoods cia's print mixins ([ece519c](https://github.com/Jerry2d3d/css-is-awesome/commit/ece519c43f62230e1b3392538dae5148fc31ddf6))
-* **themes:** themes own the spacing rhythm, not just the palette ([4bc1e24](https://github.com/Jerry2d3d/css-is-awesome/commit/4bc1e24f1b64f33cacd35f3bab12327019634fea))
-
-# [1.1.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.0.0...v1.1.0) (2026-08-30)
-
-
-### Bug Fixes
-
-* **a11y:** copy button used code-surface ink on a page-surface background ([bf84bf4](https://github.com/Jerry2d3d/css-is-awesome/commit/bf84bf4d6c23e3ebafdb5dc98a303d9961d68714))
-* **a11y:** validator ignored unquoted [data-theme]; grade the code palette ([2437f41](https://github.com/Jerry2d3d/css-is-awesome/commit/2437f4182ddccc01b372d9aacd898b6222fcabd3)), closes [#fafafa](https://github.com/Jerry2d3d/css-is-awesome/issues/fafafa) [#0a0a0a](https://github.com/Jerry2d3d/css-is-awesome/issues/0a0a0a)
-* **ci:** snapshot job installed chromium but ran all three engines ([f7b7fc9](https://github.com/Jerry2d3d/css-is-awesome/commit/f7b7fc9e29883863c6a525f44391e6eb4b4b9662))
-* **ci:** snapshot workflow silently discarded the baselines it created ([3358cac](https://github.com/Jerry2d3d/css-is-awesome/commit/3358cacb6fbf88d9dcf0109597bed301efeda483))
-* **compare:** correct every measurable claim on the comparison page ([3d1b602](https://github.com/Jerry2d3d/css-is-awesome/commit/3d1b602ff6074712a2e2d0aea5a1ad27128d2d70))
-* **pkg:** build dist/ on git installs via a prepare hook ([1a0deb1](https://github.com/Jerry2d3d/css-is-awesome/commit/1a0deb19e4fc6de15b7b3530847779920d01d784))
-* **print:** stop the freeze from flattening deliberate opacity and transform ([1af51d2](https://github.com/Jerry2d3d/css-is-awesome/commit/1af51d2e3a08cd61e51ac3b857eeaa261afd044e))
-* root barrel emitted no tokens; retract the false Turbopack claim ([d7f71e3](https://github.com/Jerry2d3d/css-is-awesome/commit/d7f71e366a1ef4b918cfcfd6dafcba8d352afcb5))
-* **sass:** stop using the deprecated if() function; sharpen the AI on-ramp ([61df05a](https://github.com/Jerry2d3d/css-is-awesome/commit/61df05a31228fce169664690c2562d128bf06958))
-* **site:** moat card uses grid; Tailwind sample updated to Headless UI v2 ([cb39e44](https://github.com/Jerry2d3d/css-is-awesome/commit/cb39e44b4eb8d7ab1a86377c1d828b1cde3ed58b))
-* **site:** moat code blocks now fill their card ([8e53d35](https://github.com/Jerry2d3d/css-is-awesome/commit/8e53d355b0f9279125b9dfd6f913851cf2ebcdc3))
-* six upstream bugs from the Boiler audit (BUG-1..7) ([84f4c4f](https://github.com/Jerry2d3d/css-is-awesome/commit/84f4c4fc6f6259bf74541a833fe0ad343821ab12))
-* **themes:** prism was missing from every theme picker ([4ce4f5f](https://github.com/Jerry2d3d/css-is-awesome/commit/4ce4f5f8a696728b513aa1adc148b33c5808e26e))
-
-
-### Features
-
-* **animate:** accept a raw duration; add letter-spacing() coverage fixture ([25b7cd6](https://github.com/Jerry2d3d/css-is-awesome/commit/25b7cd6cbc09d76b51c9dd0b74077ec1af78c327))
-* **blog:** real posts from real commits, replacing seven dead stubs ([f37c5be](https://github.com/Jerry2d3d/css-is-awesome/commit/f37c5be94cd64f99548a6a119820325d559e6920))
-* **site:** print the story, not the chrome — dogfoods cia's print mixins ([ece519c](https://github.com/Jerry2d3d/css-is-awesome/commit/ece519c43f62230e1b3392538dae5148fc31ddf6))
-* **themes:** themes own the spacing rhythm, not just the palette ([4bc1e24](https://github.com/Jerry2d3d/css-is-awesome/commit/4bc1e24f1b64f33cacd35f3bab12327019634fea))
-
-## [1.1.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.1.0...v1.1.1) (2026-08-30)
-
-
-### Bug Fixes
-
-* **sass:** stop using the deprecated if() function; sharpen the AI on-ramp ([61df05a](https://github.com/Jerry2d3d/css-is-awesome/commit/61df05a31228fce169664690c2562d128bf06958))
-
-# [1.1.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.0.0...v1.1.0) (2026-08-30)
-
-
-### Bug Fixes
-
-* **a11y:** copy button used code-surface ink on a page-surface background ([bf84bf4](https://github.com/Jerry2d3d/css-is-awesome/commit/bf84bf4d6c23e3ebafdb5dc98a303d9961d68714))
-* **a11y:** validator ignored unquoted [data-theme]; grade the code palette ([2437f41](https://github.com/Jerry2d3d/css-is-awesome/commit/2437f4182ddccc01b372d9aacd898b6222fcabd3)), closes [#fafafa](https://github.com/Jerry2d3d/css-is-awesome/issues/fafafa) [#0a0a0a](https://github.com/Jerry2d3d/css-is-awesome/issues/0a0a0a)
-* **ci:** snapshot job installed chromium but ran all three engines ([f7b7fc9](https://github.com/Jerry2d3d/css-is-awesome/commit/f7b7fc9e29883863c6a525f44391e6eb4b4b9662))
-* **ci:** snapshot workflow silently discarded the baselines it created ([3358cac](https://github.com/Jerry2d3d/css-is-awesome/commit/3358cacb6fbf88d9dcf0109597bed301efeda483))
-* **compare:** correct every measurable claim on the comparison page ([3d1b602](https://github.com/Jerry2d3d/css-is-awesome/commit/3d1b602ff6074712a2e2d0aea5a1ad27128d2d70))
-* **pkg:** build dist/ on git installs via a prepare hook ([1a0deb1](https://github.com/Jerry2d3d/css-is-awesome/commit/1a0deb19e4fc6de15b7b3530847779920d01d784))
-* **print:** stop the freeze from flattening deliberate opacity and transform ([1af51d2](https://github.com/Jerry2d3d/css-is-awesome/commit/1af51d2e3a08cd61e51ac3b857eeaa261afd044e))
-* root barrel emitted no tokens; retract the false Turbopack claim ([d7f71e3](https://github.com/Jerry2d3d/css-is-awesome/commit/d7f71e366a1ef4b918cfcfd6dafcba8d352afcb5))
-* **site:** moat card uses grid; Tailwind sample updated to Headless UI v2 ([cb39e44](https://github.com/Jerry2d3d/css-is-awesome/commit/cb39e44b4eb8d7ab1a86377c1d828b1cde3ed58b))
-* **site:** moat code blocks now fill their card ([8e53d35](https://github.com/Jerry2d3d/css-is-awesome/commit/8e53d355b0f9279125b9dfd6f913851cf2ebcdc3))
-* six upstream bugs from the Boiler audit (BUG-1..7) ([84f4c4f](https://github.com/Jerry2d3d/css-is-awesome/commit/84f4c4fc6f6259bf74541a833fe0ad343821ab12))
-* **themes:** prism was missing from every theme picker ([4ce4f5f](https://github.com/Jerry2d3d/css-is-awesome/commit/4ce4f5f8a696728b513aa1adc148b33c5808e26e))
-
-
-### Features
-
-* **animate:** accept a raw duration; add letter-spacing() coverage fixture ([25b7cd6](https://github.com/Jerry2d3d/css-is-awesome/commit/25b7cd6cbc09d76b51c9dd0b74077ec1af78c327))
-* **blog:** real posts from real commits, replacing seven dead stubs ([f37c5be](https://github.com/Jerry2d3d/css-is-awesome/commit/f37c5be94cd64f99548a6a119820325d559e6920))
-* **site:** print the story, not the chrome — dogfoods cia's print mixins ([ece519c](https://github.com/Jerry2d3d/css-is-awesome/commit/ece519c43f62230e1b3392538dae5148fc31ddf6))
-* **themes:** themes own the spacing rhythm, not just the palette ([4bc1e24](https://github.com/Jerry2d3d/css-is-awesome/commit/4bc1e24f1b64f33cacd35f3bab12327019634fea))
-
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-**See also:** [`VERSIONING.md`](./VERSIONING.md) — version policy, deprecation
-lifecycle, and the Conventional Commits → changelog section mapping that drives
-automated releases.
-
-## [Unreleased]
+## [1.1.0] — 2026-09-01 — launch notes (hand-written detail for the generated entry above)
 
 > Ships as **1.1.0** — the first release actually published to npm. `1.0.0` was
 > tagged but never published. The number is computed by `semantic-release` from

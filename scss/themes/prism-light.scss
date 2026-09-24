@@ -14,6 +14,7 @@
    ============================================================ */
 
 @use '../mixins' as m;
+@use '../spacing-scale' as ss;
 
 @import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap';
 
@@ -53,10 +54,10 @@
     /* Code — light syntax surface */
     --code-bg:     #fafafa;
     --code-ink:    #18181b;
-    --code-muted:  #71717a;
-    --code-accent: #c2410c;
+    --code-muted:  #6c6b74;
+    --code-accent: #c1400b;
     --code-green:  #117C38;
-    --code-blue:   #2563eb;
+    --code-blue:   #2462e9;
 
     /* Typography */
     --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -158,7 +159,7 @@
     /* Status — success */
     --success-default: #16a34a;
     --success-subtle:  #f0fdf4;
-    --success-text:    #15803d;
+    --success-text:    #0e7c3a;
 
     /* Status — warning */
     --warning-default: #ca8a04;
@@ -178,16 +179,7 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0;          /* flush            */
-  --space-1: 0.5rem;     /* tight inner gap  */
-  --space-2: 0.75rem;    /* control padding  */
-  --space-3: 0.875rem;   /* (no t-shirt)     */
-  --space-4: 1rem;       /* default rhythm   */
-  --space-5: 1.5rem;     /* section gap      */
-  --space-6: 2rem;       /* block gap        */
-  --space-7: 3rem;       /* major gap        */
-  --space-8: 4rem;       /* page section     */
-  --space-9: 6rem;       /* hero rhythm      */
+  @include ss.space-scale;
 
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */

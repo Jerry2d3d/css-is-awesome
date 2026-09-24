@@ -244,6 +244,29 @@ Every component the library ships must:
 
 If a pattern cannot be made accessible, do not ship it.
 
+## RTL testing
+
+cia's source uses CSS logical properties throughout, audited on every PR by
+`scripts/audit-logical-properties.mjs` — a physical property (`margin-left`,
+`text-align: left`, …) either gets fixed to its logical equivalent or
+annotated inline with `// cia-rtl-allow: <reason>` when it's intentional
+(a Tier-1 utility class whose own name is the physical direction, or a
+`background-position`/`transform` that has no logical-keyword equivalent and
+needs an explicit `[dir="rtl"]` override instead).
+
+`tests/rtl.spec.ts` (chromium only — see the file header for why) covers the
+other half: a screenshot per key route + recipe page under `dir="rtl"`, plus
+an axe scan on a representative subset. To update a snapshot after an
+intentional layout change:
+
+```bash
+npm run test:update-snapshots -- tests/rtl.spec.ts
+```
+
+Like the visual-regression baselines, **RTL snapshot diffs are reviewed
+manually on the PR** — they're not auto-accepted. If a diff looks wrong,
+fix the CSS instead of regenerating the baseline.
+
 ## Releases + versioning
 
 See [./VERSIONING.md](./VERSIONING.md) for the SemVer policy and changelog rules. The short version: post-1.0 strict SemVer — breaking changes require a MAJOR bump. Releases are fully automated by semantic-release from Conventional Commits on `main`: it computes the version, generates [CHANGELOG.md](./CHANGELOG.md) (never edit it by hand), tags, and publishes to npm. Never hand-type a version number anywhere — everything reads it from `package.json`.

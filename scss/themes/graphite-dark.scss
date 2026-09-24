@@ -40,6 +40,7 @@
    ============================================================ */
 
 @use '../mixins' as m;
+@use '../spacing-scale' as ss;
 
 @import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
 
@@ -55,7 +56,7 @@
     --ink-soft:   #C7C7CC;
     --ink-faint:  #98989D;
     --graphite:   #AEAEB2;
-    --muted:      #6A6A6E;
+    --muted:      #818286;
 
     /* Construction lines — translucent white hairlines */
     --guide:      rgba(255, 255, 255, 0.16);
@@ -64,7 +65,7 @@
     --hair-soft:  rgba(255, 255, 255, 0.06);
 
     /* Primary accent — Apple dark-mode system blue */
-    --ai:         #0A84FF;
+    --ai:         #178aff;
     --ai-ink:     #409CFF;
     --ai-wash:    rgba(10, 132, 255, 0.14);
 
@@ -221,16 +222,7 @@
      are emitted by the library as references to these, so they follow
      automatically. Change a value here and the whole page re-proportions.
      Halve them for a compact UI; raise 4/5/6 for an airy editorial feel. */
-  --space-0: 0;          /* flush            */
-  --space-1: 0.5rem;     /* tight inner gap  */
-  --space-2: 0.75rem;    /* control padding  */
-  --space-3: 0.875rem;   /* (no t-shirt)     */
-  --space-4: 1rem;       /* default rhythm   */
-  --space-5: 1.5rem;     /* section gap      */
-  --space-6: 2rem;       /* block gap        */
-  --space-7: 3rem;       /* major gap        */
-  --space-8: 4rem;       /* page section     */
-  --space-9: 6rem;       /* hero rhythm      */
+  @include ss.space-scale;
 
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */

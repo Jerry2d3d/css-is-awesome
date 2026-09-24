@@ -7,8 +7,10 @@ audience: library authors, AI tool builders
 excerpt: Agents guess at mixin signatures because prose docs give them nothing to query. cia ships a stdio MCP server that reads the SCSS instead. What broke along the way.
 author: Jerry Hansen
 publishDate: 2026-08-17
-updatedDate: 2026-08-17
+updatedDate: 2026-09-11
 ---
+
+**Update, 2026-09-11:** the setup trap described below is closed. [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) is now a dedicated zero-install package — `npx css-is-awesome-mcp` needs no manual SDK install at all. The in-repo server this post describes still ships and still works the way it's documented here; it's just no longer the only, or the recommended, path. What it took to ship that cleanly — including a same-named `bin` collision between the two packages that briefly made the new command silently run the old file — is its own post: [The MCP command that ran someone else's file](/blog/the-mcp-command-that-ran-someone-elses-file).
 
 An agent asked to style a button in this system will write something like this:
 
@@ -30,7 +32,7 @@ So on 2026-05-22 (`b397815`) cia started shipping a query surface instead of mor
 
 ## What it actually is
 
-JSON-RPC over stdio, protocol `2024-11-05`, exposed as the `css-is-awesome-mcp` bin and included in the package `files` manifest — so it lands in every consumer's `node_modules` with the SCSS.
+JSON-RPC over stdio, protocol `2024-11-05`, included in the package `files` manifest — so it lands in every consumer's `node_modules` with the SCSS. (It was exposed as the `css-is-awesome-mcp` bin too, at the time this was written — see the 2026-09-11 update above for why that changed.)
 
 ```json
 {

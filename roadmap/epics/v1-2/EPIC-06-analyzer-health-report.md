@@ -5,7 +5,12 @@
 > turn `cia analyze` from a pass/fail linter into a **graded design-system
 > health report** with specific, fixable findings.
 
-**Status:** Planned (v1.2)
+**Status:** Complete (2026-09-09). F3.1 shipped 2026-09-08; F1.2, F2.1, and
+F3.2 shipped 2026-09-09. F1.1 turned out to already be shipped — it just
+wasn't marked (`off-contract-token` was already live in `bin/analyze.cjs`
+before this epic file existed). F2.2 (`duplicated-pattern`) is explicitly
+dropped per its own "ship last, behind a flag, or drop" call — most
+false-positive-prone rule in the epic, not worth the noise.
 **Effort estimate:** ~3-4 working days
 **Stories:** 6
 
@@ -31,8 +36,9 @@ rewrite — the lowest-risk high-value item in the whole review.
 
 Rules already implemented in `bin/analyze.cjs`: `unknown-symbol` (dead
 `cia.*` calls), `space-scale` (the `space(>9)` pass-through trap),
-`hard-coded-color`, `bem`, `hand-written-areas`. Already present: real-API
-symbol discovery, per-file grouping, the `health` number, `--json`,
+`off-contract-token` (US-V12.06.1.1 — this was already live, pre-dating this
+epic file), `hard-coded-color`, `bem`, `hand-written-areas`. Already present:
+real-API symbol discovery, per-file grouping, the `health` number, `--json`,
 `--strict`, `--namespace`.
 
 ## Out of scope
@@ -46,27 +52,33 @@ symbol discovery, per-file grouping, the `health` number, `--json`,
 
 ### F1 — Contract-token awareness
 
-- **US-V12.06.1.1** (M) — Load `scripts/theme-contract.json` (already shipped
-  in `files`) and flag `var(--token)` references that are **not** in the
-  contract (typos, invented tokens). Acceptance: a stylesheet using
-  `var(--inkk)` reports `off-contract-token` with the nearest real token as
-  the suggestion; a stylesheet using only contract tokens reports none.
-- **US-V12.06.1.2** (M) — Flag hard-coded lengths that should be tokens:
-  `border-radius`/`padding`/`margin`/`gap` literals that don't match a scale
-  step, with the nearest step as the fix. Acceptance: `border-radius: 7px`
-  suggests the nearest `--radius-*`; `gap: 1rem` that equals a scale step is
-  silent.
+- **US-V12.06.1.1** (M) — ✅ ALREADY SHIPPED (pre-dates this epic). Loads
+  `scripts/theme-contract.json` and flags `var(--token)` references that are
+  **not** in the contract as `off-contract-token`, with the nearest real
+  token (edit-distance ≤ 2) as the suggestion; pure custom tokens are left
+  alone.
+- **US-V12.06.1.2** (M) — ✅ DONE 2026-09-09. `off-scale-length`: flags a
+  literal `border-radius`/`padding`/`margin`/`gap` value within 2px of a
+  scale step (Sketchbook's reference values — CONTRACT.md's designated
+  reference implementation — used as a *hint* table, not an equivalence
+  claim, since real themes diverge: Terminal flattens every `--radius-*` to
+  `0`). `border-radius: 7px` suggests `--radius-lg`; a literal `0` is never
+  flagged. Category `Spacing`.
 
 ### F2 — More rules
 
-- **US-V12.06.2.1** (M) — `missing-focus-visible`: heuristically flag
-  interactive selectors (`button`, `a`, `[role=button]`, `.btn`-shaped) that
-  define `:hover`/`:active` but no `:focus-visible`/`focus-ring`. Marked
-  `info`, not `error` — regex heuristics are noisy; never fail CI on it by
-  default. Acceptance: documented as a hint, opt-in to `--strict`.
-- **US-V12.06.2.2** (L, OPTIONAL) — `duplicated-pattern`: detect N+ identical
-  declaration blocks that could be one mixin. Speculative and the most
-  false-positive-prone rule in the epic; ship last, behind a flag, or drop.
+- **US-V12.06.2.1** (M) — ✅ DONE 2026-09-09. `missing-focus-visible`:
+  file-level heuristic — a file styles `:hover`/`:active` on something
+  button/link-shaped (`button`, `a`, `[role=button]`, `.btn`-shaped classes)
+  but never mentions `:focus-visible` or `focus-ring` anywhere in that file.
+  File-level rather than per-selector, because SCSS commonly sets
+  `focus-ring` once for a whole component and nests `&:hover` under it
+  elsewhere (see `scss/components/_buttons.scss`) — per-selector adjacency
+  would false-positive on exactly that shape. `info` level; never fails
+  `--strict`. New category `Accessibility`.
+- **US-V12.06.2.2** (L, OPTIONAL) — ⛔ DROPPED. `duplicated-pattern` — kept
+  as documented-but-not-built, per its own "ship last, behind a flag, or
+  drop" call. Most false-positive-prone rule in the epic; not worth it.
 
 ### F3 — The graded report
 
@@ -76,9 +88,11 @@ symbol discovery, per-file grouping, the `health` number, `--json`,
   file and a `→` suggested-fix line. `--verbose` keeps the flat per-file view;
   `--json` gains `category` + `suggestion` per finding (additive). README
   updated. (Accessibility category lights up when F2.1 lands.)
-- **US-V12.06.3.2** (S) — `/docs` page + README section documenting every
-  rule, its level, and how the score is computed, so a number in CI is
-  legible. Acceptance: each rule links to the doc anchor from `--help`.
+- **US-V12.06.3.2** (S) — ✅ DONE 2026-09-09. New
+  [`/docs/analyzer`](../../../src/app/docs/analyzer/page.tsx) page documents
+  every rule (level, category, one-line description), the health formula,
+  and all CLI flags. `bin/analyze.cjs`'s `--help` links to it; `README.md`'s
+  CLI section updated.
 
 ## What changes
 
@@ -109,9 +123,10 @@ symbol discovery, per-file grouping, the `health` number, `--json`,
 ## Definition of done
 
 `cia analyze` prints a graded, categorized report with a suggested fix on
-every finding; contract-token and hard-coded-length rules live; `--json` is
+every finding; contract-token and off-scale-length rules live; `--json` is
 additively extended; the rule set is documented; the analyzer stays zero-dep
-and the existing five rules still pass their cases.
+and every existing rule still passes its cases. **Met 2026-09-09** —
+`duplicated-pattern` (F2.2) intentionally excluded, see above.
 
 ## Related
 

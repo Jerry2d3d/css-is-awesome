@@ -119,6 +119,70 @@ export function extractDataThemeBlocks(css: string): ParsedBlock[] {
   return order.map((n) => byName.get(n)!);
 }
 
+// Splits a `light-dark(A, B)` value into its light/dark components. Paren-
+// aware comma split so a value like
+// `light-dark(rgba(0,0,0,.1), rgba(255,255,255,.1))` survives intact
+// instead of splitting on the inner commas. Returns null if the value
+// isn't a light-dark() call (mode-invariant tokens — radius, font,
+// spacing, etc. — apply the same either way).
+export function splitLightDark(raw: string): { light: string; dark: string } | null {
+  const trimmed = raw.trim();
+  const m = /^light-dark\(([\s\S]*)\)$/i.exec(trimmed);
+  if (!m) return null;
+  const inner = m[1];
+  let depth = 0;
+  let splitAt = -1;
+  for (let i = 0; i < inner.length; i++) {
+    const ch = inner[i];
+    if (ch === "(") depth++;
+    else if (ch === ")") depth--;
+    else if (ch === "," && depth === 0) { splitAt = i; break; }
+  }
+  if (splitAt === -1) return null;
+  return {
+    light: inner.slice(0, splitAt).trim(),
+    dark: inner.slice(splitAt + 1).trim(),
+  };
+}
+
+// Finds every `@media (prefers-color-scheme: dark) { ... }` block and
+// returns the union of every --token declaration nested inside it,
+// regardless of which selector wraps them within the block. This is how
+// the editor's own "Download" output stores dark-mode overrides for
+// NON-color tokens (emitTokenLines puts them here instead of a
+// `light-dark()` call, since light-dark() only makes sense for color
+// values) — cia's shipped themes never use this shape, but a file
+// re-imported after being downloaded from the editor does. Without this,
+// those overrides were silently invisible to the importer: neither
+// extractDataThemeBlocks nor extractRootBlock ever looks inside an
+// `@media` block, so a nested rule in one was skipped entirely rather
+// than mis-parsed — same outcome (the value never reached the editor) but
+// a different, less obvious failure mode than the light-dark() splitting
+// bug this file's other export fixes.
+export function extractPrefersDarkOverrides(css: string): Map<string, string> {
+  const s = stripBlockComments(css);
+  const out = new Map<string, string>();
+  const mediaRe = /@media\s*\(\s*prefers-color-scheme\s*:\s*dark\s*\)/gi;
+  let m: RegExpExecArray | null;
+  while ((m = mediaRe.exec(s)) !== null) {
+    const braceIdx = s.indexOf("{", m.index);
+    if (braceIdx === -1) break;
+    const block = readBracedBlock(s, braceIdx);
+    if (!block) break;
+    let i = 0;
+    while (i < block.body.length) {
+      const nestedBrace = block.body.indexOf("{", i);
+      if (nestedBrace === -1) break;
+      const nested = readBracedBlock(block.body, nestedBrace);
+      if (!nested) break;
+      for (const [t, v] of collectTokenValues(nested.body)) out.set(t, v);
+      i = nested.end + 1;
+    }
+    mediaRe.lastIndex = block.end + 1;
+  }
+  return out;
+}
+
 // Legacy / per-file shape: union of every `:root { ... }` block in the
 // file. Same return shape as a single ParsedBlock with name=null.
 export function extractRootBlock(css: string): ParsedBlock {
