@@ -1,6 +1,6 @@
 # EPIC v1.4-04 — The devlog: `/now` + working notes
 
-**Status:** Planned (v1.4) — design below is a proposal; five open questions at the bottom need Jerry's call before build.
+**Status:** ✅ Complete — built 2026-09-25. All five open questions answered (see below). `/now`, `/notes` and the first `ai`-track post are live; two CI guards keep them honest. One story shipped differently from its acceptance criteria and is disclosed there.
 **Effort estimate:** ~3-4 working days
 **Stories:** 9
 
@@ -189,12 +189,12 @@ sources already in the repo
 
 ## Definition of done
 
-- [ ] `/now` live, generated, every line traceable to its source
-- [ ] `/notes` live with 3 real seed entries
-- [ ] CI fails on an unparseable epic status or a stale blocker reference
-- [ ] Privacy lint covers the notes directory
-- [ ] The `ai` track has its first post
-- [ ] Nav, About, home and `llm.txt` all point at the new surfaces
+- [x] `/now` live, generated, every line traceable to its source — `src/lib/now.ts` reads `package.json`, `CHANGELOG.md` and every `roadmap/epics/*/EPIC-*.md`; each row links to the epic file it came from
+- [x] `/notes` live with 3 real seed entries — the spike that killed an epic, the green check that proved nothing, the roadmap that lied in both directions
+- [x] CI fails on an unparseable epic status or a stale blocker reference — `npm run check:now`; it found one epic file with no status line at all on its first run
+- [x] Privacy lint covers the notes directory — `npm run check:notes-privacy`, mechanical half only, and the script says so rather than implying more
+- [x] The `ai` track has its first post — `src/content/blog/what-the-ai-got-wrong.md`
+- [x] Nav, About and `llm.txt` point at the new surfaces — **home page line deliberately NOT built, see open question 5**
 
 ## Risks
 
@@ -217,19 +217,35 @@ sources already in the repo
    opposite of what the September sweep achieved; if one is ever wanted it
    belongs on a personal site, not in this repository. This is a hard
    constraint on every note, not a default to drift from.
-2. **Is `/notes` a fourth blog track, or its own surface?** Recommendation: its
-   own surface. Blog posts are narrative and permanent; notes are dated and
-   disposable. Mixing them makes the blog index harder to scan and pressures
-   notes to become posts.
-3. **One feed or two?** Recommendation: one `feed.xml` carrying both, with a
-   category per item, so a follower gets everything and can filter.
-4. **How blunt is "blocked"?** Naming a blocker publicly ("waiting on an npm
-   token") is unusually honest and reads as confidence. It can also read as
-   airing process. Recommendation: name technical blockers, not people.
-5. **Does the home page carry a status line?** It is the highest-traffic
-   surface and the strongest signal of life, but it also adds a maintained
-   element to the page you most want stable. Recommendation: yes, one line,
-   generated from the same collector.
+2. ~~**Is `/notes` a fourth blog track, or its own surface?**~~ **DECIDED
+   2026-09-25: its own surface.** Blog posts are narrative and permanent;
+   notes are dated and disposable. Mixing them makes the blog index harder to
+   scan and, worse, puts quiet pressure on every note to justify itself as a
+   post — which is the pressure that stops short notes from being written at
+   all. `/notes` is deliberately not in the nav either; it is reached from
+   `/now` and from About, because a working log is something a reader goes
+   looking for rather than something the site pushes at them.
+3. ~~**One feed or two?**~~ **DECIDED 2026-09-25: one feed.** `/feed.xml` now
+   carries posts and notes merged and sorted by date, each with an Atom
+   `<category>` (`note` / `Working notes` for notes, the existing track for
+   posts). Two feeds would mean anyone wanting both has to find and subscribe
+   to both, and anyone subscribing to one silently misses half the output.
+   A reader who wants one kind filters; a reader who wants everything does
+   nothing.
+4. ~~**How blunt is "blocked"?**~~ **DECIDED 2026-09-25: name technical
+   blockers, never people.** The one entry seeded reads "create-cia is not on
+   npm — the publish token returns E401". That is a fact about a credential,
+   not about a person, and it is already visible in the repo's own CI logs.
+   `scripts/check-now.mjs` fails the build if a blocked entry points at a PR
+   that has since closed, so the list cannot quietly become fiction.
+5. ~~**Does the home page carry a status line?**~~ **DEFERRED 2026-09-25 — not
+   built, needs Jerry's eye.** Everything else in F4.4 shipped: the nav links
+   `/now`, About links both surfaces, `llm.txt` points an agent at `/now`
+   before it asks whether a feature exists. The home-page line is the one
+   piece that changes the page Jerry most wants stable, and a logo change to
+   that same page was reverted on request the day before this was built. It is
+   a one-line addition whenever he wants it; it should not arrive as a
+   side effect of an epic.
 
 ## Related
 

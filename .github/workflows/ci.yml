@@ -99,6 +99,30 @@ jobs:
       - name: Page surfaces stay opt-in (no default selector reads --page-*)
         run: npm run test:surfaces
 
+      # /now is GENERATED from roadmap/epics/ at build time, which removes the
+      # drift between the page and the files but introduces a new way to be
+      # wrong: an epic whose status line the collector cannot read would
+      # vanish from the page rather than appear wrong there. An absence is
+      # invisible, so an unreadable status line fails here instead.
+      #
+      # Also checks that roadmap/now.json's currentWave names a real folder
+      # and that a "blocked" entry does not point at a PR that has since
+      # closed. Note staleness is a WARNING and must stay one — the log has no
+      # cadence and a quiet month is not a broken build.
+      - name: /now can be generated truthfully
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run check:now
+
+      # The working notes are written quickly, mid-task, with other projects
+      # open. That is exactly the situation the September 2026 privacy sweep
+      # had to clean up after. This catches the mechanical half — absolute dev
+      # paths, sibling checkouts, home directories. The judgement half is not
+      # checkable and stays the author's call; the script says so rather than
+      # letting a green tick imply more than it proved.
+      - name: Working notes carry no leaked paths
+        run: npm run check:notes-privacy
+
       - name: Validate icon pack
         run: npm run validate-icons
 

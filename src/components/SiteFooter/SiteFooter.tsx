@@ -16,6 +16,9 @@ const NAV = [
   { id: "compare",  label: "Compare",  href: "/compare" },
   { id: "showcase", label: "Showcase", href: "/showcase" },
   { id: "blog",     label: "Blog",     href: "/blog" },
+  // Matches the header. /notes stays out of both, reached from /now and
+  // About — a working log is something a reader goes looking for.
+  { id: "now",      label: "Now",      href: "/now" },
   { id: "about",    label: "About",    href: "/about" },
 ];
 

@@ -1,0 +1,102 @@
+@use 'mixins' as m;
+
+/* ============================================================
+   /now — co-located styles.
+   Imported from page.tsx as a CSS Module.
+
+   Tokens and cia mixins only: this page is part of the site that
+   dogfoods the system, so a one-off hex or a hand-rolled flex row
+   here would be the system failing its own argument.
+   ============================================================ */
+
+.shell {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+}
+
+.head {
+  margin-bottom: m.space(7);
+}
+
+.eyebrow {
+  @include m.font(reg, 6, $family: m.font-family(script), $color: action-secondary-default);
+  margin: 0 0 m.space(2);
+}
+
+.built {
+  @include m.font($size: 2, $color: text-tertiary, $lh: 1.6);
+  max-width: 62ch;
+  margin: m.space(3) 0 0;
+}
+
+/* The hand-written paragraph. Set apart from the generated sections
+   below so a reader can tell at a glance which half a human wrote. */
+.note {
+  @include m.border(3px, solid, action-secondary-default, $sides: left);
+  padding-left: m.space(4);
+  margin-bottom: m.space(7);
+
+  p {
+    @include m.font($size: 3, $color: text-secondary, $lh: 1.7);
+    margin: 0 0 m.space(3);
+  }
+}
+
+.noteMeta {
+  @include m.font($size: 1, $color: text-tertiary);
+}
+
+.block {
+  margin-bottom: m.space(7);
+
+  h2 {
+    @include m.font(medium, 6, $color: text-primary);
+    margin: 0 0 m.space(3);
+  }
+}
+
+.lead {
+  @include m.font($size: 3, $color: text-secondary, $lh: 1.7);
+  max-width: 68ch;
+  margin: 0 0 m.space(3);
+}
+
+.empty {
+  @include m.font($size: 2, $color: text-tertiary);
+  font-style: italic;
+  margin: 0;
+}
+
+.epics,
+.blocked {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: m.space(4);
+}
+
+.epic,
+.blocked > li {
+  @include m.border(2px, solid, border-default, $sides: left);
+  padding-left: m.space(3);
+}
+
+.epicHead {
+  @include m.font(medium, 3, $color: text-primary);
+  margin: 0 0 m.space(1);
+}
+
+.epicWhy {
+  @include m.font($size: 2, $color: text-secondary, $lh: 1.6);
+  max-width: 68ch;
+  margin: 0;
+}
+
+/* The wave badge and the "since" date share a shape: both are a quiet
+   qualifier hanging off the end of a title, so both read as one thing. */
+.wave {
+  @include m.font($size: 1, $color: text-tertiary);
+  white-space: nowrap;
+}
