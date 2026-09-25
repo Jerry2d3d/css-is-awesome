@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { getPostIndex } from "@/lib/blog";
@@ -40,6 +41,22 @@ export default function BlogPage() {
             there&apos;s something worth saying.
           </p>
         </section>
+
+        {/* The devlog lives here rather than in the top nav. Posts, notes and
+            /now are three answers to one question — is this thing alive and
+            what is happening to it — so a reader who wants that answer should
+            land in one place instead of choosing between nav items before
+            they know the difference. */}
+        <nav className={styles.devlog} aria-label="Project status">
+          <p>
+            <Link href="/now">/now</Link> — what I am working on this week,
+            generated from the repository rather than typed.
+          </p>
+          <p>
+            <Link href="/notes">Working notes</Link> — short dated entries.
+            Lighter than a post, heavier than a commit message.
+          </p>
+        </nav>
 
         {posts.length === 0 ? (
           <p className={styles.empty}>No posts yet.</p>
