@@ -83,14 +83,18 @@ git log --oneline --no-decorate "origin/$DEST..$SRC" >>"${GITHUB_STEP_SUMMARY:-/
 summary '```'
 summary ""
 
-if [ "$DRY_RUN" = "true" ]; then
-  summary "### Dry run — nothing was pushed"
-  summary ""
-  summary "Run it again with \`dry_run\` unticked to ship it."
-  echo "Dry run: stopping before the merge."
-  exit 0
-fi
-
+# NOTE ON DRY RUN: it stops before the PUSH, not before the merge.
+#
+# This used to exit here, which made it worse than useless: it reported
+# success without ever attempting the thing that can fail. On 2026-09-25 a
+# dry run of the qa stage passed, and the real production run then failed on
+# a merge conflict in .gitattributes — a conflict the dry run was structurally
+# incapable of noticing, because the only question it answered was "can I
+# resolve two branch names".
+#
+# A rehearsal that skips the risky step is not a rehearsal. The merge now
+# happens locally either way; only the push is withheld, and the branch is
+# reset afterwards so the runner is left as it was found.
 git checkout -B "$DEST" "origin/$DEST"
 
 if ! git merge --no-edit "$SRC"; then
@@ -140,6 +144,16 @@ if ! git merge --no-edit "$SRC"; then
   git commit --no-edit
   summary "Resolved ${#CONFLICTS[@]} source-owned path(s) from \`$SRC_REF\`: ${CONFLICTS[*]}"
   summary ""
+fi
+
+if [ "$DRY_RUN" = "true" ]; then
+  summary "### Dry run — the merge succeeded and was thrown away"
+  summary ""
+  summary "Nothing was pushed. The merge was performed locally to prove it is"
+  summary "clean, then discarded. Run it again with \`dry_run\` unticked to ship it."
+  git reset --hard "origin/$DEST" >/dev/null
+  echo "Dry run: merge succeeded, discarded, nothing pushed."
+  exit 0
 fi
 
 git push origin "$DEST"
