@@ -162,12 +162,27 @@ function toPlain(s: string): string {
     .trim();
 }
 
-/** First sentence of a status line, for the one-line summary on the page. */
-function firstSentence(s: string): string {
-  const plain = toPlain(s);
-  const cut = /^(.*?[.—-]\s)/.exec(plain);
-  const head = (cut ? cut[1] : plain).trim().replace(/[—-]$/, "").trim();
-  return head.length > 4 ? head : plain;
+/**
+ * A readable one-line summary of a status sentence.
+ *
+ * NOT "the first sentence". These lines usually open with a marker and a
+ * single word — "🟡 PARTIAL — 12 of 13 stories shipped" — so cutting at the
+ * first dash yields "PARTIAL", which tells a reader nothing they did not
+ * already get from the section heading. The useful half is what comes after.
+ *
+ * So: keep the whole sentence, trimmed to a length that fits a line, cut on a
+ * word boundary and marked with an ellipsis when it had to be cut. The marker
+ * itself is dropped because the page already groups by state.
+ */
+function summarise(s: string, limit = 180): string {
+  const plain = toPlain(s)
+    // Leading marker + shouty word, e.g. "🟡 PARTIAL — " or "✅ Complete — ".
+    .replace(/^[^A-Za-z0-9]*/u, "")
+    .trim();
+  if (plain.length <= limit) return plain;
+  const cut = plain.slice(0, limit);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 40 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:—-]+$/, "")}…`;
 }
 
 /** Every epic file across every wave, with its parsed status. */
@@ -209,9 +224,12 @@ export function getEpics(): { epics: Epic[]; unparsed: { file: string; line: str
       epics.push({
         id: (/^EPIC-\d+/.exec(file) ?? ["EPIC-??"])[0],
         wave,
-        title: firstHeading(text) ?? file.replace(/\.md$/, ""),
+        // toPlain() on the title too: several epic headings carry inline
+        // code (`npm create cia`), and a raw backtick in a page heading reads
+        // as a typo rather than as markup.
+        title: toPlain(firstHeading(text) ?? file.replace(/\.md$/, "")),
         state,
-        status: firstSentence(status),
+        status: summarise(status),
         href: `${REPO_URL}/blob/main/${rel}`,
       });
     }
