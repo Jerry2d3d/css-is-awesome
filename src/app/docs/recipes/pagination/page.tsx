@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("pagination")} — Recipes — css-is-awesome`,
   description:
@@ -14,6 +15,7 @@ export default function PaginationPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Pagination"}</h1>
+      <TryInPlayground slug="pagination" />
       <p className="lead">
         Live: 12 pages. Jump with the numbers, step with the arrows, or go
         straight to the ends. The range windows around the current page with

@@ -12,7 +12,7 @@ export default function BrowserSupportPage() {
     <>
       <h1>Browser support</h1>
       <p className="lead">
-        cia ships zero JavaScript, so its browser floor is set by the native
+        cia ships no runtime JavaScript, so its browser floor is set by the native
         primitives it rides — not by a polyfill budget. This page is the dated
         matrix: the <strong>CIA Baseline</strong> every shipped feature
         requires, and the <strong>progressive enhancements</strong> that layer
@@ -103,7 +103,10 @@ export default function BrowserSupportPage() {
                 <Link href="/docs/components/dropdown">Dropdown</Link>,{" "}
                 <Link href="/docs/components/tooltip">tooltip</Link>, the{" "}
                 <Link href="/docs/mobile">mobile toolkit</Link> (drawer, sheet,
-                dock, hamburger), copy-button toast
+                dock, hamburger), copy-button toast.{" "}
+                <Link href="/blog/the-popover-attributes-invisible-ua-stylesheet">
+                  How the UA stylesheet bites
+                </Link>
               </td>
             </tr>
             <tr>
@@ -123,7 +126,10 @@ export default function BrowserSupportPage() {
               <td>Baseline Dec 2023 (Chrome 105, Firefox 121, Safari 15.4)</td>
               <td>
                 <Link href="/docs/components/tabs">Tabs</Link> — panel
-                switching with no JS
+                switching with no JS.{" "}
+                <Link href="/blog/there-is-no-nth-of-class">
+                  Why the panel index is fragile
+                </Link>
               </td>
             </tr>
             <tr>
@@ -272,7 +278,10 @@ export default function BrowserSupportPage() {
                   anchored-dropdown recipe
                 </Link>{" "}
                 and this site&rsquo;s own menus — the shipped mixins never
-                emit it; positioning stays the consumer&rsquo;s call
+                emit it; positioning stays the consumer&rsquo;s call.{" "}
+                <Link href="/blog/css-anchor-positioning-dropdown-engine">
+                  What the spec buys you
+                </Link>
               </td>
               <td>
                 Behind <code>@supports (anchor-name: --a)</code> the menu hugs

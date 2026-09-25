@@ -30,6 +30,7 @@ Any change that can break a consumer upgrading blindly.
 | SCSS mixin renamed, removed, or breaking signature change                 | `m.btn($variant)` now requires `$size`                 |
 | SCSS mixin default changes rendered output                                | `m.card()` default radius flips from `md` → `lg`       |
 | Contract: required token renamed or removed                               | `--surface-default` → `--surface-base`                 |
+| Contract: **new required token added** (existing custom themes stop validating) | `--space-unit` added as required in 1.12.0 — a mistake, relaxed in contract 1.1 |
 | Contract: `version` field bumps to a new major (`"1"` → `"2"`)            | Required-token removal in `scripts/theme-contract.json` |
 | Optional-peer floor rises                                                 | `@modelcontextprotocol/sdk` minimum raised             |
 
@@ -42,6 +43,8 @@ Additive, non-breaking changes.
 | New public CSS class                                         | `.cia-grid-auto-fit` added                        |
 | New public SCSS mixin                                        | `m.cluster($gap)` added                           |
 | New optional token added to contract (`"1"` → `"1.1"`)       | `--dropdown-offset-y` added to component section  |
+| Contract metadata added (e.g. the `features` map, `"1.1"` → `"1.2"`, 2026-09-18) | Additive keys — old validators ignore them |
+| Required token relaxed to optional (contract minor bump)      | `--space-unit` required → optional, contract `"1"` → `"1.1"` (2026-09-18) |
 | New theme or recipe shipped                                  | `prism` family added; `mobile-nav` recipe added   |
 | New utility class (`.cia-*`)                                 | `.cia-text-balance` added                         |
 
@@ -67,6 +70,8 @@ While the library was pre-1.0 (`0.x.x`), the rules above applied with one carve-
 2. Called out again in the release notes with a migration snippet.
 
 **`1.0.0` locked the contract** (cut 2026-08-17). Breaking changes now require a MAJOR bump, no exceptions.
+
+`npm run check:contract` (CI-gated since 2026-09-18) diffs `scripts/theme-contract.json` against the last release tag and fails the build when the required/optional lists change without the version bump these tables demand. It exists because 1.12.0 shipped a new *required* token in a MINOR and nothing caught it until a consumer's validator broke.
 
 ---
 
@@ -158,12 +163,27 @@ Deprecations are announced in the deprecating commit's body (and land in the rel
 
 ## 6. Release process
 
-The policy in this document tells you **what** a version number means. The mechanics are automated: on every push to `main` that contains a releasable commit, semantic-release computes the next version from the commit messages, regenerates `CHANGELOG.md`, builds the bundles (`prepublishOnly` runs `build:css:all`), tags `vX.Y.Z`, and publishes to npm. Nobody hand-types a version number anywhere — the hero, the MCP server, and the docs all read it from `package.json`.
+The policy in this document tells you **what** a version number means. The mechanics are automated, but they run at the end of a promotion chain rather than on every merge:
+
+```
+feature branch  →  main  →  qa  →  prod-css-is-awesome
+(your work)        (CI)     (look    (public site + npm publish)
+                             at it)
+```
+
+`main` is the integration branch. Merging into it runs CI and reaches nobody — no website change, no npm version. Promotion is a manual click: the **Promote** workflow in the Actions tab takes a `stage` from a dropdown (`status`, `qa`, `prod`) and merges one branch into the next.
+
+Reaching `prod-css-is-awesome` is what publishes. At that point semantic-release computes the next version from the commit messages, regenerates `CHANGELOG.md`, builds the bundles (`prepublishOnly` runs `build:css:all`), tags `vX.Y.Z`, and publishes to npm; Vercel rebuilds the public site from the same branch. Nobody hand-types a version number anywhere — the hero, the MCP server, and the docs all read it from `package.json`.
+
+**Why npm sits behind the strictest gate:** a website can be corrected by promoting again, but an npm version cannot be unpublished after 72 hours, and never once anyone depends on it. The irreversible step is the deliberate one. It also keeps the version on the site and the version on npm in agreement.
+
+The cost of that gate is that you have to remember to promote, or releases quietly stop. Running **Promote** with `stage: status` changes nothing and prints how many commits are waiting at each hop.
 
 What remains manual:
 
 1. Bumping `version` in `scripts/theme-contract.json` when the contract itself changes (§7).
-2. The CI gates (lint, validators, coverage, size budget, Playwright) — a red PR never reaches `main`, so a release is never cut from a failing tree.
+2. Promoting through `qa` to `prod-css-is-awesome` when a batch of work is ready to be public.
+3. The CI gates (lint, validators, coverage, size budget, Playwright) — a red PR never reaches `main`, and CI runs again on `qa` and on the production branch, so a release is never cut from a failing tree.
 
 Contributor-facing workflow detail lives in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 

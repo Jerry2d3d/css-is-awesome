@@ -1,10 +1,12 @@
 import Example from "@/components/Example";
 import Badge from "@/components/Badge";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export default function AnchorPositioningRecipePage() {
   return (
     <>
       <h1>Recipe — Anchor positioning</h1>
+      <TryInPlayground slug="anchor-positioning" />
       <p className="lead">
         cia&rsquo;s tooltip and dropdown mixins style the element but leave positioning to the consumer.
         For browsers that support CSS anchor positioning (<code>anchor()</code> + <code>position-area</code>),

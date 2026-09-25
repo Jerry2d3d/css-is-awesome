@@ -203,7 +203,70 @@ try {
       ? null
       : "expected ok:false with missing required tokens for a deliberately incomplete theme";
   });
+  // A tiny DTCG file with an alias must come back as a complete, contract-valid
+  // theme: the two supplied tokens from the file, everything else inherited.
+  await call("theme_from_tokens", {
+    name: "coverage-tokens",
+    tokens: {
+      color: { text: { primary: { $value: "#0f172a" } } },
+      brand: { primary: { $value: "{color.text.primary}" } },
+      space: { "4": { $value: { value: 16, unit: "px" }, $type: "dimension" } },
+    },
+  }, (b) => {
+    const r = JSON.parse(b);
+    const okShape = r && typeof r.css === "string" && r.css.includes('[data-theme="coverage-tokens"]') && r.report && r.validation;
+    if (!okShape) return "expected { css, report, validation } with the named theme block";
+    if (r.validation.ok !== true) return "expected the generated theme to satisfy the contract";
+    if (!r.report.fromTokens.includes("--brand-primary") || !r.report.fromTokens.includes("--space-4")) return "expected --brand-primary (via alias) and --space-4 from the file";
+    if (r.report.inherited.length === 0) return "expected the base theme to fill the rest";
+    return null;
+  });
 
+  // The mapping as data: the whole map has the documented shape and agrees
+  // with the converter's table; a single path resolves with contract context.
+  await call("get_token_map", {}, (b) => {
+    const m = JSON.parse(b);
+    if (!m || typeof m.explicit !== "object" || !Array.isArray(m.aliases) || typeof m.genericRule !== "string") return "expected { explicit, aliases, genericRule, … }";
+    if (m.explicit["typography.font.body"] !== "--font-sans") return "expected the explicit table (typography.font.body → --font-sans)";
+    if (!m.targets || !Array.isArray(m.targets.required) || m.targets.required.length < 100) return "expected targets.required from the contract";
+    if (!m.contractVersion) return "expected contractVersion";
+    return null;
+  });
+  await call("get_token_map", { path: "spacing.4" }, (b) => {
+    const r = JSON.parse(b);
+    if (r.token !== "--space-4" || r.mapped !== true) return "expected spacing.4 → --space-4 (mapped)";
+    if (r.required !== true) return "expected --space-4 to be flagged required";
+    return null;
+  });
+
+  // The deprecation fixer, both shapes: a theme on the old token is rewritten
+  // (and the tool must never claim it wrote anything), and a theme already on
+  // the new name comes back untouched.
+  await call(
+    "fix_theme",
+    { css: ":root {\n  --background-hero: #eee;\n}" },
+    (b) => {
+      const r = JSON.parse(b);
+      if (r.unchanged !== false) return "expected a deprecated token to be rewritten";
+      if (!/--page-hero-bg:/.test(r.css)) return "expected --page-hero-bg in the returned css";
+      if (/--background-hero:/.test(r.css)) return "expected the deprecated declaration to be gone";
+      if (r.applied !== false) return "fix_theme must never report that it wrote a file";
+      const rw = (r.changes || []).filter((c) => c.kind === "rewrite");
+      if (rw.length !== 1 || rw[0].to !== "--page-hero-bg") return "expected one rewrite change naming the replacement";
+      if (!Array.isArray(r.knownDeprecations) || !r.knownDeprecations.length) return "expected knownDeprecations";
+      return null;
+    }
+  );
+  await call(
+    "fix_theme",
+    { css: ":root {\n  --page-hero-bg: #eee;\n}" },
+    (b) => {
+      const r = JSON.parse(b);
+      if (r.unchanged !== true) return "expected a current theme to be left alone";
+      if ((r.changes || []).length !== 0) return "expected no changes for a current theme";
+      return null;
+    }
+  );
   // ─── Report ───────────────────────────────────────────────────────────────
   const tested = new Set(results.map((r) => r.name));
   const untested = advertised.filter((t) => !tested.has(t));

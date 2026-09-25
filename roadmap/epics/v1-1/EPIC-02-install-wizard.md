@@ -1,6 +1,12 @@
 # EPIC v1.1-02 — `npm create cia` Install Wizard
 
-**Status:** 🟡 Built 2026-09-17, publish pending — the `create-cia` package is complete and tested in `K:/repo/create-cia` (25/25 tests, real install verified against a Vite+React fixture, 13.4 kB packed); the docs page `/docs/install/wizard` and README mention are on the `docs/install-wizard` branch. Remaining: create the `Jerry2d3d/create-cia` GitHub repo, add the `NPM_TOKEN` (Classic Automation) secret, push — CI publishes `create-cia@1.0.0`. Then tick the publish/test-matrix boxes below. Deviations disclosed inline.
+**Status:** ✅ Complete — **`create-cia@1.0.0` published to npm 2026-09-25**, dist-tag `latest`, with a GitHub Release and tag. `npm create cia@latest` and `npx create-cia` are both live.
+
+The publish was blocked for a week on credentials, and the failure was worth recording because it had two layers. The token returned **E403** while it carried *stage-only* permission, then **E401** once replaced — authentication failing outright rather than permission being refused. The fix was a granular token with **read-and-write (publish and stage)** across **all packages**; it could not be scoped to `create-cia` specifically, because an unpublished package does not exist for npm to scope against, and the first publish is the one that needs to work.
+
+Underneath that sat a second problem the release workflow's own header predicts: the 2026-09-18 run reached `prepare`, which tags and pushes before npm is ever contacted, then failed at publish. A `v1.0.0` tag was left on the remote asserting a version that existed nowhere. Re-running would have computed "no new version" from the commits after that tag and reported SUCCESS having shipped nothing. Deleting the tag on both sides was the documented recovery.
+
+Verified from the published artifact rather than the source tree: the tarball carries 13 files (bin, 8 lib modules, README, LICENSE, package.json) with no dev fixtures, `--version` reports 1.0.0, and `--yes --dry-run` in an empty directory prints a full plan and writes nothing.
 **Effort estimate:** ~3-5 working days
 **Stories:** 7
 
@@ -29,7 +35,7 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** I don't read 5 docs pages to decide what to install
 
 **Acceptance criteria:**
-- [ ] New npm package `create-cia` published (npm's `create-*` convention) *(built; publish is the manual repo + secret step)*
+- [x] New npm package `create-cia` published (npm's `create-*` convention) — **1.0.0 on npm 2026-09-25**
 - [x] Package contains a `bin/create-cia.mjs` entry (ESM)
 - [x] Works on Mac, Linux, Windows (no shell-specific dependencies)
 - [x] Uses `@clack/prompts` (or `prompts` — pick whichever is lighter)
@@ -150,4 +156,4 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 
 - [v1.1 EPIC-04-framework-pack-react.md](./EPIC-04-framework-pack-react.md) — `@cia/react` is what wizard installs when React chosen
 - [v1.1 EPIC-03-cia-a11y-recipes.md](./EPIC-03-cia-a11y-recipes.md) — ~~add-on the wizard offers~~ retired 2026-09-17; nothing to offer
-- [project_install_wizard.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_install_wizard.md) — original idea memory
+- Project notes (kept outside this repo) — the original idea

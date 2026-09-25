@@ -223,6 +223,7 @@ The **numbered scale is the source of truth and is contract-required**: a theme 
 | Token                       | Type   | Example (default rhythm)          | Purpose                          |
 | --------------------------- | ------ | --------------------------------- | -------------------------------- |
 | `--space-0` … `--space-9`   | length | `0`, `0.25rem`, `0.5rem`, … `6rem` | The numbered scale — **required** |
+| `--space-unit`              | length | `0.25rem`                          | The density knob — **optional** (contract 1.1). Shipped themes derive every `--space-N` from it via `calc()`; a hand-written theme that declares absolute `--space-N` values never references it, so nothing breaks without it. It was listed as *required* by mistake in library 1.12.0–1.16.0. |
 
 The t-shirt names are **optional aliases**. The library emits `xs`–`xl` as `var()` references into the numbered scale, so they follow it automatically; `--space-2xs` sits outside the numbered scale and emits as a literal:
 
@@ -302,6 +303,28 @@ Paper themes declare these as `none` / `transparent` so a swap to a glass or pho
 | `--z-modal`    | number | `1050`  | Modal surface          |
 | `--z-popover`  | number | `1060`  | Popover / detached panel |
 | `--z-tooltip`  | number | `1070`  | Tooltips (always top)  |
+
+---
+
+## Optional tokens by feature (contract 1.2)
+
+Every optional token belongs to exactly one **feature** in `scripts/theme-contract.json` (`features`), so a validator, installer or agent can say *"this theme is missing the tokens for print"* instead of listing all 41 optional names. The validator's info line reports counts per feature; `--show-optional` lists them grouped. `npm run check:contract` fails the build if an optional token is in no feature, in two, or if a feature names a required token.
+
+| Feature | Tokens | Enables |
+| --- | --- | --- |
+| `density` | `--space-unit` | The density knob: shipped themes derive every --space-N from this one unit via calc(); set it to tighten or open up the whole UI (theme editor slider). |
+| `spacing-aliases` | `--space-2xs`, `--space-xs`, `--space-sm`, `--space-md`, `--space-lg`, `--space-xl` | T-shirt spacing names (2xs–xl) for consumer CSS that prefers them; the library reads the numbered scale, so these are pure aliases. |
+| `print` | `--print-ink`, `--print-paper`, `--print-line`, `--print-muted` | A themed printed page: cia.print-base rebinds ink/surface/border/code tokens onto this palette inside @media print. Without them the ink-on-white default applies. |
+| `component-radius` | `--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius` | Per-component corner radius overrides (buttons, cards, inputs, modals, badges, tags) without rebuilding SCSS; each falls back to the generic --radius-* scale. |
+| `component-shadows` | `--shadow-button`, `--shadow-card`, `--shadow-dropdown`, `--shadow-input-focus`, `--shadow-modal`, `--shadow-popover`, `--shadow-tooltip`, `--shadow-text` | Per-component elevation overrides; each falls back to the generic --shadow-* scale. |
+| `component-motion` | `--duration-button-hover`, `--duration-modal-open`, `--duration-toast-slide` | Per-component durations for button hover, modal open and toast slide; each falls back to the generic --duration-* scale. |
+| `surfaces-extended` | `--background-elevated`, `--background-hero`, `--background-overlay`, `--background-scrim` | Extra background layers (elevated, hero, overlay, scrim) for themes that want more than the required surface set; each falls back to a required surface. |
+| `borders-extended` | `--border-card`, `--border-divider`, `--border-focus-ring`, `--border-input` | Per-context border colours (card, divider, focus ring, input); each falls back to --border-default / --border-focus. |
+| `logo` | `--logo-default`, `--logo-mark`, `--logo-monochrome`, `--logo-wordmark` | Theme-aware logo assets (default, mark, monochrome, wordmark) as url() or SVG data values for the icon/brand mixins. |
+| `page-surfaces` | `--page-hero-bg`, `--page-hero-image`, `--page-hero-ink`, `--page-hero-scrim`, `--page-band-bg`, `--page-band-image`, `--page-band-ink`, `--page-band-scrim`, `--background-hero` *(deprecated)* | Two page-level surfaces a theme owns outright: a **hero** for a landing page and a **band** for section stripes and footers. Each carries a background colour, an optional gradient or `url()` image, an ink colour, and a scrim that keeps text legible over an image. **Declaring them changes nothing on its own** - a page only picks a surface up through `cia.surface(hero|band)` or `data-surface`, which is why every shipped theme defines them without moving a pixel on an existing site. Contrast over an *image* cannot be measured, so the scrim carries that weight: the mixin applies 50% black whenever an image is passed to it. |
+| `touch-target` | `--touch-target-min` | Minimum interactive target size read by form and button mixins (WCAG 2.2 SC 2.5.8); the library default is 24px. |
+
+> **Deprecated - `--background-hero`.** It sat in the contract unread: no mixin consumed it, the editor could not set it, and nothing documented it. `--page-hero-bg` replaces it and **falls back through it**, so an existing declaration keeps working untouched. It stays valid until contract 2, per the lifecycle in [`VERSIONING.md`](./VERSIONING.md).
 
 ---
 
@@ -612,3 +635,10 @@ A PR that adds a new contract glyph must:
 Per-theme override glyphs are NEVER required by the contract — themes
 opt in glyph-by-glyph by declaring `--cia-icon-<name>` and shipping the
 replacement file alongside.
+>
+> **Deprecations are machine-readable.** Every one lives in the `deprecated` map in
+> [`scripts/theme-contract.json`](./scripts/theme-contract.json) with the token it replaces,
+> when it was deprecated and when it goes. The validator prints it, `get_token` returns it,
+> `npx cia analyze` flags it in your stylesheets, and `npx cia fix-theme <file> --write`
+> renames it for you — property only, so the theme renders identically. `check:contract`
+> fails the build if a deprecation points at a token that does not exist.

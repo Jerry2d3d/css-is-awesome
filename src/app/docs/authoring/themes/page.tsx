@@ -97,6 +97,105 @@ export default function AuthoringThemesPage() {
         <li><strong>Asymmetric (Pattern C)</strong> — one nested <code>@media (prefers-color-scheme: dark)</code> block inside the theme for non-color overrides (different blur, font, or radius per mode). Used by Glass. <code>light-dark()</code> is color-only per spec; non-color values need the nested block.</li>
       </ul>
 
+      <h2 id="from-design-tokens">From design tokens (Figma → theme.css)</h2>
+      <p>
+        If your palette, spacing and type scale already live in a design tool,
+        skip the SCSS: <code>cia theme from-tokens</code> turns a design-tokens
+        file into a complete, validated <code>theme.css</code> in the exact shape
+        the shipped themes use. No Sass involved — the CLI, the MCP tool{" "}
+        <code>theme_from_tokens</code> and the in-process handler are one function
+        (<code>scripts/tokens-to-theme.cjs</code>, shipped in the package).
+      </p>
+      <Example>
+        <Example.Code><span className="tok-com">{"# DTCG, Tokens Studio, or a flat --token map — format auto-detected"}</span>
+{"\n"}<span className="tok-sel">npx</span> <span className="tok-val">cia theme from-tokens tokens.json --name acme --out src/styles/acme.css</span>
+{"\n"}
+{"\n"}<span className="tok-com">{"# a separate dark file → light-dark() values"}</span>
+{"\n"}<span className="tok-sel">npx</span> <span className="tok-val">cia theme from-tokens light.json --dark dark.json --name acme --json</span>
+{"\n"}
+{"\n"}<span className="tok-com">{"# inherit whatever you did not specify from a different shipped theme"}</span>
+{"\n"}<span className="tok-sel">npx</span> <span className="tok-val">cia theme from-tokens brand.json --name acme --base press</span></Example.Code>
+      </Example>
+      <h3 id="tokens-input-formats">Input formats</h3>
+      <ul>
+        <li>
+          <strong>DTCG v2025.10</strong> (<code>--format dtcg</code>): nested groups whose
+          leaves carry <code>$value</code> and optionally <code>$type</code>. Aliases{" "}
+          <code>{"{group.path}"}</code> resolve recursively; an unresolved alias or a
+          cycle is an error, never a silent drop. Composite values are understood:
+          colour objects (<code>{"{ hex }"}</code> or{" "}
+          <code>{"{ colorSpace, components, alpha }"}</code>), dimension and duration
+          objects (<code>{"{ value, unit }"}</code>), shadow objects or arrays, font-family
+          arrays, cubic-bezier arrays. <code>$extensions</code> is ignored.
+        </li>
+        <li>
+          <strong>Tokens Studio for Figma</strong> (<code>--format tokens-studio</code>):
+          leaves carry <code>value</code> and <code>type</code>. A single set works as-is;
+          a multi-set export (top-level <code>$themes</code> / <code>$metadata</code>) merges
+          the sets in <code>$metadata.tokenSetOrder</code>, later sets winning. Numbers
+          exported as strings (<code>&quot;16&quot;</code>) get their unit from the type.
+          Paired top-level groups — <code>color-light</code> + <code>color-dark</code>, or{" "}
+          <code>light</code> + <code>dark</code> — are split into the two modes automatically.
+        </li>
+        <li>
+          <strong>cia-flat</strong> (<code>--format cia-flat</code>):{" "}
+          <code>{"{ \"--brand-primary\": \"#3A5FCD\" }"}</code>, passed straight through.
+        </li>
+      </ul>
+      <h3 id="tokens-path-rules">How a path becomes a token</h3>
+      <ol>
+        <li>
+          An explicit table maps Figma-style names that do not spell the cia token:{" "}
+          <code>typography.font.body</code> → <code>--font-sans</code>,{" "}
+          <code>shape.radius.md</code> → <code>--radius-md</code>,{" "}
+          <code>effect.shadow.md</code> → <code>--shadow-md</code>,{" "}
+          <code>motion.duration.fast</code> → <code>--duration-fast</code>,{" "}
+          <code>layer.modal</code> → <code>--z-modal</code>.
+        </li>
+        <li>
+          Otherwise a leading <code>color.</code> / <code>colors.</code> is stripped, common
+          group names are rewritten (<code>spacing.</code> → <code>space.</code>,{" "}
+          <code>border-radius.</code> → <code>radius.</code>, <code>elevation.</code> →{" "}
+          <code>shadow.</code>, <code>zIndex.</code> → <code>z.</code>,{" "}
+          <code>fontFamilies.</code> / <code>font.family.</code> → <code>font.</code>, <code>components.</code> → <code>component.</code>). Per-component overrides are accepted flat or nested, and
+          both land on the same contract token: <code>component.btn-radius</code>{" "}
+          and <code>component.button.radius</code> both give{" "}
+          <code>--btn-radius</code>, and because the contract names some of
+          these the other way round, <code>component.card-shadow</code> gives{" "}
+          <code>--shadow-card</code>, and the segments are joined with{" "}
+          <code>-</code>. If that name is in the contract it is used: <code>space.4</code> →{" "}
+          <code>--space-4</code>, <code>brand.primary</code> → <code>--brand-primary</code>,{" "}
+          <code>text.primary</code> → <code>--text-primary</code>, <code>code.bg</code> →{" "}
+          <code>--code-bg</code>.
+        </li>
+        <li>
+          Anything else is emitted verbatim as <code>--&lt;joined-path&gt;</code> and listed in{" "}
+          <code>report.unmapped</code>, so your own tokens survive and nothing disappears.
+        </li>
+      </ol>
+      <h3 id="tokens-minimum">Minimum content</h3>
+      <p>
+        None. Every required contract token the file does not supply is inherited from the
+        base theme (<code>--base</code>, default <code>boilerplate</code>; <code>--base list</code>{" "}
+        prints the 24 options) and listed in <code>report.inherited</code>. Optional tokens
+        are never inherited — the library default applies. The validator and the WCAG
+        contrast audit run on the result and are returned as <code>validation</code>; the CLI
+        exits non-zero on a failure unless you pass <code>--allow-a11y-fail</code>. In
+        practice a brand palette plus a text colour is enough to get a passing theme;
+        the more of the contract the file supplies, the less it borrows.
+      </p>
+      <h3 id="tokens-map-as-data">Read the mapping as data</h3>
+      <p>
+        If another tool has to map the same token names the same way (a boilerplate
+        registry, a Figma plugin, an agent), do not copy the rules above — read them.{" "}
+        <code>npx cia theme map --json</code> prints the explicit table, the prefix
+        rewrites and the generic rule as one JSON object; <code>npx cia theme map --path
+        color.text.primary</code> shows how a single name resolves and whether the target is
+        required or optional. The MCP tool <code>get_token_map</code> returns the same
+        data, and <code>require(&apos;css-is-awesome/scripts/tokens-to-theme.cjs&apos;)</code>{" "}
+        exposes it in-process as <code>tokenMap()</code> and <code>resolvePath(path)</code>.
+      </p>
+
       <h2 id="token-contract">The token contract</h2>
       <p>
         The machine-readable source of truth is{" "}
@@ -204,7 +303,7 @@ export default function AuthoringThemesPage() {
         </li>
       </ul>
       <p>
-        <strong>127 tokens are required; 36 more are optional</strong>, 163 in
+        <strong>127 tokens are required; 49 more are optional</strong>, 176 in
         total. The optional set is the per-component radius and shadow
         overrides, the logo hooks, the named durations, the touch-target
         minimum, and the t-shirt spacing aliases.
@@ -212,6 +311,99 @@ export default function AuthoringThemesPage() {
       <p>
         See <Link href="/docs/tokens">/docs/tokens</Link> for the full gallery
         with live swatches and current values for each shipped theme.
+      </p>
+
+      <h2 id="page-surfaces">Page surfaces — hero and band</h2>
+      <p>
+        A theme reskins components, but the page behind them used to be one
+        flat colour: a landing page and a docs page looked the same
+        underneath. Two optional surfaces fix that — a <strong>hero</strong>{" "}
+        for a front page and a <strong>band</strong> for a section stripe or a
+        footer. Each has four tokens, all optional.
+      </p>
+      <Example>
+        <Example.Code><span className="tok-prop">--page-hero-bg</span>:     <span className="tok-val">light-dark(#f2f6fe, #121d36)</span>;
+{"\n"}<span className="tok-prop">--page-hero-ink</span>:    <span className="tok-val">light-dark(#09090b, #fafafa)</span>;
+{"\n"}<span className="tok-prop">--page-hero-image</span>:  <span className="tok-val">url(&quot;/hero.jpg&quot;)</span>;  <span className="tok-com">{"/* gradient or url() you host */"}</span>
+{"\n"}<span className="tok-prop">--page-hero-scrim</span>:  <span className="tok-val">rgb(0 0 0 / 0.5)</span>;  <span className="tok-com">{"/* only paints over an image */"}</span>
+{"\n"}<span className="tok-com">{"/* --page-band-* takes the same four */"}</span></Example.Code>
+      </Example>
+
+      <h3>Nothing happens until you ask</h3>
+      <p>
+        Declaring these changes no pixel. A page only takes a surface when you
+        apply one, which is why every shipped theme can define them without
+        touching an existing site. cia never applies a page surface on its own
+        — not on <code>body</code>, not from a layout mixin, not from the
+        reset — and a test compiles every shipped bundle to prove it.
+      </p>
+      <Example>
+        <Example.Code><span className="tok-com">{"// SCSS — on any element"}</span>
+{"\n"}<span className="tok-sel">.landing</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">cia.surface(hero)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// …or no SCSS at all, for a whole page"}</span>
+{"\n"}<span className="tok-sel">{"<body"}</span> <span className="tok-prop">data-surface</span>=<span className="tok-val">&quot;hero&quot;</span><span className="tok-sel">{">"}</span></Example.Code>
+      </Example>
+      <p>
+        The attribute form needs one call to{" "}
+        <code>cia.surface-attributes()</code> in a global stylesheet. Both
+        paths read the same custom properties, so there is one place to
+        maintain.
+      </p>
+
+      <h3>Images and the scrim</h3>
+      <p>
+        A theme is a single CSS file, so an image is a <code>url()</code> you
+        host or a gradient, which needs nothing external. Contrast over a
+        photo cannot be measured, so the scrim is the safety net: pass an
+        image to the mixin and it lays 50% black between the picture and your
+        text. A colour-only surface gets no scrim, because a wash over a flat
+        colour would just darken it.
+      </p>
+      <p>
+        Every shipped theme already carries a derived <code>bg</code> and{" "}
+        <code>ink</code> pair — its own page surface nudged a few percent
+        toward its own brand accent. That keeps the contrast relationship the
+        theme already passes, so all 24 land above 10:1. Override either token
+        to design a hero deliberately.
+      </p>
+      <p>
+        <code>--background-hero</code> is deprecated in favour of{" "}
+        <code>--page-hero-bg</code>, which falls back through it, so an old
+        declaration keeps working until contract 2.
+      </p>
+
+      <h3 id="upgrading-a-theme">Upgrading a theme</h3>
+      <p>
+        You never have to. cia deprecates a token instead of deleting it, so
+        an old declaration keeps resolving until the next major. When you do
+        want to move, one command does it:
+      </p>
+      <Example>
+        <Example.Code>
+          <span className="tok-com">{"# show me what would change"}</span>
+          {"\n"}
+          <span className="tok-sel">npx</span>{" "}
+          <span className="tok-val">cia fix-theme src/styles/acme.css</span>
+          {"\n"}
+          {"\n"}
+          <span className="tok-com">{"# apply it"}</span>
+          {"\n"}
+          <span className="tok-sel">npx</span>{" "}
+          <span className="tok-val">
+            cia fix-theme src/styles/acme.css --write
+          </span>
+        </Example.Code>
+      </Example>
+      <p>
+        It renames the property and nothing else — your values, comments,
+        ordering and whitespace survive byte-for-byte, so the theme renders
+        exactly as it did. If a block already declares the replacement, that
+        line is left alone and reported: deciding which of two values you
+        meant is your call, not the tool&rsquo;s. Agents reach the same
+        function as the MCP <code>fix_theme</code> tool, and{" "}
+        <code>npx cia analyze</code> points here when it finds a deprecated
+        token in your stylesheets.
       </p>
 
       <h2 id="density-knob">The density knob — three levels of power</h2>

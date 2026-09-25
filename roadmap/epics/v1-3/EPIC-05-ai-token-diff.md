@@ -6,7 +6,9 @@
 > diff** you accept or reject — the AI constrained by our contract, never
 > spraying arbitrary CSS. Deliberately last of the four review epics.
 
-**Status:** Planned (v1.3) — **GATED** on [v1.2 EPIC-07](../v1-2/EPIC-07-token-intelligence-editor.md)
+**Status:** Planned (v1.3) — **gate now OPEN** (2026-09-21). It was **GATED** on
+[v1.2 EPIC-07](../v1-2/EPIC-07-token-intelligence-editor.md), which completed 2026-09-09; nothing blocks this
+epic technically any more. Still unbuilt, and now waiting on real user signal rather than on a dependency.
 **Effort estimate:** ~3-5 working days (website path); the MCP-agent path is near-zero
 **Stories:** 4
 

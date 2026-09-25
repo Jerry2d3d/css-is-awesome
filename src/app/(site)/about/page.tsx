@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./page.module.scss";
 // Version comes from package.json — a hand-typed stamp drifts silently.
 import { version } from "../../../../package.json";
@@ -49,7 +50,7 @@ export default function AboutPage() {
           <TimelineItem date="now — zero install" title="A dedicated MCP package.">
             <code>npx css-is-awesome-mcp</code> — a standalone companion package, so wiring an
             agent up to cia takes one line in <code>.mcp.json</code> and no manual dependency
-            install. Same 31 tools, always resolves your installed cia version&apos;s real source.
+            install. Same 34 tools, always resolves your installed cia version&apos;s real source.
           </TimelineItem>
           <TimelineItem date="2026 — the launch" title="Published, public, live.">The first release lands on npm — <code>npm install css-is-awesome</code> is real, jsDelivr and unpkg mirror it, the GitHub repo is public, and this docs site is live at cssisawesome.com.</TimelineItem>
         </ol>
@@ -60,6 +61,12 @@ export default function AboutPage() {
         <p>This isn't Tailwind. It isn't Bootstrap. It isn't a component library with 80 prebuilt headers. It's a box of primitives — bricks, if you prefer — that hand you a palette, a grid, and the honest freedom to build the rest yourself.</p>
         <p>The <a href="/themes">theme editor</a> uses real UI components to validate a theme against something concrete, but those components aren't a product cia ships — they're test fixtures. cia doesn't have an opinion on your markup or your framework. You own your components; cia provides the styling system underneath them.</p>
         <p>If you want a system that looks like every other site, reach for something else. If you want one that gives you the tools and gets out of the way, this is it.</p>
+
+        <hr className="brush-rule" />
+
+        <h2>What&apos;s happening right now</h2>
+        <p>This page is the history. For the present tense there are two other surfaces. <Link href="/now">/now</Link> is generated from the repository when the site builds — the latest release, what is part-finished, what is next in the current wave, and what is blocked and why. Nothing on it is typed by hand except one paragraph and the blocked list, because every hand-maintained status claim in this project has eventually gone stale.</p>
+        <p><Link href="/notes">Working notes</Link> are the other half: short dated entries about what was being done and what it taught. Lighter than a <Link href="/blog">blog post</Link>, heavier than a commit message. There are gaps in them, and the gaps are not a problem.</p>
 
         <p style={{ marginTop: '3rem' }}><Seal>Approved · v{version}</Seal></p>
       </article>

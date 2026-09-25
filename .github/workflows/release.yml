@@ -1,14 +1,17 @@
 # Release pipeline — publishes css-is-awesome to npm and creates a GitHub Release.
 #
-# Trigger: runs after the CI workflow succeeds on a push to `main`. CI must be
-# green before release-lane runs (we gate on workflow_run.conclusion below).
+# Trigger: runs after the CI workflow succeeds on a push to `prod-css-is-awesome`,
+# which is what the "Promote" workflow's `prod` stage pushes to. Merging to `main`
+# publishes nothing. CI must be green first (we gate on workflow_run.conclusion
+# below), so promoting never skips verification.
 #
 # Secrets required (configure under repo Settings -> Secrets and variables -> Actions):
 #   NPM_TOKEN     — an npm automation token with publish rights on the
 #                   `css-is-awesome` package. Add before the first release.
 #   GITHUB_TOKEN  — provided automatically by GitHub Actions; semantic-release
 #                   uses it to cut the GitHub Release and push the CHANGELOG /
-#                   package.json bump commit back to main.
+#                   package.json bump commit onto the promoted branch. The last
+#                   step then merges that commit back into `main`.
 #
 # Do not run this locally — semantic-release is configured to publish on green CI only.
 #
@@ -28,11 +31,11 @@
 # Otherwise the next run computes a patch bump on top of a release that never
 # shipped.
 #
-# Also: `gh run rerun` re-runs the job against its ORIGINAL commit. If main has
-# moved since (and it will have, because `prepare` already pushed), the rerun
-# exits with "The local branch main is behind the remote one, therefore a new
-# version won't be published" and reports SUCCESS having done nothing. Push a
-# fresh commit to trigger CI instead of re-running.
+# Also: `gh run rerun` re-runs the job against its ORIGINAL commit. If the
+# promoted branch has moved since (and it will have, because `prepare` already
+# pushed), the rerun exits with "The local branch is behind the remote one,
+# therefore a new version won't be published" and reports SUCCESS having done
+# nothing. Promote again instead of re-running.
 #
 # npm auth notes, in the order they bit us:
 #   EINVALIDNPMTOKEN — NPM_TOKEN missing or malformed.
@@ -46,7 +49,12 @@ on:
   workflow_run:
     workflows: ["CI"]
     types: [completed]
-    branches: [main]
+    # Publishing follows the PROMOTED branch, not the integration branch.
+    # Merging to `main` no longer publishes; running the "Promote"
+    # workflow with stage `prod` does. Reason: a website can be corrected by promoting
+    # again, an npm version cannot be unpublished after 72 hours and never
+    # once anyone depends on it — so the irreversible step gets the gate.
+    branches: [prod-css-is-awesome]
 
 concurrency:
   group: release-${{ github.ref }}
@@ -57,20 +65,25 @@ jobs:
     name: Publish to npm + GitHub Release
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Only run if CI succeeded on a push event to main.
+    # Only run if CI succeeded on a push event to the promoted branch.
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'main'
+      github.event.workflow_run.head_branch == 'prod-css-is-awesome'
     permissions:
       contents: write
       issues: write
       pull-requests: write
       id-token: write
     steps:
-      - name: Checkout
+      # MUST be pinned. On a `workflow_run` event `github.sha` is the tip of
+      # the DEFAULT branch, not the branch that triggered the run - so a bare
+      # checkout here would build and publish whatever `main` happens to hold,
+      # silently defeating the promotion gate this workflow exists to enforce.
+      - name: Checkout the promoted branch
         uses: actions/checkout@v4
         with:
+          ref: prod-css-is-awesome
           fetch-depth: 0
           persist-credentials: false
 
@@ -95,4 +108,56 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # The release commit (@semantic-release/git writes the version bump
+          # and the CHANGELOG entry back to the released branch) is authored
+          # under the repo owner rather than the default semantic-release-bot
+          # identity. The subject still reads `chore(release): x.y.z`, so it
+          # stays obvious that a pipeline generated it - only the name changes.
+          GIT_AUTHOR_NAME: Jerry Hansen
+          GIT_AUTHOR_EMAIL: jhansenportfolio@gmail.com
+          GIT_COMMITTER_NAME: Jerry Hansen
+          GIT_COMMITTER_EMAIL: jhansenportfolio@gmail.com
         run: npx semantic-release
+
+      # WHY THIS EXISTS.
+      #
+      # semantic-release writes `chore(release): x.y.z` plus the CHANGELOG
+      # entry onto the branch it released from, which is now the promoted
+      # branch rather than `main`. Left alone, `main` would keep the OLD
+      # version in package.json while the published branch carried the new
+      # one, and because both branches touch the same two files, every future
+      # promotion would conflict on package.json and CHANGELOG.md.
+      #
+      # So the release commit is merged straight back. It carries `[skip ci]`
+      # in its subject, so landing it on main starts no new run.
+      #
+      # If this step goes red AFTER a green publish, the package shipped fine
+      # and only `main` is behind: merge `prod-css-is-awesome` into `main` by
+      # hand and push. Nothing needs to be republished.
+      - name: Merge the release commit back into main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          git config user.name  "Jerry Hansen"
+          git config user.email "jhansenportfolio@gmail.com"
+          # Pairs with `public/flags.json merge=ours` in .gitattributes, so
+          # main keeps its own flags rather than inheriting production's.
+          git config merge.ours.driver true
+          # `persist-credentials: false` on checkout means the remote has no
+          # push rights; give it some for this one push.
+          git remote set-url origin             "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          git fetch origin main prod-css-is-awesome
+
+          if git merge-base --is-ancestor origin/prod-css-is-awesome origin/main; then
+            echo "main already contains the promoted branch; nothing to back-merge."
+            exit 0
+          fi
+
+          git checkout -B main origin/main
+          git merge --no-edit origin/prod-css-is-awesome
+          git push origin main
+          echo "Merged the release commit back into main."
+

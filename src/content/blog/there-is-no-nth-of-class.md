@@ -103,7 +103,9 @@ census as part of your public API — because it is one.
 
 ---
 
-*We use this in css-is-awesome: this exact off-by-one shipped in `cia.tabs`
-and the full post-mortem — including why our own docs found it — is in
+*We use this in css-is-awesome: this exact off-by-one shipped in
+[`cia.tabs`](/docs/components/tabs), which still indexes panels with
+`:nth-of-type()` because the pattern has to work without `:nth-child(n of S)`.
+The full post-mortem — including why our own docs found it — is in
 [The tabs that highlighted but never
 switched](/blog/the-tabs-that-highlighted-but-never-switched).*

@@ -1,6 +1,6 @@
 # EPIC 05 — Bug Fixes + MCP Polish
 
-**Status:** 🟡 PARTIAL — 5 of 7 stories shipped; MCP test coverage (F5.2) outstanding (audited 2026-07-16, main @ 97f6ae3)
+**Status:** ✅ SHIPPED — 7 of 7 stories (re-audited 2026-09-21). F5.2 landed as `scripts/mcp-coverage.mjs` + the `coverage:mcp` npm script rather than the `mcp/server.test.cjs` + `test:mcp` the story named: it spawns the server over stdio, enumerates every advertised tool, calls each with arguments discovered from the `list_*` results, asserts usable content, covers `assemble_prompt` intents, and CI gates it at >= 98%. The 2026-07-16 audit below predates it.
 **Effort estimate:** ~3-4 working days
 **Stories:** 7
 
@@ -181,4 +181,4 @@ These items don't fit cleanly into another epic but block clean v1.0 sign-off. T
 ## Related
 
 - [EPIC-01-recipes-book.md](./EPIC-01-recipes-book.md) — MCP recipe exposure (US-01.4.1) tested here in US-05.2.2
-- [project_v07x_punch_list.md](../../../C:/Users/jhans/.claude/projects/K--repo-css-is-awesome/memory/project_v07x_punch_list.md) — original audit-style memory; replace/update once these ship
+- Project notes (kept outside this repo) — original audit-style list; refresh once these ship

@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { Marked } from "marked";
+import { recipePlaygroundPayload } from "./playground/recipe-link";
 
 // ─── Where the recipes live ──────────────────────────────────────────────────
 // Recipes are authored as Markdown in `scss/recipes/*.md` so they ship inside
@@ -172,4 +173,52 @@ export function getRecipe(slug: string): Recipe | null {
   const { data, body } = parseFrontmatter(raw);
   const html = rewriteRecipeMdLinks(marked.parse(body) as string);
   return { slug, ...toFrontmatter(data, slug), html };
+}
+
+/**
+ * The recipe authoring guide, rendered from `scss/recipes/README.md`.
+ *
+ * RENDERED, NOT RETYPED. The guide already exists as the folder's own README,
+ * which is what an author reading the repository finds, what ships inside the
+ * npm package, and what the MCP server can hand an agent. Writing a second
+ * copy for the website would create two guides that agree until the first
+ * time one of them is edited — and this project has enough experience of
+ * hand-maintained duplicates drifting to know how that ends.
+ *
+ * `isRecipeFile()` deliberately excludes README.md from the recipe list, so
+ * this is the one place that reads it.
+ *
+ * The leading `# …` heading is stripped: the page renders its own <h1>, and
+ * two of them is both wrong for the document outline and wrong for a11y.
+ */
+export function getAuthoringGuide(): { title: string; html: string } | null {
+  const file = path.join(RECIPES_DIR, "README.md");
+  if (!fs.existsSync(file)) return null;
+
+  const raw = fs.readFileSync(file, "utf8");
+  const { body } = parseFrontmatter(raw);
+
+  const lines = body.split(/\r?\n/);
+  const headingAt = lines.findIndex((l) => l.startsWith("# "));
+  const title =
+    headingAt >= 0 ? lines[headingAt].slice(2).trim() : "Recipe authoring guide";
+  if (headingAt >= 0) lines.splice(headingAt, 1);
+
+  return {
+    title,
+    html: rewriteRecipeMdLinks(marked.parse(lines.join("\n")) as string),
+  };
+}
+
+/**
+ * `#code=` payload for the "Try in playground" link: the recipe's Structure
+ * HTML + Styling SCSS, gzip+base64url-encoded at build time. Null when the
+ * recipe has no extractable starter (the page then renders no button).
+ */
+export function getRecipePlaygroundPayload(slug: string): string | null {
+  if (!isRecipeFile(`${slug}.md`)) return null;
+  const file = path.join(RECIPES_DIR, `${slug}.md`);
+  if (!fs.existsSync(file)) return null;
+  const { body } = parseFrontmatter(fs.readFileSync(file, "utf8"));
+  return recipePlaygroundPayload(body);
 }

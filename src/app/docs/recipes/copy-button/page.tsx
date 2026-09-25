@@ -1,12 +1,14 @@
 import Example from "@/components/Example";
 import Badge from "@/components/Badge";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export default function CopyButtonRecipePage() {
   return (
     <>
       <h1>Recipe — Copy Button JS shim</h1>
+      <TryInPlayground slug="copy-button" />
       <p className="lead">
-        cia&rsquo;s npm package ships <strong>zero JavaScript</strong>. For the{" "}
+        cia&rsquo;s npm package ships <strong>no runtime JavaScript</strong>. For the{" "}
         <a href="/docs/components/copy-button">CopyButton component</a> to actually copy text,
         the consumer wires their own click handler. Here&rsquo;s the framework-free shim that
         the cia docs site uses — ~700 bytes raw, ~1 KB gzipped. Copy-paste it as a starting point.

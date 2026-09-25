@@ -19,7 +19,7 @@ import { flatNav } from "../src/app/docs/nav.config";
 
 // Top-level routes we always want smoke-tested. The `/docs` route is also in
 // flatNav (as "Introduction") so we avoid double-counting below.
-const TOP_LEVEL_ROUTES = ["/", "/examples", "/themes"] as const;
+const TOP_LEVEL_ROUTES = ["/", "/examples", "/themes", "/playground"] as const;
 
 const DOCS_ROUTES = flatNav().map((item) => item.href);
 
@@ -51,15 +51,8 @@ const UNLISTED_ROUTES = [
   "/docs/recipes/anchor-positioning",
   "/docs/recipes/copy-button",
   "/docs/recipes/tabs-aria",
+  // Individual posts are derived from disk — see BLOG_ROUTES below.
   "/blog",
-  "/blog/a-barrel-that-emits-nothing",
-  "/blog/an-mcp-server-for-a-css-library",
-  "/blog/from-0-8-to-1-0",
-  "/blog/print-to-pdf-with-zero-javascript",
-  "/blog/recipes-not-components",
-  "/blog/the-import-in-our-readme-did-not-work",
-  "/blog/the-validator-that-wasnt-looking",
-  "/blog/your-brand-comes-with-you",
 ] as const;
 
 /**
@@ -73,9 +66,43 @@ const RECIPE_ROUTES = readdirSync(path.join(process.cwd(), "scss", "recipes"))
   .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
   .map((f) => `/docs/recipes/${f.replace(/\.md$/, "")}`);
 
+/**
+ * Every blog post, derived from `src/content/blog/*.md` with the same skip
+ * rule as src/lib/blog.ts (no `_` prefix, no README). Same lesson as the
+ * recipes above: the hand-maintained list covered 8 of 18 posts, so the three
+ * Track B discovery posts (EPIC-06) were never smoke-tested. A new post is
+ * now covered the moment its `.md` lands.
+ */
+const BLOG_ROUTES = readdirSync(path.join(process.cwd(), "src", "content", "blog"))
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+  .map((f) => `/blog/${f.replace(/\.md$/, "")}`);
+
+/**
+ * Every working note, derived from `src/content/notes/*.md` with the same
+ * skip rule as src/lib/notes.ts. Derived rather than listed for the third
+ * time in this file, for the reason the two comments above give: every
+ * hand-maintained route list here eventually fell behind the content.
+ */
+const NOTE_ROUTES = readdirSync(path.join(process.cwd(), "src", "content", "notes"))
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+  .map((f) => `/notes/${f.replace(/\.md$/, "")}`);
+
+// The two devlog index pages. /now is generated from the repo at build time,
+// so a broken epic status line or a missing roadmap/now.json shows up here as
+// a failing route rather than as a quietly empty section.
+const DEVLOG_ROUTES = ["/now", "/notes"] as const;
+
 // Dedupe and preserve order (top-level first, then docs, then the rest).
 const ROUTES = Array.from(
-  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES, ...RECIPE_ROUTES]),
+  new Set([
+    ...TOP_LEVEL_ROUTES,
+    ...DOCS_ROUTES,
+    ...UNLISTED_ROUTES,
+    ...RECIPE_ROUTES,
+    ...BLOG_ROUTES,
+    ...DEVLOG_ROUTES,
+    ...NOTE_ROUTES,
+  ]),
 );
 
 /**

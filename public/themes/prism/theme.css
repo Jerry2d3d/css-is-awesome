@@ -32,7 +32,7 @@
   --code-bg: light-dark(#fafafa, #0a0a0a);
   --code-ink: light-dark(#18181b, #e4e4e7);
   --code-muted: light-dark(#6B6B73, #808089);
-  --code-accent: light-dark(#C1410C, #fb923c);
+  --code-accent: light-dark(#c0410b, #fb923c);
   --code-green: light-dark(#117D39, #4ade80);
   --code-blue: light-dark(#2462EB, #60a5fa);
   /* Typography — identical across modes */
@@ -110,7 +110,7 @@
   --info-text: light-dark(var(--ai-ink), #85BFFF);
   --success-default: light-dark(#16a34a, #22c55e);
   --success-subtle: light-dark(#f0fdf4, #14532d);
-  --success-text: light-dark(#15803d, #4ade80);
+  --success-text: light-dark(#0e7c3a, #4ade80);
   --warning-default: light-dark(#ca8a04, #eab308);
   --warning-subtle: light-dark(#fefce8, #422006);
   --warning-text: light-dark(#854d0e, #fde047);
@@ -167,4 +167,10 @@
   --card-border: 1px solid var(--hair);
   --input-radius: var(--r-md);
   --modal-radius: var(--r-lg);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#f2f6fe, #0c1019);
+  --page-hero-ink: light-dark(#09090b, #fafafa);
+  --page-band-bg: light-dark(#f7fafe, #0b0d13);
+  --page-band-ink: light-dark(#09090b, #fafafa);
 }

@@ -15,10 +15,22 @@
 name: Deploy docs to GitHub Pages
 
 on:
+  # Runs after the Release workflow (which itself runs after CI), NOT after
+  # CI directly. Reason: semantic-release pushes the version-bump commit
+  # with [skip ci]; building on CI completion checked out main *before*
+  # that commit existed, so the home page's version stamp (read from
+  # package.json) was always one release behind. Release completes even
+  # when there is nothing to release, so ordinary pushes still deploy.
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["Release"]
     types: [completed]
-    branches: [main]
+    # Deliberately NO `branches:` filter. That filter matches the branch of
+    # the *Release run*, and a run started by `workflow_run` is attributed to
+    # the default branch rather than to the branch that triggered it. Naming
+    # `prod-css-is-awesome` here therefore matched nothing, while the job's
+    # own `if` still demanded `main` - the two conditions could not both hold
+    # and this workflow could never fire. Release only runs on the promoted
+    # branch now, so following every Release run is already the right filter.
   workflow_dispatch:
 
 permissions:
@@ -35,16 +47,21 @@ jobs:
     name: Build static export
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Only run if CI succeeded on a push to main. workflow_dispatch has
-    # no associated workflow_run, so allow it through unconditionally.
+    # Only run if the Release workflow succeeded on main (it is itself gated
+    # on CI success, and its run is "skipped" when CI failed). The upstream
+    # event of a Release run is workflow_run, not push, so don't check it.
+    # workflow_dispatch has no associated workflow_run, so allow it through.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
-       github.event.workflow_run.head_branch == 'main')
+      github.event.workflow_run.conclusion == 'success'
     steps:
-      - name: Checkout
+      # Pinned for the same reason as in release.yml: on a `workflow_run`
+      # event a bare checkout takes the default branch, which would mirror
+      # `main` to Pages while the public site served the promoted branch.
+      - name: Checkout the promoted branch
         uses: actions/checkout@v4
+        with:
+          ref: prod-css-is-awesome
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

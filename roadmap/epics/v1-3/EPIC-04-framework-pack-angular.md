@@ -1,6 +1,11 @@
 # EPIC v1.3-04 — `@cia/angular` v0.1 (Mirror of React Codegen)
 
-**Status:** Planned (v1.3) — **GATED by v1.1 EPIC-04 success**
+**Status:** ⛔ Gate failed — 2026-09-19. This epic was explicitly **GATED by v1.1 EPIC-04 success**, and
+[that epic was deferred permanently](../v1-1/EPIC-04-framework-pack-react.md): a time-boxed spike showed the
+"codegen" was the recipe's framework block copied verbatim under a fixed template, 2 of 3 generated components
+crashed, and demo fixtures would have shipped as package source. Applying the same pattern to Angular cannot
+succeed where React failed, so this epic does not proceed as written. Reopening it means first redesigning the
+recipes to carry a component contract — see the counterargument recorded in the React epic's decision block.
 **Effort estimate:** ~2 weeks
 **Stories:** 10
 

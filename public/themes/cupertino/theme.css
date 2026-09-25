@@ -12,18 +12,18 @@
   --ink-soft: light-dark(#3A3A3C, #C7C7CC);
   --ink-faint: light-dark(#66666B, #98989D);
   --graphite: light-dark(#2C2C2E, #AEAEB2);
-  --muted: light-dark(#6E6E73, #6E6E73);
+  --muted: light-dark(#84858a, #6E6E73);
   /* Hairlines — solid in light, translucent white in dark */
   --guide: light-dark(#D2D2D7, rgba(255, 255, 255, 0.16));
   --guide-soft: light-dark(#E5E5EA, rgba(255, 255, 255, 0.08));
   --hair: light-dark(#D2D2D7, rgba(255, 255, 255, 0.12));
   --hair-soft: light-dark(#E5E5EA, rgba(255, 255, 255, 0.06));
   /* Primary accent — Apple system blue (dark variant brighter) */
-  --ai: light-dark(#005EBB, #0A84FF);
+  --ai: light-dark(#005EBB, #1e8eff);
   --ai-ink: light-dark(#0058B0, #409CFF);
   --ai-wash: light-dark(#E5F0FB, rgba(10, 132, 255, 0.16));
   /* Seal — Apple system red */
-  --shu: light-dark(#FF3B30, #FF453A);
+  --shu: light-dark(#f73229, #FF453A);
   --shu-wash: light-dark(#FFEAE8, rgba(255, 69, 58, 0.16));
   /* Accent — Apple system orange */
   --ochre: light-dark(#FF9F0A, #FF9F0A);
@@ -173,4 +173,10 @@
   --input-radius: var(--r-sm);
   --modal-radius: var(--r-lg);
   --tooltip-radius: var(--r-sm);
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#e6ecf3, #1e252c);
+  --page-hero-ink: light-dark(#1d1d1f, #f5f5f7);
+  --page-band-bg: light-dark(#ecf0f5, #1e2226);
+  --page-band-ink: light-dark(#1d1d1f, #f5f5f7);
 }

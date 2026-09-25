@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("admin-dashboard-layout")} — Recipes — css-is-awesome`,
   description: "A CSS Grid admin skeleton — sidebar, stats header, content, optional footer — for a fixed back-office frame.",
@@ -14,6 +15,7 @@ export default function AdminDashboardLayoutPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Admin dashboard layout"}</h1>
+      <TryInPlayground slug="admin-dashboard-layout" />
       <p className="lead">
         Live: a full-height sidebar next to a stats header and a sortable
         team table — click a column to sort, &ldquo;Remove&rdquo; opens the{" "}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Example from "@/components/Example";
 
 export default function McpPage() {
@@ -65,7 +66,7 @@ export default function McpPage() {
 }`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 31 total: 28 across 8 families + 3 specialty tools</h2>
+      <h2 id="tools">Tools — 34 total: 28 across 8 families + 6 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -121,7 +122,7 @@ export default function McpPage() {
               <code>search_tokens</code>
             </td>
             <td>
-              127 required + 36 optional contract tokens. <code>get_token</code>{" "}
+              127 required + 49 optional contract tokens. <code>get_token</code>{" "}
               returns sample values across themes plus the list of
               mixins/functions that reference it
             </td>
@@ -287,6 +288,121 @@ resolve_size({ px: 17 })
 // fix and re-validate before writing the file anywhere.`}</Example.Code>
       </Example>
 
+      <h2 id="theme-from-tokens">
+        <code>theme_from_tokens</code>
+      </h2>
+      <p>
+        Turn a design-tokens file into a complete, validated cia theme in one
+        call. Accepts <strong>DTCG v2025.10</strong> (<code>$value</code> /{" "}
+        <code>$type</code> leaves, <code>{"{aliases}"}</code> resolved),{" "}
+        <strong>Tokens Studio for Figma</strong> exports (<code>value</code> /{" "}
+        <code>type</code> leaves, single set or multi-set with{" "}
+        <code>$metadata.tokenSetOrder</code>), or a flat{" "}
+        <code>{"{ \"--token\": value }"}</code> map. The format is auto-detected.
+      </p>
+      <p>
+        There is no minimum content. Every required contract token the file does
+        not supply is inherited from a shipped base theme (default{" "}
+        <code>boilerplate</code>) and listed in <code>report.inherited</code>, so
+        the output is always contract-complete; paths that are not cia tokens are
+        emitted verbatim and listed in <code>report.unmapped</code>, never
+        dropped. Pass <code>dark</code> (same format), or a single file with
+        paired <code>color-light</code> / <code>color-dark</code> groups, and the
+        differing colours become <code>light-dark()</code>. The result carries
+        the same <code>validation</code> object <code>validate_theme</code>{" "}
+        returns, run on the CSS before you write it anywhere. Same function as{" "}
+        <code>npx cia theme from-tokens</code>, and reachable in-process as{" "}
+        <code>handlers.theme_from_tokens</code>.
+      </p>
+      <Example>
+        <Example.Code>{`theme_from_tokens({
+  name: "acme",
+  tokens: {                                   // DTCG v2025.10
+    color: { brand: { primary: { $value: "#3a5fcd" } },
+             text:  { primary: { $value: "#0f172a" } } },
+    space: { "4": { $type: "dimension", $value: { value: 16, unit: "px" } } }
+  }
+})
+// →  { css: ':root, :root[data-theme="acme"] { color-scheme: light; --action-primary-active: …',
+//      report: { format: "dtcg", base: "boilerplate", darkMode: false,
+//                fromTokens: ["--brand-primary", "--space-4", "--text-primary"],
+//                inherited: [ …the other 124 required tokens… ], unmapped: [] },
+//      validation: { ok: true, mode: "consolidated", themes: [ … ], a11ySummary: { fail: 0, … } } }`}</Example.Code>
+      </Example>
+      <p>
+        Path rules: an explicit table covers Figma-style names that do not spell
+        the cia token (<code>typography.font.body</code> →{" "}
+        <code>--font-sans</code>); otherwise a leading <code>color.</code> is
+        stripped, common group names are rewritten (<code>spacing.</code> →{" "}
+        <code>space.</code>, <code>border-radius.</code> → <code>radius.</code>,{" "}
+        <code>zIndex.</code> → <code>z.</code>), and the segments are joined with{" "}
+        <code>-</code> — so <code>space.4</code> → <code>--space-4</code> and{" "}
+        <code>brand.primary</code> → <code>--brand-primary</code>. Full contract in
+        the <Link href="/docs/authoring/themes#from-design-tokens">theme authoring guide</Link>.
+      </p>
+
+      <h2 id="get-token-map">
+        <code>get_token_map</code>
+      </h2>
+      <p>
+        The mapping <code>theme_from_tokens</code> applies, as <strong>data</strong>, so a
+        second implementation (a boilerplate registry, an inventory builder, another agent)
+        maps the same source token the same way without re-deriving the rules. Without{" "}
+        <code>path</code> it returns the whole map: the explicit table, the prefix rewrites
+        (as regex sources), the generic rule in one paragraph, and the contract&rsquo;s
+        required and optional token lists. With <code>path</code> it returns how that one
+        name resolves, plus the contract&rsquo;s view of the target. Same data as{" "}
+        <code>npx cia theme map --json</code>; reachable in-process as{" "}
+        <code>handlers.get_token_map</code>.
+      </p>
+      <Example>
+        <Example.Code>{`get_token_map({ path: "spacing.4" })
+// →  { path: "spacing.4", token: "--space-4", mapped: true, via: "generic",
+//      status: "required", required: true, feature: null, category: "space" }
+
+get_token_map({ path: "typography.size.lg" })
+// →  { token: "--typography-size-lg", mapped: false, via: "passthrough", status: null, … }
+//     (cia's type scale is a Sass map, not tokens — the path is carried verbatim)
+
+get_token_map()
+// →  { generatorVersion, contractVersion: "1.2",
+//      explicit: { "typography.font.body": "--font-sans", …115 entries },
+//      aliases: [{ pattern: "^colors?\\.", replaceWith: "" }, …20],
+//      genericRule: "If a path is not in explicit …",
+//      targets: { required: [ …127 ], optional: [ …41 ] } }`}</Example.Code>
+      </Example>
+
+      <h2 id="fix-theme">
+        <code>fix_theme</code>
+      </h2>
+      <p>
+        Upgrade a theme that still uses a <strong>deprecated</strong> token. cia
+        deprecates rather than deletes, so the old declaration keeps resolving — but
+        there is a better name now, and this rewrites it. Only the property moves:
+        values, comments, ordering and whitespace survive byte-for-byte, so applying
+        it cannot change how the theme renders. A block that already declares the
+        replacement is reported as a conflict and left alone, because choosing between
+        two values is a judgement call.
+      </p>
+      <p>
+        <strong>It never writes to disk.</strong> It returns text and the caller
+        decides — the same contract as <code>theme_from_tokens</code>. The result
+        carries <code>applied: false</code> precisely so an agent cannot report
+        &ldquo;I updated your theme&rdquo; when nothing was saved. Same function as{" "}
+        <code>npx cia fix-theme</code>; reachable in-process as{" "}
+        <code>handlers.fix_theme</code>.
+      </p>
+      <Example>
+        <Example.Code>{`fix_theme({ css: ":root { --background-hero: #eee; }" })
+// →  { css: ":root { --page-hero-bg: #eee; }",
+//      changes: [{ line: 1, from: "--background-hero", to: "--page-hero-bg",
+//                  kind: "rewrite", reason: "…deprecated since contract 1.3…" }],
+//      unchanged: false, applied: false,
+//      summary: "1 declaration(s) renamed. Write the returned css yourself…" }
+
+fix_theme({ css: ":root { --page-hero-bg: #eee; }" })
+// →  { unchanged: true, changes: [], summary: "No deprecated tokens found …" }`}</Example.Code>
+      </Example>
       <h2 id="security">Security + portability</h2>
       <p>
         Discovery is pure filesystem scan. The server reads files inside the

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getRecipe, prettifyRecipeName } from "@/lib/recipes";
 import Demo from "./Demo";
 
+import TryInPlayground from "../_components/TryInPlayground";
 export const metadata: Metadata = {
   title: `${prettifyRecipeName("form-validation-react-hook-form")} — Recipes — css-is-awesome`,
   description: "Form state and validation with react-hook-form, error styling driven from formState.errors and cia's error tokens.",
@@ -13,6 +14,7 @@ export default function FormValidationReactHookFormPage() {
   return (
     <div className="recipe-body">
       <h1>{recipe ? prettifyRecipeName(recipe.name) : "Form validation — react-hook-form"}</h1>
+      <TryInPlayground slug="form-validation-react-hook-form" />
       <p className="lead">
         Try it: blur the email or username field empty, or type an invalid
         value. Error state here comes from <code>formState.errors</code>,

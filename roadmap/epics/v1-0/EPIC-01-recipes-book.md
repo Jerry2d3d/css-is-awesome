@@ -1,6 +1,6 @@
 # EPIC 01 — Recipes Book
 
-**Status:** 🟡 PARTIAL — 7 of 13 stories shipped (audited 2026-07-16, main @ 97f6ae3)
+**Status:** ✅ Complete — 13 of 13 stories, closed 2026-09-25. The last one was the authoring-guide *page* (US-01.1.2); the guide itself had existed at `scss/recipes/README.md` since the book did, and the page now renders that file rather than restating it. The 2026-07-16 audit further down is stale and its "not shipped" rows are corrected in the table.
 **Effort estimate:** ~5-7 working days
 **Stories:** 13
 
@@ -13,14 +13,14 @@ The recipe format, catalog, dynamic route, and MCP exposure all shipped. Only **
 | Story | Status | Evidence |
 |-------|--------|----------|
 | US-01.1.1 Recipe markdown schema | ✅ DONE | `scss/recipes/README.md` documents frontmatter + required H2s; `scss/recipes/_recipe-template.md` present |
-| US-01.1.2 Authoring guide page | ⛔ NOT SHIPPED | No `src/app/docs/recipes/authoring/` route exists |
-| US-01.1.3 `validate-recipes` lint script | ⛔ NOT SHIPPED | No `scripts/recipe-validator.mjs`; no `validate-recipes` npm script (README still describes it as future work) |
+| US-01.1.2 Authoring guide page | ✅ DONE | `/docs/recipes/authoring`, rendered from `scss/recipes/README.md` by `getAuthoringGuide()` — one source, so the page cannot drift from the rules `validate-recipes` enforces |
+| US-01.1.3 `validate-recipes` lint script | ✅ DONE (2026-09-21 re-audit) | `scripts/validate-recipes.mjs` + the `validate-recipes` npm script (README still describes it as future work) |
 | US-01.2.1 Recipe: dialog | ✅ DONE | `scss/recipes/dialog.md` — all 4 framework examples (React/Vue/Svelte/Vanilla) + a11y checklist |
 | US-01.2.2 Recipe: combobox | ✅ DONE | `scss/recipes/combobox.md` (PR #9) — datalist + ARIA pattern, 4 framework examples |
-| US-01.2.3 Recipe: datepicker | ⛔ NOT SHIPPED | No `scss/recipes/datepicker.md` |
-| US-01.2.4 Recipe: data-table | ⛔ NOT SHIPPED | No `scss/recipes/data-table.md` (an inline data-table *example* exists in the catalog page, not a recipe file) |
-| US-01.2.5 Recipe: command-palette | ⛔ NOT SHIPPED | No `scss/recipes/command-palette.md` |
-| US-01.2.6 Each recipe ships 4 framework samples | 🟡 PARTIAL | Satisfied by the 2 shipped recipes; can't be "all 5" until 01.2.3–01.2.5 ship |
+| US-01.2.3 Recipe: datepicker | ✅ DONE (2026-09-21 re-audit) | `scss/recipes/datepicker.md`, shipped 2026-09-10 with a live demo |
+| US-01.2.4 Recipe: data-table | ✅ DONE (2026-09-21 re-audit) | `scss/recipes/data-table.md`, shipped 2026-09-10 with a live demo (three-state sort + pager) |
+| US-01.2.5 Recipe: command-palette | ✅ DONE (2026-09-21 re-audit) | `scss/recipes/command-palette.md`, shipped 2026-09-17 with a live demo |
+| US-01.2.6 Each recipe ships 4 framework samples | ✅ DONE (2026-09-21 re-audit) | All 32 recipes carry React/Vue/Svelte/vanilla; `validate-recipes` fails the build if any is missing |
 | US-01.3.1 Recipe catalog page | ✅ DONE | `src/app/docs/recipes/page.tsx` + `RecipesGallery.tsx` list markdown recipes with category/complexity chips |
 | US-01.3.2 Individual recipe pages (dynamic route) | ✅ DONE | `src/app/docs/recipes/[slug]/page.tsx` (PR #11, commit 128bb7b) with copy buttons |
 | US-01.4.1 MCP list_recipes / get_recipe | ✅ DONE | `mcp/server.cjs` registers `list_recipes` + `get_recipe` |

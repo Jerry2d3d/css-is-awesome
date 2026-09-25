@@ -55,11 +55,11 @@
   --hair: rgba(29, 29, 31, 0.08);
   --hair-soft: rgba(29, 29, 31, 0.04);
   /* Primary accent — iOS indigo */
-  --ai: #5957E2;
+  --ai: #5653de;
   --ai-ink: #3634A3;
   --ai-wash: rgba(89, 87, 226, 0.12);
   /* Seal — iOS system pink (draft / emphasis) */
-  --shu: #FF375F;
+  --shu: #f32856;
   --shu-wash: rgba(255, 55, 95, 0.12);
   /* Draft / marginalia — iOS orange */
   --ochre: #FF9500;
@@ -69,7 +69,7 @@
   --code-ink: #F5F5F7;
   --code-muted: #BABABE;
   --code-accent: #FFD60A;
-  --code-green: #30D158;
+  --code-green: #3ad85e;
   --code-blue: #64D2FF;
   /* Typography — SF system stack */
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
@@ -237,4 +237,10 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: #ebe5fd;
+  --page-hero-ink: #1d1d1f;
+  --page-band-bg: #eee9fe;
+  --page-band-ink: #1d1d1f;
 }

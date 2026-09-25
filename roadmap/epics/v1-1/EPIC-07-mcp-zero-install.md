@@ -143,8 +143,8 @@ depend-on is the default unless the extra install proves annoying.
 
 ## What changes
 
-- ✅ A new `css-is-awesome-mcp` package (Option B) — a sibling **repo**
-  (`K:/Repo/css-is-awesome-mcp`), published to npm as `1.0.1`.
+- ✅ A new `css-is-awesome-mcp` package (Option B) — a sibling **repo**,
+  published to npm as `1.0.1`.
 - ✅ `mcp/server.cjs`'s SDK-require guard message updated to recommend the
   new package first.
 - ✅ CI gains a consumer-shaped MCP launch check — in the new repo, running

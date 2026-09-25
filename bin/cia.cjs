@@ -11,6 +11,8 @@
  *   migrate bootstrap — parse Bootstrap SCSS/CSS vars + dump theme JSON
  *   migrate mui       — parse a MUI createTheme() result + dump theme JSON
  *   migrate chakra    — parse a Chakra extendTheme() result + dump theme JSON
+ *   theme from-tokens — design-tokens JSON (DTCG / Tokens Studio) → validated theme.css
+ *   theme map         — the design-token → cia-token mapping, as data (table / --json / --path)
  *
  * cia core ships ZERO JavaScript in the `files` manifest. The CLI lives in
  * `bin/` which is explicitly allowed per the architecture lock — same path
@@ -36,11 +38,22 @@ Commands:
   analyze [path]          Design-system health check: dead cia.* symbols,
                           the space() scale trap, hard-coded colors, BEM,
                           hand-written area maps.
+  theme from-tokens <f>   Design-tokens JSON (DTCG v2025.10, Tokens Studio,
+                          or flat --token map) → a complete, validated
+                          theme.css. \`cia theme from-tokens --help\`.
+  theme map               The path → token mapping from-tokens applies, as
+                          data: a table, \`--json\`, or \`--path <p>\` for one.
+  fix-theme <file>        Move a theme onto current token names: rewrites
+                          deprecated tokens to their replacements. Prints by
+                          default, \`--write\` applies.
 
 Examples:
   cia migrate tailwind ./tailwind.config.js
   cia add bottom-nav
   cia analyze src/styles
+  cia theme from-tokens tokens.json --name acme --out src/styles/acme.css
+  cia theme map --path color.text.primary
+  cia fix-theme src/styles/acme.css --write
 
 Run \`cia <command> --help\` for command-specific help.
 `;
@@ -147,6 +160,31 @@ async function main() {
     const { run } = require('./analyze.cjs');
     await run(rest);
     return;
+  }
+
+  if (command === 'fix-theme') {
+    const { run } = require('./fix-theme.cjs');
+    await run(rest);
+    return;
+  }
+
+  if (command === 'theme') {
+    const [sub, ...themeArgs] = rest;
+    if (!sub || sub === '-h' || sub === '--help' || sub === 'help') {
+      process.stdout.write(require('./theme-from-tokens.cjs').HELP);
+      return;
+    }
+    if (sub === 'from-tokens') {
+      const { run } = require('./theme-from-tokens.cjs');
+      await run(themeArgs);
+      return;
+    }
+    if (sub === 'map') {
+      const { runMap } = require('./theme-from-tokens.cjs');
+      await runMap(themeArgs);
+      return;
+    }
+    fail(`unknown theme subcommand '${sub}'. Available: from-tokens, map.`);
   }
 
   fail(`unknown command '${command}'. Run \`cia --help\` for usage.`);
