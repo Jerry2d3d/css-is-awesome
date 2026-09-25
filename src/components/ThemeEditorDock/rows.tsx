@@ -19,6 +19,10 @@ type CommonProps = {
   value: string;          // current override value (or "")
   defaultValue: string;   // theme default
   onCommit: (value: string) => void;
+  // Per-row revert (US-02.4.1). Undefined on an unmodified row, so the
+  // button is absent rather than present-and-disabled: a control you cannot
+  // use is noise on a dock that already shows 176 rows.
+  onReset?: () => void;
 };
 
 // Live WCAG contrast for a color row (v1.2 EPIC-07 F3.1) — computed by
@@ -35,7 +39,7 @@ export type Contrast = {
 // "used by N ▸" disclosure (v1.2 EPIC-07 F2.1) — direct consumers from the
 // build-time token->mixin map (scripts/build-token-consumer-map.mjs). Shared
 // across every row type since they all render RowLabel.
-function RowLabel({ spec }: { spec: TokenSpec }) {
+function RowLabel({ spec, onReset }: { spec: TokenSpec; onReset?: () => void }) {
   const [open, setOpen] = useState(false);
   const consumers = TOKEN_CONSUMERS[spec.token] ?? [];
 
@@ -43,6 +47,19 @@ function RowLabel({ spec }: { spec: TokenSpec }) {
     <div className={styles.rowLabel}>
       <span className={styles.rowName}>{spec.label}</span>
       <span className={styles.rowToken}>{spec.token}</span>
+      {/* Revert this one token to the theme default. Only rendered when the
+          row actually differs — see the note on CommonProps.onReset. */}
+      {onReset && (
+        <button
+          type="button"
+          className={styles.rowReset}
+          onClick={onReset}
+          title={`Revert ${spec.token} to the theme default`}
+          aria-label={`Revert ${spec.label} to the theme default`}
+        >
+          revert
+        </button>
+      )}
       {consumers.length > 0 && (
         <>
           <button
@@ -125,7 +142,7 @@ function parseNumber(value: string, fallback = 0): number {
 // Props are the source of truth. `draft` only exists while the user is
 // actively typing in the text input (committed on blur). The color picker
 // is fully controlled by props — no local state required.
-export function ColorRow({ spec, value, defaultValue, onCommit, contrast }: CommonProps & { contrast?: Contrast }) {
+export function ColorRow({ spec, value, defaultValue, onCommit, onReset, contrast }: CommonProps & { contrast?: Contrast }) {
   const current = value || defaultValue;
   const [draft, setDraft] = useState<string | null>(null);
   const display = draft ?? current;
@@ -133,7 +150,7 @@ export function ColorRow({ spec, value, defaultValue, onCommit, contrast }: Comm
 
   return (
     <div className={styles.row}>
-      <RowLabel spec={spec} />
+      <RowLabel spec={spec} onReset={onReset} />
       <div className={styles.colorCtrl}>
         <input
           type="color"
@@ -164,7 +181,7 @@ export function ColorRow({ spec, value, defaultValue, onCommit, contrast }: Comm
 }
 
 // ---------- Length / Duration row ----------
-export function LengthRow({ spec, value, defaultValue, onCommit }: CommonProps) {
+export function LengthRow({ spec, value, defaultValue, onCommit, onReset }: CommonProps) {
   const unit = spec.unit ?? "px";
   const num = parseNumber(value || defaultValue, parseNumber(defaultValue));
 
@@ -174,7 +191,7 @@ export function LengthRow({ spec, value, defaultValue, onCommit }: CommonProps) 
 
   return (
     <div className={styles.row}>
-      <RowLabel spec={spec} />
+      <RowLabel spec={spec} onReset={onReset} />
       <div className={styles.numCtrl}>
         <input
           type="range"
@@ -201,11 +218,11 @@ export function LengthRow({ spec, value, defaultValue, onCommit }: CommonProps) 
 }
 
 // ---------- Number row ----------
-export function NumberRow({ spec, value, defaultValue, onCommit }: CommonProps) {
+export function NumberRow({ spec, value, defaultValue, onCommit, onReset }: CommonProps) {
   const num = parseNumber(value || defaultValue, parseNumber(defaultValue));
   return (
     <div className={styles.row}>
-      <RowLabel spec={spec} />
+      <RowLabel spec={spec} onReset={onReset} />
       <div className={styles.numCtrl}>
         <input
           type="number"
@@ -222,14 +239,14 @@ export function NumberRow({ spec, value, defaultValue, onCommit }: CommonProps) 
 }
 
 // ---------- String row ----------
-export function StringRow({ spec, value, defaultValue, onCommit }: CommonProps) {
+export function StringRow({ spec, value, defaultValue, onCommit, onReset }: CommonProps) {
   const current = value || defaultValue;
   const [draft, setDraft] = useState<string | null>(null);
   const display = draft ?? current;
 
   return (
     <div className={`${styles.row} ${styles.rowStacked}`}>
-      <RowLabel spec={spec} />
+      <RowLabel spec={spec} onReset={onReset} />
       <input
         type="text"
         className={styles.stringInput}
@@ -253,7 +270,7 @@ export function StringRow({ spec, value, defaultValue, onCommit }: CommonProps) 
 // chosen family, then commits the full font stack into the token.
 // The native <select> is OS-rendered, so we can't preview each option
 // in its own face — the live page preview updates the moment you pick.
-export function FontRow({ spec, value, defaultValue, onCommit }: CommonProps) {
+export function FontRow({ spec, value, defaultValue, onCommit, onReset }: CommonProps) {
   const category: FontCategory = spec.category ?? "sans";
   const options = FONT_OPTIONS[category];
   const current = value || defaultValue;
@@ -279,7 +296,7 @@ export function FontRow({ spec, value, defaultValue, onCommit }: CommonProps) {
 
   return (
     <div className={`${styles.row} ${styles.rowStacked}`}>
-      <RowLabel spec={spec} />
+      <RowLabel spec={spec} onReset={onReset} />
       <select
         className={styles.stringInput}
         value={selected.family}

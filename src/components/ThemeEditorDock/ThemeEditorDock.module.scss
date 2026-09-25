@@ -369,6 +369,65 @@ $panel-width: 440px;
   overflow-wrap: anywhere;
 }
 
+// Per-row revert (US-02.4.1). Only rendered on a row that actually differs,
+// so it never appears disabled — a control you cannot use is noise on a dock
+// that already shows 176 rows.
+.rowReset {
+  align-self: start;
+  margin-top: 0.15rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.65rem;
+  letter-spacing: 0.02em;
+  color: var(--action-secondary-default, var(--text-link, #3A5FCD));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover { color: var(--action-secondary-hover, var(--text-link-hover)); }
+  &:focus-visible { outline: 2px solid var(--border-focus-ring, currentColor); outline-offset: 2px; }
+}
+
+// Show-diff toggle (US-02.4.2) — sits above the group list, below the tabs.
+.diffBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid var(--border-default, var(--hair));
+}
+
+.diffToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary, var(--ink-soft));
+  cursor: pointer;
+  user-select: none;
+}
+
+.diffCount {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.65rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: var(--surface-sunk, var(--paper-sunk));
+  color: var(--text-tertiary, var(--ink-faint));
+}
+
+// Only shown when the filter is on, matches exist, and none are in the
+// section being looked at — otherwise an empty list reads as "nothing
+// changed", which would be false.
+.diffHint {
+  font-size: 0.68rem;
+  color: var(--text-tertiary, var(--ink-faint));
+  line-height: 1.4;
+}
+
 // "used by N ▸" disclosure — token->consumer map (EPIC-07 F2.1).
 .usedByToggle {
   align-self: flex-start;
