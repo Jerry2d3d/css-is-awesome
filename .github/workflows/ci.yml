@@ -87,6 +87,18 @@ jobs:
       - name: Deprecation fixer (rename, never write)
         run: npm run test:fix-theme
 
+      # THE guarantee page surfaces rest on: cia never applies a surface by
+      # itself. No default selector may read a `--page-*` token, so dropping
+      # v1.20.0 into an existing site cannot repaint a single band unless the
+      # consumer opts in with cia.surface() or [data-surface].
+      #
+      # That promise is why it was safe to derive a hero for all 24 themes,
+      # and it was enforced by nothing: the test existed in package.json from
+      # the day it was written and ran in no workflow. A guarantee that is not
+      # gated is a guarantee until the first person forgets.
+      - name: Page surfaces stay opt-in (no default selector reads --page-*)
+        run: npm run test:surfaces
+
       - name: Validate icon pack
         run: npm run validate-icons
 

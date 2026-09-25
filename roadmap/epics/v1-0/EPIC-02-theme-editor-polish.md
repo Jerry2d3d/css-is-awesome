@@ -8,7 +8,7 @@
 
 ## Audited status — 2026-07-16 (main @ 97f6ae3)
 
-The dock lives at `src/components/ThemeEditorDock/ThemeEditorDock.tsx`. **Share via URL is fully shipped** (encode + copy + hydrate, commit 656f1a4). **Download ships `.css` only** — the `.scss` / `@include cia.theme()` export was never added. The **inline contrast validator (F2.3) was never built** (no `src/lib/theme-validator-browser.ts`, no contrast/ratio/WCAG UI in the dock). Reset is **global-only**; the diff view is a passive always-on "modified" badge, not the specced toggle.
+The dock lives at `src/components/ThemeEditorDock/ThemeEditorDock.tsx`. **Share via URL is fully shipped** (encode + copy + hydrate, commit 656f1a4). **Download ships `.css` only** — the `.scss` / `@include cia.theme()` export was never added. The **inline contrast validator (F2.3) SHIPPED** — delivered under v1.2 EPIC-07 rather than here, which is why this file said otherwise until 2026-09-25. It landed at `src/lib/contrast.ts` (not the `theme-validator-browser.ts` path specced below) and renders in `ThemeEditorDock/rows.tsx` as a live ratio, a pass/fail state and a one-click fix button. Reset is **global-only**; the diff view is a passive always-on "modified" badge, not the specced toggle.
 
 | Story | Status | Evidence |
 |-------|--------|----------|
@@ -18,8 +18,8 @@ The dock lives at `src/components/ThemeEditorDock/ThemeEditorDock.tsx`. **Share 
 | US-02.2.1 Encode overrides to URL | ✅ DONE | `src/lib/theme-share.ts` (CompressionStream + base64, `?t=`), `replaceState` debounced |
 | US-02.2.2 Copy share link button | ✅ DONE | `copyShare()` + `copyShareLink()`, confirmation toast |
 | US-02.2.3 Loading shared URL hydrates | ✅ DONE | Decode on mount, switches to sender's family, graceful decode-fail toast |
-| US-02.3.1 In-browser contrast validator | ⛔ NOT SHIPPED | No `theme-validator-browser.ts`; no live PASS/FAIL/DECORATIVE badges |
-| US-02.3.2 Contrast ratio + WCAG status | ⛔ NOT SHIPPED | Depends on 02.3.1; no ratio tooltip anywhere in the dock |
+| US-02.3.1 In-browser contrast validator | ✅ DONE (elsewhere) | `src/lib/contrast.ts`; live pass/fail per colour row in `rows.tsx` — shipped under v1.2 EPIC-07 F3.1 |
+| US-02.3.2 Contrast ratio + WCAG status | ✅ DONE (elsewhere) | `rows.tsx` `ContrastReadout` prints `N.NN:1 vs <bg>` with the required ratio, plus a suggested passing colour |
 | US-02.4.1 Reset (row / group / global) | 🟡 PARTIAL | Only a global `reset()` + single "Reset" button; no per-row/per-group reset, no confirm modal |
 | US-02.4.2 Show-diff toggle | 🟡 PARTIAL | Modified rows show an always-on `●`/"modified" badge; no toggle, no sessionStorage persistence, no per-group count |
 
@@ -162,7 +162,7 @@ The theme editor is one of cia's three v1.0 differentiators. Tailwind Play does 
 **So that** I see FAIL badges the moment I drop below WCAG 2.2 AA
 
 **Acceptance criteria:**
-- [ ] Port the contrast-check logic from `scripts/theme-validator.js` to a browser-safe module at `src/lib/theme-validator-browser.ts`
+- [x] Port the contrast-check logic from `scripts/theme-validator.js` to a browser-safe module — done as `src/lib/contrast.ts`, not the filename specced here
 - [ ] Check all **22** token contrast pairs whenever any color token changes (was 17; the five `--code-*` foregrounds against `--code-bg` were added 2026-08-30)
 - [ ] Badge each affected ColorRow with PASS / FAIL / DECORATIVE
 - [ ] Computation debounced to <50 ms per re-check; no jank on slider drag
