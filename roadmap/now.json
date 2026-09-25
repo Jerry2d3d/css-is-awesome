@@ -3,12 +3,5 @@
 
   "currentWave": "v1-4",
 
-  "blocked": [
-    {
-      "what": "create-cia is not on npm",
-      "why": "The package is finished and its CI is green, but the publish token returns E401. A new npm token has to be issued by hand; nothing in the repo can unblock this.",
-      "since": "2026-09-18",
-      "href": "https://github.com/Jerry2d3d/css-is-awesome/pull/15"
-    }
-  ]
+  "blocked": []
 }
