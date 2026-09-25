@@ -183,12 +183,8 @@ hr,
   --logo-size: clamp(200px, 28vw, 340px);
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
-  /* minmax(0, 1fr) pins the column to the box. Without the 0 minimum the
-     column grows to fit "AWESOME" and the centring below would then centre
-     the short lines on the overflowing word instead of on the box. */
-  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  justify-items: center;
+  justify-items: start;
   width: var(--logo-size);
   aspect-ratio: 1 / 1;
   padding: 0.3em 0.35em 0.35em;
@@ -208,9 +204,7 @@ hr,
   white-space: nowrap;
   display: block;
 }
-/* Opts out of the centring: wider than the box, so centring would spill it
-   out of both sides. Anchored left, it breaks out to the right only. */
-.logo-stage .logo .overflow { justify-self: start; margin-left: -0.02em; }
+.logo-stage .logo .overflow { margin-left: -0.02em; }
 
 .logo-stage-caption {
   position: absolute;
