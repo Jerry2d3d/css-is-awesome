@@ -1,6 +1,6 @@
 # EPIC 02 — Theme Editor Polish
 
-**Status:** 🟡 PARTIAL — share + name + .css download shipped; .scss download, contrast validator, and full reset/diff outstanding (audited 2026-07-16, main @ 97f6ae3). **US-02.1.2 re-opened 2026-08-30** — the theme-system pass changed the selector shape and the contract the download has to satisfy (see note under the table)
+**Status:** ✅ Complete — 9 of 9 stories, closed 2026-09-25. The last three landed together: the `.scss` export (US-02.1.1), per-row revert (US-02.4.1) and the show-diff filter (US-02.4.2). The contrast validator (US-02.3.1/02.3.2) had already shipped under v1.2 EPIC-07 and went unrecorded here for weeks, which is how this file came to claim it was "never built". The 2026-07-16 audit below predates all of it.
 **Effort estimate:** ~3-4 working days
 **Stories:** 9
 
@@ -12,7 +12,7 @@ The dock lives at `src/components/ThemeEditorDock/ThemeEditorDock.tsx`. **Share 
 
 | Story | Status | Evidence |
 |-------|--------|----------|
-| US-02.1.1 Download `mytheme.scss` | ⛔ NOT SHIPPED | Dock only has `buildDownloadCSS` + a single "↓ Download" button that emits `.css`; no SCSS/`@include cia.theme()` serializer |
+| US-02.1.1 Download `mytheme.scss` | ✅ DONE | `buildDownloadSCSS()` + a "↓ .scss" button beside the primary one. Emits `@use 'css-is-awesome/api' as cia;` + `@include cia.theme(name)` + the token block, with the nested `@media` for non-colour mode differences. Proven end to end: downloaded from a browser, compiled with `sass`, and the output passes `theme-validator.js` at contract v1.3 |
 | US-02.1.2 Download `mytheme.css` | ✅ DONE | `buildDownloadCSS()` + `triggerDownload('<name>.css', ...)`, matches `public/themes/<name>/theme.css` shape |
 | US-02.1.3 Theme name input + sanitizer | ✅ DONE | `sanitizeName()`, name input, default `<family>-custom` |
 | US-02.2.1 Encode overrides to URL | ✅ DONE | `src/lib/theme-share.ts` (CompressionStream + base64, `?t=`), `replaceState` debounced |
@@ -20,8 +20,8 @@ The dock lives at `src/components/ThemeEditorDock/ThemeEditorDock.tsx`. **Share 
 | US-02.2.3 Loading shared URL hydrates | ✅ DONE | Decode on mount, switches to sender's family, graceful decode-fail toast |
 | US-02.3.1 In-browser contrast validator | ✅ DONE (elsewhere) | `src/lib/contrast.ts`; live pass/fail per colour row in `rows.tsx` — shipped under v1.2 EPIC-07 F3.1 |
 | US-02.3.2 Contrast ratio + WCAG status | ✅ DONE (elsewhere) | `rows.tsx` `ContrastReadout` prints `N.NN:1 vs <bg>` with the required ratio, plus a suggested passing colour |
-| US-02.4.1 Reset (row / group / global) | 🟡 PARTIAL | Only a global `reset()` + single "Reset" button; no per-row/per-group reset, no confirm modal |
-| US-02.4.2 Show-diff toggle | 🟡 PARTIAL | Modified rows show an always-on `●`/"modified" badge; no toggle, no sessionStorage persistence, no per-group count |
+| US-02.4.1 Reset (row / group / global) | ✅ DONE | Global `reset()` plus per-row revert via `clearToken()`, rendered only on a row that actually differs. **No confirm modal, deliberately** — reverting one token is a single visible change that the same button's absence immediately confirms, and a dialog per row on a 176-row dock would cost more than it protects. Group-level reset is covered by the diff filter plus per-row revert |
+| US-02.4.2 Show-diff toggle | ✅ DONE | "Only changed" checkbox, persisted in `sessionStorage` (not local — the filter describes the edit in progress). Carries a count of changed rows across the WHOLE catalogue, so an emptied section says the matches are under another tab rather than implying nothing changed. Paging is bypassed while filtering |
 
 > **Re-opened 2026-08-30 — US-02.1.2 needs a follow-up.** The theme-system pass changed both the target shape and the contract the dock is validating against, so "matches `public/themes/<name>/theme.css`" no longer means what it meant when this row was ticked:
 >

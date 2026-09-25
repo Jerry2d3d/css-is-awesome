@@ -1,6 +1,6 @@
 # EPIC 01 — Recipes Book
 
-**Status:** 🟡 PARTIAL — 12 of 13 stories shipped (re-audited 2026-09-21; the 2026-07-16 audit below is stale and its "not shipped" rows are corrected in the table). Only the authoring-guide *page* (US-01.1.2) is outstanding; the guide itself lives at `scss/recipes/README.md`.
+**Status:** ✅ Complete — 13 of 13 stories, closed 2026-09-25. The last one was the authoring-guide *page* (US-01.1.2); the guide itself had existed at `scss/recipes/README.md` since the book did, and the page now renders that file rather than restating it. The 2026-07-16 audit further down is stale and its "not shipped" rows are corrected in the table.
 **Effort estimate:** ~5-7 working days
 **Stories:** 13
 
@@ -13,7 +13,7 @@ The recipe format, catalog, dynamic route, and MCP exposure all shipped. Only **
 | Story | Status | Evidence |
 |-------|--------|----------|
 | US-01.1.1 Recipe markdown schema | ✅ DONE | `scss/recipes/README.md` documents frontmatter + required H2s; `scss/recipes/_recipe-template.md` present |
-| US-01.1.2 Authoring guide page | ⛔ NOT SHIPPED | No `src/app/docs/recipes/authoring/` route exists |
+| US-01.1.2 Authoring guide page | ✅ DONE | `/docs/recipes/authoring`, rendered from `scss/recipes/README.md` by `getAuthoringGuide()` — one source, so the page cannot drift from the rules `validate-recipes` enforces |
 | US-01.1.3 `validate-recipes` lint script | ✅ DONE (2026-09-21 re-audit) | `scripts/validate-recipes.mjs` + the `validate-recipes` npm script (README still describes it as future work) |
 | US-01.2.1 Recipe: dialog | ✅ DONE | `scss/recipes/dialog.md` — all 4 framework examples (React/Vue/Svelte/Vanilla) + a11y checklist |
 | US-01.2.2 Recipe: combobox | ✅ DONE | `scss/recipes/combobox.md` (PR #9) — datalist + ARIA pattern, 4 framework examples |
