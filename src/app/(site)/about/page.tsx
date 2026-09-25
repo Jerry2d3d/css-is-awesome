@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./page.module.scss";
 // Version comes from package.json — a hand-typed stamp drifts silently.
 import { version } from "../../../../package.json";
@@ -64,8 +65,8 @@ export default function AboutPage() {
         <hr className="brush-rule" />
 
         <h2>What&apos;s happening right now</h2>
-        <p>This page is the history. For the present tense there are two other surfaces. <a href="/now">/now</a> is generated from the repository when the site builds — the latest release, what is part-finished, what is next in the current wave, and what is blocked and why. Nothing on it is typed by hand except one paragraph and the blocked list, because every hand-maintained status claim in this project has eventually gone stale.</p>
-        <p><a href="/notes">Working notes</a> are the other half: short dated entries about what was being done and what it taught. Lighter than a <a href="/blog">blog post</a>, heavier than a commit message. There are gaps in them, and the gaps are not a problem.</p>
+        <p>This page is the history. For the present tense there are two other surfaces. <Link href="/now">/now</Link> is generated from the repository when the site builds — the latest release, what is part-finished, what is next in the current wave, and what is blocked and why. Nothing on it is typed by hand except one paragraph and the blocked list, because every hand-maintained status claim in this project has eventually gone stale.</p>
+        <p><Link href="/notes">Working notes</Link> are the other half: short dated entries about what was being done and what it taught. Lighter than a <Link href="/blog">blog post</Link>, heavier than a commit message. There are gaps in them, and the gaps are not a problem.</p>
 
         <p style={{ marginTop: '3rem' }}><Seal>Approved · v{version}</Seal></p>
       </article>
