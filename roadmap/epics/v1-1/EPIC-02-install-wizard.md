@@ -97,9 +97,17 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 **So that** consumers who need stricter accessibility get the add-on installed
 
 **Acceptance criteria:**
-- [ ] Yes → adds `@cia/a11y-recipes` to install list
-- [ ] No → notes "you can add later with `npm install @cia/a11y-recipes`"
-- [ ] Default = Yes (recommend WCAG by default — fail-default consistency)
+> **⛔ This question was never built, and never will be.** [v1-1 EPIC-03](./EPIC-03-cia-a11y-recipes.md)
+> was retired on 2026-09-17: a11y recipes folded into the core recipe book as a
+> WCAG-strict section inside each recipe, and no `@cia/a11y-recipes` package
+> exists to install. A wizard question offering it would be offering nothing.
+> The three criteria below are kept as the historical plan, deliberately
+> unticked, because striking them out entirely would hide why the wizard has
+> one fewer question than this epic describes.
+
+- [ ] ~~Yes → adds `@cia/a11y-recipes` to install list~~ — package retired
+- [ ] ~~No → notes "you can add later with `npm install @cia/a11y-recipes`"~~ — package retired
+- [ ] ~~Default = Yes (recommend WCAG by default — fail-default consistency)~~ — package retired
 
 **Effort:** S (≤4 hrs)
 
@@ -138,9 +146,9 @@ v1.0 ships `npm install css-is-awesome` (slim, no prompts). v1.1 introduces mult
 
 ## Definition of done
 
-- [ ] All 7 stories accepted
-- [ ] `npm create cia@latest` published to npm
-- [ ] Tested on Mac, Linux, Windows
+- [x] All 7 stories accepted — the a11y add-on question (F2.2) is the one deviation, and it is not outstanding work: the package it would install was retired with v1-1 EPIC-03
+- [x] `npm create cia@latest` published to npm — **create-cia@1.0.0, 2026-09-25**, dist-tag `latest`, GitHub Release and tag. Verified from the published tarball: 13 files, no dev fixtures, `--version` reports 1.0.0, `--yes --dry-run` in an empty directory prints a full plan and writes nothing
+- [x] Tested on Mac, Linux, Windows — CI matrix covers ubuntu, windows **and macos**, on Node 20 and 24. macOS was added 2026-09-25 specifically to make this line true; the wizard spawns a package manager and writes paths, which are the two things that differ most between platforms, so a green Ubuntu run proved nothing about either. Six jobs, all green
 - [x] Tested in 3 detected project types (Next.js dry-run, Vite-React real install, empty dir) — 2026-09-17
 - [x] Tested in a no-package.json directory (new-project mode)
 - [x] Docs page at `/docs/install/wizard` shows the wizard flow *(verbatim dry-run output instead of screenshots — it can't go stale silently)*
