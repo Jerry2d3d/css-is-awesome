@@ -14,6 +14,23 @@
 #   qa      - merge main into qa.
 #   prod    - merge qa into prod-css-is-awesome. This one is public.
 #
+# THE ORDER IS NOT OPTIONAL. Production is only ever built from `qa`, and the
+# two stages are deliberately two separate runs:
+#
+#   1. Release to qa.
+#   2. You and anyone else actually test it there.
+#   3. Release to prod, and approve it.
+#
+# Step 2 is the entire reason a qa branch exists, so the workflow does not
+# offer a way to collapse it. An earlier version of this file had a tickbox
+# that queued production straight after qa in the same run; it was removed
+# because "faster" and "tested" were pulling in opposite directions and the
+# tickbox let speed win by accident.
+#
+# `ref` therefore applies to the qa stage ONLY. The prod stage always takes
+# whatever is on `qa` and has no override, so there is no argument you can
+# pass that reaches production without going through qa first.
+#
 # WHY THERE IS A JOB PER STAGE
 # ----------------------------
 # A job can declare only one `environment:`, and the environment is what makes
@@ -52,7 +69,7 @@ on:
           - qa
           - prod
       ref:
-        description: "Override the source (SHA, branch or tag). Blank = main for qa, qa for prod."
+        description: "qa stage only — stage a specific SHA, branch or tag instead of main. Ignored by prod, which always takes qa."
         required: false
         default: ""
       dry_run:
@@ -67,6 +84,13 @@ permissions:
 concurrency:
   # One release at a time, and never cancel one midway - a cancelled merge can
   # leave a branch pushed without its pair.
+  #
+  # KNOWN CONSEQUENCE: a production job sitting on its approval gate still
+  # holds this group, so a run left un-approved BLOCKS every later release
+  # until someone approves or cancels it. That is the correct trade (two
+  # promotions racing each other is worse than a queue), but if a release
+  # seems stuck as "pending" and never starts, look for an older run waiting
+  # on Review deployments before looking anywhere else.
   group: release
   cancel-in-progress: false
 
@@ -163,7 +187,16 @@ jobs:
             echo
             echo "- CI is now running on \`qa\`."
             echo "- Vercel builds a deployment for the \`qa\` branch, served at <https://qa.cssisawesome.com>. Preview deployments sit behind Vercel's login unless deployment protection is turned off, so a login page there is the protection working, not a broken build."
-            echo "- Click through it. When it looks right, run this workflow again with **stage: prod**."
+            echo "- **Test it. That is what this stage is for.** Production is a separate run, started by hand, once you and anyone else are satisfied:"
+            echo
+            echo "  - Actions tab: **Release** -> Run workflow -> **stage: prod**"
+            echo "  - Or from a terminal:"
+            echo
+            echo '    ```'
+            echo "    gh workflow run Release -f stage=prod"
+            echo '    ```'
+            echo
+            echo "  Production always takes whatever is on \`qa\` — there is no way to pass it anything else — and it still stops on its approval gate before a single commit moves."
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ---------------------------------------------------------------------------
@@ -199,7 +232,13 @@ jobs:
 
       - name: Merge qa into prod-css-is-awesome
         env:
-          SRC_REF: ${{ inputs.ref || 'qa' }}
+          # Hard-coded, deliberately. `ref` is not read here at all: an
+          # override would be a way to put something into production that
+          # never passed through qa, which is the one thing this chain exists
+          # to prevent. If production needs something urgently, stage it to qa
+          # first with `ref` and then release qa - two clicks, same speed,
+          # and the staging branch still tells the truth about what shipped.
+          SRC_REF: qa
           DEST: prod-css-is-awesome
           DRY_RUN: ${{ inputs.dry_run }}
         run: bash .github/scripts/promote.sh

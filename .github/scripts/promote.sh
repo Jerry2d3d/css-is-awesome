@@ -14,15 +14,39 @@
 #   DEST      branch to promote INTO
 #   DRY_RUN   "true" to report and change nothing
 #
-# Conflict policy: `public/flags.json` is owned by the deployed branches, so
-# .gitattributes marks it merge=ours and the driver is configured below — the
-# branch being promoted INTO keeps its own flags. Any other conflict fails the
-# run loudly, because nothing else is supposed to diverge.
+# ---------------------------------------------------------------------------
+# WHO OWNS WHAT WHEN THE TWO SIDES DISAGREE
+# ---------------------------------------------------------------------------
+# `public/flags.json` is owned by the DESTINATION. Coming-soon and
+# announcement switches are flipped on the deployed branch, not on main, so
+# .gitattributes marks it `merge=ours` and the driver is configured below.
+#
+# `.gitattributes` itself is owned by the SOURCE, and that one cannot be
+# expressed in .gitattributes — git reads the DESTINATION's copy to decide
+# merge policy, so a rule written on main has no effect until main's copy has
+# already won. Chicken and egg. It is handled explicitly below instead.
+#
+# That is not hypothetical. On 2026-09-25 the first real production promotion
+# failed outright: main and prod-css-is-awesome had each added a
+# `.gitattributes` independently, saying the same thing in different words, so
+# git reported an add/add conflict, wrote conflict markers into the file, then
+# tried to parse its own broken output and reported
+# `origin/qa is not a valid attribute name: .gitattributes:14`.
+#
+# Once a promotion carries the source's copy across, both branches match and
+# this path goes dormant. It is kept because a branch that has drifted once
+# can drift again.
 set -euo pipefail
 
 : "${SRC_REF:?SRC_REF is required}"
 : "${DEST:?DEST is required}"
 DRY_RUN="${DRY_RUN:-false}"
+
+# Files the SOURCE branch owns outright. Keep this list short and justified:
+# every entry is a case where a deployed branch is not entitled to its own
+# opinion, and silently overwriting anything else would be exactly the kind of
+# quiet data loss a promotion must never do.
+SOURCE_OWNED=(".gitattributes")
 
 summary() { printf '%s\n' "$*" >>"${GITHUB_STEP_SUMMARY:-/dev/null}"; }
 
@@ -68,7 +92,56 @@ if [ "$DRY_RUN" = "true" ]; then
 fi
 
 git checkout -B "$DEST" "origin/$DEST"
-git merge --no-edit "$SRC"
+
+if ! git merge --no-edit "$SRC"; then
+  # Which paths actually conflicted?
+  # stderr is silenced on purpose. When .gitattributes is the conflicted
+  # file, git writes conflict markers into it and then warns while parsing
+  # its own broken output ("... is not a valid attribute name"). That noise
+  # must not reach a list of paths.
+  mapfile -t CONFLICTS < <(git diff --name-only --diff-filter=U 2>/dev/null)
+
+  # Anything outside the source-owned list is a real disagreement and must
+  # stop the promotion. Resolving it automatically would be guessing with
+  # someone's production branch.
+  UNEXPECTED=()
+  for path in "${CONFLICTS[@]}"; do
+    owned=false
+    for own in "${SOURCE_OWNED[@]}"; do
+      [ "$path" = "$own" ] && owned=true && break
+    done
+    $owned || UNEXPECTED+=("$path")
+  done
+
+  if [ ${#UNEXPECTED[@]} -gt 0 ]; then
+    git merge --abort || true
+    {
+      echo "### Promotion stopped: unresolved conflict"
+      echo
+      echo "These paths disagree between \`$SRC_REF\` and \`$DEST\`:"
+      echo
+      for path in "${UNEXPECTED[@]}"; do echo "- \`$path\`"; done
+      echo
+      echo "Nothing was pushed. Only \`public/flags.json\` (owned by the deployed"
+      echo "branch) and \`.gitattributes\` (owned by the source) resolve"
+      echo "automatically; everything else is a real difference and needs a human."
+    } >>"${GITHUB_STEP_SUMMARY:-/dev/null}"
+    echo "::error::conflict outside the source-owned list; nothing pushed"
+    exit 1
+  fi
+
+  # Only source-owned paths conflicted: take the source's copy.
+  for path in "${CONFLICTS[@]}"; do
+    echo "Resolving $path from $SRC_REF (source-owned)."
+    git checkout --theirs -- "$path" 2>/dev/null || git checkout "$SRC" -- "$path"
+    git add -- "$path"
+  done
+
+  git commit --no-edit
+  summary "Resolved ${#CONFLICTS[@]} source-owned path(s) from \`$SRC_REF\`: ${CONFLICTS[*]}"
+  summary ""
+fi
+
 git push origin "$DEST"
 
 summary "Pushed \`$DEST\` at \`$(git rev-parse --short HEAD)\`."
