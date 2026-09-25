@@ -19,14 +19,33 @@ import LogoMark from "@/components/LogoMark";
 import LightDarkToggle from "@/components/LightDarkToggle";
 import ThemeSelect from "@/components/ThemeSelect";
 
+// `showcase` and `now` are kept in the union although they are no longer in
+// NAV: they are real sections with real URLs, reached from /examples and
+// /blog. currentFromPath() checks membership of NAV, so neither highlights a
+// top-level link while you are on it — correct, because neither has one.
 type NavId = "home" | "docs" | "themes" | "playground" | "examples" | "compare" | "showcase" | "blog" | "now" | "about";
 
+// EIGHT items, and it should stay around eight.
+//
+// Two pairs were folded out of this list rather than deleted, because both
+// were a SECOND top-level entry for a question another entry already owns:
+//
+//   Showcase  →  reached from /examples. Both answer "what can I build with
+//                this"; one is eight small pages, the other is one page of
+//                blocks. Two nav items for one question makes a reader pick
+//                before they know the difference.
+//   Now       →  reached from /blog, which is where "what is happening" was
+//                already being asked. /notes sits with it for the same reason.
+//
+// Both keep their own URLs and both are still in the footer, which is the
+// full site map. Only the top bar is opinionated about what it fits.
+//
 // `prefetch: false` on the less-frequently-clicked links. next/link defaults
-// to prefetch: true, and since this header renders on every page, all 8
-// links enter the viewport (and get prefetched) immediately on load — any
-// link not clicked within a few seconds logs a "preloaded but not used"
-// console warning for its now-wasted CSS chunk. Kept on for the two links
-// people actually click a lot (Docs, Themes); disabled for the rest.
+// to prefetch: true, and since this header renders on every page, every link
+// enters the viewport (and gets prefetched) immediately on load — any link
+// not clicked within a few seconds logs a "preloaded but not used" console
+// warning for its now-wasted CSS chunk. Kept on for the two links people
+// actually click a lot (Docs, Themes); disabled for the rest.
 const NAV: { id: NavId; label: string; href: string; prefetch?: boolean }[] = [
   { id: "home",     label: "Home",     href: "/" },
   { id: "docs",     label: "Docs",     href: "/docs" },
@@ -34,13 +53,7 @@ const NAV: { id: NavId; label: string; href: string; prefetch?: boolean }[] = [
   { id: "playground", label: "Playground", href: "/playground", prefetch: false },
   { id: "examples", label: "Examples", href: "/examples" },
   { id: "compare",  label: "Compare",  href: "/compare" },
-  { id: "showcase", label: "Showcase", href: "/showcase", prefetch: false },
   { id: "blog",     label: "Blog",     href: "/blog",     prefetch: false },
-  // Sits next to Blog on purpose: both answer "is this alive", and a reader
-  // who wants that answer looks in one place. /notes is deliberately NOT in
-  // the nav — it is reached from /now and from About, because a working log
-  // is something you go looking for, not something the site pushes at you.
-  { id: "now",      label: "Now",      href: "/now",      prefetch: false },
   { id: "about",    label: "About",    href: "/about",    prefetch: false },
 ];
 

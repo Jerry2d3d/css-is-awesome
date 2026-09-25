@@ -24,6 +24,27 @@
 .hero h1 { font-size: clamp(2.4rem, 6vw, 4rem); margin-bottom: 0.6rem; }
 .hero p { color: var(--ink-soft); font-family: var(--font-serif); font-style: italic; max-width: 50ch; margin: 0 auto; }
 
+/* The devlog pair. Sits under the hero, above the posts: it answers the
+   same question the blog does — is this alive — so it belongs with the
+   posts rather than in a top-level nav slot of its own. Quiet on purpose;
+   the posts are still the page. */
+.devlog {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 54ch;
+  margin: 0 auto 3.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 0.25rem);
+}
+.devlog p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary, var(--ink-soft));
+  line-height: 1.6;
+}
+.devlog a { font-weight: 500; }
+
 /* Track sections (EPIC-06 B6.1) — two drawers, statically grouped. */
 .track {
   & + & { margin-top: 4rem; }
