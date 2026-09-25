@@ -31,7 +31,7 @@ export type NoteMeta = {
   /** YYYY-MM-DD. */
   date: string | null;
   tags: string[];
-  /** First line of the body, for the index. */
+  /** Opening paragraph of the body, trimmed, for the index. */
   lede: string;
   wordCount: number;
 };
@@ -68,22 +68,51 @@ function toList(value: string | undefined): string[] {
 }
 
 /**
- * First prose line of the note, stripped of markdown, for the index listing.
- * Headings, code fences and list markers are skipped so the preview is a
- * sentence rather than a fragment of syntax.
+ * Opening of the note, stripped of markdown, for the index listing.
+ *
+ * Takes the first PARAGRAPH, not the first source line. Markdown prose is
+ * hard-wrapped, so reading one line gives a preview that stops mid-sentence
+ * on whatever column the author happened to wrap at — which is what the first
+ * render of /notes did, and it looked like truncation gone wrong rather than
+ * a deliberate summary. Headings, fences and list markers are skipped so the
+ * preview is prose rather than a fragment of syntax.
  */
-function ledeOf(body: string): string {
-  for (const raw of body.split(/\r?\n/)) {
+function ledeOf(body: string, limit = 150): string {
+  const lines = body.split(/\r?\n/);
+  const paragraph: string[] = [];
+
+  for (const raw of lines) {
     const line = raw.trim();
-    if (!line || line.startsWith("#") || line.startsWith("```") || line.startsWith("-")) {
+    const skippable =
+      !line || line.startsWith("#") || line.startsWith("```") || line.startsWith("-");
+
+    if (paragraph.length === 0) {
+      if (skippable) continue;
+      paragraph.push(line);
       continue;
     }
-    return line
-      .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
-      .replace(/[*_`]/g, "")
-      .trim();
+    // Inside the paragraph now: a blank or structural line ends it.
+    if (skippable) break;
+    paragraph.push(line);
   }
-  return "";
+
+  const plain = paragraph
+    .join(" ")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[*_`]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (plain.length <= limit) return plain;
+
+  // Prefer ending on a sentence; fall back to a word boundary.
+  const window = plain.slice(0, limit + 40);
+  const stop = Math.max(window.indexOf(". "), window.indexOf("? "), window.indexOf("! "));
+  if (stop >= 60) return window.slice(0, stop + 1);
+
+  const cut = plain.slice(0, limit);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 40 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:—-]+$/, "")}…`;
 }
 
 const marked = new Marked({
