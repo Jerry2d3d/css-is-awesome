@@ -10,7 +10,18 @@
 //   of bug as check-theme-drift.mjs guards against: a source change that never
 //   got rebuilt, silently shipping stale data forever.
 //
-// 2. ZERO-CONSUMER REPORT (informational only — never fails the build). Lists
+// 2. WELL-FORMED KEYS (always fails CI). Every key must look like a CSS
+//   custom property and nothing else. Added 2026-09-25 after the committed
+//   map was found to contain twelve keys that were not tokens at all —
+//   `--brand-`, `--space-`, `--z-` and the rest — produced by the literal
+//   `var()` scan matching the PREFIX of an interpolated reference and
+//   stopping at the `#`. Nothing noticed for weeks, because a plausible-
+//   looking key in a generated file reads as data rather than as a defect.
+//   The drift check above could never catch it: it compares the generator
+//   against itself, so a generator bug is reproduced identically on both
+//   sides and reported as agreement.
+//
+// 3. ZERO-CONSUMER REPORT (informational only — never fails the build). Lists
 //   every contract token the map found no resolved consumer for.
 //
 // Why this never fails CI, not even behind a flag: the map is a STATIC scan
@@ -72,6 +83,36 @@ if (requiredZero.length || optionalZero.length) {
   if (optionalZero.length) console.log(`  optional: ${optionalZero.join(', ')}`);
 } else {
   console.log(`${green('OK')} ${dim('- every contract token has at least one statically-resolved consumer.')}`);
+}
+
+// ----------------------------------------------------------------------------
+// 2. Well-formed keys. See header.
+// ----------------------------------------------------------------------------
+// A real token is `--` followed by segments of word characters separated by
+// single hyphens. A trailing hyphen means an interpolation was truncated; a
+// `#` means one leaked through whole.
+const WELL_FORMED = /^--[a-z0-9]+(?:-[a-z0-9]+)*$/i;
+
+const malformed = Object.keys(JSON.parse(fresh).consumers).filter(
+  (token) => !WELL_FORMED.test(token),
+);
+
+if (malformed.length > 0) {
+  failed = true;
+  console.error(
+    `\n${red('token-consumer map has malformed keys')} (${malformed.length}):`,
+  );
+  for (const token of malformed) console.error(`  ${red('x')} ${token}`);
+  console.error(
+    `\n  These are not tokens. A trailing hyphen means the literal var() scan\n` +
+      `  matched the prefix of an interpolated reference like\n` +
+      `  \`var(--space-#{$key})\` and stopped at the '#'. Fix the scan in\n` +
+      `  build-token-consumer-map.mjs; do not hand-edit the generated file.\n`,
+  );
+} else {
+  console.log(
+    `${green('OK')} ${dim('- every key is a well-formed custom property.')}`,
+  );
 }
 
 process.exit(failed ? 1 : 0);
