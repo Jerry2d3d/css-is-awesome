@@ -47,8 +47,21 @@
   --logo-size: clamp(200px, 28vw, 340px);
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
+
+  /* MUST be minmax(0, 1fr). A grid column sizes itself to its widest item,
+     and "AWESOME" is wider than the box - so an implicit column grows to
+     that word's width and `justify-items: center` would then centre the
+     short lines on the OVERFLOWING logo rather than on the box. The 0
+     minimum pins the column to the box instead and lets the long word
+     spill out of it. */
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  justify-items: start;
+
+  /* Each line is centred ACROSS THE BOX. The word that overflows opts out
+     below and keeps hugging the left edge, so the box stays the thing the
+     eye centres on and the spill is not allowed to drag the short lines
+     off-centre with it. */
+  justify-items: center;
   width: var(--logo-size);
   aspect-ratio: 1 / 1;
   padding: 0.3em 0.35em 0.35em; /* em-relative to logo-size; intentional */
@@ -70,6 +83,12 @@
 }
 
 .overflow {
+  /* Opts out of the centring above. This word is wider than the box, so
+     centring it would spill it out of BOTH sides and lose the meme, which
+     breaks out to the right only. Anchored left, it overflows right exactly
+     as the original does. */
+  justify-self: start;
+
   margin-left: -0.02em;
   letter-spacing: 0.02em; /* Tightens "AWESOME" optically so it matches CSS/IS */
 }
