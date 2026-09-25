@@ -24,9 +24,13 @@ on:
   workflow_run:
     workflows: ["Release"]
     types: [completed]
-    # Follows Release, which now runs on the promoted branch — so the Pages
-    # mirror shows what is actually public rather than what is merely merged.
-    branches: [prod-css-is-awesome]
+    # Deliberately NO `branches:` filter. That filter matches the branch of
+    # the *Release run*, and a run started by `workflow_run` is attributed to
+    # the default branch rather than to the branch that triggered it. Naming
+    # `prod-css-is-awesome` here therefore matched nothing, while the job's
+    # own `if` still demanded `main` - the two conditions could not both hold
+    # and this workflow could never fire. Release only runs on the promoted
+    # branch now, so following every Release run is already the right filter.
   workflow_dispatch:
 
 permissions:
@@ -49,11 +53,15 @@ jobs:
     # workflow_dispatch has no associated workflow_run, so allow it through.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.head_branch == 'main')
+      github.event.workflow_run.conclusion == 'success'
     steps:
-      - name: Checkout
+      # Pinned for the same reason as in release.yml: on a `workflow_run`
+      # event a bare checkout takes the default branch, which would mirror
+      # `main` to Pages while the public site served the promoted branch.
+      - name: Checkout the promoted branch
         uses: actions/checkout@v4
+        with:
+          ref: prod-css-is-awesome
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
