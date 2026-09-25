@@ -1,163 +1,216 @@
-# Release pipeline — publishes css-is-awesome to npm and creates a GitHub Release.
+# The release console. One workflow, one dropdown, the whole chain.
 #
-# Trigger: runs after the CI workflow succeeds on a push to `prod-css-is-awesome`,
-# which is what the "Promote" workflow's `prod` stage pushes to. Merging to `main`
-# publishes nothing. CI must be green first (we gate on workflow_run.conclusion
-# below), so promoting never skips verification.
+#     feature branch  ->  main  ->  qa  ->  prod-css-is-awesome
+#     (your work)         (CI)      (look    (public site + npm publish)
+#                                    at it)
 #
-# Secrets required (configure under repo Settings -> Secrets and variables -> Actions):
-#   NPM_TOKEN     — an npm automation token with publish rights on the
-#                   `css-is-awesome` package. Add before the first release.
-#   GITHUB_TOKEN  — provided automatically by GitHub Actions; semantic-release
-#                   uses it to cut the GitHub Release and push the CHANGELOG /
-#                   package.json bump commit onto the promoted branch. The last
-#                   step then merges that commit back into `main`.
+# `main` is integration: merge into it freely, it reaches nobody. Releasing to
+# `qa` gives Vercel a branch deployment you can click through. Releasing to
+# `prod-css-is-awesome` updates the public website AND publishes to npm.
 #
-# Do not run this locally — semantic-release is configured to publish on green CI only.
+# Pick a stage when you click "Run workflow":
 #
-# IF THIS JOB FAILS AT THE PUBLISH STEP, READ THIS FIRST.
+#   status  - change nothing, just print where every branch sits.
+#   qa      - merge main into qa.
+#   prod    - merge qa into prod-css-is-awesome. This one is public.
 #
-# semantic-release runs `prepare` BEFORE `publish`. @semantic-release/git lives
-# in `prepare`, so by the time npm is contacted it has ALREADY written the
-# CHANGELOG, bumped package.json, committed `chore(release): X.Y.Z [skip ci]`
-# and pushed the tag. A publish failure therefore leaves the repo asserting a
-# version that exists nowhere — no npm package, no GitHub release — and every
-# retry burns another number (we lost v1.1.0 and v1.1.1 to this on 2026-08-30).
+# WHY THERE IS A JOB PER STAGE
+# ----------------------------
+# A job can declare only one `environment:`, and the environment is what makes
+# this a pipeline rather than a form. Each one gets its own box on the repo's
+# /deployments page, its own history of what shipped when, and its own
+# protection rules - which is how `prod` can require an approval before it
+# runs at all. A single job handling every stage could have none of that.
 #
-# Recovery: confirm the version is genuinely unpublished
-#   npm view css-is-awesome@X.Y.Z version      # expect E404
-# then delete the tag locally and on the remote before retrying:
-#   git tag -d vX.Y.Z && git push origin :refs/tags/vX.Y.Z
-# Otherwise the next run computes a patch bump on top of a release that never
-# shipped.
+# The merge itself lives in .github/scripts/promote.sh so the two stages share
+# ONE implementation. Two copies of a merge would be two things to keep in
+# step, and the copy used less often is the one that rots.
 #
-# Also: `gh run rerun` re-runs the job against its ORIGINAL commit. If the
-# promoted branch has moved since (and it will have, because `prepare` already
-# pushed), the rerun exits with "The local branch is behind the remote one,
-# therefore a new version won't be published" and reports SUCCESS having done
-# nothing. Promote again instead of re-running.
+# ADDING A `dev` STAGE LATER
+# --------------------------
+# Three edits, no restructuring: add `dev` to the `options` list below, copy
+# the `qa` job with SRC_REF/DEST changed, and create the matching environment.
+# The script needs no change at all - it already takes any pair of branches.
 #
-# npm auth notes, in the order they bit us:
-#   EINVALIDNPMTOKEN — NPM_TOKEN missing or malformed.
-#   EOTP            — the token authenticates but npm wants a 2FA code, which
-#                     CI cannot supply. Fix on the npm ACCOUNT: set two-factor
-#                     to "Authorization only", or use a Classic *Automation*
-#                     token, which bypasses 2FA by design.
+# ONE SETTING MAKES THE PROD STAGE REAL: the Vercel project's Production
+# Branch must be `prod-css-is-awesome`. Between 2026-09-04 and 2026-09-24 it
+# was `main`, which is why the live site tracked every merge and releasing
+# changed nothing. If the site ever moves without this workflow having run,
+# that setting has drifted back to `main`.
 name: Release
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    # Publishing follows the PROMOTED branch, not the integration branch.
-    # Merging to `main` no longer publishes; running the "Promote"
-    # workflow with stage `prod` does. Reason: a website can be corrected by promoting
-    # again, an npm version cannot be unpublished after 72 hours and never
-    # once anyone depends on it — so the irreversible step gets the gate.
-    branches: [prod-css-is-awesome]
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "Which stage to run"
+        required: true
+        type: choice
+        default: status
+        options:
+          - status
+          - qa
+          - prod
+      ref:
+        description: "Override the source (SHA, branch or tag). Blank = main for qa, qa for prod."
+        required: false
+        default: ""
+      dry_run:
+        description: "Show what would ship, but do not push"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
+  # One release at a time, and never cancel one midway - a cancelled merge can
+  # leave a branch pushed without its pair.
+  group: release
   cancel-in-progress: false
 
 jobs:
-  release:
-    name: Publish to npm + GitHub Release
+  # ---------------------------------------------------------------------------
+  # Always runs. Prints the chain before anything moves, so "what am I about to
+  # ship" is answered on the run page rather than from memory.
+  # ---------------------------------------------------------------------------
+  state:
+    name: Where everything sits
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # Only run if CI succeeded on a push event to the promoted branch.
-    if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'prod-css-is-awesome'
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
+    timeout-minutes: 5
     steps:
-      # MUST be pinned. On a `workflow_run` event `github.sha` is the tip of
-      # the DEFAULT branch, not the branch that triggered the run - so a bare
-      # checkout here would build and publish whatever `main` happens to hold,
-      # silently defeating the promotion gate this workflow exists to enforce.
-      - name: Checkout the promoted branch
+      - name: Checkout (full history, all branches)
         uses: actions/checkout@v4
         with:
-          ref: prod-css-is-awesome
           fetch-depth: 0
-          persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build library CSS bundles
-        run: npm run build:css:all
-
-      - name: Validate themes
-        run: npm run validate-themes
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # The release commit (@semantic-release/git writes the version bump
-          # and the CHANGELOG entry back to the released branch) is authored
-          # under the repo owner rather than the default semantic-release-bot
-          # identity. The subject still reads `chore(release): x.y.z`, so it
-          # stays obvious that a pipeline generated it - only the name changes.
-          GIT_AUTHOR_NAME: Jerry Hansen
-          GIT_AUTHOR_EMAIL: jhansenportfolio@gmail.com
-          GIT_COMMITTER_NAME: Jerry Hansen
-          GIT_COMMITTER_EMAIL: jhansenportfolio@gmail.com
-        run: npx semantic-release
-
-      # WHY THIS EXISTS.
-      #
-      # semantic-release writes `chore(release): x.y.z` plus the CHANGELOG
-      # entry onto the branch it released from, which is now the promoted
-      # branch rather than `main`. Left alone, `main` would keep the OLD
-      # version in package.json while the published branch carried the new
-      # one, and because both branches touch the same two files, every future
-      # promotion would conflict on package.json and CHANGELOG.md.
-      #
-      # So the release commit is merged straight back. It carries `[skip ci]`
-      # in its subject, so landing it on main starts no new run.
-      #
-      # If this step goes red AFTER a green publish, the package shipped fine
-      # and only `main` is behind: merge `prod-css-is-awesome` into `main` by
-      # hand and push. Nothing needs to be republished.
-      - name: Merge the release commit back into main
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Print the chain
         run: |
           set -euo pipefail
 
-          git config user.name  "Jerry Hansen"
-          git config user.email "jhansenportfolio@gmail.com"
-          # Pairs with `public/flags.json merge=ours` in .gitattributes, so
-          # main keeps its own flags rather than inheriting production's.
-          git config merge.ours.driver true
-          # `persist-credentials: false` on checkout means the remote has no
-          # push rights; give it some for this one push.
-          git remote set-url origin             "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          version_of() {
+            git show "origin/$1:package.json" 2>/dev/null \
+              | sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' \
+              | head -1
+          }
 
-          git fetch origin main prod-css-is-awesome
+          {
+            echo "## Before"
+            echo
+            echo "| Branch | Version | Commit | Last change |"
+            echo "|---|---|---|---|"
+            for b in main qa prod-css-is-awesome; do
+              if git rev-parse --verify --quiet "origin/$b" >/dev/null; then
+                printf '| `%s` | %s | `%s` | %s |\n' \
+                  "$b" "$(version_of "$b")" \
+                  "$(git rev-parse --short "origin/$b")" \
+                  "$(git log -1 --format=%cd --date=short "origin/$b")"
+              else
+                printf '| `%s` | - | _does not exist_ | - |\n' "$b"
+              fi
+            done
+            echo
+            echo "| Gap | Waiting to ship |"
+            echo "|---|---|"
+            echo "| main to qa | $(git rev-list --count origin/qa..origin/main) commit(s) |"
+            echo "| qa to prod | $(git rev-list --count origin/prod-css-is-awesome..origin/qa) commit(s) |"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
 
-          if git merge-base --is-ancestor origin/prod-css-is-awesome origin/main; then
-            echo "main already contains the promoted branch; nothing to back-merge."
-            exit 0
-          fi
+          cat "$GITHUB_STEP_SUMMARY"
 
-          git checkout -B main origin/main
-          git merge --no-edit origin/prod-css-is-awesome
-          git push origin main
-          echo "Merged the release commit back into main."
+      - name: What to do next
+        if: inputs.stage == 'status'
+        run: |
+          {
+            echo "## Next"
+            echo
+            echo "Nothing changed. Run this again with **stage: qa** to stage main, or **stage: prod** to go public."
+          } >> "$GITHUB_STEP_SUMMARY"
 
+  # ---------------------------------------------------------------------------
+  # qa - staging. No approval gate: not needing one is the point of a staging
+  # branch.
+  # ---------------------------------------------------------------------------
+  qa:
+    name: Release to qa
+    needs: state
+    if: inputs.stage == 'qa'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: qa
+      url: https://qa.cssisawesome.com
+    steps:
+      - name: Checkout (full history, all branches)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge main into qa
+        env:
+          SRC_REF: ${{ inputs.ref || 'main' }}
+          DEST: qa
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: bash .github/scripts/promote.sh
+
+      - name: What happens next
+        if: success() && inputs.dry_run != true
+        run: |
+          {
+            echo "## Next"
+            echo
+            echo "- CI is now running on \`qa\`."
+            echo "- Vercel builds a deployment for the \`qa\` branch, served at <https://qa.cssisawesome.com>. Preview deployments sit behind Vercel's login unless deployment protection is turned off, so a login page there is the protection working, not a broken build."
+            echo "- Click through it. When it looks right, run this workflow again with **stage: prod**."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------------
+  # prod - public site AND npm. The `production` environment carries the
+  # required-reviewer rule, so this job WAITS for an approval before its first
+  # step runs. That approval is the real gate; the dropdown is only the request.
+  # ---------------------------------------------------------------------------
+  prod:
+    name: Release to production
+    needs: state
+    if: inputs.stage == 'prod'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      # `Production` with a capital P, because that environment already
+      # existed: Vercel's GitHub integration created it, and GitHub matches
+      # environment names case-insensitively, so asking for `production`
+      # binds to the same one rather than making a second box. That turns out
+      # to be the better outcome - one production box carrying both the
+      # promotion and the deployment it causes.
+      #
+      # The required-reviewer rule lives on that environment and gates THIS
+      # job only. Vercel creates its deployments through the API, which does
+      # not pass through Actions protection rules, so nothing about Vercel's
+      # behaviour changed.
+      name: Production
+      url: https://cssisawesome.com
+    steps:
+      - name: Checkout (full history, all branches)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge qa into prod-css-is-awesome
+        env:
+          SRC_REF: ${{ inputs.ref || 'qa' }}
+          DEST: prod-css-is-awesome
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: bash .github/scripts/promote.sh
+
+      - name: What happens next
+        if: success() && inputs.dry_run != true
+        run: |
+          {
+            echo "## Next"
+            echo
+            echo "- CI runs on \`prod-css-is-awesome\`, then **Publish to npm** releases the package, then **Pages** mirrors the site."
+            echo "- The public website updates once Vercel finishes building the production branch."
+            echo "- Watch the Actions tab. The npm version and the site version should end up in agreement."
+          } >> "$GITHUB_STEP_SUMMARY"
