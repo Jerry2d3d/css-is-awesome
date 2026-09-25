@@ -14,13 +14,22 @@
 #   qa      - merge main into qa.
 #   prod    - merge qa into prod-css-is-awesome. This one is public.
 #
-# Tick `then_prod` alongside `qa` to queue production in the SAME run. It does
-# not skip anything: production still stops on its approval gate, so the run
-# parks there and waits for a human. The difference is that the button to
-# approve it is on the page you are already looking at, instead of requiring
-# you to come back and start a second run. Leave it unticked to stage qa, go
-# and actually look at it, and decide later - which is the point of having a
-# qa branch at all.
+# THE ORDER IS NOT OPTIONAL. Production is only ever built from `qa`, and the
+# two stages are deliberately two separate runs:
+#
+#   1. Release to qa.
+#   2. You and anyone else actually test it there.
+#   3. Release to prod, and approve it.
+#
+# Step 2 is the entire reason a qa branch exists, so the workflow does not
+# offer a way to collapse it. An earlier version of this file had a tickbox
+# that queued production straight after qa in the same run; it was removed
+# because "faster" and "tested" were pulling in opposite directions and the
+# tickbox let speed win by accident.
+#
+# `ref` therefore applies to the qa stage ONLY. The prod stage always takes
+# whatever is on `qa` and has no override, so there is no argument you can
+# pass that reaches production without going through qa first.
 #
 # WHY THERE IS A JOB PER STAGE
 # ----------------------------
@@ -60,14 +69,9 @@ on:
           - qa
           - prod
       ref:
-        description: "Override the source (SHA, branch or tag). Blank = main for qa, qa for prod."
+        description: "qa stage only — stage a specific SHA, branch or tag instead of main. Ignored by prod, which always takes qa."
         required: false
         default: ""
-      then_prod:
-        description: "After qa succeeds, queue production in the same run (still waits for your approval)"
-        required: false
-        type: boolean
-        default: false
       dry_run:
         description: "Show what would ship, but do not push"
         required: false
@@ -183,20 +187,16 @@ jobs:
             echo
             echo "- CI is now running on \`qa\`."
             echo "- Vercel builds a deployment for the \`qa\` branch, served at <https://qa.cssisawesome.com>. Preview deployments sit behind Vercel's login unless deployment protection is turned off, so a login page there is the protection working, not a broken build."
-            if [ "${{ inputs.then_prod }}" = "true" ]; then
-              echo "- **Production is queued in this same run** and is waiting for an approval. Scroll up: the \`Review deployments\` button is on this page."
-            else
-              echo "- Click through it. When it looks right, release to production either way:"
-              echo
-              echo "  - Actions tab: **Release** -> Run workflow -> **stage: prod**"
-              echo "  - Or from a terminal:"
-              echo
-              echo '    ```'
-              echo "    gh workflow run Release -f stage=prod -f ref= -f dry_run=false"
-              echo '    ```'
-              echo
-              echo "  Either way production stops on its approval gate before anything merges."
-            fi
+            echo "- **Test it. That is what this stage is for.** Production is a separate run, started by hand, once you and anyone else are satisfied:"
+            echo
+            echo "  - Actions tab: **Release** -> Run workflow -> **stage: prod**"
+            echo "  - Or from a terminal:"
+            echo
+            echo '    ```'
+            echo "    gh workflow run Release -f stage=prod"
+            echo '    ```'
+            echo
+            echo "  Production always takes whatever is on \`qa\` — there is no way to pass it anything else — and it still stops on its approval gate before a single commit moves."
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ---------------------------------------------------------------------------
@@ -206,17 +206,8 @@ jobs:
   # ---------------------------------------------------------------------------
   prod:
     name: Release to production
-    # Depends on `qa` so a chained run cannot promote a branch that has not
-    # finished moving. When `prod` is chosen directly, `qa` is SKIPPED, and a
-    # skipped dependency would normally skip this job too - hence `always()`
-    # plus an explicit check that qa either succeeded or never ran. Without
-    # that, choosing `prod` on its own would silently do nothing.
-    needs: [state, qa]
-    if: >-
-      always()
-      && needs.state.result == 'success'
-      && (needs.qa.result == 'success' || needs.qa.result == 'skipped')
-      && (inputs.stage == 'prod' || (inputs.stage == 'qa' && inputs.then_prod))
+    needs: state
+    if: inputs.stage == 'prod'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
@@ -241,12 +232,13 @@ jobs:
 
       - name: Merge qa into prod-css-is-awesome
         env:
-          # A chained run always promotes `qa` - the branch the job above just
-          # pushed. `ref` belongs to whichever stage the operator actually
-          # chose, so honouring it here would promote the qa SOURCE to
-          # production and skip qa entirely, which is the opposite of what
-          # ticking then_prod asks for.
-          SRC_REF: ${{ (inputs.stage == 'prod' && (inputs.ref || 'qa')) || 'qa' }}
+          # Hard-coded, deliberately. `ref` is not read here at all: an
+          # override would be a way to put something into production that
+          # never passed through qa, which is the one thing this chain exists
+          # to prevent. If production needs something urgently, stage it to qa
+          # first with `ref` and then release qa - two clicks, same speed,
+          # and the staging branch still tells the truth about what shipped.
+          SRC_REF: qa
           DEST: prod-css-is-awesome
           DRY_RUN: ${{ inputs.dry_run }}
         run: bash .github/scripts/promote.sh
