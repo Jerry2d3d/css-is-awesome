@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    # `main` is the integration branch; `prod-css-is-awesome` is what the public site
+    # and npm now follow. CI runs on both so the release gate always has a
+    # green run to wait for — promoting never skips verification.
+    branches: [main, qa, prod-css-is-awesome]
   pull_request:
     branches: [main]
 
@@ -83,6 +86,42 @@ jobs:
 
       - name: Deprecation fixer (rename, never write)
         run: npm run test:fix-theme
+
+      # THE guarantee page surfaces rest on: cia never applies a surface by
+      # itself. No default selector may read a `--page-*` token, so dropping
+      # v1.20.0 into an existing site cannot repaint a single band unless the
+      # consumer opts in with cia.surface() or [data-surface].
+      #
+      # That promise is why it was safe to derive a hero for all 24 themes,
+      # and it was enforced by nothing: the test existed in package.json from
+      # the day it was written and ran in no workflow. A guarantee that is not
+      # gated is a guarantee until the first person forgets.
+      - name: Page surfaces stay opt-in (no default selector reads --page-*)
+        run: npm run test:surfaces
+
+      # /now is GENERATED from roadmap/epics/ at build time, which removes the
+      # drift between the page and the files but introduces a new way to be
+      # wrong: an epic whose status line the collector cannot read would
+      # vanish from the page rather than appear wrong there. An absence is
+      # invisible, so an unreadable status line fails here instead.
+      #
+      # Also checks that roadmap/now.json's currentWave names a real folder
+      # and that a "blocked" entry does not point at a PR that has since
+      # closed. Note staleness is a WARNING and must stay one — the log has no
+      # cadence and a quiet month is not a broken build.
+      - name: /now can be generated truthfully
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run check:now
+
+      # The working notes are written quickly, mid-task, with other projects
+      # open. That is exactly the situation the September 2026 privacy sweep
+      # had to clean up after. This catches the mechanical half — absolute dev
+      # paths, sibling checkouts, home directories. The judgement half is not
+      # checkable and stays the author's call; the script says so rather than
+      # letting a green tick imply more than it proved.
+      - name: Working notes carry no leaked paths
+        run: npm run check:notes-privacy
 
       - name: Validate icon pack
         run: npm run validate-icons

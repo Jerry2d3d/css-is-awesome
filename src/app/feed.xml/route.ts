@@ -11,6 +11,7 @@
 // names), and Atom's `<category>`/per-entry `<author>` map 1:1 onto the post
 // schema.
 import { getPostIndex, trackFor } from "@/lib/blog";
+import { getNoteIndex } from "@/lib/notes";
 
 export const dynamic = "force-static";
 
@@ -34,36 +35,83 @@ function toRfc3339(isoDate: string): string {
   return `${isoDate}T00:00:00Z`;
 }
 
+/**
+ * One entry, whatever surface it came from.
+ *
+ * ONE FEED, NOT TWO. A follower wants everything that happened. Splitting
+ * long-form posts and working notes into separate feeds means anyone who
+ * wants both has to find and subscribe to both, and anyone who subscribes to
+ * one silently misses half the output. Atom carries a `<category>` per entry,
+ * so a reader who wants only one kind can filter, and a reader who wants
+ * everything does nothing.
+ */
+type FeedEntry = {
+  title: string;
+  url: string;
+  /** YYYY-MM-DD. */
+  published: string;
+  updated: string;
+  author: string;
+  /** `term` + human `label` for Atom's <category>. */
+  category: { term: string; label: string } | null;
+  summary: string;
+};
+
 export function GET(): Response {
-  // Only dated posts belong in the feed: a post without a publishDate hasn't
-  // been announced, and Atom requires an <updated> per entry anyway.
-  const posts = getPostIndex().filter((p) => p.publishDate !== null);
+  // Only dated items belong in the feed: an undated one hasn't been
+  // announced, and Atom requires an <updated> per entry anyway.
+  const posts: FeedEntry[] = getPostIndex()
+    .filter((p) => p.publishDate !== null)
+    .map((p) => ({
+      title: p.title,
+      url: `${SITE_URL}/blog/${p.slug}/`,
+      published: p.publishDate!,
+      updated: p.updatedDate ?? p.publishDate!,
+      author: p.author,
+      category: p.category
+        ? { term: p.category, label: trackFor(p.category) }
+        : null,
+      summary: p.excerpt,
+    }));
 
-  // getPostIndex() sorts newest-first, so the feed's own <updated> is the
-  // most recent touch across all posts.
-  const feedUpdated = posts
-    .map((p) => p.updatedDate ?? p.publishDate!)
-    .sort()
-    .at(-1);
+  const notes: FeedEntry[] = getNoteIndex()
+    .filter((n) => n.date !== null)
+    .map((n) => ({
+      title: n.title,
+      url: `${SITE_URL}/notes/${n.slug}/`,
+      published: n.date!,
+      updated: n.date!,
+      // Notes carry no author field; the log has one voice.
+      author: "Jerry Hansen",
+      category: { term: "note", label: "Working notes" },
+      summary: n.lede,
+    }));
 
-  const entries = posts
-    .map((p) => {
-      const url = `${SITE_URL}/blog/${p.slug}/`;
-      const updated = toRfc3339(p.updatedDate ?? p.publishDate!);
-      const published = toRfc3339(p.publishDate!);
-      const category = p.category
-        ? `\n    <category term="${escapeXml(p.category)}" label="${escapeXml(trackFor(p.category))}"/>`
+  const items = [...posts, ...notes].sort((a, b) =>
+    b.published.localeCompare(a.published),
+  );
+
+  // The feed's own <updated> is the most recent touch across everything.
+  const feedUpdated = items.map((i) => i.updated).sort().at(-1);
+
+  const entries = items
+    .map((i) => {
+      const url = i.url;
+      const updated = toRfc3339(i.updated);
+      const published = toRfc3339(i.published);
+      const category = i.category
+        ? `\n    <category term="${escapeXml(i.category.term)}" label="${escapeXml(i.category.label)}"/>`
         : "";
-      const summary = p.excerpt
-        ? `\n    <summary>${escapeXml(p.excerpt)}</summary>`
+      const summary = i.summary
+        ? `\n    <summary>${escapeXml(i.summary)}</summary>`
         : "";
       return `  <entry>
-    <title>${escapeXml(p.title)}</title>
+    <title>${escapeXml(i.title)}</title>
     <id>${url}</id>
     <link rel="alternate" type="text/html" href="${url}"/>
     <published>${published}</published>
     <updated>${updated}</updated>
-    <author><name>${escapeXml(p.author)}</name></author>${category}${summary}
+    <author><name>${escapeXml(i.author)}</name></author>${category}${summary}
   </entry>`;
     })
     .join("\n");
@@ -71,7 +119,7 @@ export function GET(): Response {
   const xml = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>${escapeXml(FEED_TITLE)}</title>
-  <subtitle>Engineering the system, and the new CSS found along the way.</subtitle>
+  <subtitle>Engineering the system, the new CSS found along the way, and short working notes. Filter on &lt;category&gt; if you want only one kind.</subtitle>
   <id>${SITE_URL}/feed.xml</id>
   <link rel="self" type="application/atom+xml" href="${SITE_URL}/feed.xml"/>
   <link rel="alternate" type="text/html" href="${SITE_URL}/blog/"/>

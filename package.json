@@ -142,7 +142,9 @@
     "check:rtl": "node scripts/audit-logical-properties.mjs",
     "prebuild": "node scripts/build-playground-scss-map.mjs",
     "verify:playground": "node scripts/build-playground-scss-map.mjs && node scripts/verify-playground-compile.mjs",
-    "test:surfaces": "node --test scripts/test-no-auto-surface.mjs"
+    "test:surfaces": "node --test scripts/test-no-auto-surface.mjs",
+    "check:now": "node --experimental-strip-types scripts/check-now.mjs",
+    "check:notes-privacy": "node scripts/check-notes-privacy.mjs"
   },
   "keywords": [
     "css",

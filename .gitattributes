@@ -1,5 +1,8 @@
-# Auto-mirror from main into this branch (prod-css-is-awesome) preserves
-# public/flags.json — the prod-only flag flips (comingSoon, announcements)
-# live here, never on main. The "ours" merge driver is wired in the
-# mirror-to-prod GitHub Actions workflow.
+# The deployed branches own their own feature flags.
+#
+# `public/flags.json` holds coming-soon and announcement switches that are
+# flipped ON THE DEPLOYED BRANCH (qa or prod-css-is-awesome), not on main.
+# Without this line a promotion would conflict every time one of them differs.
+# With it, the branch being promoted INTO keeps its copy and the merge sails
+# through. The "Promote" workflow configures the matching driver.
 public/flags.json merge=ours

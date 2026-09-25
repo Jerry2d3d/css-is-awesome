@@ -1,0 +1,7 @@
+{
+  "$comment": "Hand-maintained half of /now. Everything else on that page is read from the repository at build time — see src/lib/now.ts for why. Guarded by scripts/check-now.mjs, which fails CI if currentWave names a folder that does not exist or a blocker points at a PR that has since closed.",
+
+  "currentWave": "v1-4",
+
+  "blocked": []
+}

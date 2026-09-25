@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./ThemeEditorDock.module.scss";
 import {
   CATALOG,
@@ -230,6 +230,62 @@ function buildDownloadCSS(
   return header + body;
 }
 
+/**
+ * Build the SCSS *source* of the same theme: `@include cia.theme()` plus the
+ * token block, the shape every theme under `scss/themes/` is authored in.
+ *
+ * WHY BOTH FORMATS EXIST
+ * ----------------------
+ * The `.css` download is a finished artifact: drop it in, done, no build
+ * step. It is the right answer for most people and stays the primary button.
+ *
+ * The `.scss` download is a starting point for someone who already builds
+ * Sass and wants the theme in their own source tree, where they can keep
+ * editing it with the rest of their code, diff it in review, and re-derive
+ * it. Handing that person a compiled file and telling them to reverse it is
+ * the kind of small indignity a design system should not inflict.
+ *
+ * Both are generated from the same resolved token values, so they cannot
+ * disagree about what the theme is.
+ */
+function buildDownloadSCSS(
+  name: string,
+  family: string,
+  defaults: { light: Record<string, string>; dark: Record<string, string> },
+  overrides: { light: Record<string, string>; dark: Record<string, string> },
+): string {
+  const { tokenLines, darkOverrideLines } = emitTokenLines(defaults, overrides);
+  const stamp = new Date().toISOString().slice(0, 10);
+
+  const header =
+    `// ============================================================================\n` +
+    `// THEME — ${name}\n` +
+    `// ============================================================================\n` +
+    `// Generated ${stamp} via the css-is-awesome theme editor. Forked from "${family}".\n` +
+    `//\n` +
+    `// cia.theme() emits \`:root, :root[data-theme="${name}"]\` — the bare :root is\n` +
+    `// what makes this work as a drop-in with no markup change; the attribute form\n` +
+    `// keeps it switchable alongside other themes.\n` +
+    `//\n` +
+    `// Every value below is a resolved literal, including --space-0..9. To keep the\n` +
+    `// density knob live, replace those nine lines with calc(var(--space-unit) * N)\n` +
+    `// — see scss/_spacing-scale.scss upstream.\n` +
+    `// ============================================================================\n` +
+    `@use 'css-is-awesome/api' as cia;\n\n`;
+
+  // Sass hoists a nested @media and scopes the declarations under the parent
+  // selector, so non-colour mode differences go INSIDE the theme block —
+  // the same shape scss/themes/glass.scss uses.
+  let body = `@include cia.theme('${name}') {\n${tokenLines.join('\n')}\n`;
+  if (darkOverrideLines.length) {
+    body +=
+      `\n  /* stylelint-disable no-invalid-position-declaration -- Sass hoists this */\n` +
+      `  @media (prefers-color-scheme: dark) {\n${darkOverrideLines.join('\n')}\n  }\n`;
+  }
+  body += `}\n`;
+
+  return header + body;
+}
 
 function triggerDownload(filename: string, css: string): void {
   const blob = new Blob([css], { type: "text/css;charset=utf-8" });
@@ -441,10 +497,36 @@ export default function ThemeEditorDock() {
     setOverrides({ light: {}, dark: {} });
   }
 
-  function download() {
+  /**
+   * Revert ONE token to the theme default (US-02.4.1).
+   *
+   * Deleting the key is the whole operation: every read in this component
+   * falls back to `defaultsByMode` when a token is absent from the override
+   * bucket, so removal and "restore the default" are the same thing. Writing
+   * the default value back in would look identical on screen and be wrong —
+   * the token would then be pinned to today's value and stop following the
+   * theme if the theme ever changed underneath it.
+   *
+   * `shared` tokens live in the light bucket regardless of the visible tab,
+   * matching how commit() and rowFor() resolve them.
+   */
+  function clearToken(spec: TokenSpec) {
+    const bucketKey = spec.mode === "shared" ? "light" : tabMode;
+    setOverrides((prev) => {
+      if (!(spec.token in prev[bucketKey])) return prev;
+      const next = { ...prev, [bucketKey]: { ...prev[bucketKey] } };
+      delete next[bucketKey][spec.token];
+      return next;
+    });
+  }
+
+  function download(format: "css" | "scss" = "css") {
     const safeName = sanitizeName(nameInput, `${family}-custom`);
-    const css = buildDownloadCSS(safeName, family, defaultsByMode, overrides);
-    triggerDownload(`${safeName}.css`, css);
+    const build = format === "scss" ? buildDownloadSCSS : buildDownloadCSS;
+    triggerDownload(
+      `${safeName}.${format}`,
+      build(safeName, family, defaultsByMode, overrides),
+    );
   }
 
   // Copy a share URL to the clipboard. Flushes any pending debounced URL
@@ -648,15 +730,63 @@ export default function ThemeEditorDock() {
     Object.keys(overrides.light).length > 0 || Object.keys(overrides.dark).length > 0;
 
   // Group catalog so each section's rows render contiguously.
+  /**
+   * Show only rows that differ from the theme default (US-02.4.2).
+   *
+   * The dock lists 176 tokens. After a real editing session the handful you
+   * actually touched are scattered across a dozen collapsed groups, and the
+   * existing "modified" badge tells you THAT something changed without
+   * helping you find it. This filters to exactly those rows.
+   *
+   * sessionStorage, not localStorage: the filter describes the edit you are
+   * in the middle of. Coming back next week to a dock that is mysteriously
+   * hiding most of its rows would be a bug report, not a convenience.
+   */
+  const [diffOnly, setDiffOnly] = useState(false);
+
+  useEffect(() => {
+    try {
+      setDiffOnly(sessionStorage.getItem("cia-dock-diff-only") === "1");
+    } catch {
+      // Private mode, blocked storage: the filter just starts off.
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("cia-dock-diff-only", diffOnly ? "1" : "0");
+    } catch {
+      // Not worth surfacing — the filter still works for this session.
+    }
+  }, [diffOnly]);
+
+  /** Is this token overridden in the bucket its own mode resolves to? */
+  const isModified = useCallback(
+    (spec: TokenSpec) => {
+      const bucket = spec.mode === "shared" ? overrides.light : overrides[tabMode];
+      return (bucket[spec.token] ?? "") !== "";
+    },
+    [overrides, tabMode],
+  );
+
   const byGroup = useMemo(() => {
     const map = new Map<string, TokenSpec[]>();
     for (const spec of CATALOG) {
+      if (diffOnly && !isModified(spec)) continue;
       const arr = map.get(spec.group) ?? [];
       arr.push(spec);
       map.set(spec.group, arr);
     }
     return map;
-  }, []);
+  }, [diffOnly, isModified]);
+
+  // How many rows differ, across the WHOLE catalog rather than the visible
+  // sub-page — so the toggle can say when matches exist somewhere the filter
+  // is not currently showing.
+  const modifiedCount = useMemo(
+    () => CATALOG.filter((spec) => isModified(spec)).length,
+    [isModified],
+  );
 
   // The current live value of ANY color token (not just the one a row is
   // rendering) — same override/default resolution rowFor() uses for its own
@@ -726,6 +856,8 @@ export default function ThemeEditorDock() {
       value,
       defaultValue,
       onCommit: (v: string) => commit(spec, v),
+      // Undefined on an unmodified row, so no revert button renders at all.
+      onReset: value === "" ? undefined : () => clearToken(spec),
     };
 
     switch (spec.type) {
@@ -737,6 +869,14 @@ export default function ThemeEditorDock() {
       case "font":     return <FontRow key={spec.token} {...props} />;
     }
   }
+
+  // While filtering, paging is bypassed: a pager that walks you through
+  // empty pages is worse than no pager. Every group in the current sub-page
+  // that still has a row is shown at once, and the toggle above reports how
+  // many changed rows exist in total so a reader knows to look elsewhere.
+  const groupsToRender = diffOnly
+    ? allGroups.filter((g) => (byGroup.get(g) ?? []).length > 0)
+    : visibleGroups;
 
   return (
     <>
@@ -825,8 +965,30 @@ export default function ThemeEditorDock() {
           </div>
         )}
 
+        {/* Show-diff toggle (US-02.4.2). The dock lists 176 tokens; after a
+            real session the handful you touched are scattered across a dozen
+            collapsed groups, and the existing "modified" badge says THAT
+            something changed without helping you find it. */}
+        <div className={styles.diffBar}>
+          <label className={styles.diffToggle}>
+            <input
+              type="checkbox"
+              checked={diffOnly}
+              onChange={(e) => setDiffOnly(e.target.checked)}
+            />
+            Only changed
+            <span className={styles.diffCount}>{modifiedCount}</span>
+          </label>
+          {diffOnly && modifiedCount > 0 && groupsToRender.length === 0 && (
+            <span className={styles.diffHint}>
+              None in this section — the {modifiedCount} changed row
+              {modifiedCount === 1 ? " is" : "s are"} under another tab.
+            </span>
+          )}
+        </div>
+
         <div className={styles.body} ref={bodyRef}>
-          {visibleGroups.map((groupName) => {
+          {groupsToRender.map((groupName) => {
             const isOpen = openGroup === groupName;
             const specs = byGroup.get(groupName) ?? [];
             return (
@@ -858,7 +1020,7 @@ export default function ThemeEditorDock() {
             );
           })}
 
-          {totalPages > 1 && (
+          {totalPages > 1 && !diffOnly && (
             <nav className={styles.paginator} aria-label="Section pages">
               <button
                 type="button"
@@ -942,10 +1104,25 @@ export default function ThemeEditorDock() {
             >
               🖨 Print
             </button>
+            {/* Two formats, one set of values. `.css` stays primary because
+                it needs no build step and is the right answer for most
+                people; `.scss` is for someone who already builds Sass and
+                wants the theme in their own source tree, where they can keep
+                editing it, diff it in review and re-derive it. Handing that
+                person a compiled file to reverse would be a small
+                indignity. */}
+            <button
+              type="button"
+              className={styles.btn}
+              onClick={() => download("scss")}
+              title="Download the theme's SCSS source — @include cia.theme() plus the tokens"
+            >
+              ↓ .scss
+            </button>
             <button
               type="button"
               className={[styles.btn, styles.btnPrimary].join(" ")}
-              onClick={download}
+              onClick={() => download("css")}
               title="Download the theme as a drop-in tokens-only .css file"
             >
               ↓ Download

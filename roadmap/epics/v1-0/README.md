@@ -18,10 +18,10 @@ The v1.0 release reframes cia as **humans-first, AI-second** and ships the recip
 
 > **🚀 LAUNCHED 2026-09-01.** v1.0.0 was tagged 2026-08-17 at 24/42 stories — a deliberate cut per the ship-then-see rule. The launch milestone itself is now **DONE**: **css-is-awesome@1.1.0 published to npm 2026-09-01** (the first publish ever; dist-tag `latest`, GitHub Release + annotated tag, semantic-release automation proven end to end), the **repo went public 2026-09-01**, and the **docs site is live at <https://jerry2d3d.github.io/css-is-awesome/>** (auto-deploys on every push to `main`). CDN URLs (`cdn.jsdelivr.net/npm/css-is-awesome@1/...`, unpkg) verified resolving. The **18 unshipped stories below are carried forward post-launch** — not dropped; reprioritization waits for real user signal.
 
-| # | Epic | Mission | Effort | Stories | Status (2026-07-16) |
+| # | Epic | Mission | Effort | Stories | Status (rows 01/02 re-checked 2026-09-25; the rest 2026-07-16) |
 |---|---|---|---|---|---|
-| [01](./EPIC-01-recipes-book.md) | **Recipes Book** | Ship the recipe format + first 5 recipes (dialog, combobox, datepicker, data-table, command-palette). Expose via MCP. | ~5-7 days | 13 | 🟡 PARTIAL — 12/13 (re-audited 2026-09-21; all five named recipes shipped, plus the validator. Only the authoring-guide *page* is outstanding) |
-| [02](./EPIC-02-theme-editor-polish.md) | **Theme Editor Polish** | Download `mytheme.scss`/`.css`, share URL, inline contrast validator, reset/diff view. | ~3-4 days | 9 | 🟡 PARTIAL — 5/9 (share URL + name + .css download done; .scss download, contrast validator not built; reset/diff partial) |
+| [01](./EPIC-01-recipes-book.md) | **Recipes Book** | Ship the recipe format + first 5 recipes (dialog, combobox, datepicker, data-table, command-palette). Expose via MCP. | ~5-7 days | 13 | ✅ COMPLETE — 13/13, closed 2026-09-25 (authoring-guide page was the last, rendered from `scss/recipes/README.md`) |
+| [02](./EPIC-02-theme-editor-polish.md) | **Theme Editor Polish** | Download `mytheme.scss`/`.css`, share URL, inline contrast validator, reset/diff view. | ~3-4 days | 9 | ✅ COMPLETE — 9/9, closed 2026-09-25 (.scss export, per-row revert and the diff filter landed together; the contrast validator had shipped earlier under v1.2 EPIC-07 and was recorded late) |
 | [03](./EPIC-03-migration-on-ramp.md) | **Migration On-Ramp** | `npx cia migrate` converts Tailwind config + Bootstrap variables into a cia theme. | ~3-5 days | 6 | ✅ DONE — 6/6 (both converters + docs pages shipped, PRs #6/#7/#8) |
 | [04](./EPIC-04-playground.md) | **Playground** *(moved 2026-09-10)* | Relocated to [v1-1 EPIC-09](../v1-1/EPIC-09-playground.md) — still 0/7, now part of the active recipes-momentum backlog instead of carried-forward limbo. | ~4-6 days | 0 (moved) | 📦 MOVED — see v1-1 EPIC-09 |
 | [05](./EPIC-05-bug-fixes-mcp-polish.md) | **Bug Fixes + MCP Polish** | Round 8 audit cleanup, MCP server tests, /docs/composition page. | ~3-4 days | 7 | ✅ SHIPPED — 7/7 (re-audited 2026-09-21; F5.2 landed as `coverage:mcp`, CI-gated at >= 98%) |
@@ -35,8 +35,8 @@ The v1.0 release reframes cia as **humans-first, AI-second** and ships the recip
 These 18 stories did not block the launch and are **carried forward past v1.0.0** (ship-then-see — they queue behind real user signal):
 
 - **EPIC-04 Playground** — moved to [v1-1 EPIC-09](../v1-1/EPIC-09-playground.md) 2026-09-10, still 0/7, now in the active backlog instead of here.
-- **EPIC-01** — datepicker, data-table, command-palette recipes; authoring guide page; `validate-recipes` lint script.
-- **EPIC-02** — `.scss` theme download; inline contrast validator (F2.3); per-row/per-group reset; diff toggle.
+- ~~**EPIC-01**~~ — all closed 2026-09-25. The recipes and `validate-recipes` shipped through 2026-09-21; the authoring guide page was the last item.
+- ~~**EPIC-02**~~ — all closed 2026-09-25. `.scss` export, per-row revert and the diff filter landed together; the inline contrast validator had already shipped under v1.2 EPIC-07 and simply went unrecorded here.
 - **EPIC-05** — MCP server test suite (F5.2).
 
 ## What's NOT in v1.0 (deferred — see [post-v1-ideas.md](./post-v1-ideas.md))

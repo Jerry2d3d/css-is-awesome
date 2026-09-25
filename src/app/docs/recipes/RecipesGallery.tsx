@@ -52,6 +52,11 @@ export default function RecipesGallery({ recipes }: { recipes: RecipeCard[] }) {
       <p className="lead">
         Copy-paste compositions of components, tokens, and mixins for the patterns you build most.
       </p>
+      <p>
+        Writing one? <Link href="/docs/recipes/authoring">The recipe format</Link>{" "}
+        is the shape every recipe here follows, and the shape{" "}
+        <code>validate-recipes</code> enforces on every push.
+      </p>
 
       {recipes.length > 0 && (
         <section>

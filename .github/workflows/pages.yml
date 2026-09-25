@@ -22,9 +22,19 @@ on:
   # package.json) was always one release behind. Release completes even
   # when there is nothing to release, so ordinary pushes still deploy.
   workflow_run:
-    workflows: ["Release"]
+    # Matches the workflow NAME, not its filename. That workflow was renamed
+    # from "Release" to "Publish to npm" on 2026-09-25, when "Release" became
+    # the name of the one you run by hand. A stale name here does not error -
+    # it just never fires, and the mirror quietly stops.
+    workflows: ["Publish to npm"]
     types: [completed]
-    branches: [main]
+    # Deliberately NO `branches:` filter. That filter matches the branch of
+    # the *Release run*, and a run started by `workflow_run` is attributed to
+    # the default branch rather than to the branch that triggered it. Naming
+    # `prod-css-is-awesome` here therefore matched nothing, while the job's
+    # own `if` still demanded `main` - the two conditions could not both hold
+    # and this workflow could never fire. Release only runs on the promoted
+    # branch now, so following every Release run is already the right filter.
   workflow_dispatch:
 
 permissions:
@@ -47,11 +57,15 @@ jobs:
     # workflow_dispatch has no associated workflow_run, so allow it through.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.head_branch == 'main')
+      github.event.workflow_run.conclusion == 'success'
     steps:
-      - name: Checkout
+      # Pinned for the same reason as in release.yml: on a `workflow_run`
+      # event a bare checkout takes the default branch, which would mirror
+      # `main` to Pages while the public site served the promoted branch.
+      - name: Checkout the promoted branch
         uses: actions/checkout@v4
+        with:
+          ref: prod-css-is-awesome
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

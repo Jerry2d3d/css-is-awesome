@@ -8,6 +8,7 @@ export const docsNav: DocsNavSection[] = [
       { label: "Introduction", href: "/docs" },
       { label: "Three tiers", href: "/docs/three-tiers" },
       { label: "Install", href: "/docs/install" },
+      { label: "Install wizard", href: "/docs/install/wizard" },
     ],
   },
   {
@@ -39,6 +40,11 @@ export const docsNav: DocsNavSection[] = [
     items: [
       { label: "Themes", href: "/docs/authoring/themes" },
       { label: "Icons", href: "/docs/authoring/icons" },
+      // Lives under /docs/recipes/ rather than /docs/authoring/ because it is
+      // rendered from the recipes folder's own README and shares that
+      // section's breadcrumb. It is listed here because this is where a
+      // reader looks for "how do I write one".
+      { label: "Recipes", href: "/docs/recipes/authoring" },
     ],
   },
   {
