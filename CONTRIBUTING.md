@@ -269,7 +269,7 @@ fix the CSS instead of regenerating the baseline.
 
 ## Releases + versioning
 
-See [./VERSIONING.md](./VERSIONING.md) for the SemVer policy and changelog rules. The short version: post-1.0 strict SemVer — breaking changes require a MAJOR bump. Releases are automated by semantic-release from Conventional Commits, but they fire at the end of a promotion chain — `main` → `qa` → `prod-css-is-awesome` — not on merge to `main`. Merging into `main` runs CI and publishes nothing; running the **Promote** workflow with `stage: prod` is what computes the version, generates [CHANGELOG.md](./CHANGELOG.md) (never edit it by hand), tags, publishes to npm, and updates the public site. Never hand-type a version number anywhere — everything reads it from `package.json`.
+See [./VERSIONING.md](./VERSIONING.md) for the SemVer policy and changelog rules. The short version: post-1.0 strict SemVer — breaking changes require a MAJOR bump. Releases are automated by semantic-release from Conventional Commits, but they fire at the end of a promotion chain — `main` → `qa` → `prod-css-is-awesome` — not on merge to `main`. Merging into `main` runs CI and publishes nothing; running the **Release** workflow with `stage: prod`, and approving the request it opens, is what computes the version, generates [CHANGELOG.md](./CHANGELOG.md) (never edit it by hand), tags, publishes to npm, and updates the public site. Never hand-type a version number anywhere — everything reads it from `package.json`.
 
 ## Code of Conduct
 

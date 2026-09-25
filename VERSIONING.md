@@ -171,13 +171,15 @@ feature branch  →  main  →  qa  →  prod-css-is-awesome
                              at it)
 ```
 
-`main` is the integration branch. Merging into it runs CI and reaches nobody — no website change, no npm version. Promotion is a manual click: the **Promote** workflow in the Actions tab takes a `stage` from a dropdown (`status`, `qa`, `prod`) and merges one branch into the next.
+`main` is the integration branch. Merging into it runs CI and reaches nobody — no website change, no npm version. Promotion is a manual click: the **Release** workflow in the Actions tab takes a `stage` from a dropdown (`status`, `qa`, `prod`) and merges one branch into the next.
+
+Each stage is a GitHub **Environment**, so the repository's [Deployments](https://github.com/Jerry2d3d/css-is-awesome/deployments) page shows `qa` and `production` as boxes with their own history of what shipped when. **`production` requires an approval**: choosing that stage opens a request that waits for a reviewer, and nothing merges until it is approved. The dropdown is the request; the approval is the gate.
 
 Reaching `prod-css-is-awesome` is what publishes. At that point semantic-release computes the next version from the commit messages, regenerates `CHANGELOG.md`, builds the bundles (`prepublishOnly` runs `build:css:all`), tags `vX.Y.Z`, and publishes to npm; Vercel rebuilds the public site from the same branch. Nobody hand-types a version number anywhere — the hero, the MCP server, and the docs all read it from `package.json`.
 
 **Why npm sits behind the strictest gate:** a website can be corrected by promoting again, but an npm version cannot be unpublished after 72 hours, and never once anyone depends on it. The irreversible step is the deliberate one. It also keeps the version on the site and the version on npm in agreement.
 
-The cost of that gate is that you have to remember to promote, or releases quietly stop. Running **Promote** with `stage: status` changes nothing and prints how many commits are waiting at each hop.
+The cost of that gate is that you have to remember to promote, or releases quietly stop. Running **Release** with `stage: status` changes nothing and prints how many commits are waiting at each hop.
 
 What remains manual:
 
