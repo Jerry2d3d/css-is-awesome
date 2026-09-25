@@ -11,25 +11,32 @@
 # Pick a stage when you click "Run workflow":
 #
 #   status  - change nothing, just print where every branch sits.
-#   qa      - merge main into qa.
-#   prod    - merge qa into prod-css-is-awesome. This one is public.
+#   qa      - merge main into qa, and stop there.
+#   prod    - merge main into qa, WAIT FOR AN APPROVAL, then merge qa into
+#             prod-css-is-awesome. This one is public.
 #
-# THE ORDER IS NOT OPTIONAL. Production is only ever built from `qa`, and the
-# two stages are deliberately two separate runs:
+# THE ORDER IS NOT OPTIONAL, AND `prod` ENFORCES IT RATHER THAN ASSUMING IT.
 #
-#   1. Release to qa.
-#   2. You and anyone else actually test it there.
-#   3. Release to prod, and approve it.
+# Choosing `prod` runs the qa job FIRST. So one run does this:
 #
-# Step 2 is the entire reason a qa branch exists, so the workflow does not
-# offer a way to collapse it. An earlier version of this file had a tickbox
-# that queued production straight after qa in the same run; it was removed
-# because "faster" and "tested" were pulling in opposite directions and the
-# tickbox let speed win by accident.
+#   1. main -> qa, pushed immediately.
+#   2. The run parks on production's approval gate.
+#   3. You and anyone else test qa while it waits.
+#   4. You approve, and qa -> prod-css-is-awesome.
 #
-# `ref` therefore applies to the qa stage ONLY. The prod stage always takes
-# whatever is on `qa` and has no override, so there is no argument you can
-# pass that reaches production without going through qa first.
+# The wait IS the testing window. That is the whole design: the run does not
+# sit idle waiting for a human to start a second run, it sits waiting for a
+# human to say the thing they just staged is good.
+#
+# Choosing `prod` when qa was already released changes nothing — step 1 finds
+# qa already contains main and reports "nothing to promote". Choosing `qa`
+# alone stages without proposing anything further, which is what you want
+# while work is still landing on main.
+#
+# `ref` applies to the qa step only. The prod step hard-codes `qa` as its
+# source and never reads the override, so there is no argument anyone can
+# pass that puts something into production without it passing through qa on
+# the way.
 #
 # WHY THERE IS A JOB PER STAGE
 # ----------------------------
@@ -154,13 +161,14 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ---------------------------------------------------------------------------
-  # qa - staging. No approval gate: not needing one is the point of a staging
-  # branch.
+  # qa - staging. Runs for BOTH stages: on its own when you pick `qa`, and as
+  # the first half of a production release. No approval gate, because not
+  # needing one is the point of a staging branch.
   # ---------------------------------------------------------------------------
   qa:
     name: Release to qa
     needs: state
-    if: inputs.stage == 'qa'
+    if: inputs.stage == 'qa' || inputs.stage == 'prod'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
@@ -187,16 +195,17 @@ jobs:
             echo
             echo "- CI is now running on \`qa\`."
             echo "- Vercel builds a deployment for the \`qa\` branch, served at <https://qa.cssisawesome.com>. Preview deployments sit behind Vercel's login unless deployment protection is turned off, so a login page there is the protection working, not a broken build."
-            echo "- **Test it. That is what this stage is for.** Production is a separate run, started by hand, once you and anyone else are satisfied:"
-            echo
-            echo "  - Actions tab: **Release** -> Run workflow -> **stage: prod**"
-            echo "  - Or from a terminal:"
-            echo
-            echo '    ```'
-            echo "    gh workflow run Release -f stage=prod"
-            echo '    ```'
-            echo
-            echo "  Production always takes whatever is on \`qa\` — there is no way to pass it anything else — and it still stops on its approval gate before a single commit moves."
+            if [ "${{ inputs.stage }}" = "prod" ]; then
+              echo "- **This run is now waiting for your approval** before it touches production. Scroll up: the \`Review deployments\` button is on this page."
+              echo "- That wait is the point. Test qa now, take as long as you need, and approve only when you are satisfied. Nothing reaches the public site or npm until you do."
+            else
+              echo "- **Test it. That is what this stage is for.**"
+              echo "- When you are ready to go public, run **Release** again with **stage: prod**. That re-stages main to qa, then waits for your approval before promoting."
+              echo
+              echo '  ```'
+              echo "  gh workflow run Release -f stage=prod"
+              echo '  ```'
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ---------------------------------------------------------------------------
@@ -206,7 +215,10 @@ jobs:
   # ---------------------------------------------------------------------------
   prod:
     name: Release to production
-    needs: state
+    # `needs: qa` is load-bearing, not ordering sugar. Production takes
+    # whatever is on `qa`, so if the qa step failed or was skipped, this job
+    # would happily promote a stale branch and call it a release.
+    needs: [state, qa]
     if: inputs.stage == 'prod'
     runs-on: ubuntu-latest
     timeout-minutes: 10
