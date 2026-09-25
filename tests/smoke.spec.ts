@@ -77,9 +77,32 @@ const BLOG_ROUTES = readdirSync(path.join(process.cwd(), "src", "content", "blog
   .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
   .map((f) => `/blog/${f.replace(/\.md$/, "")}`);
 
+/**
+ * Every working note, derived from `src/content/notes/*.md` with the same
+ * skip rule as src/lib/notes.ts. Derived rather than listed for the third
+ * time in this file, for the reason the two comments above give: every
+ * hand-maintained route list here eventually fell behind the content.
+ */
+const NOTE_ROUTES = readdirSync(path.join(process.cwd(), "src", "content", "notes"))
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+  .map((f) => `/notes/${f.replace(/\.md$/, "")}`);
+
+// The two devlog index pages. /now is generated from the repo at build time,
+// so a broken epic status line or a missing roadmap/now.json shows up here as
+// a failing route rather than as a quietly empty section.
+const DEVLOG_ROUTES = ["/now", "/notes"] as const;
+
 // Dedupe and preserve order (top-level first, then docs, then the rest).
 const ROUTES = Array.from(
-  new Set([...TOP_LEVEL_ROUTES, ...DOCS_ROUTES, ...UNLISTED_ROUTES, ...RECIPE_ROUTES, ...BLOG_ROUTES]),
+  new Set([
+    ...TOP_LEVEL_ROUTES,
+    ...DOCS_ROUTES,
+    ...UNLISTED_ROUTES,
+    ...RECIPE_ROUTES,
+    ...BLOG_ROUTES,
+    ...DEVLOG_ROUTES,
+    ...NOTE_ROUTES,
+  ]),
 );
 
 /**

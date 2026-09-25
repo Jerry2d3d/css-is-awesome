@@ -19,7 +19,7 @@ import LogoMark from "@/components/LogoMark";
 import LightDarkToggle from "@/components/LightDarkToggle";
 import ThemeSelect from "@/components/ThemeSelect";
 
-type NavId = "home" | "docs" | "themes" | "playground" | "examples" | "compare" | "showcase" | "blog" | "about";
+type NavId = "home" | "docs" | "themes" | "playground" | "examples" | "compare" | "showcase" | "blog" | "now" | "about";
 
 // `prefetch: false` on the less-frequently-clicked links. next/link defaults
 // to prefetch: true, and since this header renders on every page, all 8
@@ -36,6 +36,11 @@ const NAV: { id: NavId; label: string; href: string; prefetch?: boolean }[] = [
   { id: "compare",  label: "Compare",  href: "/compare" },
   { id: "showcase", label: "Showcase", href: "/showcase", prefetch: false },
   { id: "blog",     label: "Blog",     href: "/blog",     prefetch: false },
+  // Sits next to Blog on purpose: both answer "is this alive", and a reader
+  // who wants that answer looks in one place. /notes is deliberately NOT in
+  // the nav — it is reached from /now and from About, because a working log
+  // is something you go looking for, not something the site pushes at you.
+  { id: "now",      label: "Now",      href: "/now",      prefetch: false },
   { id: "about",    label: "About",    href: "/about",    prefetch: false },
 ];
 

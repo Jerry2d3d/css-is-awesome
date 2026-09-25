@@ -1,0 +1,73 @@
+@use 'mixins' as m;
+
+/* ============================================================
+   /notes/<slug> — co-located styles.
+   Tokens and cia mixins only.
+   ============================================================ */
+
+.shell {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+}
+
+.back {
+  @include m.font($size: 2, $color: text-secondary);
+  margin: 0 0 m.space(5);
+}
+
+.head {
+  margin-bottom: m.space(5);
+
+  h1 {
+    @include m.font(medium, 8, $color: text-primary, $lh: 1.2);
+    margin: 0;
+  }
+}
+
+.date {
+  @include m.font($size: 2, $color: text-tertiary);
+  margin: 0 0 m.space(2);
+}
+
+.tags {
+  @include m.flex($gap: m.space(2), $wrap: wrap);
+  list-style: none;
+  margin: m.space(3) 0 0;
+  padding: 0;
+
+  li {
+    @include m.font($size: 1, $color: text-tertiary);
+    @include m.border(1px, solid, border-default);
+    border-radius: 999px;
+    padding: m.space(1) m.space(3);
+  }
+}
+
+/* The rendered markdown. Kept deliberately plain: a note is prose, and
+   the global type rules already carry the system's voice. */
+.body {
+  @include m.font($size: 3, $color: text-primary, $lh: 1.75);
+
+  p, ul, ol, blockquote {
+    margin: 0 0 m.space(4);
+  }
+
+  h2 {
+    @include m.font(medium, 5, $color: text-primary);
+    margin: m.space(6) 0 m.space(3);
+  }
+
+  h3 {
+    @include m.font(medium, 4, $color: text-primary);
+    margin: m.space(5) 0 m.space(2);
+  }
+
+  a { text-decoration: underline; }
+
+  blockquote {
+    @include m.border(2px, solid, border-default, $sides: left);
+    padding-left: m.space(4);
+    color: var(--text-secondary);
+  }
+}

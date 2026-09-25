@@ -61,6 +61,12 @@ export default function AboutPage() {
         <p>The <a href="/themes">theme editor</a> uses real UI components to validate a theme against something concrete, but those components aren't a product cia ships — they're test fixtures. cia doesn't have an opinion on your markup or your framework. You own your components; cia provides the styling system underneath them.</p>
         <p>If you want a system that looks like every other site, reach for something else. If you want one that gives you the tools and gets out of the way, this is it.</p>
 
+        <hr className="brush-rule" />
+
+        <h2>What&apos;s happening right now</h2>
+        <p>This page is the history. For the present tense there are two other surfaces. <a href="/now">/now</a> is generated from the repository when the site builds — the latest release, what is part-finished, what is next in the current wave, and what is blocked and why. Nothing on it is typed by hand except one paragraph and the blocked list, because every hand-maintained status claim in this project has eventually gone stale.</p>
+        <p><a href="/notes">Working notes</a> are the other half: short dated entries about what was being done and what it taught. Lighter than a <a href="/blog">blog post</a>, heavier than a commit message. There are gaps in them, and the gaps are not a problem.</p>
+
         <p style={{ marginTop: '3rem' }}><Seal>Approved · v{version}</Seal></p>
       </article>
     </>

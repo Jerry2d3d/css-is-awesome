@@ -112,6 +112,8 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 | Tabs ARIA shim recipe | `src/app/docs/recipes/tabs-aria/page.tsx` |
 | v0.7 → v0.8 migration | `MIGRATION.md` |
 | Full breaking-change history | `CHANGELOG.md` |
+| **What is being worked on right now** (latest release, in flight, next, blocked) | `/now` on the site — generated at build time from `roadmap/epics/` and `package.json` by `src/lib/now.ts`. Ask this before asking whether a feature exists yet. |
+| Dated working notes (what was done and what it taught) | `/notes` on the site, source in `src/content/notes/` |
 | Deeper architecture rules | `AGENTS.md` |
 
 ## Common AI agent traps
