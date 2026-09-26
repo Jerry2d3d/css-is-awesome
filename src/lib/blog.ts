@@ -134,6 +134,33 @@ const marked = new Marked({
       // the Example component's Code block.
       return `<div class="recipe-codeblock" data-lang="${escapeAttr(lang ?? "")}">${langLabel}<pre tabindex="0" role="region" aria-label="Code sample"><code${langClass}>${escapeHtml(text)}\n</code></pre></div>`;
     },
+    /**
+     * Headings carry an id derived from their text, so any section of a post
+     * can be linked to.
+     *
+     * Posts already cross-reference themselves — "the before and after is at
+     * the bottom" is only useful if it can be a link. Without ids the author
+     * has to hand-write `<a id>` anchors into the markdown and keep them in
+     * sync with the headings above them, which is one more pair of things
+     * that drift apart.
+     *
+     * Purely additive: an attribute appears in the HTML and nothing moves on
+     * the page, so no existing post renders differently.
+     */
+    heading({ text, depth }) {
+      const id = text
+        .toLowerCase()
+        // Strip inline markup before slugging, or `\`grid(auto)\`` becomes
+        // a slug full of backticks and parentheses.
+        .replace(/<[^>]+>/g, "")
+        .replace(/[^\w\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-");
+      const inner = marked.parseInline(text) as string;
+      return `<h${depth} id="${id}">${inner}</h${depth}>
+`;
+    },
+
     // GFM task-list checkboxes are disabled (non-interactive) and purely
     // decorative — hide them from the accessibility tree rather than leave
     // an unlabeled form control (axe `label`, critical). Mirrors recipes.ts.

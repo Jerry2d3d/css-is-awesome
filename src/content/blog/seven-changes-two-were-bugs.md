@@ -40,7 +40,7 @@ broke at exactly the widths a breakpoint-free layout exists to survive.
 The fix is one call: `minmax(min(16rem, 100%), 1fr)`. Above the minimum the
 two are identical, because `min(16rem, 100%)` simply *is* 16rem there. It
 can only differ where the old form was already overflowing, which is a
-pleasant property for a fix to have.
+pleasant property for a fix to have. ([before and after](#1-gridauto))
 
 **`button-reset` removed the keyboard focus indicator.** It carried
 `&:focus { outline: none; }`. That kills the outline for everyone, including
@@ -56,7 +56,7 @@ forgetful, they were paying a tax.
 A consumer calling `button-reset` on their own element got no such warning.
 It is now scoped to `:focus:not(:focus-visible)`, which changes nothing for
 mouse users and gives keyboard users back something they should never have
-lost.
+lost. ([before and after](#2-button-reset))
 
 ## Overlays now close, instead of vanishing
 
@@ -88,6 +88,7 @@ its own page on the way out.
 
 Engines without `allow-discrete` open and close instantly, exactly as they
 did before. `prefers-reduced-motion` still switches the whole thing off.
+([before and after](#3-overlay-close-animations))
 
 ## A dropdown now knows what opened it
 
@@ -129,7 +130,7 @@ declaration, not a specificity fight:
 ```
 
 And the mixins take the area as an argument if you would rather set it once:
-`@include cia.dropdown($area: block-start)`.
+`@include cia.dropdown($area: block-start)`. ([before and after](#4-anchor-positioning))
 
 ## One `@include` no longer means one gap
 
@@ -144,7 +145,7 @@ gap: var(--stack-gap, #{space(4)});
 The library never declares that property anywhere. It is undefined until you
 set it, so the computed value is identical to before unless you opt in. The
 argument sets the rule; the custom property handles the exception; neither
-needs to know about the other.
+needs to know about the other. ([before and after](#5-stack-gap))
 
 ## The number I refused to copy
 
@@ -166,6 +167,7 @@ as one rather than smuggled in under a unit change.
 `field-sizing: content` is available as `$grow: true`, capped by
 `$max-height`. It is Chromium-only at the time of writing, which is exactly
 why it is opt-in and why the fixed minimum stays as the floor.
+([before and after](#6-textarea))
 
 ## Dialogs open without JavaScript
 
@@ -184,6 +186,7 @@ explicit that `.showModal()` remains the fallback — and that you still reach
 for the method when something other than a click decides to open it. A
 failed save, a route change, a timeout. A command is for *the user pressed
 this button*; everything else is still a method call.
+([before and after](#7-dialog-triggers))
 
 ## What to actually do
 
@@ -195,3 +198,134 @@ yourself and you are testing in a browser that supports anchors, check them
 once. If ours is in your way, one custom property moves it.
 
 Seven claims, seven true. I will take that hit rate.
+
+---
+
+## Every change, before and after
+
+The compiled output, not the source. This is what actually lands in your
+stylesheet.
+
+### 1. grid(auto)
+
+```css
+/* before — refuses to shrink below 16rem, so it overflows a narrower parent */
+grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+
+/* after — identical above 16rem, shrinks instead of overflowing below it */
+grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+```
+
+### 2. button-reset
+
+```css
+/* before — removes the focus ring for everyone, keyboard users included */
+.btn:focus { outline: none; }
+
+/* after — mouse users unchanged, keyboard users keep an indicator */
+.btn:focus:not(:focus-visible) { outline: none; }
+```
+
+### 3. Overlay close animations
+
+```css
+/* before — describes arriving only; the element is simply gone on close */
+.modal[open] {
+  animation: cia-modal-open 240ms ease both;
+}
+@keyframes cia-modal-open {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* after — one declaration, both directions */
+.modal {
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+  transition:
+    opacity 240ms ease,
+    transform 240ms ease,
+    display 240ms ease allow-discrete,
+    overlay 240ms ease allow-discrete;
+}
+.modal[open] {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  @starting-style { opacity: 0; transform: scale(0.96) translateY(8px); }
+}
+```
+
+The `::backdrop` gets the same treatment, which is the half you notice most.
+
+### 4. Anchor positioning
+
+```css
+/* before — nothing. You named the trigger and positioned the menu yourself. */
+
+/* after — inside @supports (anchor-name: --cia) */
+.menu {
+  position: absolute;
+  margin: 0;
+  inset: auto;
+  position-area: var(--cia-anchor-area, block-end span-inline-end);
+  position-try-fallbacks: var(--cia-anchor-try, flip-block);
+  margin-block-start: var(--cia-anchor-gap, 1px);
+  min-inline-size: max(12rem, anchor-size(inline));
+}
+```
+
+To move it, set one property rather than out-specify the library:
+
+```css
+.my-menu { --cia-anchor-area: block-start span-inline-start; }
+```
+
+### 5. stack gap
+
+```css
+/* before — one gap per @include */
+.stack { gap: var(--space-4, 1rem); }
+
+/* after — same computed value; one child can now differ */
+.stack { gap: var(--stack-gap, var(--space-4, 1rem)); }
+```
+
+```css
+.form .tight-group { --stack-gap: 0.25rem; }
+```
+
+### 6. textarea
+
+```css
+/* before — a pixel height that ignores the theme's leading */
+textarea { min-height: 6rem; }
+
+/* after — four line boxes; 6rem at today's line-height of 1.5 */
+textarea { min-block-size: 4lh; }
+```
+
+Opt in to growing with the content:
+
+```scss
+.comment { @include cia.textarea-base($grow: true); }
+```
+
+```css
+.comment { min-block-size: 4lh; field-sizing: content; max-block-size: 12lh; }
+```
+
+### 7. Dialog triggers
+
+```html
+<!-- before — the button does nothing without script -->
+<button id="open">Open dialog</button>
+<dialog data-cia-recipe="dialog">…</dialog>
+<script>open.onclick = () => dlg.showModal()</script>
+
+<!-- after — no script at all -->
+<button commandfor="my-dialog" command="show-modal">Open dialog</button>
+<dialog id="my-dialog" data-cia-recipe="dialog">…</dialog>
+```
+
+`.showModal()` is still the right call when app logic opens the dialog, and
+still the fallback on engines below the support floor.
