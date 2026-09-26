@@ -80,16 +80,42 @@
 // ----------------------------------------------------------------------------
 // TEXTAREA
 // ----------------------------------------------------------------------------
+// `$min-height` is measured in `lh` — line boxes — not rem.
+//
+// A textarea's job is to show N lines of text, and `lh` says exactly that:
+// it resolves against the element's own computed line-height, so a theme
+// that loosens its leading gets a taller box automatically instead of a
+// tighter-looking one at the same pixel height.
+//
+// DELIBERATE DEVIATION: the research this came from specifies `3lh`. That is
+// 4.5rem at the shipped line-height of 1.5, against today's 6rem, and would
+// silently shrink every textarea in every consumer project by a quarter.
+// `4lh` is the same height as today at the current leading AND gains the
+// scaling behaviour, so this is an improvement nobody has to notice. Change
+// the 4 to a 3 if a shorter default is actually wanted; that is a design
+// decision, not a bug fix, and it should be made as one.
+//
+// `$grow: true` opts into `field-sizing: content`, where the box grows with
+// what is typed and `$max-height` caps it. Chromium-only at the time of
+// writing, which is why it is opt-in and why the fixed min-height stays as
+// the floor: engines without it render exactly the non-growing textarea.
 @mixin textarea-base(
   $py: 2,
   $px: 2,
   $r: md,
-  $min-height: 6rem,
-  $resize: vertical
+  $min-height: 4lh,
+  $resize: vertical,
+  $grow: false,
+  $max-height: 12lh
 ) {
   @include input-base($py: $py, $px: $px, $r: $r);
-  min-height: $min-height;
+  min-block-size: $min-height;
   resize: $resize;
+
+  @if $grow {
+    field-sizing: content;
+    max-block-size: $max-height;
+  }
 }
 
 // ----------------------------------------------------------------------------
