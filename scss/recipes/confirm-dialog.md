@@ -101,7 +101,7 @@ Notes on the markup:
 
 ## Interactivity
 
-Modal variant — identical to `dialog`: open with `dialogEl.showModal()`, close with `dialogEl.close()`. Reject fires first if the user chose it (or Esc/backdrop), Accept fires only from its own button.
+Modal variant — identical to `dialog`. Prefer the declarative trigger, `<button commandfor="confirm-dlg" command="show-modal">`, which needs no script; fall back to `dialogEl.showModal()` on engines without invoker commands, or when app logic rather than a click decides to open it. Close with `command="close"` or `dialogEl.close()`. Reject fires first if the user chose it (or Esc/backdrop), Accept fires only from its own button.
 
 Popover variant (no native element does this one for you, so a consumer owns a little more):
 - Open: set the trigger's `aria-expanded="true"`, un-hide the panel, move focus into it (onto Reject, since it's `autofocus`'d).

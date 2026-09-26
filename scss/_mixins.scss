@@ -954,7 +954,20 @@ $_flex-align: (
   color: inherit;
   cursor: pointer;
   text-decoration: none;
-  &:focus { outline: none; }
+
+  // Scoped to :focus:not(:focus-visible), NOT bare :focus.
+  //
+  // The bare form removed the outline for keyboard users too, so
+  // `button-reset` silently produced an element with no visible focus at
+  // all. Every caller inside cia works around it by adding `focus-ring`
+  // immediately afterwards, and one of them carries a comment explaining
+  // why - which is the tell that the default was wrong rather than the
+  // callers being forgetful. A consumer calling `button-reset` on their own
+  // element had no such warning.
+  //
+  // Nothing changes for mouse users: they were never getting an outline in
+  // modern browsers, which apply the UA focus ring on :focus-visible only.
+  &:focus:not(:focus-visible) { outline: none; }
 }
 
 @mixin list-reset {

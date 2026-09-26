@@ -13,10 +13,13 @@ You need a modal — confirm, info, form, lightbox — that traps focus while op
 ## Structure (raw HTML)
 
 ```html
-<dialog data-cia-recipe="dialog" aria-labelledby="my-dialog-title">
+<!-- Opens the dialog with no JavaScript at all. -->
+<button commandfor="my-dialog" command="show-modal">Open dialog</button>
+
+<dialog id="my-dialog" data-cia-recipe="dialog" aria-labelledby="my-dialog-title">
   <header data-slot="header">
     <h2 id="my-dialog-title">Dialog title</h2>
-    <button data-slot="close" aria-label="Close" formmethod="dialog">×</button>
+    <button data-slot="close" aria-label="Close" commandfor="my-dialog" command="close">×</button>
   </header>
   <main data-slot="body">
     Dialog body content goes here.
@@ -29,6 +32,9 @@ You need a modal — confirm, info, form, lightbox — that traps focus while op
 ```
 
 Notes on the markup:
+- **`commandfor` + `command` open and close it with no script.** The button points at the dialog's `id`; `show-modal` is the declarative equivalent of `.showModal()`, so you get the focus trap, Esc handling, `aria-modal` and backdrop without writing a line of JavaScript. This is the default here because most dialogs are opened by a button, and a button is markup.
+- **Support:** invoker commands are newer than cia's stated browser floor, so treat this as the enhancement and `.showModal()` as the fallback. On an engine without them the button does nothing, which means you still wire the JS path below if you need to support one. The Framework examples section shows both.
+- **Keep `.showModal()` when the open is driven by app logic** — a failed save, a route change, a timeout. A command is for "the user pressed this button"; anything else is still a method call.
 - `<dialog>` element is the source of truth — its `.showModal()` method does focus trap + Esc handling + `aria-modal` + backdrop, all natively
 - `aria-labelledby` points to the title element so screen readers announce the dialog by name on open
 - `formmethod="dialog"` on the cancel/close buttons closes the dialog without a JS handler when the dialog is inside a `<form>`
@@ -69,7 +75,9 @@ Native behavior of `<dialog>.showModal()`:
 - Disables interaction with the page behind it
 - Exposes `::backdrop` for backdrop styling
 
-To open: `dialogEl.showModal()`. To close: `dialogEl.close(optionalReturnValue)`. The return value is readable on the `close` event for "Cancel vs Confirm" wiring.
+Two ways in, and they are not competing. A button that opens a dialog should use `commandfor`/`command` — it is markup describing markup, it needs no script, and it keeps working if the JS bundle fails. Reach for the methods when something other than a click decides to open it.
+
+To open from script: `dialogEl.showModal()`. To close: `dialogEl.close(optionalReturnValue)`. The return value is readable on the `close` event for "Cancel vs Confirm" wiring.
 
 Consumer responsibilities:
 - Show / close from your component logic (button clicks, route changes, etc.)
