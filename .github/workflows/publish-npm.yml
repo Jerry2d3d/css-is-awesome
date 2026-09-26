@@ -54,6 +54,26 @@
 name: Publish to npm
 
 on:
+  # CALLED DIRECTLY by the Release workflow's prod stage. This is the path
+  # that actually runs.
+  #
+  # The workflow_run trigger below CANNOT fire for a normal release, and that
+  # is a GitHub rule rather than a bug here: a push made with the default
+  # GITHUB_TOKEN does not trigger workflows, to stop runs from recursively
+  # triggering themselves. The Release workflow pushes `prod-css-is-awesome`
+  # with exactly that token, so CI never runs on the push, so nothing
+  # downstream of CI ever fires.
+  #
+  # That cost a release on 2026-09-25: the promotion succeeded, Vercel
+  # rebuilt the public site (its own integration is unaffected), and npm
+  # silently stayed on the previous version because this workflow was waiting
+  # for a CI run that could never happen.
+  workflow_call:
+
+  # Kept for the case it still covers: a HUMAN pushing prod-css-is-awesome
+  # directly, which does trigger CI. Harmless alongside the call above — if
+  # both somehow ran, semantic-release finds no new releasable commits the
+  # second time and publishes nothing.
   workflow_run:
     workflows: ["CI"]
     types: [completed]
@@ -73,11 +93,15 @@ jobs:
     name: Publish to npm + GitHub Release
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Only run if CI succeeded on a push event to the promoted branch.
+    # A direct call from Release has already cleared the real gate: a human
+    # approved the production environment. The workflow_run path keeps its
+    # original condition, which only makes sense for that event.
     if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'prod-css-is-awesome'
+      github.event_name == 'workflow_call' || (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_branch == 'prod-css-is-awesome'
+      )
     permissions:
       contents: write
       issues: write

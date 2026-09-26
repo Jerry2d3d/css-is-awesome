@@ -265,3 +265,21 @@ jobs:
             echo "- The public website updates once Vercel finishes building the production branch."
             echo "- Watch the Actions tab. The npm version and the site version should end up in agreement."
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------------
+  # Publishing is part of the release, not a consequence of it.
+  #
+  # It used to hang off CI running on prod-css-is-awesome. That can never
+  # happen: the prod job pushes with the default GITHUB_TOKEN, and GitHub
+  # does not trigger workflows from such pushes. So the promotion succeeded,
+  # the website updated, and npm quietly stayed where it was.
+  #
+  # Calling the publish workflow directly removes the dependency on a trigger
+  # that cannot fire. The approval on the prod job above is what gates it.
+  # ---------------------------------------------------------------------------
+  publish:
+    name: Publish to npm
+    needs: prod
+    if: inputs.stage == 'prod' && inputs.dry_run != true && needs.prod.result == 'success'
+    uses: ./.github/workflows/publish-npm.yml
+    secrets: inherit
