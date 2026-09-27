@@ -902,31 +902,45 @@ const handlers = {
    * that map is the single source both the :root emission and the mixin
    * fallback are generated from.
    */
-  _componentDefaults() {
-    if (this.__componentDefaults) return this.__componentDefaults;
+  _libraryDefaults() {
+    if (this.__libraryDefaults) return this.__libraryDefaults;
     const out = {};
-    // The path is built OUTSIDE the try. A typo in a constant name is a
-    // ReferenceError, and a catch wide enough to swallow one turns a
-    // five-second mistake into a field that is silently always null — which
-    // is exactly what happened while writing this.
-    const file = path.join(SCSS_DIR, 'theme', '_components.scss');
+
+    // READ WHAT THE LIBRARY ACTUALLY EMITS, not one source map that feeds
+    // part of it.
+    //
+    // The first version of this read only the `$components` Sass map, which
+    // holds 34 per-component knobs. The library emits 193 defaults, all in a
+    // single `:where(:root)` block - the whole spacing scale, the radii, the
+    // component knobs, everything. So `--btn-radius` reported a default and
+    // `--space-2xs` reported null, despite both being declared side by side
+    // in the shipped CSS.
+    //
+    // That is worse than having no field at all. A consumer reading null
+    // concludes there is no default, and then either invents a value or
+    // leaves a gap - which is the exact mistake this field exists to
+    // prevent. Caught by a downstream exporter checking `--space-2xs`
+    // against the built output and finding a declaration the MCP server said
+    // did not exist.
+    //
+    // `:where(:root)` is specificity (0,0,0) deliberately, so any theme
+    // declaration outranks it regardless of load order. That is what makes
+    // these defaults rather than opinions.
+    const dist = path.join(PROJECT_ROOT, 'dist', 'css-is-awesome.css');
     try {
-      const src = fs.readFileSync(file, 'utf8').replace(/\/\/[^\n]*/g, '');
-      // The map closes with `) !default;`, and the file is CRLF. Values
-      // contain commas inside `var(--radius-md, 0.25rem)`, so a value
-      // cannot be matched as "everything up to the next comma" — it is
-      // everything up to the end of the line, minus the trailing comma.
-      const map = /\$components\s*:\s*\(([\s\S]*?)\)\s*!default/.exec(src);
-      if (map) {
-        for (const m of map[1].matchAll(/^[ \t]*([a-z0-9-]+)[ \t]*:[ \t]*(.+?),?[ \t]*\r?$/gim)) {
-          out[`--${m[1]}`] = m[2].trim();
+      const css = fs.readFileSync(dist, 'utf8');
+      const block = /:where\(:root\)\s*\{([\s\S]*?)\n\}/.exec(css);
+      if (block) {
+        for (const m of block[1].matchAll(/^[ \t]*(--[a-z0-9-]+)[ \t]*:[ \t]*([^;]+);/gim)) {
+          out[m[1]] = m[2].trim();
         }
       }
     } catch {
-      // Absent or unparseable: the field simply does not appear. It is extra
-      // information, never a reason to fail a lookup.
+      // dist/ is absent in a source checkout that has not been built. The
+      // field then reports null, which is honest: nothing was read.
     }
-    this.__componentDefaults = out;
+
+    this.__libraryDefaults = out;
     return out;
   },
 
@@ -970,14 +984,25 @@ const handlers = {
         : null,
       // Contract 1.2: the feature an OPTIONAL token enables (null for required).
       feature: entry.required ? null : (entry.feature || null),
-      // What this token resolves to when NO theme declares it. Null for
-      // tokens with no library-side declaration; a concrete CSS value for
-      // the per-component knobs, which are optional but never unset.
+      // What this token resolves to when NO theme declares it, read from
+      // the `:where(:root)` block the library actually emits.
+      //
+      // Null means the library emits no default for this token, NOT that it
+      // resolves to nothing useful - a REQUIRED token has no library default
+      // precisely because every theme must declare it. Read this together
+      // with `required`.
+      //
+      // Careful with a value that merely APPEARS inside another token's
+      // default. `--tag-padding-y: var(--space-2xs, 0.25rem)` does not give
+      // `--space-2xs` a default; it gives tag-padding-y a fallback for the
+      // case where --space-2xs is unset. Only a declaration of the token
+      // itself counts, which is why this reads declarations rather than
+      // searching for the name.
       //
       // `themeValues` below answers "what do the shipped themes set it to".
       // This answers "and what if none of them do", which is the question a
       // consumer writing their own theme actually has.
-      libraryDefault: handlers._componentDefaults()[entry.name] || null,
+      libraryDefault: handlers._libraryDefaults()[entry.name] || null,
       themeValues,
       referencedBy: referencedBy.slice(0, 20),
     };
