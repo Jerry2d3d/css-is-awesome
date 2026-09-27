@@ -282,4 +282,23 @@ jobs:
     needs: prod
     if: inputs.stage == 'prod' && inputs.dry_run != true && needs.prod.result == 'success'
     uses: ./.github/workflows/publish-npm.yml
+    # MUST be listed here, and this is why the whole workflow refused to start.
+    #
+    # A `permissions:` block REPLACES the default set rather than adding to
+    # it, so the workflow-level `contents: write` above left every other
+    # scope at none. publish-npm.yml's job asks for issues, pull-requests and
+    # id-token, which is an escalation, and a called workflow can only ever
+    # narrow what the caller was granted. GitHub rejects that before any job
+    # runs — the whole Release run failed at startup, including the `status`
+    # stage that touches nothing.
+    #
+    # Worth knowing: it failed on the FIRST run after the publish job was
+    # added, and it failed for every stage, not just prod. A reusable
+    # workflow reference is validated when the run starts, not when the job
+    # that uses it would execute.
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     secrets: inherit
