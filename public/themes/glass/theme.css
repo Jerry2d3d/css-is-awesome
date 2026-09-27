@@ -79,6 +79,12 @@
    * below are valid in compiled output (Sass hoists @media + scopes
    * the vars under the parent selector). */
   /* stylelint-disable no-invalid-position-declaration -- see comment above */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#ebe5fd, #101828);
+  --page-hero-ink: light-dark(#1d1d1f, #f0f4ff);
+  --page-band-bg: light-dark(#eee9fe, #0e1422);
+  --page-band-ink: light-dark(#1d1d1f, #f0f4ff);
 }
 @media (prefers-color-scheme: dark) {
   :root, :root[data-theme=glass] {
@@ -198,10 +204,4 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
-
-  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
-  --page-hero-bg: light-dark(#ebe5fd, #101828);
-  --page-hero-ink: light-dark(#1d1d1f, #f0f4ff);
-  --page-band-bg: light-dark(#eee9fe, #0e1422);
-  --page-band-ink: light-dark(#1d1d1f, #f0f4ff);
 }

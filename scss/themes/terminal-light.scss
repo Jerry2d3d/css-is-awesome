@@ -171,6 +171,14 @@
 
   --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
   --radius-xl: 0; --radius-full: 0;
+
+  /* Component overrides — terminals are square, and that has to be true on
+     all three files of the family. `terminal` and `terminal-dark` both
+     declared these; this one did not, so a button on terminal-light took the
+     library fallback and rounded. Found by check-theme-parity. */
+  --btn-radius:   0;
+  --card-radius:  0;
+  --input-radius: 0;
   --font-primary: var(--font-mono);
   --font-size-base: 15px; --line-height-normal: 1.5; --font-weight-medium: 500;
   --z-sticky: 1020; --z-dropdown: 1030; --z-backdrop: 1040;

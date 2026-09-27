@@ -166,6 +166,10 @@
   --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
+  /* Declared by boilerplate-light and boilerplate-dark but missing here,
+     so the base file fell back to the library value while the variants used
+     0.25rem. Found by check-theme-parity. */
+  --space-2xs: 0.25rem;
   --space-xs: var(--space-1);
   --space-sm: var(--space-2);
   --space-md: var(--space-4);
@@ -1225,6 +1229,12 @@
    * below are valid in compiled output (Sass hoists @media + scopes
    * the vars under the parent selector). */
   /* stylelint-disable no-invalid-position-declaration -- see comment above */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#ebe5fd, #101828);
+  --page-hero-ink: light-dark(#1d1d1f, #f0f4ff);
+  --page-band-bg: light-dark(#eee9fe, #0e1422);
+  --page-band-ink: light-dark(#1d1d1f, #f0f4ff);
 }
 @media (prefers-color-scheme: dark) {
 :root[data-theme=glass] {
@@ -1344,12 +1354,6 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
-
-  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
-  --page-hero-bg: light-dark(#ebe5fd, #101828);
-  --page-hero-ink: light-dark(#1d1d1f, #f0f4ff);
-  --page-band-bg: light-dark(#eee9fe, #0e1422);
-  --page-band-ink: light-dark(#1d1d1f, #f0f4ff);
 }
 :root[data-theme=glass-dark] {
   color-scheme: dark;
@@ -2517,6 +2521,12 @@
      a faint warm stock, warm near-black ink, press-red masthead rules.
      Every other theme inherits print-base's plain ink-on-white.
      ---------------------------------------------------------------- */
+
+  /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
+  --page-hero-bg: light-dark(#ededea, #1c1c1c);
+  --page-hero-ink: light-dark(#0a0a0a, #fafaf7);
+  --page-band-bg: light-dark(#f2f2ef, #161616);
+  --page-band-ink: light-dark(#0a0a0a, #fafaf7);
 }
 @media print {
 :root[data-theme=press] {
@@ -4581,6 +4591,13 @@
   --radius-lg: 0;
   --radius-xl: 0;
   --radius-full: 0;
+  /* Component overrides — terminals are square, and that has to be true on
+     all three files of the family. `terminal` and `terminal-dark` both
+     declared these; this one did not, so a button on terminal-light took the
+     library fallback and rounded. Found by check-theme-parity. */
+  --btn-radius: 0;
+  --card-radius: 0;
+  --input-radius: 0;
   --font-primary: var(--font-mono);
   --font-size-base: 15px;
   --line-height-normal: 1.5;

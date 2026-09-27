@@ -99,6 +99,24 @@ jobs:
       - name: Page surfaces stay opt-in (no default selector reads --page-*)
         run: npm run test:surfaces
 
+      # Compares the 24 themes AGAINST EACH OTHER, which nothing else does.
+      # The validator grades each theme alone and the drift check regenerates
+      # it and compares it to itself, so both stayed green for weeks while
+      # `press` shipped four page-surface tokens written outside any selector,
+      # where a custom property applies to nothing at all. A consumer who
+      # switched to press got a hero band that silently did not theme.
+      #
+      # The signal existed: the validator printed "page-surfaces 9" for press
+      # and "5" for the other 23, on every run. Nobody read it, because that
+      # number only means anything next to the same number from every other
+      # theme. This is that comparison.
+      #
+      # It only flags a LONE outlier — all-but-one, or two-of-three within a
+      # family. Themes are allowed to differ, and a check demanding uniformity
+      # would be wrong about the design and switched off within a week.
+      - name: Themes agree with each other (no lone outlier)
+        run: npm run check:theme-parity
+
       # /now is GENERATED from roadmap/epics/ at build time, which removes the
       # drift between the page and the files but introduces a new way to be
       # wrong: an epic whose status line the collector cannot read would
