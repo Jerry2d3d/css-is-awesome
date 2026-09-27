@@ -273,4 +273,28 @@
     --card-border:   1px solid var(--hair);  /* thin ink rule instead */
     --input-radius:  var(--r-sm);            /* 2px — text field */
     --modal-radius:  var(--r-md);            /* 3px — still tight */
+
+  // PRINT — Press's own paper identity, same values as the unsuffixed
+  // `press` file. A pinned variant is the same design with its mode fixed,
+  // so it has to print the same newsprint; without this a page built on
+  // press-light printed plain ink-on-white while the same page on press
+  // printed newsprint. Print output does not vary by colour scheme, which
+  // is why the values are identical rather than paired. Found by
+  // check-theme-parity.
+  //
+  // `//` and not `/* */` ON PURPOSE. Sass strips these; a block comment
+  // ships in every consumer's theme.css, and the first version of this
+  // note pushed press-light from 3.9 KB to 4.18 KB against a 4.0 KB
+  // budget. An explanation for maintainers should not cost bytes for
+  // users.
+  @media print {
+    // stylelint-disable-next-line no-invalid-position-declaration
+    --print-paper: #FBFAF6;
+    // stylelint-disable-next-line no-invalid-position-declaration
+    --print-ink:   #0A0A0A;
+    // stylelint-disable-next-line no-invalid-position-declaration
+    --print-line:  #D93025;
+    // stylelint-disable-next-line no-invalid-position-declaration
+    --print-muted: #6B6963;
+  }
 }

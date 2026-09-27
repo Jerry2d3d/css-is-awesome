@@ -250,3 +250,11 @@
   --page-band-bg: #f2f2ef;
   --page-band-ink: #0a0a0a;
 }
+@media print {
+  :root, :root[data-theme=press-light] {
+    --print-paper: #FBFAF6;
+    --print-ink: #0A0A0A;
+    --print-line: #D93025;
+    --print-muted: #6B6963;
+  }
+}

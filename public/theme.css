@@ -165,10 +165,11 @@
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
   /* T-shirt aliases - var() references into this theme's numbered scale,
-     so re-tuning a numbered step re-tunes its alias automatically. */
-  /* Declared by boilerplate-light and boilerplate-dark but missing here,
-     so the base file fell back to the library value while the variants used
-     0.25rem. Found by check-theme-parity. */
+     so re-tuning a numbered step re-tunes its alias automatically.
+
+     --space-2xs was declared by boilerplate-light and boilerplate-dark but
+     missing here, so the base file took the library value while the two
+     variants used 0.25rem. Found by check-theme-parity. */
   --space-2xs: 0.25rem;
   --space-xs: var(--space-1);
   --space-sm: var(--space-2);
@@ -2738,6 +2739,14 @@
   --page-band-bg: #161616;
   --page-band-ink: #fafaf7;
 }
+@media print {
+:root[data-theme=press-dark] {
+    --print-paper: #FBFAF6;
+    --print-ink: #0A0A0A;
+    --print-line: #D93025;
+    --print-muted: #6B6963;
+  }
+}
 :root[data-theme=press-light] {
   color-scheme: light;
   /* Surfaces — warm newsprint */
@@ -2953,6 +2962,14 @@
   --page-hero-ink: #0a0a0a;
   --page-band-bg: #f2f2ef;
   --page-band-ink: #0a0a0a;
+}
+@media print {
+:root[data-theme=press-light] {
+    --print-paper: #FBFAF6;
+    --print-ink: #0A0A0A;
+    --print-line: #D93025;
+    --print-muted: #6B6963;
+  }
 }
 :root[data-theme=prism] {
   color-scheme: light dark;
@@ -4007,7 +4024,6 @@
   Override any of these to change the whole system's rhythm.
   ---------------------------------------------------------- */
   /* Space scale (rem for accessibility) */
-  --space-2xs: 0.25rem;
   --space-xs: var(--space-1);
   --space-sm: var(--space-2);
   --space-md: var(--space-4);
