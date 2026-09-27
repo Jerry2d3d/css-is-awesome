@@ -165,10 +165,11 @@
   @include ss.space-scale;
 
   /* T-shirt aliases - var() references into this theme's numbered scale,
-     so re-tuning a numbered step re-tunes its alias automatically. */
-  /* Declared by boilerplate-light and boilerplate-dark but missing here,
-     so the base file fell back to the library value while the variants used
-     0.25rem. Found by check-theme-parity. */
+     so re-tuning a numbered step re-tunes its alias automatically.
+
+     --space-2xs was declared by boilerplate-light and boilerplate-dark but
+     missing here, so the base file took the library value while the two
+     variants used 0.25rem. Found by check-theme-parity. */
   --space-2xs: 0.25rem;
   --space-xs:  var(--space-1);
   --space-sm:  var(--space-2);
