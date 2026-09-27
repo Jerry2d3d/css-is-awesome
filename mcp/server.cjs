@@ -887,6 +887,49 @@ const handlers = {
     return { total: items.length, items: items.slice(offset, offset + limit) };
   },
 
+  /**
+   * What an OPTIONAL token resolves to when a theme does not declare it.
+   *
+   * Several tokens are optional AND still always have a value, because the
+   * library emits its own declaration on :root — `--btn-radius` is not a
+   * hole to be filled, it is `var(--radius-md, 0.25rem)` until a theme says
+   * otherwise. The docs said these "cascade from the generic radii" without
+   * ever saying WHICH one, so a developer could not answer "what corner
+   * radius does my button actually have?" without reading library source,
+   * and an agent helping them could not answer it at all.
+   *
+   * Parsed from the `$components` map rather than from compiled CSS, because
+   * that map is the single source both the :root emission and the mixin
+   * fallback are generated from.
+   */
+  _componentDefaults() {
+    if (this.__componentDefaults) return this.__componentDefaults;
+    const out = {};
+    // The path is built OUTSIDE the try. A typo in a constant name is a
+    // ReferenceError, and a catch wide enough to swallow one turns a
+    // five-second mistake into a field that is silently always null — which
+    // is exactly what happened while writing this.
+    const file = path.join(SCSS_DIR, 'theme', '_components.scss');
+    try {
+      const src = fs.readFileSync(file, 'utf8').replace(/\/\/[^\n]*/g, '');
+      // The map closes with `) !default;`, and the file is CRLF. Values
+      // contain commas inside `var(--radius-md, 0.25rem)`, so a value
+      // cannot be matched as "everything up to the next comma" — it is
+      // everything up to the end of the line, minus the trailing comma.
+      const map = /\$components\s*:\s*\(([\s\S]*?)\)\s*!default/.exec(src);
+      if (map) {
+        for (const m of map[1].matchAll(/^[ \t]*([a-z0-9-]+)[ \t]*:[ \t]*(.+?),?[ \t]*\r?$/gim)) {
+          out[`--${m[1]}`] = m[2].trim();
+        }
+      }
+    } catch {
+      // Absent or unparseable: the field simply does not appear. It is extra
+      // information, never a reason to fail a lookup.
+    }
+    this.__componentDefaults = out;
+    return out;
+  },
+
   get_token({ name } = {}) {
     if (!name) throw new Error('get_token: name is required');
     const needle = String(name).trim();
@@ -927,6 +970,14 @@ const handlers = {
         : null,
       // Contract 1.2: the feature an OPTIONAL token enables (null for required).
       feature: entry.required ? null : (entry.feature || null),
+      // What this token resolves to when NO theme declares it. Null for
+      // tokens with no library-side declaration; a concrete CSS value for
+      // the per-component knobs, which are optional but never unset.
+      //
+      // `themeValues` below answers "what do the shipped themes set it to".
+      // This answers "and what if none of them do", which is the question a
+      // consumer writing their own theme actually has.
+      libraryDefault: handlers._componentDefaults()[entry.name] || null,
       themeValues,
       referencedBy: referencedBy.slice(0, 20),
     };

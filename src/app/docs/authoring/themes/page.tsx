@@ -253,7 +253,18 @@ export default function AuthoringThemesPage() {
           <code>--card-radius</code>, <code>--input-radius</code>,{" "}
           <code>--modal-radius</code>, <code>--badge-radius</code>,{" "}
           <code>--tag-radius</code> — are <em>optional</em>. Leave them out and
-          each cascades from the generic radii above.
+          each cascades from the generic radii above. Optional here does not
+          mean unset: the library declares every one of them on{" "}
+          <code>:root</code>, so a theme that says nothing still resolves to a
+          real value.
+          <br />
+          <code>--btn-radius</code> and <code>--input-radius</code> fall back to{" "}
+          <code>var(--radius-md, 0.25rem)</code>, <code>--card-radius</code> to{" "}
+          <code>var(--radius-lg, 0.5rem)</code>, and <code>--modal-radius</code>{" "}
+          to <code>var(--radius-xl, 0.75rem)</code>. Ask the MCP server{" "}
+          <code>get_token</code> for any token and its{" "}
+          <code>libraryDefault</code> field answers the same question without
+          reading source.
         </li>
         <li>
           <strong>Shadow</strong> — <code>--shadow-sm</code> through{" "}

@@ -80,11 +80,80 @@ function resolve1(token, values, globals, scheme) {
   }
 }
 
-/** The `:root, :root[data-theme="x"] { … }` block a shipped theme emits. */
+/**
+ * Locate the theme's own `:root, :root[data-theme="x"] { … }` block.
+ *
+ * ANCHORED TO THE SELECTOR, NOT TO FILE POSITION.
+ *
+ * This used to be `indexOf('{')` to `lastIndexOf('}')`, which is correct only
+ * for a file whose LAST brace closes the theme block. `press` is the one
+ * theme of 24 that ends with an `@media print { … }` block, so for press that
+ * span ran to the end of the print block and the derived tokens were written
+ * INSIDE the media query, outside any selector, where a custom property
+ * applies to nothing at all.
+ *
+ * It shipped that way and nothing caught it: the drift check regenerates the
+ * file and compares it to the committed copy, so a generator bug is
+ * reproduced identically on both sides and reads as agreement.
+ *
+ * Braces are matched by counting from the selector, so nested `@media`,
+ * `@supports` or `light-dark()` inside the block cannot end it early.
+ *
+ * Returns the block's inner text plus the index range it occupies, because
+ * the writer below needs to insert into exactly that range.
+ */
+function findThemeBlock(css) {
+  // The selector every shipped theme emits, per scss/_mixins.scss @mixin theme.
+  const head = /:root\s*,\s*:root\[data-theme=[^\]]+\]\s*\{/.exec(css);
+  if (!head) return null;
+
+  const open = head.index + head[0].length - 1;
+  let depth = 0;
+  for (let i = open; i < css.length; i++) {
+    if (css[i] === '{') depth++;
+    else if (css[i] === '}') {
+      depth--;
+      if (depth === 0) {
+        return { inner: css.slice(open + 1, i), start: open + 1, end: i };
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Everything a theme declares under its own selector, across EVERY block it
+ * emits for that selector.
+ *
+ * `glass` emits its selector twice — once for colour, once for the scales,
+ * with a dark-scheme media block in between. Reading only the first block
+ * would hide half of what the theme actually declares, both from the
+ * derivation input and from the "already declared, leave it alone" test.
+ *
+ * The WRITER still targets the first block (findThemeBlock above). That is
+ * fine and deliberate: any block under the theme's selector is a correct
+ * place for the token, and picking one keeps the output stable.
+ */
 function themeBlock(css) {
-  const i = css.indexOf('{');
-  const j = css.lastIndexOf('}');
-  return i === -1 || j === -1 ? null : css.slice(i + 1, j);
+  const head = /:root\s*,\s*:root\[data-theme=[^\]]+\]\s*\{/g;
+  const parts = [];
+  let m;
+  while ((m = head.exec(css))) {
+    const open = m.index + m[0].length - 1;
+    let depth = 0;
+    for (let i = open; i < css.length; i++) {
+      if (css[i] === '{') depth++;
+      else if (css[i] === '}') {
+        depth--;
+        if (depth === 0) {
+          parts.push(css.slice(open + 1, i));
+          head.lastIndex = i;
+          break;
+        }
+      }
+    }
+  }
+  return parts.length ? parts.join('\n') : null;
 }
 
 export function deriveForCss(css) {
@@ -127,16 +196,57 @@ export function deriveForCss(css) {
   };
 }
 
-/** Insert (or replace) the derived block just before the theme block's close. */
+/**
+ * Insert (or replace) the derived block at the end of the THEME block.
+ *
+ * Not "before the last brace in the file" — see findThemeBlock above for the
+ * bug that caused. The insertion point is the close of the theme's own
+ * selector block, wherever in the file that happens to be.
+ */
 export function applyToCss(css, derived) {
   const stripped = css.replace(
-    new RegExp(`\\n*\\s*${DERIVED_MARKER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s\\S]*?(?=\\n\\})`, 'g'),
+    new RegExp(`\\n*\\s*${DERIVED_MARKER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s\\S]*?(?=\\n\\s*\\})`, 'g'),
     '',
   );
-  const j = stripped.lastIndexOf('}');
-  if (j === -1) return css;
+
+  const found = findThemeBlock(stripped);
+  if (!found) {
+    throw new Error(
+      'derive-page-surfaces: no `:root, :root[data-theme=…]` block found. ' +
+        'Refusing to guess where the tokens belong.',
+    );
+  }
+
   const lines = Object.entries(derived).map(([k, v]) => `  ${k}: ${v};`);
-  return `${stripped.slice(0, j)}\n  ${DERIVED_MARKER}\n${lines.join('\n')}\n${stripped.slice(j)}`;
+  const out =
+    `${stripped.slice(0, found.end)}\n  ${DERIVED_MARKER}\n${lines.join('\n')}\n${stripped.slice(found.end)}`;
+
+  assertLandedInsideTheme(out, Object.keys(derived));
+  return out;
+}
+
+/**
+ * Prove the tokens ended up inside the theme selector, every time.
+ *
+ * A generator that writes to the wrong place produces output that LOOKS like
+ * an answer, and the drift check cannot see it because it compares the
+ * generator against itself. So the generator checks its own work instead: if
+ * a derived token is not inside the theme block, nothing is written.
+ *
+ * This is the check that would have caught press on the day it shipped.
+ */
+function assertLandedInsideTheme(css, tokens) {
+  const found = findThemeBlock(css);
+  if (!found) throw new Error('derive-page-surfaces: theme block vanished after the write.');
+
+  for (const token of tokens) {
+    if (!new RegExp(`(^|\\n)\\s*${token}\\s*:`).test(found.inner)) {
+      throw new Error(
+        `derive-page-surfaces: ${token} was written outside the theme selector. ` +
+          'A custom property declared outside a selector applies to nothing. Not writing.',
+      );
+    }
+  }
 }
 
 function main() {
