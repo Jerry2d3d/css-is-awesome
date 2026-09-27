@@ -1,5 +1,5 @@
 {
-  "tokenCount": 97,
+  "tokenCount": 101,
   "consumers": {
     "--action-primary-active": [
       "btn"
@@ -100,6 +100,15 @@
     ],
     "--card-shadow": [
       "card-base"
+    ],
+    "--cia-anchor-area": [
+      "anchor-to"
+    ],
+    "--cia-anchor-gap": [
+      "anchor-to"
+    ],
+    "--cia-anchor-try": [
+      "anchor-to"
     ],
     "--cia-bar-shift": [
       "hamburger-open"
@@ -266,6 +275,9 @@
     ],
     "--space-5": [
       "wrap"
+    ],
+    "--stack-gap": [
+      "stack"
     ],
     "--success-default": [
       "copy-button",

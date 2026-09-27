@@ -81,28 +81,58 @@
     backdrop-filter: blur(2px);
   }
 
-  /* Open animation — only emits when [open] mounts */
+  /* Open AND close, via transition rather than an entry-only keyframe.
+     ------------------------------------------------------------------
+     An `animation:` on [open] can only describe arriving. The moment the
+     attribute goes away the element is gone, so a modal built that way eased
+     in and then vanished — and the ::backdrop vanished with it, which is the
+     more jarring half.
+
+     Transitioning instead lets the same declaration run in both directions.
+     `display` and `overlay` need `allow-discrete` to hold the element in the
+     top layer while the opacity finishes; `@starting-style` supplies the
+     from-state on entry, since a freshly displayed element has no previous
+     value to transition from.
+
+     This is the shape `drawer` in _navigation.scss has always used. The two
+     were inconsistent, and the popover one was right. Engines without
+     allow-discrete simply open and close instantly, exactly as before. */
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+  transition:
+    opacity var(--duration-normal, 240ms) var(--ease, ease),
+    transform var(--duration-normal, 240ms) var(--ease, ease),
+    display var(--duration-normal, 240ms) var(--ease, ease) allow-discrete,
+    overlay var(--duration-normal, 240ms) var(--ease, ease) allow-discrete;
+
   &[open] {
-    animation: cia-modal-open var(--duration-normal, 240ms) var(--ease, ease) both;
+    opacity: 1;
+    transform: scale(1) translateY(0);
+
+    @starting-style {
+      opacity: 0;
+      transform: scale(0.96) translateY(8px);
+    }
   }
+
+  &::backdrop {
+    opacity: 0;
+    transition:
+      opacity var(--duration-normal, 240ms) var(--ease, ease),
+      display var(--duration-normal, 240ms) var(--ease, ease) allow-discrete,
+      overlay var(--duration-normal, 240ms) var(--ease, ease) allow-discrete;
+  }
+
   &[open]::backdrop {
-    animation: cia-modal-backdrop var(--duration-normal, 240ms) var(--ease, ease) both;
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &[open], &[open]::backdrop { animation: none; }
-  }
-
-  /* Keyframes scoped via @at-root — emit only when the mixin is called */
-  @at-root {
-    @keyframes cia-modal-open {
-      from { opacity: 0; transform: scale(0.96) translateY(8px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    @keyframes cia-modal-backdrop {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
+    &, &::backdrop { transition: none; }
   }
 }
 
@@ -141,8 +171,9 @@
 // Position is the consumer's responsibility — anchor() + position-area
 // recipes documented separately.
 // ----------------------------------------------------------------------------
-@mixin tooltip {
+@mixin tooltip($area: block-start) {
   @include tooltip-base;
+  @include anchor-to($area);
 
   /* Reset [popover] browser defaults */
   &[popover] {
@@ -152,26 +183,38 @@
     overflow: visible;
   }
 
+  /* Opens and closes. See the note on `modal` above for why a transition
+     replaces the entry-only keyframe: a tooltip that faded in and then
+     blinked out drew more attention leaving than arriving. */
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--duration-fast, 180ms) var(--ease, ease),
+    transform var(--duration-fast, 180ms) var(--ease, ease),
+    display var(--duration-fast, 180ms) var(--ease, ease) allow-discrete,
+    overlay var(--duration-fast, 180ms) var(--ease, ease) allow-discrete;
+
   &:popover-open {
-    animation: cia-tooltip-show var(--duration-fast, 180ms) var(--ease, ease) both;
+    opacity: 1;
+    transform: translateY(0);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(4px);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &:popover-open { animation: none; }
-  }
-
-  @at-root {
-    @keyframes cia-tooltip-show {
-      from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    transition: none;
   }
 }
 
 // ----------------------------------------------------------------------------
 // POPOVER
 // ----------------------------------------------------------------------------
-@mixin popover-base($p: 4, $r: lg, $shadow: 3, $max-width: 320px) {
+// `$area` opts into anchor positioning. Left null, this mixin behaves exactly
+// as it always has and positioning stays the consumer's job.
+@mixin popover-base($p: 4, $r: lg, $shadow: 3, $max-width: 320px, $area: null) {
   padding: var(--popover-padding, #{m.space($p)});
   border-radius: var(--popover-radius, #{m.radius($r)});
   background: m.color(surface-default);
@@ -179,6 +222,41 @@
   border: 1px solid m.color(border-default);
   max-width: $max-width;
   z-index: m.z(popover);
+
+  @if $area {
+    @include anchor-to($area);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// ANCHOR POSITIONING — shared helper
+// ----------------------------------------------------------------------------
+// Pins a popover to the element that opened it, using the popover's IMPLICIT
+// anchor: any element with `popovertarget` is automatically the anchor of the
+// popover it targets, so nothing needs an `anchor-name` and the consumer
+// wires nothing. That is the whole reason this is worth doing — the docs
+// previously had to teach a two-sided setup for the common case.
+//
+// Every value is routed through a custom property, so a consumer who already
+// positions these themselves overrides one declaration instead of fighting a
+// specificity war with the library:
+//
+//   .my-menu { --cia-anchor-area: block-start span-inline-start; }
+//
+// Guarded by @supports. Engines without anchor positioning get exactly
+// today's behaviour: cia sets nothing and the consumer positions it.
+@mixin anchor-to($area, $flip: flip-block, $gap: null) {
+  @supports (anchor-name: --cia) {
+    position: absolute;
+    margin: 0;
+    inset: auto;
+    position-area: var(--cia-anchor-area, #{$area});
+    position-try-fallbacks: var(--cia-anchor-try, #{$flip});
+
+    @if $gap {
+      margin-block-start: var(--cia-anchor-gap, #{$gap});
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -192,7 +270,15 @@
   background: m.color(surface-default);
   box-shadow: var(--dropdown-shadow, #{m.shadow($shadow)});
   border: 1px solid m.color(border-default);
+
+  // The menu is at least as wide as whatever opened it, never narrower than
+  // $min-width. `anchor-size(inline)` is the trigger's own inline size, so a
+  // full-width mobile trigger gets a full-width menu without a media query.
+  // Outside @supports the plain min-width is all that applies.
   min-width: $min-width;
+  @supports (anchor-name: --cia) {
+    min-inline-size: max(#{$min-width}, anchor-size(inline));
+  }
   z-index: m.z(dropdown);
 }
 
@@ -233,8 +319,9 @@
 // Anchor positioning (anchor() + position-area) covered in a separate docs
 // recipe for browsers that support it.
 // ----------------------------------------------------------------------------
-@mixin dropdown {
+@mixin dropdown($area: block-end span-inline-end, $gap: 1px) {
   @include dropdown-menu;
+  @include anchor-to($area, $gap: $gap);
 
   /* Reset [popover] browser defaults */
   &[popover] {
@@ -247,23 +334,33 @@
        restore flex only while actually open. */
     display: none;
 
+    /* Opens and closes. The `display` guard above is exactly why this has to
+       be a transition rather than a keyframe: `display` is discrete, so it
+       flips instantly and takes any exit animation with it. `allow-discrete`
+       is what makes it wait for the opacity to finish instead. Same reason
+       `overlay` is listed - without it the menu leaves the top layer on the
+       first frame and appears to jump behind its own page. */
+    opacity: 0;
+    transform: translateY(-4px);
+    transition:
+      opacity var(--duration-fast, 180ms) var(--ease, ease),
+      transform var(--duration-fast, 180ms) var(--ease, ease),
+      display var(--duration-fast, 180ms) var(--ease, ease) allow-discrete,
+      overlay var(--duration-fast, 180ms) var(--ease, ease) allow-discrete;
+
     &:popover-open {
       display: flex;
-    }
-  }
+      opacity: 1;
+      transform: translateY(0);
 
-  &:popover-open {
-    animation: cia-dropdown-show var(--duration-fast, 180ms) var(--ease, ease) both;
+      @starting-style {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &:popover-open { animation: none; }
-  }
-
-  @at-root {
-    @keyframes cia-dropdown-show {
-      from { opacity: 0; transform: translateY(-4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    &[popover] { transition: none; }
   }
 }

@@ -67,7 +67,15 @@ $_container-widths: (
 
   @if $cols == auto {
     $min-val: $min or 16rem;
-    grid-template-columns: repeat(auto-fit, minmax(#{$min-val}, 1fr));
+    // min(<minimum>, 100%) rather than the bare minimum. `minmax(16rem, 1fr)`
+    // refuses to go below 16rem even when the CONTAINER is narrower, so the
+    // track overflows its parent instead of shrinking - the grid breaks at
+    // exactly the widths a breakpoint-free layout exists to survive.
+    //
+    // Above the minimum the two are identical: min(16rem, 100%) IS 16rem, so
+    // this cannot change a layout that currently works. It only differs where
+    // the old form was already overflowing.
+    grid-template-columns: repeat(auto-fit, minmax(min(#{$min-val}, 100%), 1fr));
   } @else if $cols == 1 {
     grid-template-columns: 1fr;
   } @else {
@@ -322,10 +330,20 @@ $_layouts: (
 // Usage:
 //   .field-group { @include stack; }
 //   .form        { @include stack($gap: 5); }
+//
+// One instance can differ without a second @include or a modifier class:
+//
+//   .form { @include stack; }
+//   .form .tight-group { --stack-gap: #{m.space(1)}; }
+//
+// `--stack-gap` is READ here and declared NOWHERE in the library, so it is
+// undefined until a consumer sets it and the `$gap` argument stays the
+// default. That is the point: the mixin argument sets the rule, the custom
+// property handles the exception, and neither needs to know about the other.
 @mixin stack($gap: 4) {
   display: flex;
   flex-direction: column;
-  gap: m.space($gap);
+  gap: var(--stack-gap, #{m.space($gap)});
 }
 
 // CLUSTER — wrapping inline group (pills, tags, button rows).
