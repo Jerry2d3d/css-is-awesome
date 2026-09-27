@@ -207,10 +207,31 @@
   --card-border: 1px solid var(--hair); /* thin rule instead */
   --input-radius: var(--r-sm); /* 2px */
   --modal-radius: var(--r-md); /* 3px */
+  /* ----------------------------------------------------------------
+     PRINT — Press's own paper identity, same values as the unsuffixed
+     `press` file. A pinned variant is the same design with its mode
+     fixed, so it has to print the same newsprint; without this, a page
+     built on press-light printed plain ink-on-white while the same page
+     on press printed newsprint. Print output does not vary by colour
+     scheme, which is why the values are identical rather than paired.
+     Found by check-theme-parity.
+     ---------------------------------------------------------------- */
 
   /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
   --page-hero-bg: #1c1c1c;
   --page-hero-ink: #fafaf7;
   --page-band-bg: #161616;
   --page-band-ink: #fafaf7;
+}
+@media print {
+  :root, :root[data-theme=press-dark] {
+    /* stylelint-disable no-invalid-position-declaration -- these are custom-property
+       overrides scoped to the theme selector m.theme() supplies; the position is valid
+       once the mixin wraps them, but stylelint can't see the parent selector statically. */
+    --print-paper: #FBFAF6; /* faint warm newsprint stock */
+    --print-ink: #0A0A0A; /* warm near-black */
+    --print-line: #D93025; /* press red — the masthead rule */
+    --print-muted: #6B6963; /* warm editorial gray */
+    /* stylelint-enable no-invalid-position-declaration */
+  }
 }

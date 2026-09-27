@@ -156,7 +156,18 @@ for (const token of optional) {
     continue;
   }
 
-  // FAMILY: two of three.
+  // FAMILY: two of three, OR one of three.
+  //
+  // BOTH DIRECTIONS. The first version of this rule only looked for
+  // two-of-three, which catches "the majority declares it and one file
+  // forgot". It was blind to the inverse - one file declares it and the
+  // other two do not - and so missed `sketchbook-light` carrying a spacing
+  // alias that neither `sketchbook` nor `sketchbook-dark` has. The check
+  // reported "no lone outlier" while that sat in the tree.
+  //
+  // A lone declarer is exactly as much of an accident as a lone omitter.
+  // Reported by the Figma export, which turns each theme into a mode and
+  // therefore sees a token present in 2 of 10 modes immediately.
   const byFamily = new Map();
   for (const name of declared.keys()) {
     const f = familyOf(name);
@@ -166,11 +177,18 @@ for (const token of optional) {
   for (const [family, members] of byFamily) {
     if (members.length !== 3) continue;
     const has = members.filter((n) => declared.get(n).has(token));
+
     if (has.length === 2) {
       const odd = members.find((n) => !declared.get(n).has(token));
       failures.push(
         `${token} (${group}) is declared by 2 of the 3 \`${family}\` files,\n` +
           `      but not by ${red(odd)}. A family is one design in three files.`,
+      );
+    } else if (has.length === 1) {
+      failures.push(
+        `${token} (${group}) is declared ONLY by ${red(has[0])}, and not by\n` +
+          `      the other two \`${family}\` files. A lone declarer is as much an\n` +
+          `      accident as a lone omitter.`,
       );
     }
   }
