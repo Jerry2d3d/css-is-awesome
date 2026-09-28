@@ -25,17 +25,25 @@ export default function UtilitiesPage() {
         borderInlineStart: "3px solid var(--action-primary-default)",
         borderRadius: "var(--radius-md)",
       }}>
-        <strong>Opt-in since v0.8.</strong> Utilities default to <em>off</em> in the Sass compile —
-        Sass-authoring consumers see zero <code>.cia-*</code> rules in their compiled CSS unless they opt in:
+        <strong>You choose with the entry point, not a flag.</strong> There is no
+        configuration variable for this — <code>@use 'css-is-awesome'</code> is the
+        global entry point and emits all 746 utility classes along with the tokens
+        and resets. Import something narrower to get less:
         <Example>
-          <Example.Code><span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome'</span> <span className="tok-prop">as</span> <span className="tok-val">cia</span> <span className="tok-prop">with</span> (
-{"\n"}  <span className="tok-prop">$utilities</span>: <span className="tok-val">true</span>,         <span className="tok-com">{"// opt in to ~80 structural utility classes"}</span>
-{"\n"}  <span className="tok-prop">$responsive-spacing</span>: <span className="tok-val">true</span>,  <span className="tok-com">{"// opt in to .cia-sm-p-md, etc."}</span>
-{"\n"});</Example.Code>
+          <Example.Code><span className="tok-com">{"// everything: tokens + resets + all 746 .cia-* utilities"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome'</span>;
+{"\n"}
+{"\n"}<span className="tok-com">{"// tokens + resets, zero utility classes"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/core'</span>;
+{"\n"}
+{"\n"}<span className="tok-com">{"// mixins and functions only — emits nothing at all,"}</span>
+{"\n"}<span className="tok-com">{"// safe inside a .module.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/api'</span> <span className="tok-prop">as</span> <span className="tok-val">cia</span>;</Example.Code>
         </Example>
         <p style={{ margin: "0.5rem 0 0" }}>
-          The pre-built <code>dist/css-is-awesome.utilities.css</code> still ships every utility for
-          non-Sass consumers (CDN drop-in). The opt-in flag governs the Sass compile path only.
+          Each has a pre-built counterpart for CDN consumers:{" "}
+          <code>dist/css-is-awesome.css</code>, <code>dist/css-is-awesome.core.css</code>{" "}
+          and <code>dist/css-is-awesome.utilities.css</code> (utilities alone, no tokens).
         </p>
       </aside>
 

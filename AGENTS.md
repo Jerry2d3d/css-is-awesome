@@ -13,7 +13,7 @@ A token-driven SCSS design system with a **single mixin-router per component**. 
 Three authoring tiers, in primary-to-fallback order:
 
 - **Tier 2 (primary)** — per component: `@use 'css-is-awesome/api' as cia;` then `.your-class { @include cia.btn(primary); }`. The `/api` barrel is zero-emit (safe inside a `.module.scss`); the root bundle emits the tokens once. SCSS build required.
-- **Tier 1 (opt-in)** — drop-in CSS classes (`.cia-btn`). Default-off in Sass path; opt in via `@use cia with ($utilities: true)`. Pre-built CDN bundles still ship every utility.
+- **Tier 1 (utilities)** — 746 drop-in classes for spacing, layout, text and animation: `.cia-p-md`, `.cia-gap-4`, `.cia-text-center`, `.cia-anim-fade-in`. They are emitted by default from `@use 'css-is-awesome'` and by every CDN bundle; there is no opt-in flag. **There are no component classes** — no `.cia-btn`, no `.cia-card`. Components are Tier 2 mixins or Tier 3 bare tags.
 - **Tier 3 (opt-in Pico-mode)** — `@use 'css-is-awesome/scss/recipes/bare-tags';` one line styles every common HTML element. Wrapped in `:where()` (specificity 0,0,0) so consumer styles always win.
 
 ## Quick decisions for an AI agent
@@ -21,7 +21,7 @@ Three authoring tiers, in primary-to-fallback order:
 When asked to add a UI element, follow this order:
 
 1. **Mixin-first, inputs-first.** `.your-class { @include cia.btn(primary); }` — write your own selector, `@include` the mixin. Need a variation? **Pass it as an input** — `@include cia.flex($direction: column)`, `@include cia.card-base($shadow: 2, $r: xl)` — never hand-write the CSS an input already controls. Fewer SCSS lines always wins. This is the v0.8 primary API.
-2. **Match the project's tier.** If they're already on Tier 1 classes (`<button class="cia-btn">`), stay there.
+2. **Match the project's tier.** If they are already on Tier 1 utilities (`<div class="cia-p-md cia-gap-4">`), stay there — but note Tier 1 has no component classes, so a button still comes from `cia.btn()` under the consumer's own selector.
 3. **Never invent `cia-*` class names.** That prefix is library-owned. Consumer code uses its own naming.
 4. **All values come from tokens.** Never hardcode `#3A5FCD`, `1rem`, `8px`. Use `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`.
 5. **No BEM.** No `__element` / `--modifier` chains. `cia-` is a single-class namespace prefix, not BEM.
