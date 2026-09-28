@@ -49,7 +49,7 @@ concurrency:
 jobs:
   build:
     name: Build static export
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # Only run if the Release workflow succeeded on main (it is itself gated
     # on CI success, and its run is "skipped" when CI failed). The upstream
@@ -63,12 +63,12 @@ jobs:
       # event a bare checkout takes the default branch, which would mirror
       # `main` to Pages while the public site served the promoted branch.
       - name: Checkout the promoted branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: prod-css-is-awesome
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -100,7 +100,7 @@ jobs:
       - name: Configure Pages
         id: configure-pages
         continue-on-error: true
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Pages not configured — skipping deploy
         if: steps.configure-pages.outcome == 'failure'
@@ -112,14 +112,14 @@ jobs:
       # can never be deployed would be a green step that means nothing.
       - name: Upload Pages artifact
         if: steps.configure-pages.outcome == 'success'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: out
 
   deploy:
     name: Deploy to Pages
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     environment:
       name: github-pages
@@ -127,4 +127,4 @@ jobs:
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

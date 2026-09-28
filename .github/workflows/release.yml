@@ -127,11 +127,11 @@ jobs:
   # ---------------------------------------------------------------------------
   state:
     name: Where everything sits
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout (full history, all branches)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -216,14 +216,14 @@ jobs:
     # promote. This one condition is the whole separation between "stage it"
     # and "ship the thing that was staged".
     if: inputs.stage == 'qa'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
       name: qa
       url: https://qa.cssisawesome.com
     steps:
       - name: Checkout (full history, all branches)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -271,11 +271,11 @@ jobs:
     name: What is about to ship
     needs: state
     if: inputs.stage == 'prod'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout (full history, all branches)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -407,7 +407,7 @@ jobs:
     # reaches the run page before the approval prompt rather than after it.
     needs: [state, verify]
     if: inputs.stage == 'prod'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
       # `Production` with a capital P, because that environment already
@@ -425,7 +425,7 @@ jobs:
       url: https://cssisawesome.com
     steps:
       - name: Checkout (full history, all branches)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
