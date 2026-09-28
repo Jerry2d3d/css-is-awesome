@@ -91,7 +91,7 @@ concurrency:
 jobs:
   release:
     name: Publish to npm + GitHub Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     # A direct call from Release has already cleared the real gate: a human
     # approved the production environment. The workflow_run path keeps its
@@ -113,14 +113,14 @@ jobs:
       # checkout here would build and publish whatever `main` happens to hold,
       # silently defeating the promotion gate this workflow exists to enforce.
       - name: Checkout the promoted branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: prod-css-is-awesome
           fetch-depth: 0
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm

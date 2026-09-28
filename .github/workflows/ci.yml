@@ -16,18 +16,18 @@ concurrency:
 jobs:
   build-and-validate:
     name: Build & Validate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # check:contract diffs the token contract against the last release
           # tag; a shallow clone has no tags and the check would skip itself.
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -198,7 +198,7 @@ jobs:
         run: npm run build
 
       - name: Upload docs site artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: docs-site
           path: out/
@@ -206,17 +206,17 @@ jobs:
 
   playwright:
     name: Playwright (3 engines — smoke, a11y, platform, visual)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     # Runs in parallel with build-and-validate to keep total wall time low.
     # This job does its own `npm run build` because Playwright needs the
     # static export on disk to serve.
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -235,7 +235,7 @@ jobs:
 
       - name: Upload Playwright report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report/

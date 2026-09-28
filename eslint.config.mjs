@@ -23,6 +23,18 @@ const eslintConfig = [
       "react-hooks/set-state-in-effect": "warn",
       "react-hooks/refs": "warn",
       "react-hooks/immutability": "warn",
+      // A leading underscore is the conventional "this is deliberately
+      // unused" marker, and the codebase already writes it that way -
+      // SiteHeader takes `_props` so the five routes still passing
+      // `current=` keep type-checking while the (site) migration finishes.
+      // ESLint was never told the convention, so it reported the marker as
+      // the defect. Deleting the parameter would trade one warning for five
+      // type errors at the call sites.
+      "@typescript-eslint/no-unused-vars": ["warn", {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      }],
     },
   },
   {
