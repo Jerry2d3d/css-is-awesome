@@ -156,6 +156,37 @@ A theme must declare the **numbered** scale `--space-0` … `--space-9`. Those t
 
 Why it matters: components call `cia.space(4)`, which resolves to `var(--space-4)`. The t-shirt names used to emit as *independent literals*, so a theme that only set `--space-md` changed a variable nothing read. Swapping a theme repainted colors but never re-proportioned the page. **Set the numbered step; don't set only an alias.**
 
+### The spacing scale and the type scale are different scales
+
+They share the t-shirt vocabulary and they do **not** share the same steps. The difference that bites:
+
+| | smallest | middle | largest |
+| --- | --- | --- | --- |
+| spacing — `cia.space()` | `2xs` | `md` | `4xl` |
+| type — `cia.font-size()` | `xs` | **`base`** | `6xl` |
+
+Two steps differ, and both are easy to reach for:
+
+**There is no `font-size(md)`.** The type scale's middle step is `base`. This is the likelier of the two mistakes and the harder to spot, because `--font-size-md` falls back to `1rem` — the same value `base` has — so it looks right in the default theme and stops being right the moment a theme retunes its type.
+
+**There is no `font-size(2xs)`.** Spacing has a step below `xs` and typography does not, so a caption reaching for the smallest type gets the body size.
+
+```scss
+// WRONG — both compile, both render, neither is what was asked for
+font-size: cia.font-size(2xs);   // var(--font-size-2xs, 1rem) -> 16px
+font-size: cia.font-size(md);    // var(--font-size-md, 1rem)  -> 16px
+
+// RIGHT
+font-size: cia.font-size(xs);    // var(--font-size-xs, 0.75rem)
+font-size: cia.font-size(base);  // var(--font-size-base, 1rem)
+```
+
+`cia.line-height()` names its steps `tight | snug | normal | relaxed | loose` (plus `1`–`6` and `none`), so `line-height(md)` misses for the same reason.
+
+Since 1.22.0 every scale accessor **warns** when it gets a key its scale does not have, names the keys that do exist, and says so at the call site's file and line. The output is unchanged — a warning, not an error — so an upgrade cannot break a build, but anything already making this mistake starts saying so on the next compile. Read the warnings.
+
+The same applies in the other direction and to the other accessors: `letter-spacing(loose)` looks right and isn't (`loose` is a *line-height* key), and `radius(0)` / `z(100)` look like literals but return `var(--radius-0, 0.25rem)` and `var(--z-100, 0)`. Only `cia.space()` and `cia.letter-spacing()` accept a raw value — `space(12px)` and `letter-spacing(0.03em)` pass straight through. Every other accessor always returns a custom property, so write the literal directly instead of routing it through them.
+
 ### Radius tokens: use the per-component knobs
 
 `--radius-avatar`, `--radius-badge`, `--radius-button`, `--radius-card`, `--radius-input` and `--radius-modal` were removed from the contract — nothing ever read them, so any advice to "set `--radius-button`" was advice that could not work. The knobs that *do* work are `--btn-radius`, `--card-radius`, `--input-radius`, `--modal-radius`, `--badge-radius`, `--tag-radius` (all optional), and they cascade from the generic radii: `--btn-radius: var(--radius-md, 0.25rem)`. Set `--radius-md` to move everything; set `--btn-radius` to move just buttons.

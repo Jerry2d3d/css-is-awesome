@@ -86,7 +86,132 @@
 // Theme the numbered step; the alias follows.
 // ============================================================================
 
+// ============================================================================
+// SCALE KEY GUARD
+// ============================================================================
+// Every accessor below resolves a KEY against a scale map. A key that is not
+// in the map was, until now, silently wrong in every single one of them:
+//
+//   font-size(2xs)  ->  var(--font-size-2xs, 1rem)  ->  renders 16px
+//
+// No theme declares `--font-size-2xs`, so a caption asking for the smallest
+// type got the body size. It compiled, it rendered, and nothing said a word.
+// The spacing scale HAS a `2xs` step and the type scale does not, so an author
+// reaching for `font-size(2xs)` is following a pattern the system taught them
+// — which is why the warning names that confusion rather than just listing
+// keys. The same trap catches `radius(0)` and `z(100)`: both look like they
+// ask for a literal and both quietly return the fallback instead.
+//
+// $allow-raw SEPARATES THE FEATURE FROM THE BUG. `space()` and
+// `letter-spacing()` take either a scale step or a CSS value, and hand an
+// unrecognised value back unchanged — that is what lets the layout mixins
+// accept `space(md)` and `space(12px)` alike. Those two set $allow-raw: true
+// and defer to `_is-value()` below for the distinction, which is subtler than
+// it looks: see that function's own notes. Every other accessor here ALWAYS
+// wraps its argument in a custom property and has no pass-through path, so
+// for them a value is no more usable than a typo and gets the same warning.
+//
+// WHY @warn AND NOT @error. An error would catch this better and cost more:
+// it turns consumer code that compiles today into a build failure, which is a
+// MAJOR version change under this project's own contract rules. A warning
+// names every bad call site, with a file and line, without breaking a single
+// build. `type()` below errors on an unknown preset and stays that way — it
+// has always errored, so it is not a change in behaviour. Revisit at 2.0.
+
+// The CSS units a pass-through accessor may legitimately receive.
+//
+// `meta.type-of()` alone is NOT enough to tell a length from a key, because
+// Sass parses `2xs` as the NUMBER 2 carrying the unit `xs`. Every t-shirt
+// step above `xl` is a number in exactly the same way — `2xl`, `3xl`, `4xl`.
+// So a test of "is it a number" calls `space(3xs)` a raw length, passes it
+// through untouched, and emits `padding: 3xs`, which the browser discards.
+// That is the long-standing `space()` pass-through trap, and it is the same
+// silent failure as `font-size(2xs)` wearing a different hat.
+//
+// Testing the UNIT separates them exactly: a length the author wrote has a
+// real CSS unit (or none at all), and a scale step that missed has a unit
+// like `xs` or `xl` that no browser has ever heard of.
+$_literal-units: 'px' 'rem' 'em' 'ch' 'ex' 'cap' 'ic' 'lh' 'rlh' 'vw' 'vh'
+  'vi' 'vb' 'vmin' 'vmax' 'svw' 'svh' 'lvw' 'lvh' 'dvw' 'dvh' 'cm' 'mm' 'q'
+  'in' 'pt' 'pc' '%' 'fr';
+
+/// True when $v is a CSS VALUE rather than a scale key — the thing a
+/// pass-through accessor is supposed to hand back untouched.
+///
+/// Named for the question it answers. It began as `_is-literal`, which stopped
+/// being true the moment it had to accept `var(--space-1, 0.25rem)` and a
+/// two-value shorthand; neither is a literal, and both are values.
+///
+/// Four shapes count, and only the first is obvious:
+///
+/// 1. A number with a real CSS unit — `12px`, `2rem`, `50%`.
+/// 2. A unitless number — `0`, and `1.5` for a line height.
+/// 3. An ALREADY-RESOLVED value, which arrives as an unquoted string holding
+///    a CSS function: `var(--space-1, 0.25rem)`, `calc(...)`, `clamp(...)`.
+/// 4. A LIST, which is a CSS shorthand — `m.space(2) m.space(5)` for a
+///    two-axis gap. No scale key is ever a list, so a list is always a value.
+///
+/// Shape 3 exists because cia's own mixins resolve their arguments, and a
+/// caller may resolve first:
+///
+///   @include m.flex($gap: m.space(1));   // StatChip does exactly this
+///
+/// `flex()` then calls `space()` on a value `space()` already produced. That
+/// has always worked, silently, via the pass-through — and the first version
+/// of this guard warned on it in ten files of cia's own docs site. A guard
+/// that fires on correct code is worse than no guard, because it teaches
+/// people to ignore the output.
+@function _is-value($v) {
+  $type: meta.type-of($v);
+  @if $type == number {
+    @if math.is-unitless($v) { @return true; }
+    @return list.index($_literal-units, math.unit($v)) != null;
+  }
+  // An unquoted string carrying a CSS function. A mistyped key is a bare word
+  // with no parenthesis, so this cannot swallow the case the guard is for.
+  @if $type == string {
+    @return string.index(#{$v}, '(') != null;
+  }
+  // A shorthand: `padding: m.space(2) m.space(5)` reaching a mixin that
+  // resolves its argument again.
+  @if $type == list {
+    @return true;
+  }
+  // `calc()`, `min()`, `max()` and `clamp()` are parsed into Sass's own
+  // `calculation` type, NOT into a string — so the parenthesis test above
+  // never sees them.
+  @if $type == calculation {
+    @return true;
+  }
+  @return false;
+}
+
+@function _bad-scale-key($fn, $key, $valid, $allow-raw: false) {
+  @if map.has-key($valid, $key) { @return false; }
+  @if $allow-raw and _is-value($key) { @return false; }
+
+  // Ordered most specific first. A step that exists on a SIBLING scale is the
+  // useful thing to say; "that is not a CSS unit" is the fallback when there
+  // is nothing better. `radius(0)` must not be told `0` is a spacing key —
+  // true, and no help to someone who plainly meant the literal zero — so the
+  // sibling-scale hints only fire for values that are not literals.
+  $hint: '';
+  @if not _is-value($key) and map.has-key(t.$space, $key) {
+    $hint: ' `#{$key}` IS a spacing key — the spacing and type scales differ deliberately, and this step exists only on spacing.';
+  } @else if not _is-value($key) and map.has-key(s.$font-sizes, $key) {
+    $hint: ' `#{$key}` IS a type-scale key, but not a key of this scale.';
+  } @else if _is-value($key) {
+    $hint: ' #{$fn}() always returns a custom property, so a literal cannot pass through it the way one can through space(). Use a key of the scale, or write the value directly without #{$fn}().';
+  } @else if meta.type-of($key) == number {
+    $hint: ' `#{math.unit($key)}` is not a CSS unit, so this looks like a mistyped scale step rather than a value.';
+  }
+
+  @warn '#{$fn}(#{$key}): `#{$key}` is not a key of the #{$fn} scale, so this returns a custom property no theme declares and renders the fallback instead of what you asked for. Valid keys: #{map.keys($valid)}.#{$hint}';
+  @return true;
+}
+
 @function space($key) {
+  $bad: _bad-scale-key('space', $key, t.$space, $allow-raw: true);
   $fallback: map.get(t.$space, $key);
   // Not a scale key — a raw length like `12px` or `2rem`. Pass it through
   // instead of inventing `var(--space-12px, 1rem)`, which silently resolved to
@@ -99,16 +224,19 @@
 }
 
 @function space-raw($key) {
+  $bad: _bad-scale-key('space-raw', $key, t.$space);
   @return map.get(t.$space, $key) or 1rem;
 }
 
 // Semantic spacing aliases for better readability
 @function gap($type: normal) {
+  $bad: _bad-scale-key('gap', $type, t.$gap);
   $fallback: map.get(t.$gap, $type);
   @return var(--gap-#{$type}, #{$fallback or 1rem});
 }
 
 @function padding($type: normal) {
+  $bad: _bad-scale-key('padding', $type, t.$padding);
   $fallback: map.get(t.$padding, $type);
   @return var(--padding-#{$type}, #{$fallback or 1rem});
 }
@@ -185,8 +313,15 @@
 /// Letter-spacing from the tracking scale: tighter | tight | normal | wide |
 /// wider | widest. Emits a custom property with the scale value as fallback,
 /// so a theme can retune tracking without a rebuild — the same contract as
-/// `space()` and `font-size()`. A raw value (`0.03em`) passes straight through.
+/// `space()`: a raw value (`0.03em`) passes straight through.
+///
+/// NOT the same as `font-size()`, despite what this said until 2026-09-28.
+/// `space()` and `letter-spacing()` return an unrecognised value unchanged;
+/// `font-size()` always wraps its argument, so `font-size(14px)` yields
+/// `var(--font-size-14px, 1rem)` — 16px, not 14px. Only these two accessors
+/// take a raw length, and only they pass `$allow-raw: true` to the guard.
 @function letter-spacing($key) {
+  $bad: _bad-scale-key('letter-spacing', $key, s.$letter-spacings, $allow-raw: true);
   $fallback: map.get(s.$letter-spacings, $key);
   @if not $fallback {
     @return $key;
@@ -195,20 +330,24 @@
 }
 
 @function font-size($size) {
+  $bad: _bad-scale-key('font-size', $size, s.$font-sizes);
   $fallback: map.get(s.$font-sizes, $size) or 1rem;
   @return var(--font-size-#{$size}, #{$fallback});
 }
 
 @function font-size-raw($size) {
+  $bad: _bad-scale-key('font-size-raw', $size, s.$font-sizes);
   @return map.get(s.$font-sizes, $size) or 1rem;
 }
 
 @function line-height($size) {
+  $bad: _bad-scale-key('line-height', $size, s.$line-heights);
   $fallback: map.get(s.$line-heights, $size) or 1.5;
   @return var(--line-height-#{$size}, #{$fallback});
 }
 
 @function line-height-raw($size) {
+  $bad: _bad-scale-key('line-height-raw', $size, s.$line-heights);
   @return map.get(s.$line-heights, $size) or 1.5;
 }
 
@@ -473,11 +612,13 @@ $_type-scale: (
 // ============================================================================
 
 @function radius($size) {
+  $bad: _bad-scale-key('radius', $size, t.$theme-radius);
   $fallback: map.get(t.$theme-radius, $size);
   @return var(--radius-#{$size}, #{$fallback or 0.25rem});
 }
 
 @function radius-raw($size) {
+  $bad: _bad-scale-key('radius-raw', $size, t.$theme-radius);
   @return map.get(t.$theme-radius, $size) or 0.25rem;
 }
 
@@ -503,11 +644,13 @@ $_type-scale: (
 // ============================================================================
 
 @function shadow($level) {
+  $bad: _bad-scale-key('shadow', $level, t.$theme-shadows-light);
   $fallback: map.get(t.$theme-shadows-light, $level);
   @return var(--shadow-#{$level}, #{$fallback or none});
 }
 
 @function shadow-raw($level) {
+  $bad: _bad-scale-key('shadow-raw', $level, t.$theme-shadows-light);
   @return map.get(t.$theme-shadows-light, $level) or none;
 }
 
@@ -520,11 +663,13 @@ $_type-scale: (
 // ============================================================================
 
 @function z($layer) {
+  $bad: _bad-scale-key('z', $layer, s.$z-layers);
   $fallback: map.get(s.$z-layers, $layer);
   @return var(--z-#{$layer}, #{$fallback or 0});
 }
 
 @function z-raw($layer) {
+  $bad: _bad-scale-key('z-raw', $layer, s.$z-layers);
   @return map.get(s.$z-layers, $layer) or 0;
 }
 
