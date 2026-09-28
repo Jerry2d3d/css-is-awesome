@@ -73,7 +73,7 @@ export default function RoadmapPage() {
         </li>
         <li>
           <strong>Accessibility enforced by default.</strong> Every theme is
-          audited for WCAG 2.2 AA contrast across 22 token pairs, and a failing
+          audited for WCAG 2.2 AA contrast across 24 token pairs, and a failing
           theme fails the build.{" "}
           <Link href="/docs/a11y">How that works</Link>.
         </li>

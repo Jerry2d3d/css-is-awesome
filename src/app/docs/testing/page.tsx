@@ -80,8 +80,8 @@ export default function TestingPage() {
             <tr>
               <td><code>coverage:api</code></td>
               <td>
-                Calls <strong>every</strong> public mixin and function — 174 of
-                them — and asserts the output is usable
+                Calls <strong>every</strong> public mixin and function — 188 of
+                them, 162 mixins and 26 functions — and asserts the output is usable
               </td>
             </tr>
             <tr>
@@ -111,11 +111,13 @@ export default function TestingPage() {
             <tr>
               <td><code>test</code></td>
               <td>
-                Playwright — 240 tests across three engines: route smoke, axe
+                Playwright — 457 tests across three engines: route smoke, axe
                 accessibility, per-theme visual snapshots, theme-editor
-                behaviour. 74 functional tests run in Chromium, Firefox and
-                WebKit; the 18 visual-snapshot tests are Chromium-only by
-                design.
+                behaviour. 131 run in each of Chromium, Firefox and WebKit;
+                Chromium runs 195, because three specs are Chromium-only by
+                design — the 18 visual snapshots, the 40 RTL snapshots and the
+                6 playground tests, all three <code>testIgnore</code>d on the
+                other two engines.
               </td>
             </tr>
           </tbody>
@@ -191,7 +193,7 @@ npm test                  # Playwright (needs \`npm run build\` first)`}</code><
         Visual snapshots are keyed by platform, so a local run generates its own
         baselines rather than fighting CI&rsquo;s. See{" "}
         <Link href="/docs/a11y">Accessibility</Link> for the contrast contract
-        that <code>validate-themes</code> enforces — 22 foreground/background
+        that <code>validate-themes</code> enforces — 24 foreground/background
         pairs per theme, up from 17 once the five <code>--code-*</code> pairs
         were added. Those five surfaced 33 real failures across nine themes, all
         since fixed.

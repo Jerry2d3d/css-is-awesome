@@ -116,7 +116,7 @@ export default function FaqPage() {
 
       <h2 id="adding-new-theme">Can I make my own theme?</h2>
       <p>
-        Yes. Every theme declares the same 127 required tokens (plus up to 36
+        Yes. Every theme declares the same 127 required tokens (plus up to 49
         optional ones) documented in the{" "}
         <Link href="/docs/authoring/themes">/docs/authoring/themes</Link>{" "}
         contract. Fork the contract, set values for every required slot,

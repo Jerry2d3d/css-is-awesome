@@ -100,7 +100,7 @@ export default function McpPage() {
               <code>search_mixins</code>
             </td>
             <td>
-              150 public mixins (core, layout, animation, icons, generator +
+              162 public mixins (core, layout, animation, icons, generator +
               per-component) with signature, doc, body, line range
             </td>
           </tr>
@@ -111,7 +111,7 @@ export default function McpPage() {
               <code>search_functions</code>
             </td>
             <td>
-              24 public <code>@function</code>s (color, space, radius, shadow,
+              26 public <code>@function</code>s (color, space, radius, shadow,
               font-size, z, &hellip;)
             </td>
           </tr>

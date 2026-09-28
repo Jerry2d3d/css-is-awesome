@@ -84,7 +84,7 @@ This is the most-missed piece. **Consumers CAN:**
 }
 ```
 
-The validator (`node scripts/theme-validator.js`) is the gate — 127 required tokens + WCAG 2.2 AA contrast across 22 audited pairs per theme. It accepts quoted AND unquoted `[data-theme=x]` selectors, and refuses to grade rather than fall back if it sees `data-theme` but parses no block.
+The validator (`node scripts/theme-validator.js`) is the gate — 127 required tokens + WCAG 2.2 AA contrast across 24 audited pairs per theme. It accepts quoted AND unquoted `[data-theme=x]` selectors, and refuses to grade rather than fall back if it sees `data-theme` but parses no block.
 
 ## Paired themes (two brand identities by mode)
 

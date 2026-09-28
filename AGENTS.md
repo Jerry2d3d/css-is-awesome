@@ -183,7 +183,7 @@ font-size: cia.font-size(base);  // var(--font-size-base, 1rem)
 
 `cia.line-height()` names its steps `tight | snug | normal | relaxed | loose` (plus `1`–`6` and `none`), so `line-height(md)` misses for the same reason.
 
-Since 1.22.0 every scale accessor **warns** when it gets a key its scale does not have, names the keys that do exist, and says so at the call site's file and line. The output is unchanged — a warning, not an error — so an upgrade cannot break a build, but anything already making this mistake starts saying so on the next compile. Read the warnings.
+Every scale accessor **warns** when it gets a key its scale does not have, names the keys that do exist, and says so at the call site's file and line. The output is unchanged — a warning, not an error — so an upgrade cannot break a build, but anything already making this mistake starts saying so on the next compile. Read the warnings.
 
 The same applies in the other direction and to the other accessors: `letter-spacing(loose)` looks right and isn't (`loose` is a *line-height* key), and `radius(0)` / `z(100)` look like literals but return `var(--radius-0, 0.25rem)` and `var(--z-100, 0)`. Only `cia.space()` and `cia.letter-spacing()` accept a raw value — `space(12px)` and `letter-spacing(0.03em)` pass straight through. Every other accessor always returns a custom property, so write the literal directly instead of routing it through them.
 
@@ -291,7 +291,7 @@ when to bump the contract. Validate the contract pack with
 ### ⚠️ `fa-*` is bring-your-own-font — prefer the SVG pack
 
 `fa`, `fa-icon`, `fa-text` and `fa-spin` exist for teams already on Font
-Awesome. They map a name through `$icon-fa-map` (55 entries) to a
+Awesome. They map a name through `$icon-fa-map` (54 entries) to a
 codepoint and set the FA font family — nothing more:
 
 ```css

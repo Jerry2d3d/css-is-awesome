@@ -63,7 +63,7 @@ export default function DocsA11yPage() {
         surface. The same holds for <code>--text-primary</code> against{" "}
         <code>--surface-default</code> and <code>--border-focus</code> against
         whatever component it wraps. The build audits{" "}
-        <strong>22 foreground/background pairs per theme</strong> — including
+        <strong>24 foreground/background pairs per theme</strong> — including
         the five <code>--code-*</code> tokens against <code>--code-bg</code> —
         in both <code>light-dark()</code> branches, and fails on any miss. See{" "}
         <Link href="/docs/tokens#palette">/docs/tokens#palette</Link> for the

@@ -682,7 +682,7 @@ export default function AuthoringThemesPage() {
         </li>
         <li>
           Contrast is checked for you: the validator audits{" "}
-          <strong>22 foreground/background pairs</strong> per theme — ink on
+          <strong>24 foreground/background pairs</strong> per theme — ink on
           paper, link on paper, every status <code>-text</code> on its matching{" "}
           <code>-subtle</code>, and the five <code>--code-*</code> tokens on{" "}
           <code>--code-bg</code> — in <em>both</em> <code>light-dark()</code>{" "}

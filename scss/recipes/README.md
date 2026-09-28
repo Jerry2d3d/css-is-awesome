@@ -84,7 +84,7 @@ Each section's purpose:
 
 - ❌ `@use 'css-is-awesome'` (the emitting bundle) in a component styling block — use `css-is-awesome/api`, see [Import convention](#import-convention)
 - ❌ `cia-` class names (that prefix belongs to the library, not consumer code)
-- ❌ BEM (`__element` / `--modifier`) — see [`feedback_no_bem.md`](../../README.md) project rule
+- ❌ BEM (`__element` / `--modifier`) — cia is mixin-first and consumer-named; the class name is yours, so a modifier is a mixin argument instead
 - ❌ Hard-coded `#hex`, `1rem`, `8px` — use `m.color()`, `m.space()`, `m.radius()`
 - ❌ Inline `style=""` for **appearance** — colour, spacing, type, borders. That defeats the cia mixin pitch, and a reader copying it learns the wrong lesson.
   - ✅ Allowed for **structural layout-neutralising** only, where an element is required by the HTML contract but must not create a box. The canonical case is `<form method="dialog" style="display: contents">` in `dialog.md`: the form has to wrap the buttons for dialog-close to work, but it must not become a layout box. There is no token or mixin involved and no appearance is being set. `validate-recipes` warns on every inline `style=` so each one stays a conscious decision.

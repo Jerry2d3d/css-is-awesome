@@ -1,6 +1,6 @@
 # bin/
 
-cia's CLI entry points. **These are the only JavaScript files cia ships** — the package itself remains JS-free per the locked architecture rule (`feedback_no_js_in_package.md`); the CLI tools in `bin/` are explicitly allowed because they're consumer-facing tooling, not consumed by browser code at runtime.
+cia's CLI entry points. **cia ships no runtime JavaScript** — nothing in the package is loaded by a page. The JS that does ship is tooling: the CLIs here in `bin/`, the MCP server in `mcp/`, and six validator and converter scripts under `scripts/` that the `files` manifest names explicitly. All of it runs in Node, on a developer's machine, never in a browser.
 
 ## Bins registered in `package.json`
 

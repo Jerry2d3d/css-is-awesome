@@ -72,7 +72,7 @@ color: #2A241E;
 border-radius: 4px;
 ```
 
-Tokens come from the theme contract (`scripts/theme-contract.json` — **127 required + 36 optional = 163 slots**). A single theme file styles the page on its own (it emits a bare `:root`); when several themes are loaded together they swap via `<html data-theme="press-light">`. Either way every token resolves to the active theme's value.
+Tokens come from the theme contract (`scripts/theme-contract.json` — **127 required + 49 optional = 176 slots**). A single theme file styles the page on its own (it emits a bare `:root`); when several themes are loaded together they swap via `<html data-theme="press-light">`. Either way every token resolves to the active theme's value.
 
 Spacing is a token too. `cia.space(4)` resolves to `var(--space-4)`, and the numbered scale `--space-0`…`--space-9` is contract-required, so a theme can re-proportion the page and not just recolor it.
 
@@ -365,7 +365,7 @@ return (
 
 ### One file = one theme
 
-Each theme is a single file declaring all **127 required** contract tokens (plus any of the 36 optional ones it wants). It emits **two selectors at once**:
+Each theme is a single file declaring all **127 required** contract tokens (plus any of the 49 optional ones it wants). It emits **two selectors at once**:
 
 ```css
 :root, :root[data-theme="<name>"] { … }

@@ -306,9 +306,9 @@ Paper themes declare these as `none` / `transparent` so a swap to a glass or pho
 
 ---
 
-## Optional tokens by feature (contract 1.2)
+## Optional tokens by feature (contract 1.3)
 
-Every optional token belongs to exactly one **feature** in `scripts/theme-contract.json` (`features`), so a validator, installer or agent can say *"this theme is missing the tokens for print"* instead of listing all 41 optional names. The validator's info line reports counts per feature; `--show-optional` lists them grouped. `npm run check:contract` fails the build if an optional token is in no feature, in two, or if a feature names a required token.
+Every optional token belongs to exactly one **feature** in `scripts/theme-contract.json` (`features`), so a validator, installer or agent can say *"this theme is missing the tokens for print"* instead of listing all 49 optional names. The validator's info line reports counts per feature; `--show-optional` lists them grouped. `npm run check:contract` fails the build if an optional token is in no feature, in two, or if a feature names a required token.
 
 | Feature | Tokens | Enables |
 | --- | --- | --- |
@@ -506,7 +506,7 @@ are reported as **SKIP** with a reason rather than silently passing.
 
 ## Versioning
 
-The contract is versioned via `scripts/theme-contract.json` (`version: "1"`).
+The contract is versioned via `scripts/theme-contract.json` (`version: "1.3"`).
 
 - **Minor bump** (`"1" → "1.1"`): adds OPTIONAL tokens. Existing themes remain valid.
 - **Major bump** (`"1" → "2"`): renames or removes REQUIRED tokens. Existing themes must migrate.
