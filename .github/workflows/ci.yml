@@ -99,6 +99,18 @@ jobs:
       - name: Page surfaces stay opt-in (no default selector reads --page-*)
         run: npm run test:surfaces
 
+      # Every accessor in _mixins.scss resolves a key against a scale map, and
+      # an unknown key used to be silently wrong: `font-size(2xs)` returned
+      # `var(--font-size-2xs, 1rem)`, no theme declares that token, so a
+      # caption asking for the smallest type rendered at the body size. It
+      # compiled and it rendered, so nothing caught it for months.
+      #
+      # The fix is a @warn, and a @warn breaks no build and changes no output
+      # — which makes it the easiest thing in the repo to delete by accident.
+      # A refactor that drops one guard line is green everywhere except here.
+      - name: Unknown scale keys warn (font-size(2xs) and friends)
+        run: npm run test:scale-keys
+
       # Compares the 24 themes AGAINST EACH OTHER, which nothing else does.
       # The validator grades each theme alone and the drift check regenerates
       # it and compares it to itself, so both stayed green for weeks while
