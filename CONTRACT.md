@@ -479,9 +479,13 @@ onto `--paper` so the math reflects what users actually see.
 | `--code-accent` on `--code-bg`                        | 4.5 : 1  | text     |
 | `--code-blue` on `--code-bg`                          | 4.5 : 1  | text     |
 | `--code-green` on `--code-bg`                         | 4.5 : 1  | text     |
+| `--page-hero-ink` on `--page-hero-bg`                 | 4.5 : 1  | text     |
+| `--page-band-ink` on `--page-band-bg`                 | 4.5 : 1  | text     |
 
-That's **22 audited pairs per theme**, the five `--code-*` pairs included —
+That's **24 audited pairs per theme**, the five `--code-*` pairs included —
 syntax highlighting is body text, so it carries the full 4.5:1 requirement.
+The two page-surface pairs are audited for the same reason: a hero band sets
+its own background, so its text is not covered by any `--paper` pair.
 For dual-mode themes the audit evaluates **both** `light-dark()` branches and
 keeps the worse result. `--border-default` is treated as decorative per WCAG
 2.2 SC 1.4.11 and reports as info, not FAIL.

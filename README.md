@@ -398,17 +398,17 @@ Twelve checks, all gated in CI on every PR. Each one exists because the failure 
 | Check | What it proves |
 |---|---|
 | `lint` / `lint:scss` | ESLint on the site, stylelint on the library |
-| `validate-themes` | every theme declares all 127 required contract tokens and meets WCAG 2.2 AA on 22 audited pairs — evaluating **both** `light-dark()` branches and keeping the worse result. Fails the build by default |
+| `validate-themes` | every theme declares all 127 required contract tokens and meets WCAG 2.2 AA on 24 audited pairs — evaluating **both** `light-dark()` branches and keeping the worse result. Fails the build by default |
 | `check:theme-drift` | the committed `public/themes/**` and `public/theme.css` artifacts still match their SCSS sources |
 | `validate-icons` | the 49-glyph core pack is intact (extras allowed) |
 | `validate-api` | the `/api` barrel still emits zero CSS until a mixin is called |
 | `validate-package` | packs → installs into a temp project → compiles all **10** documented `@use` specifiers |
-| `coverage:api` | calls **183/183** public mixins + functions and asserts the output |
-| `coverage:mcp` | calls **30/30** MCP tools over stdio |
+| `coverage:api` | calls **188/188** public mixins + functions and asserts the output |
+| `coverage:mcp` | calls **34/34** MCP tools over stdio |
 | `validate-recipes` | every recipe's SCSS compiles and its documented mixin calls resolve |
 | `test` | Playwright — route smoke, axe a11y, per-theme visual snapshots, theme-editor behaviour, across three engines |
 
-**Call-and-assert coverage.** SCSS has no line-coverage tooling, so cia measures whether every part of the public API is actually callable: parse every public `@mixin`/`@function`, generate a fixture that calls it, compile, and assert it works — no `null` leaking into CSS, functions return a value, mixins emit. **183/183 SCSS units and 30/30 MCP tools**, with CI failing below 98%. A unit with no fixture counts as uncovered, so skipping a test lowers the number rather than hiding.
+**Call-and-assert coverage.** SCSS has no line-coverage tooling, so cia measures whether every part of the public API is actually callable: parse every public `@mixin`/`@function`, generate a fixture that calls it, compile, and assert it works — no `null` leaking into CSS, functions return a value, mixins emit. **188/188 SCSS units and 34/34 MCP tools**, with CI failing below 98%. A unit with no fixture counts as uncovered, so skipping a test lowers the number rather than hiding.
 
 **What 100% means here:** every public mixin and function is invoked and produces sane output. It catches renames, broken signatures and undefined variables — it found one on its first run, an undefined `$icon-size` that broke four icon mixins. It does **not** prove the CSS is visually correct; that's a deliberate trade against golden-file snapshots, which would churn dozens of files on any token change. Page-level visual correctness is covered by the Playwright snapshots instead.
 
@@ -422,10 +422,10 @@ Full detail: [`/docs/testing`](https://cssisawesome.com/docs/testing/).
 
 | Bundle | Size | Use case |
 |---|---|---|
-| `dist/tokens.css` | 2.26 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
-| `dist/css-is-awesome.core.min.css` | 2.42 KB | Tokens + resets, no utilities or components |
-| `dist/css-is-awesome.utilities.min.css` | 4.79 KB | Every `cia-*` utility class, nothing else |
-| `dist/css-is-awesome.min.css` | 7.99 KB | Full bundle (everything) |
+| `dist/tokens.css` | 2.25 KB | Tokens only (`:where(:root)` CSS variables, no rules) — the purest mixin-first emit |
+| `dist/css-is-awesome.core.min.css` | 2.38 KB | Tokens + resets, no utilities or components |
+| `dist/css-is-awesome.utilities.min.css` | 4.75 KB | Every `cia-*` utility class, nothing else |
+| `dist/css-is-awesome.min.css` | 7.96 KB | Full bundle (everything) |
 | Per-theme `themes/<name>/theme.css` | 2.0–3.8 KB | One file per theme, both modes via `light-dark()`, drop-in with no markup change |
 | **Runtime JavaScript shipped in package** | **0 KB** | Nothing in the package is loaded by a page. The Node tooling (`cia` CLI, MCP server, validators) never reaches the browser; JS-driven UI features ship as separate add-on packages. |
 

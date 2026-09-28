@@ -819,10 +819,26 @@ export default function DocsMixinsPage() {
 
       <h3 id="form-mixins">Forms — inputs, selects, checks, radios, switches, sliders</h3>
       <p>From <code>components/forms</code>. All form primitives share the same focus treatment and disabled contract.</p>
+      <p>
+        Two things worth knowing about <code>textarea-base</code>.{" "}
+        <code>$min-height</code> is measured in <code>lh</code> units, so{" "}
+        <code>4lh</code> is four lines of <em>this textarea&apos;s own</em>{" "}
+        line-height — it stays four lines when a theme changes the type scale,
+        which a <code>rem</code> value would not. And{" "}
+        <code>$grow: true</code> adds{" "}
+        <code>field-sizing: content</code>, so the box grows with what is typed
+        instead of scrolling inside a fixed height. That is the whole feature:
+        no resize observer, no JS, no shadow element to measure. It is opt-in
+        because a textarea that changes height moves everything below it, which
+        is right for a comment box and wrong inside a fixed-height form
+        panel. Browsers without <code>field-sizing</code> keep the{" "}
+        <code>$min-height</code> box and scroll, which is today&apos;s
+        behaviour.
+      </p>
       <Example>
         <Example.Code><span className="tok-sel">@mixin</span> <span className="tok-prop">input-base</span>(<span className="tok-val">$py: 1, $px: 2, $r: md, $border-width: 1px, $bg, $border-color</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">select-base</span>(<span className="tok-val">...</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">textarea-base</span>(<span className="tok-val">...</span>);
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">textarea-base</span>(<span className="tok-val">$min-height: 4lh, $grow: false, ...</span>);
 {"\n"}
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">check-base</span>(<span className="tok-val">$size: 1.125rem, $r: sm, $color: action-primary-default</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">radio-base</span>(<span className="tok-val">$size: 1.125rem, $color: action-primary-default</span>);
@@ -893,8 +909,37 @@ export default function DocsMixinsPage() {
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown-menu</span>(<span className="tok-val">$py: 1, $r: md, $shadow: 2, $min-width: 12rem</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown-item</span>(<span className="tok-val">$py: 1, $px: 4</span>);
 {"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown-divider</span>(<span className="tok-val">$spacing: 1</span>);
-{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown</span>;  <span className="tok-com">{"// dropdown-menu + [popover] semantics + closed-state guard"}</span></Example.Code>
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">dropdown</span>;  <span className="tok-com">{"// dropdown-menu + [popover] semantics + closed-state guard"}</span>
+{"\n"}
+{"\n"}<span className="tok-sel">@mixin</span> <span className="tok-prop">anchor-to</span>(<span className="tok-val">$area, $flip: flip-block, $gap: null</span>);</Example.Code>
       </Example>
+      <p>
+        <code>anchor-to</code> pins a popover to the element that opened it,
+        and you wire nothing to make it work. Any element with{" "}
+        <code>popovertarget</code> is automatically the{" "}
+        <em>implicit anchor</em> of the popover it targets, so there is no{" "}
+        <code>anchor-name</code> to declare and no second selector to keep in
+        step — which is why the older two-sided setup is no longer the thing to
+        teach. <code>$area</code> is a{" "}
+        <code>position-area</code> value such as{" "}
+        <code>block-end</code> or <code>block-start span-inline-start</code>.
+      </p>
+      <p>
+        Every value routes through a custom property, so overriding one is a
+        single declaration rather than a specificity fight:
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">.my-menu</span> {"{"} <span className="tok-prop">--cia-anchor-area</span>: <span className="tok-val">block-start span-inline-start</span>; {"}"}</Example.Code>
+      </Example>
+      <p>
+        The whole mixin sits inside{" "}
+        <code>@supports (anchor-name: --cia)</code>. An engine without anchor
+        positioning gets exactly the behaviour it gets today — cia sets
+        nothing and your own positioning applies — so adding this to an
+        existing component cannot move anything in a browser that does not
+        support it. <code>dropdown</code>, <code>tooltip</code> and{" "}
+        <code>popover-base</code> already call it for you.
+      </p>
 
       <h2 id="writing-your-own">Writing your own mixins</h2>
       <p>
@@ -945,7 +990,7 @@ export default function DocsMixinsPage() {
         <li><strong>Data:</strong> <code>table-base</code>, <code>card-base</code>, <code>badge-base</code>, <code>badge</code></li>
         <li><strong>Forms:</strong> <code>input-base</code>, <code>select-base</code>, <code>textarea-base</code>, <code>check-base</code>, <code>radio-base</code>, <code>switch-base</code>, <code>slider-base</code>, <code>label-base</code>, <code>form-layout</code>, <code>form-group</code>, <code>form-row</code>, <code>form-help</code>, <code>form-error</code></li>
         <li><strong>Navigation:</strong> <code>navbar-base</code>, <code>navbar-brand</code>, <code>navbar-nav</code>, <code>navbar-link</code>, <code>nav-base</code>, <code>breadcrumb</code>, <code>tabs-base</code>, <code>tab-item</code>, <code>pagination</code>, <code>pagination-item</code>, <code>hamburger</code>, <code>hamburger-open</code>, <code>drawer</code>, <code>sheet</code>, <code>dock</code>, <code>dock-item</code></li>
-        <li><strong>Overlays:</strong> <code>modal-backdrop</code>, <code>modal-base</code>, <code>modal-header</code>, <code>modal-footer</code>, <code>tooltip-base</code>, <code>tooltip</code>, <code>popover-base</code>, <code>dropdown-menu</code>, <code>dropdown-item</code>, <code>dropdown-divider</code>, <code>dropdown</code></li>
+        <li><strong>Overlays:</strong> <code>modal-backdrop</code>, <code>modal-base</code>, <code>modal-header</code>, <code>modal-footer</code>, <code>tooltip-base</code>, <code>tooltip</code>, <code>popover-base</code>, <code>dropdown-menu</code>, <code>dropdown-item</code>, <code>dropdown-divider</code>, <code>dropdown</code>, <code>anchor-to</code></li>
       </ul>
     </>
   );

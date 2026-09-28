@@ -64,6 +64,10 @@ const FIXTURES = {
   "contain": "md",
   "contain-down": "md",
   "contain-between": "sm, lg",
+  // anchor positioning — $area is a `position-area` value, and it is the one
+  // required argument. Shipped in the same batch as the overlay transitions
+  // and went out with no fixture, which is what held coverage under 100%.
+  "anchor-to": "block-end",
   // layout — Tier 2 takes rows of region names; named-layout takes a preset key
   "layout": "(nav),(side body),(foot)",
   "area": "nav",
@@ -191,10 +195,52 @@ const seen = new Map();
 for (const u of units) if (!seen.has(`${u.kind}:${u.name}`)) seen.set(`${u.kind}:${u.name}`, u);
 const ALL = [...seen.values()];
 
+/**
+ * Split a Sass parameter list on its TOP-LEVEL commas.
+ *
+ * This used to be `params.split(/,(?![^(]*\))/)` — the usual regex trick for
+ * "a comma not inside parentheses". It cannot see nesting, and one nested
+ * default was enough to break it:
+ *
+ *   $color: var(--surface-default, var(--paper))
+ *
+ * At the inner comma the lookahead scans ` var(--paper))`, finds a `(` before
+ * any `)`, fails, and so the negative lookahead SUCCEEDS and the list is split
+ * mid-value. That leaves a fragment `var(--paper))`, which has no `:` in it
+ * and is therefore counted as a REQUIRED parameter that no caller can satisfy.
+ *
+ * The visible effect was `wave-divider` reported as uncovered with
+ * `needs args: var(--paper))` — a parameter it does not have, named after a
+ * closing bracket. Every parameter it does have carries a default, so it was
+ * always callable as `wave-divider()`; the coverage number was wrong, not the
+ * mixin. It dragged the suite to 187/188 and the README's claim of full
+ * coverage with it.
+ *
+ * A depth counter cannot have that class of bug. It also means the next mixin
+ * to take a `clamp()` or a nested `var()` default does not silently become
+ * uncovered.
+ */
+function splitTopLevel(params) {
+  const out = [];
+  let depth = 0;
+  let current = "";
+  for (const ch of params) {
+    if (ch === "(") depth++;
+    else if (ch === ")") depth--;
+    if (ch === "," && depth === 0) {
+      out.push(current);
+      current = "";
+    } else {
+      current += ch;
+    }
+  }
+  out.push(current);
+  return out;
+}
+
 function requiredParams(params) {
   if (!params) return [];
-  return params
-    .split(/,(?![^(]*\))/)
+  return splitTopLevel(params)
     .map((s) => s.trim())
     .filter(Boolean)
     .filter((p) => !p.includes(":") && !p.includes("..."));

@@ -21,7 +21,7 @@ apart.
 Library default tokens emit under `:where(:root)` (specificity `0,0,0`),
 so a theme's declarations win regardless of load order.
 
-All shipped themes pass the WCAG 2.2 AA contrast audit (22 audited pairs
+All shipped themes pass the WCAG 2.2 AA contrast audit (24 audited pairs
 per theme).
 
 ## Shipped themes
@@ -87,7 +87,7 @@ component change.
 Every theme MUST:
 
 1. Declare all 127 required tokens in `scripts/theme-contract.json`.
-2. Pass WCAG 2.2 AA on the 22 audited token pairs (`scripts/theme-a11y.js`),
+2. Pass WCAG 2.2 AA on the 24 audited token pairs (`scripts/theme-a11y.js`),
    which include the five `--code-*` pairs graded against `--code-bg`.
 
 CI runs `npm run validate-themes` and fails the PR on either gap.
