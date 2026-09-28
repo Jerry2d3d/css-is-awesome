@@ -101,7 +101,7 @@ export default function MigrationTailwindPage() {
               <code>@apply btn-class text-sm</code> (Tailwind class list)
             </td>
             <td>
-              <code>@include m.button-primary</code> (mixin name)
+              <code>@include m.btn(primary)</code> (mixin name)
             </td>
           </tr>
         </tbody>
@@ -252,9 +252,11 @@ export default function MigrationTailwindPage() {
           <strong>
             Tailwind <code>&lt;Transition&gt;</code> wrappers
           </strong>{" "}
-          → built into cia overlays. Motion tokens
-          (<code>--motion-duration-*</code>, <code>--motion-ease-*</code>)
-          drive enter/exit; no wrapper component needed.
+          → built into cia overlays. Motion tokens drive enter/exit; no
+          wrapper component needed. <code>--duration-instant/fast/normal/slow/slower</code>{" "}
+          are emitted by the library; <code>--ease</code> is an overridable hook
+          read as <code>var(--ease, cubic-bezier(0.33, 0.66, 0.33, 1))</code>, so
+          declaring it retimes every transition and leaving it alone costs nothing.
         </li>
         <li>
           <strong>
@@ -306,7 +308,7 @@ export default function MigrationTailwindPage() {
           {"\n"}
           <span className="tok-sel">.save-btn</span> {"{"}
           {"\n"}  <span className="tok-prop">@include</span>{" "}
-          <span className="tok-val">m.button-primary</span>;
+          <span className="tok-val">m.btn(primary)</span>;
           {"\n"}
           {"}"}
         </Example.Code>

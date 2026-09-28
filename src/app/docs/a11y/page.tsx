@@ -60,7 +60,7 @@ export default function DocsA11yPage() {
         <code>--info-default</code> — are defined in every one of the 24
         shipped themes and are tuned so that text set in the token reaches
         WCAG AA (4.5:1 for body copy, 3:1 for large text) against its intended
-        surface. The same holds for <code>--text-default</code> against{" "}
+        surface. The same holds for <code>--text-primary</code> against{" "}
         <code>--surface-default</code> and <code>--border-focus</code> against
         whatever component it wraps. The build audits{" "}
         <strong>22 foreground/background pairs per theme</strong> — including

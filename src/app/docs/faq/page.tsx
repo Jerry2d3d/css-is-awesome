@@ -71,7 +71,7 @@ export default function FaqPage() {
       <h2 id="mixin-first-meaning">What does &quot;mixin-first&quot; mean exactly?</h2>
       <p>
         It means the recommended way to style a thing is{" "}
-        <code>@include m.button(primary)</code>, not{" "}
+        <code>@include m.btn(primary)</code>, not{" "}
         <code>class=&quot;btn btn-primary&quot;</code> in markup. You
         compose styles semantically in SCSS instead of stacking utility
         classes in HTML.

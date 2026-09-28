@@ -12,14 +12,12 @@ css-is-awesome ships three authoring surfaces for the same components. Pick the 
 <link rel="stylesheet" href="themes/sketchbook/theme.css">
 <link rel="stylesheet" href="css-is-awesome.min.css">
 
-<main class="cia-container">
+<main class="cia-mx-auto cia-p-6 cia-flex-col cia-gap-4">
   <h1>Welcome</h1>
-  <a class="cia-btn-primary" href="/start">Get started</a>
-  <a class="cia-btn-outline" href="/docs">Read docs</a>
-  <article class="cia-card">
-    <h4>Sketchbook theme</h4>
-    <p>Warm paper, sumi ink, indigo accent.</p>
-  </article>
+  <p class="cia-text-text-secondary">Swap the theme file and this re-skins.</p>
+  <div class="cia-flex cia-gap-2 cia-items-center">
+    <span class="cia-text-lg">Utilities compose with your own CSS.</span>
+  </div>
 </main>
 ```
 
@@ -104,35 +102,46 @@ The split to hold in your head: **cia owns the system values — colour, spacing
 
 ---
 
-## The same button across all three tiers
+## The same button across the two tiers that produce one
+
+Tier 1 is not in this list, and that is the point: **utilities do not make a
+button.** They space it, align it and animate it once something else has
+styled it.
 
 ```html
-<!-- Tier 1 -->
-<button class="cia-btn-primary">Save</button>
-
-<!-- Tier 2 -->
+<!-- Tier 2: your class, cia's mixin -->
 <button class="save-btn">Save</button>
 ```
 ```scss
 .save-btn { @include b.btn(primary); }
 ```
 ```html
-<!-- Tier 3 -->
+<!-- Tier 3: no class at all - the bare-tags recipe styles the element -->
 <button>Save</button>
 ```
+```scss
+@use 'css-is-awesome/scss/recipes/bare-tags';
+```
 
-All three resolve to the same `btn(primary)` mixin output. Mix them in one app — a Tier 3 bare `<button>` and a Tier 1 `.cia-btn-primary` render identically.
+Both resolve to the same `btn(primary)` output, so a Tier 3 bare `<button>` and
+a Tier 2 `.save-btn` render identically and can sit in the same app. Both need
+a Sass build. Without one, a stylesheet drop-in gives you tokens, resets and
+the 746 utilities — and you style the button yourself.
 
 ---
 
 ## Architecture
 
-- **Single source of truth.** One mixin per component (`btn`, `card`, `input`, `alert`, …) with private internals.
+- **Single source of truth.** One mixin per component (`btn`, `card-base`, `input-base`, `alert`, …) with private internals.
 - **Router pattern.** `btn(variant)` dispatches to private mixins. Variant is an arg, not a class modifier — that's why there's no BEM.
-- **Tier 1** = router output baked into single utility classes (`.cia-btn-primary`, `.cia-btn-outline`, …).
+- **Tier 1** = the 746 standalone utility classes for spacing, layout, text
+  and animation (`.cia-p-md`, `.cia-gap-4`, `.cia-text-center`,
+  `.cia-anim-fade-in`). **The router output is NOT baked into classes** — there
+  is no `.cia-btn-primary`, no `.cia-card`, no `.cia-container`, and no
+  prebuilt bare-tags stylesheet. A consumer who wants a styled button without a
+  Sass build uses Tier 3 on bare tags, not a class.
 - **Tier 2** = direct router `@include` in author SCSS under custom class names.
 - **Tier 3** = router `@include` applied to bare tag selectors via the recipe.
-- **Tier 4 (React).** Components in `src/` wrap the same mixins through CSS Modules. Same output, framework-aware ergonomics.
 
 Change the router, every tier updates. Add a variant once, every tier gets it.
 

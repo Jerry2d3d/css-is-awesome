@@ -10,13 +10,15 @@
 | # | Epic | Mission | Effort | Stories |
 |---|---|---|---|---|
 | [01](./EPIC-01-vscode-extension.md) | **VS Code Extension** | Mixin signature hovers, token autocomplete, jump-to-definition for cia mixins, inline contrast preview on color tokens. Like Tailwind CSS IntelliSense, but for cia. | ~2 weeks | 15 |
+| [02](./EPIC-02-doc-claims-are-gated.md) | **Documented claims are gated** | Make a false claim in the docs fail CI the way a false claim in the code already does: every stated count checked against the tool that owns it, every SCSS sample compiled, every documented class and token asserted to exist. Plus the written rule that downstream projects are consumers, not design inputs. | ~3 days | 9 |
 
-**Total v1.5 effort:** ~10 working days. **Total stories:** 15.
+**Total v1.5 effort:** ~13 working days. **Total stories:** 24.
 
 ## Definition of done for v1.5
 
 - [ ] Extension published to VS Code Marketplace
-- [ ] All 15 stories accepted
+- [ ] All 24 stories accepted
+- [ ] `check:doc-claims` and `check:doc-syntax` gating every PR
 - [ ] Tested against the 5 v1.0 recipes + a real consumer project
 - [ ] CHANGELOG.md v1.5.0 entry (extension version bump, no cia core change required if all features are extension-side)
 

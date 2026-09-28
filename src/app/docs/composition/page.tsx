@@ -26,7 +26,7 @@ export default function CompositionPage() {
 
 ├─ Is it a color, type, radius, shadow, motion timing?
 │   → Use the themed token:
-│     m.color() / m.font-size() / m.radius() / m.shadow() / m.duration()
+│     m.color() / m.font-size() / m.radius() / m.shadow()
 │     (varies per theme — consumers can re-tune)
 │
 ├─ Is it a themeable space (margin, padding, gap)?
@@ -73,7 +73,7 @@ export default function CompositionPage() {
 {"\n"}  <span className="tok-prop">font-size</span>: <span className="tok-val">m.font-size(3)</span>;
 {"\n"}  <span className="tok-prop">border-radius</span>: <span className="tok-val">m.radius(md)</span>;
 {"\n"}  <span className="tok-prop">box-shadow</span>: <span className="tok-val">m.shadow(2)</span>;
-{"\n"}  <span className="tok-prop">transition-duration</span>: <span className="tok-val">m.duration(normal)</span>;
+{"\n"}  <span className="tok-prop">transition-duration</span>: <span className="tok-val">var(--duration-normal)</span>;
 {"\n"}{"}"}</Example.Code>
       </Example>
 
