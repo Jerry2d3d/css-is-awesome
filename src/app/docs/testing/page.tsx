@@ -53,7 +53,7 @@ export default function TestingPage() {
               <td><code>validate-themes</code></td>
               <td>
                 Every theme declares all 127 required contract tokens, and every
-                one of the 22 audited pairs meets WCAG 2.2 AA contrast. Checks{" "}
+                one of the 24 audited pairs meets WCAG 2.2 AA contrast. Checks{" "}
                 <strong>both</strong> <code>light-dark()</code> branches and
                 keeps the worse result — a token that is two colours cannot pass
                 by being legible in only one mode. Fails the build by default.
@@ -134,7 +134,7 @@ export default function TestingPage() {
         value, mixins emit.
       </p>
       <p>
-        <strong>174 of 174 SCSS units and 30 of 30 MCP tools.</strong> CI fails
+        <strong>188 of 188 SCSS units and 34 of 34 MCP tools.</strong> CI fails
         below 98%. A mixin with no fixture counts as uncovered and lowers the
         number, so skipping a test is visible rather than invisible.
       </p>

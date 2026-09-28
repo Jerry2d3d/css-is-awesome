@@ -374,7 +374,7 @@ Each theme is a single file declaring all **127 required** contract tokens (plus
 - The bare `:root` makes a theme **drop-in**: serve one theme file as your `theme.css` and the page restyles with **no markup change**. `data-theme` is optional in that case.
 - The `[data-theme]` half is what lets several themes coexist. `public/theme.css` ships all 24 themes consolidated; there, `<html data-theme="<name>">` is **required**, and the bundle is built with `$standalone: false` so the bare `:root` is dropped and the blocks can't collide.
 
-Per-theme files at `public/themes/<name>/theme.css` are also published for download. All shipped blocks pass the WCAG 2.2 AA contrast audit (22 pairs per theme) out of the box.
+Per-theme files at `public/themes/<name>/theme.css` are also published for download. All shipped blocks pass the WCAG 2.2 AA contrast audit (24 pairs per theme) out of the box.
 
 **24 themes across 8 families.** Every family ships three files: the unsuffixed parent (both modes in one file via `light-dark()`) plus explicit `-light` and `-dark` siblings that pin a single `color-scheme`. Families: `sketchbook` (default), `press`, `graphite`, `glass`, `cupertino`, `terminal`, `prism`, and the unbranded `boilerplate` starter. The unsuffixed names are **first-class themes, not backward-compat aliases** — `sketchbook` is the auto-switching one, `sketchbook-light` / `sketchbook-dark` are the pinned ones. `terminal` is the one asymmetry: its unsuffixed file is dark-only (sacred), so `terminal-light` is a separate brand rather than its light mode.
 
