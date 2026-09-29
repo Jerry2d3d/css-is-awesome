@@ -136,6 +136,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);

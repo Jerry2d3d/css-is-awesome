@@ -129,7 +129,6 @@
   --error-subtle: var(--shu-wash);
   --error-text: #b91c1c;
   /* Space scale */
-  --space-2xs: 0.25rem;
   --space-xs: var(--space-1);
   --space-sm: var(--space-2);
   --space-md: var(--space-4);
@@ -172,6 +171,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
 
   /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
   --page-hero-bg: #f2f6fe;

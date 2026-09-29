@@ -13,6 +13,7 @@
 // A theme (or consumer) can still override a single --space-N with a
 // literal to break the ramp on one step; a literal always wins over calc().
 // ============================================================================
+@use 'sass:map';
 @use 'sass:math';
 @use './system' as s;
 
@@ -22,4 +23,22 @@
   @each $step, $value in s.$spacing-scale {
     --space-#{$step}: calc(var(--space-unit) * #{math.div($value, $unit)});
   }
+
+  // 2xs is part of the ramp and was the one step that ignored the knob.
+  //
+  // It sits BELOW --space-1 and has no numbered step of its own, so it was
+  // never in $spacing-scale and never got derived here. It was emitted once,
+  // as a literal, by _generator.scss's `@each $key in (0, none, 2xs)` loop —
+  // which is correct for `0` and `none`, because zero does not scale, and
+  // wrong for 2xs, because 4px is a spacing step like any other.
+  //
+  // The visible consequence: turn the density knob and every step moved
+  // except this one. At a roomier unit a hairline gap stayed hairline while
+  // everything around it grew, which is exactly the proportional drift the
+  // knob exists to prevent.
+  //
+  // Same multiplier arithmetic as the loop above, so a non-default $unit
+  // rescales it with the rest. At the default it is calc(var(--space-unit)
+  // * 2) = 0.25rem — the value it has always had, so no theme moves today.
+  --space-2xs: calc(var(--space-unit) * #{math.div(map.get(s.$spacing, 2xs), $unit)});
 }
