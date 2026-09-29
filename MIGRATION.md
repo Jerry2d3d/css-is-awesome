@@ -305,7 +305,7 @@ existing `bare-tags` recipe).
 | Themes | 14 files (`press-light` + `press-dark` × 7 families) | **9 single-file themes** using `light-dark()` |
 | Theme selectors | `[data-theme="press-light"]` / `[data-theme="press-dark"]` | `[data-theme="press"]` |
 | Responsive `:` utilities | `.cia-sm:flex`, `.cia-md:hidden` etc. | **killed** (saves 8 KB gz) |
-| Utility classes (Sass path) | always emitted | **opt-in** via `@use ... with ($utilities: true)` |
+| Utility classes (Sass path) | always emitted | still always emitted from the root entry point — use `css-is-awesome/scss/core` or `css-is-awesome/api` to emit fewer |
 | JavaScript in npm package | optional add-ons | **zero** — hard rule |
 | Mixin names | 12 names renamed to spec vocabulary | see rename table below |
 
@@ -367,18 +367,29 @@ The responsive utility generator was emitting ~85 lines of cartesian-product
 classes that most consumers never used. Killing them dropped `main.scss` from
 16.6 KB gz to 8.2 KB gz.
 
-### 4. Opt back in to utility classes (Sass consumers)
+### 4. Utility classes (Sass consumers) — nothing to do
+
+An earlier version of this guide said utilities became opt-in via
+`@use ... with ($utilities: true)`. **That was never true.** No such
+configuration variable exists, and passing it is a compile error:
+`This variable was not declared with !default in the @used module.`
+
+Utilities are emitted by the root entry point, in v0.7 and today alike:
 
 ```scss
-// v0.7 — all utilities always emitted
-@use 'css-is-awesome' as cia;
+// all 746 .cia-* utilities, plus tokens and resets
+@use 'css-is-awesome';
 
-// v0.8 — utilities opt-in
-@use 'css-is-awesome' as cia with (
-  $utilities: true,             // emit .cia-* utility classes
-  $responsive-spacing: true,    // emit .cia-sm-p-md, etc.
-);
+// tokens + resets only, no utility classes
+@use 'css-is-awesome/scss/core';
+
+// mixins and functions only — emits nothing
+@use 'css-is-awesome/api' as cia;
 ```
+
+If you upgraded and dropped this line expecting to lose utilities, you did
+not lose them. If you added the `with (...)` block, your build has been
+failing and removing it is the fix.
 
 **Pre-built CDN consumers are unaffected** — `dist/css-is-awesome.utilities.css`
 still ships every utility class. The opt-in governs the Sass compile path only.

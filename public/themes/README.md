@@ -2,7 +2,7 @@
 
 Runtime theme files shipped with css-is-awesome. One file per theme, no
 build step. Each `theme.css` declares the full **127-token contract**
-(see `scripts/theme-contract.json`, plus 36 optional tokens) under a
+(see `scripts/theme-contract.json`, plus 49 optional tokens) under a
 `:root, :root[data-theme="<name>"]` selector.
 
 The bare `:root` half is the point: **dropping a single theme file in

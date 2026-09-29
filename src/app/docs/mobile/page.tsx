@@ -354,7 +354,7 @@ body > footer { @include cia.page-footer; }
         that merely fits on one.
       </p>
 
-      <h3 id="tap-targets">Tap targets: 44px minimum</h3>
+      <h3 id="tap-targets">Tap targets: 24px minimum, 44px recommended</h3>
       <p>
         Fingers are not cursors. cia&apos;s interactive mixins already
         honor <code>--touch-target-min</code> (44px —{" "}

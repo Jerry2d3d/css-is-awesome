@@ -29,9 +29,9 @@ export default function DocsPage() {
 {"\n"}  <span className="tok-sel">{"<link"}</span> <span className="tok-prop">rel</span>=<span className="tok-val">"stylesheet"</span> <span className="tok-prop">href</span>=<span className="tok-val">"https://cdn.jsdelivr.net/npm/css-is-awesome@1/dist/css-is-awesome.min.css"</span><span className="tok-sel">{">"}</span>
 {"\n"}<span className="tok-sel">{"</head>"}</span>
 {"\n"}<span className="tok-sel">{"<body>"}</span>
-{"\n"}  <span className="tok-sel">{"<main"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-container"</span><span className="tok-sel">{">"}</span>
+{"\n"}  <span className="tok-sel">{"<main"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-mx-auto cia-p-6 cia-flex-col cia-gap-4"</span><span className="tok-sel">{">"}</span>
 {"\n"}    <span className="tok-sel">{"<h1>"}</span>Hello, sketchbook<span className="tok-sel">{"</h1>"}</span>
-{"\n"}    <span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
+{"\n"}    <span className="tok-sel">{"<p"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-text-text-secondary"</span><span className="tok-sel">{">"}</span>Swap the theme file and this page re-skins.<span className="tok-sel">{"</p>"}</span>
 {"\n"}  <span className="tok-sel">{"</main>"}</span>
 {"\n"}<span className="tok-sel">{"</body>"}</span>
 {"\n"}<span className="tok-sel">{"</html>"}</span></Example.Code>
@@ -40,12 +40,25 @@ export default function DocsPage() {
         Save that as <code>index.html</code>, open it — you are done. That is
         the entire 1-minute track.
       </p>
+      <p>
+        Those classes are <strong>utilities</strong> — spacing, layout, text and
+        animation. There are 746 of them and they are the whole of what a
+        stylesheet drop-in gives you, alongside the tokens and resets.{" "}
+        <strong>There are no component classes</strong>: no{" "}
+        <code>.cia-btn</code>, no <code>.cia-card</code>. Components come from
+        mixins, which need a Sass build — that is the next section — or from the{" "}
+        <Link href="/docs/recipes/bare-tags">bare-tags recipe</Link>, which
+        styles ordinary <code>&lt;button&gt;</code> and{" "}
+        <code>&lt;table&gt;</code> elements with no classes at all.
+      </p>
 
       <h2 id="first-themed-element">Your first themed element</h2>
       <p>
         Every element in the system reads from the active theme&apos;s tokens.
         Here is a button and a card rendered live on this page, followed by the
-        exact HTML that produced them.
+        SCSS that produced them — this is the real source of the two components
+        above, not a paraphrase. The class names are ours; cia supplies only the
+        mixin.
       </p>
       <Example>
         <Example.Preview style={{ display: "grid", gap: "16px" }}>
@@ -59,13 +72,19 @@ export default function DocsPage() {
             single markup change.
           </Card>
         </Example.Preview>
-        <Example.Code><span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
-{"\n"}<span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-outline"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Read the docs<span className="tok-sel">{"</a>"}</span>
+        <Example.Code><span className="tok-com">{"// Button.module.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">&apos;css-is-awesome/scss/components/buttons&apos;</span> <span className="tok-prop">as</span> <span className="tok-val">m</span>;
 {"\n"}
-{"\n"}<span className="tok-sel">{"<article"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-card"</span><span className="tok-sel">{">"}</span>
-{"\n"}  <span className="tok-sel">{"<h4"}</span><span className="tok-sel">{">"}</span>Warm paper, sumi ink<span className="tok-sel">{"</h4>"}</span>
-{"\n"}  <span className="tok-sel">{"<p"}</span><span className="tok-sel">{">"}</span>The card inherits its paper colour, border and serif title from the active theme.<span className="tok-sel">{"</p>"}</span>
-{"\n"}<span className="tok-sel">{"</article>"}</span></Example.Code>
+{"\n"}<span className="tok-sel">.primary</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.btn(primary)</span>; {"}"}
+{"\n"}<span className="tok-sel">.outline</span> {"{"} <span className="tok-prop">@include</span> <span className="tok-val">m.btn(outline)</span>; {"}"}
+{"\n"}
+{"\n"}<span className="tok-com">{"// Card.module.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">&apos;css-is-awesome/scss/components/data&apos;</span> <span className="tok-prop">as</span> <span className="tok-val">d</span>;
+{"\n"}
+{"\n"}<span className="tok-sel">.card</span> {"{"}
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">d.card-base($border: true)</span>;
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">d.card-interactive</span>;
+{"\n"}{"}"}</Example.Code>
       </Example>
 
       <h2 id="three-tiers">Three bundle tiers</h2>
@@ -86,10 +105,12 @@ export default function DocsPage() {
           color, flex/grid helpers. Composes with your own component CSS.
         </li>
         <li>
-          <strong>full</strong> — <strong>7.3 KB gzipped</strong>. Core +
-          utilities + every component recipe (<code>cia-btn-primary</code>,{" "}
-          <code>cia-card</code>, <code>cia-alert</code>, …) in one file. The
-          drop-in default; what the CDN snippet above ships.
+          <strong>full</strong> — <strong>7.96 KB gzipped</strong>. Core plus
+          all 746 utilities in one file. The drop-in default; what the CDN
+          snippet above ships. It does <em>not</em> add component classes —
+          there are none — so the difference between{" "}
+          <code>core</code> and <code>full</code> is the utilities and nothing
+          else.
         </li>
       </ul>
       <p>
@@ -106,11 +127,11 @@ export default function DocsPage() {
       </p>
       <Example>
         <Example.Preview style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <Button variant="primary" href="#">Utility class</Button>
-          <Button variant="primary" href="#">Same, via mixin</Button>
+          <Button variant="primary" href="#">Via the mixin</Button>
+          <Button variant="outline" href="#">Same mixin, other variant</Button>
         </Example.Preview>
-        <Example.Code><span className="tok-com">{"<!-- Tier 1: utility class, no build -->"}</span>
-{"\n"}<span className="tok-sel">{"<a"}</span> <span className="tok-prop">class</span>=<span className="tok-val">"cia-btn-primary"</span> <span className="tok-prop">href</span>=<span className="tok-val">"#"</span><span className="tok-sel">{">"}</span>Get started<span className="tok-sel">{"</a>"}</span>
+        <Example.Code><span className="tok-com">{"<!-- Tier 3: no classes at all - the bare-tags recipe styles the element -->"}</span>
+{"\n"}<span className="tok-sel">{"<button>"}</span>Get started<span className="tok-sel">{"</button>"}</span>
 {"\n"}
 {"\n"}<span className="tok-com">{"// Tier 2: same output, via the SCSS mixin"}</span>
 {"\n"}<span className="tok-sel">@use</span> <span className="tok-val">&apos;css-is-awesome/scss/components/buttons&apos;</span> <span className="tok-prop">as</span> <span className="tok-val">b</span>;

@@ -173,7 +173,7 @@ Override theme maps when importing. Full control over every token.
 
 ```scss
 @use "css-is-awesome/scss/theme" with (
-  $brand: (
+  $theme-brand: (
     primary:        #E11D48,
     primary-hover:  #BE123C,
     primary-active: #9F1239,
@@ -189,7 +189,14 @@ Override theme maps when importing. Full control over every token.
 @include generator.generate-theme;
 ```
 
-You can override any theme map: `$brand`, `$colors-light`, `$colors-dark`, `$fonts`, `$radius`, `$shadows-light`, `$shadows-dark`.
+You can override any of the nine configurable maps — note the `$theme-`
+prefix. The unprefixed names (`$brand`, `$colors-light`, …) are the module's
+own internals and are **not** configurable; passing one is a compile error
+(`This variable was not declared with !default in the @used module`):
+
+`$theme-name`, `$theme-brand`, `$theme-light`, `$theme-dark`, `$theme-fonts`,
+`$theme-radius`, `$theme-shadows-light`, `$theme-shadows-dark`,
+`$theme-components`.
 
 ---
 

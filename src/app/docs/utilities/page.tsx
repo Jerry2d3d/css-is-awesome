@@ -25,17 +25,25 @@ export default function UtilitiesPage() {
         borderInlineStart: "3px solid var(--action-primary-default)",
         borderRadius: "var(--radius-md)",
       }}>
-        <strong>Opt-in since v0.8.</strong> Utilities default to <em>off</em> in the Sass compile —
-        Sass-authoring consumers see zero <code>.cia-*</code> rules in their compiled CSS unless they opt in:
+        <strong>You choose with the entry point, not a flag.</strong> There is no
+        configuration variable for this — <code>@use 'css-is-awesome'</code> is the
+        global entry point and emits all 746 utility classes along with the tokens
+        and resets. Import something narrower to get less:
         <Example>
-          <Example.Code><span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome'</span> <span className="tok-prop">as</span> <span className="tok-val">cia</span> <span className="tok-prop">with</span> (
-{"\n"}  <span className="tok-prop">$utilities</span>: <span className="tok-val">true</span>,         <span className="tok-com">{"// opt in to ~80 structural utility classes"}</span>
-{"\n"}  <span className="tok-prop">$responsive-spacing</span>: <span className="tok-val">true</span>,  <span className="tok-com">{"// opt in to .cia-sm-p-md, etc."}</span>
-{"\n"});</Example.Code>
+          <Example.Code><span className="tok-com">{"// everything: tokens + resets + all 746 .cia-* utilities"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome'</span>;
+{"\n"}
+{"\n"}<span className="tok-com">{"// tokens + resets, zero utility classes"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/scss/core'</span>;
+{"\n"}
+{"\n"}<span className="tok-com">{"// mixins and functions only — emits nothing at all,"}</span>
+{"\n"}<span className="tok-com">{"// safe inside a .module.scss"}</span>
+{"\n"}<span className="tok-sel">@use</span> <span className="tok-val">'css-is-awesome/api'</span> <span className="tok-prop">as</span> <span className="tok-val">cia</span>;</Example.Code>
         </Example>
         <p style={{ margin: "0.5rem 0 0" }}>
-          The pre-built <code>dist/css-is-awesome.utilities.css</code> still ships every utility for
-          non-Sass consumers (CDN drop-in). The opt-in flag governs the Sass compile path only.
+          Each has a pre-built counterpart for CDN consumers:{" "}
+          <code>dist/css-is-awesome.css</code>, <code>dist/css-is-awesome.core.css</code>{" "}
+          and <code>dist/css-is-awesome.utilities.css</code> (utilities alone, no tokens).
         </p>
       </aside>
 
@@ -335,40 +343,55 @@ export default function UtilitiesPage() {
         </tbody>
       </table>
 
-      <h2 id="responsive">Responsive variants</h2>
+      <h2 id="responsive">Responsive: the breakpoints are in SCSS, not in class names</h2>
       <p>
-        Responsive breakpoint prefixes apply the rule at and above the named
-        breakpoint (<code>min-width</code> syntax). The pattern is{" "}
-        <code>cia-&lt;bp&gt;\:&lt;utility&gt;</code> — in HTML you write it unescaped,
-        e.g. <code>cia-md:flex</code>. For the other direction, reach for the{" "}
-        <code>m.media-down</code> mixin in SCSS; cia is responsive at every
-        viewport, not mobile-first.
+        <strong>There are no breakpoint-prefixed utilities.</strong> No{" "}
+        <code>cia-md:flex</code>, no <code>cia-sm:p-4</code> — not in any
+        bundle, in any version. An earlier version of this page documented
+        them; they were never built. The utilities are single-variant, which is
+        why the stylesheet is 4.75 KB gzipped.
+      </p>
+      <p>
+        Responsive work happens in SCSS, through the media mixins, and cia is
+        deliberately direction-agnostic — <code>media</code> goes up from a
+        breakpoint, <code>media-down</code> goes below it, and{" "}
+        <code>media-between</code> takes a pair. Neither direction is the
+        &ldquo;default&rdquo;; a component decides which one it needs.
+      </p>
+      <Example>
+        <Example.Code><span className="tok-sel">@use</span> <span className="tok-val">&apos;css-is-awesome/api&apos;</span> <span className="tok-prop">as</span> <span className="tok-val">cia</span>;
+{"\n"}
+{"\n"}<span className="tok-sel">.toolbar</span> {"{"}
+{"\n"}  <span className="tok-prop">display</span>: <span className="tok-val">flex</span>;
+{"\n"}  <span className="tok-prop">flex-direction</span>: <span className="tok-val">column</span>;
+{"\n"}
+{"\n"}  <span className="tok-com">{"// at and above md (48rem)"}</span>
+{"\n"}  <span className="tok-prop">@include</span> <span className="tok-val">cia.media(md)</span> {"{"} <span className="tok-prop">flex-direction</span>: <span className="tok-val">row</span>; {"}"}
+{"\n"}{"}"}</Example.Code>
+      </Example>
+      <p>
+        These are the breakpoints those mixins take. They are real — only the
+        class-name syntax above was not.
       </p>
       <table>
         <thead>
-          <tr><th>Prefix</th><th>Min width</th><th>Pixels</th></tr>
+          <tr><th>Key</th><th>Min width</th><th>Pixels</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>cia-sm:</code></td><td>40rem</td><td>640</td></tr>
-          <tr><td><code>cia-md:</code></td><td>48rem</td><td>768</td></tr>
-          <tr><td><code>cia-lg:</code></td><td>64rem</td><td>1024</td></tr>
-          <tr><td><code>cia-xl:</code></td><td>80rem</td><td>1280</td></tr>
-          <tr><td><code>cia-2xl:</code></td><td>96rem</td><td>1536</td></tr>
+          <tr><td><code>sm</code></td><td>40rem</td><td>640</td></tr>
+          <tr><td><code>md</code></td><td>48rem</td><td>768</td></tr>
+          <tr><td><code>lg</code></td><td>64rem</td><td>1024</td></tr>
+          <tr><td><code>xl</code></td><td>80rem</td><td>1280</td></tr>
+          <tr><td><code>2xl</code></td><td>96rem</td><td>1536</td></tr>
         </tbody>
       </table>
-      <p>
-        Responsive variants are generated for the display, flex, grid, text
-        alignment, and spacing (<code>m</code>/<code>p</code>) families — the
-        utilities most commonly reached for when a layout needs to change at a
-        breakpoint. Everything else is left single-variant to keep the stylesheet
-        small.
-      </p>
+
       <Example>
         <Example.Code>
-          <span className="tok-com">{"<!-- stacked on mobile, row from md up -->"}</span>
+          <span className="tok-com">{"<!-- a column at every width; change it in SCSS, not in the class list -->"}</span>
           {"\n"}
           <span className="tok-sel">{"<div"}</span>{" "}
-          <span className="tok-prop">class</span>=<span className="tok-val">"cia-flex cia-flex-col cia-md:flex-row cia-gap-4"</span>
+          <span className="tok-prop">class</span>=<span className="tok-val">"cia-flex cia-flex-col cia-gap-4"</span>
           <span className="tok-sel">{">"}</span>
           {"\n  ..."}
           {"\n"}

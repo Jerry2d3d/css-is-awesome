@@ -476,7 +476,7 @@ export default function DocsMixinsPage() {
       <h3 id="grid-decision-tree">Which function should I use?</h3>
       <p>The decision tree for picking the right size mechanism in cia:</p>
       <ul>
-        <li><strong>color / type / radius / shadow / motion</strong> → themed tokens: <code>m.color()</code>, <code>m.font-size()</code>, <code>m.radius()</code>, <code>m.shadow()</code>, <code>m.duration()</code></li>
+        <li><strong>color / type / radius / shadow / motion</strong> → themed tokens: <code>m.color()</code>, <code>m.font-size()</code>, <code>m.radius()</code>, <code>m.shadow()</code></li>
         <li><strong>margin / padding / gap</strong> → <code>m.space(n)</code> (themeable spacing scale)</li>
         <li><strong>explicit geometric size on the grid</strong> → <code>m.grid(n)</code> (4px grid, not themed)</li>
         <li><strong>off-grid pixel value</strong> (rare) → <code>m.px(value)</code> (raw rem conversion)</li>

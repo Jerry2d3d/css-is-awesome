@@ -110,7 +110,7 @@ export default function MigrationBootstrapPage() {
             </td>
             <td>
               <code>&lt;Button variant=&quot;primary&quot;&gt;</code> or{" "}
-              <code>@include m.button-primary</code>
+              <code>@include m.btn(primary)</code>
             </td>
           </tr>
           <tr>
@@ -246,7 +246,7 @@ export default function MigrationBootstrapPage() {
           {"\n"}
           <span className="tok-sel">.save-btn</span> {"{"}
           {"\n"}  <span className="tok-prop">@include</span>{" "}
-          <span className="tok-val">m.button-primary</span>;
+          <span className="tok-val">m.btn(primary)</span>;
           {"\n"}
           {"}"}
         </Example.Code>

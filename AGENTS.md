@@ -13,7 +13,7 @@ A token-driven SCSS design system with a **single mixin-router per component**. 
 Three authoring tiers, in primary-to-fallback order:
 
 - **Tier 2 (primary)** — per component: `@use 'css-is-awesome/api' as cia;` then `.your-class { @include cia.btn(primary); }`. The `/api` barrel is zero-emit (safe inside a `.module.scss`); the root bundle emits the tokens once. SCSS build required.
-- **Tier 1 (opt-in)** — drop-in CSS classes (`.cia-btn`). Default-off in Sass path; opt in via `@use cia with ($utilities: true)`. Pre-built CDN bundles still ship every utility.
+- **Tier 1 (utilities)** — 746 drop-in classes for spacing, layout, text and animation: `.cia-p-md`, `.cia-gap-4`, `.cia-text-center`, `.cia-anim-fade-in`. They are emitted by default from `@use 'css-is-awesome'` and by every CDN bundle; there is no opt-in flag. **There are no component classes** — no `.cia-btn`, no `.cia-card`. Components are Tier 2 mixins or Tier 3 bare tags.
 - **Tier 3 (opt-in Pico-mode)** — `@use 'css-is-awesome/scss/recipes/bare-tags';` one line styles every common HTML element. Wrapped in `:where()` (specificity 0,0,0) so consumer styles always win.
 
 ## Quick decisions for an AI agent
@@ -21,7 +21,7 @@ Three authoring tiers, in primary-to-fallback order:
 When asked to add a UI element, follow this order:
 
 1. **Mixin-first, inputs-first.** `.your-class { @include cia.btn(primary); }` — write your own selector, `@include` the mixin. Need a variation? **Pass it as an input** — `@include cia.flex($direction: column)`, `@include cia.card-base($shadow: 2, $r: xl)` — never hand-write the CSS an input already controls. Fewer SCSS lines always wins. This is the v0.8 primary API.
-2. **Match the project's tier.** If they're already on Tier 1 classes (`<button class="cia-btn">`), stay there.
+2. **Match the project's tier.** If they are already on Tier 1 utilities (`<div class="cia-p-md cia-gap-4">`), stay there — but note Tier 1 has no component classes, so a button still comes from `cia.btn()` under the consumer's own selector.
 3. **Never invent `cia-*` class names.** That prefix is library-owned. Consumer code uses its own naming.
 4. **All values come from tokens.** Never hardcode `#3A5FCD`, `1rem`, `8px`. Use `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`.
 5. **No BEM.** No `__element` / `--modifier` chains. `cia-` is a single-class namespace prefix, not BEM.
@@ -183,7 +183,7 @@ font-size: cia.font-size(base);  // var(--font-size-base, 1rem)
 
 `cia.line-height()` names its steps `tight | snug | normal | relaxed | loose` (plus `1`–`6` and `none`), so `line-height(md)` misses for the same reason.
 
-Since 1.22.0 every scale accessor **warns** when it gets a key its scale does not have, names the keys that do exist, and says so at the call site's file and line. The output is unchanged — a warning, not an error — so an upgrade cannot break a build, but anything already making this mistake starts saying so on the next compile. Read the warnings.
+Every scale accessor **warns** when it gets a key its scale does not have, names the keys that do exist, and says so at the call site's file and line. The output is unchanged — a warning, not an error — so an upgrade cannot break a build, but anything already making this mistake starts saying so on the next compile. Read the warnings.
 
 The same applies in the other direction and to the other accessors: `letter-spacing(loose)` looks right and isn't (`loose` is a *line-height* key), and `radius(0)` / `z(100)` look like literals but return `var(--radius-0, 0.25rem)` and `var(--z-100, 0)`. Only `cia.space()` and `cia.letter-spacing()` accept a raw value — `space(12px)` and `letter-spacing(0.03em)` pass straight through. Every other accessor always returns a custom property, so write the literal directly instead of routing it through them.
 
@@ -291,7 +291,7 @@ when to bump the contract. Validate the contract pack with
 ### ⚠️ `fa-*` is bring-your-own-font — prefer the SVG pack
 
 `fa`, `fa-icon`, `fa-text` and `fa-spin` exist for teams already on Font
-Awesome. They map a name through `$icon-fa-map` (55 entries) to a
+Awesome. They map a name through `$icon-fa-map` (54 entries) to a
 codepoint and set the FA font family — nothing more:
 
 ```css

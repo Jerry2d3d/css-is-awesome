@@ -190,7 +190,7 @@ mask: var(--cia-icon-check, url('/icons/core/check.svg')) center / contain no-re
 
 Resolution order is **per-theme override → core pack → 404**.
 
-**Font Awesome — bring your own fonts.** `cia.icon-fa()`, `icon-fa-icon()`, `icon-fa-text()` and `icon-fa-spin()` exist for teams already on FA. They map a name through `$icon-fa-map` (55 entries) to a codepoint and set the FA font family:
+**Font Awesome — bring your own fonts.** `cia.icon-fa()`, `icon-fa-icon()`, `icon-fa-text()` and `icon-fa-spin()` exist for teams already on FA. They map a name through `$icon-fa-map` (54 entries) to a codepoint and set the FA font family:
 
 ```css
 .a { font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f00c"; }
@@ -308,7 +308,7 @@ The competing `display` usually isn't yours — it's a utility class or a compon
 
 **`@layer` would be worse, not better.** Layered CSS always loses to unlayered CSS. If cia's print rules lived in a layer and your own CSS is unlayered (the normal case), your `display: flex` would win and the nav would print. cia can't require consumers to adopt layers — see [`.agent/decisions/decided/04-at-layer-decision.md`](./.agent/decisions/decided/04-at-layer-decision.md). `!important` also *inverts* layer order, so the two don't compose the way you'd expect.
 
-The scope is kept narrow: 8 `!important` declarations, all inside `@media print`, all doing one of two jobs — beating a `display` rule, or beating an author `animation` shorthand. The values stay variable-driven (`--print-hide`, `--print-show`), so you can still override behaviour without fighting the mixin.
+The scope is kept narrow: 8 `!important` declarations — seven inside `@media print`, and one inside `@media screen` (the half of `print-only` that hides the element on screen) — all doing one of two jobs — beating a `display` rule, or beating an author `animation` shorthand. The values stay variable-driven (`--print-hide`, `--print-show`), so you can still override behaviour without fighting the mixin.
 
 ## MCP server (for AI agents)
 

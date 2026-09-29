@@ -710,7 +710,7 @@ After Season 1 (12-15 videos shipped over 12-15 weeks), the question is: **is th
 
 When the lock-in gate items above are all checked. Likely **3-6 months after v1.0 launches** — give the product time to settle, collect real consumer signal, lock the API, then start filming.
 
-Full strategy + memory (with rationale, name-discussion details, format math, and "ship-then-see" alignment) lives in `project_youtube_channel_strategy.md`.
+Full strategy (rationale, naming discussion, format math, and "ship-then-see" alignment) is held outside this repo.
 
 ---
 

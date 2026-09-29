@@ -72,7 +72,7 @@ color: #2A241E;
 border-radius: 4px;
 ```
 
-Tokens come from the theme contract (`scripts/theme-contract.json` — **127 required + 36 optional = 163 slots**). A single theme file styles the page on its own (it emits a bare `:root`); when several themes are loaded together they swap via `<html data-theme="press-light">`. Either way every token resolves to the active theme's value.
+Tokens come from the theme contract (`scripts/theme-contract.json` — **127 required + 49 optional = 176 slots**). A single theme file styles the page on its own (it emits a bare `:root`); when several themes are loaded together they swap via `<html data-theme="press-light">`. Either way every token resolves to the active theme's value.
 
 Spacing is a token too. `cia.space(4)` resolves to `var(--space-4)`, and the numbered scale `--space-0`…`--space-9` is contract-required, so a theme can re-proportion the page and not just recolor it.
 
@@ -365,7 +365,7 @@ return (
 
 ### One file = one theme
 
-Each theme is a single file declaring all **127 required** contract tokens (plus any of the 36 optional ones it wants). It emits **two selectors at once**:
+Each theme is a single file declaring all **127 required** contract tokens (plus any of the 49 optional ones it wants). It emits **two selectors at once**:
 
 ```css
 :root, :root[data-theme="<name>"] { … }
@@ -392,7 +392,7 @@ Library defaults emit under **`:where(:root)`** (specificity 0,0,0), so any them
 3. Run `npm run build:css:themes` — it builds every theme **and** regenerates `public/theme.css`. It is part of `npm run build:css:all`.
 4. Run `npm run validate-themes` to confirm the contract. The validator also runs a WCAG 2.2 AA contrast audit; a11y FAILs are fatal by default. Pass `--allow-a11y-fail` to downgrade contrast failures to a report-only warning while you iterate (the older `--strict` flag is accepted as a no-op alias).
 5. Run `npm run check:theme-drift` to prove the committed CSS matches the SCSS source. CI runs this **before** `validate-themes`, because `validate-themes` reads the committed CSS and would otherwise pass on a stale artifact.
-6. Add the theme name to `ThemePicker`'s `THEMES` array and the layout's `VALID_THEMES` set.
+6. Add the theme name to `ThemePicker`'s `THEMES` array (`src/components/ThemePicker/ThemePicker.tsx`). There is no second list to update — an earlier version of this step named a `VALID_THEMES` set in the layout, which does not exist.
 
 **Never hand-edit `public/theme.css` or `public/themes/**/theme.css`.** They are generated from `scss/themes/*.scss` and gated by `check:theme-drift`.
 
