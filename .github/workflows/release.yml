@@ -212,10 +212,25 @@ jobs:
   qa:
     name: Release to qa
     needs: state
-    # `qa` ONLY. A production release must not move the branch it is about to
-    # promote. This one condition is the whole separation between "stage it"
-    # and "ship the thing that was staged".
-    if: inputs.stage == 'qa'
+    # Runs for BOTH stages. Picking `prod` stages qa first, in the same run,
+    # then parks on the approval gate while you test -- so one run carries the
+    # whole release and you come back to it rather than starting another.
+    #
+    # What makes that safe is `outputs.sha` below, not the ordering.
+    if: inputs.stage == 'qa' || inputs.stage == 'prod'
+    outputs:
+      # The exact commit qa ended up at, pinned for the prod job.
+      #
+      # This is the entire fix for the bug that made me split these jobs
+      # apart. prod used to take `qa` as a branch name and resolve it when the
+      # approval came through -- which could be hours later, after main had
+      # moved and someone had staged again. You approved one thing and shipped
+      # another.
+      #
+      # Promoting a SHA removes the window completely: the commit this job
+      # created is the commit prod pushes, no matter what happens to the
+      # branch while the run waits.
+      sha: ${{ steps.staged.outputs.sha }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
@@ -234,22 +249,45 @@ jobs:
           DRY_RUN: ${{ inputs.dry_run }}
         run: bash .github/scripts/promote.sh
 
+      # Read it back from the remote rather than from the local checkout.
+      # promote.sh exits early without pushing when qa already contains the
+      # source, and on a dry run it resets the local branch -- in both cases
+      # the local HEAD is not what qa is. The remote always is.
+      - name: Pin the staged commit
+        id: staged
+        run: |
+          set -euo pipefail
+          git fetch origin qa
+          SHA=$(git rev-parse origin/qa)
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "qa is at $SHA"
+
       - name: What happens next
         if: success() && inputs.dry_run != true
+        env:
+          SHA: ${{ steps.staged.outputs.sha }}
         run: |
           {
             echo "## Next"
             echo
             echo "- CI is now running on \`qa\`."
             echo "- Vercel builds a deployment for the \`qa\` branch, served at <https://qa.cssisawesome.com>. Preview deployments sit behind Vercel's login unless deployment protection is turned off, so a login page there is the protection working, not a broken build."
-            echo "- **Test it. That is what this stage is for, and this run is finished.**"
-            echo "- Nothing is waiting on you and nothing is holding the queue. Take as long as you want."
-            echo
-            echo "When you are satisfied, run **Release** again with **stage: prod**. That run promotes THIS commit, \`$(git rev-parse --short HEAD)\`. It does not re-read main, so anything merged to main in the meantime waits for the next qa round."
-            echo
-            echo '```'
-            echo "gh workflow run Release -f stage=prod"
-            echo '```'
+            if [ "${{ inputs.stage }}" = "prod" ]; then
+              echo "- **This run is now waiting for your approval.** Scroll up on this page: the \`Review deployments\` button is there."
+              echo "- **That wait is the testing window.** Test qa now and take as long as you need -- hours, days. Nothing reaches the public site or npm until you approve, and the run is still here when you come back."
+              echo "- When you approve, this same run promotes to production and publishes to npm."
+              echo
+              echo "It ships **this exact commit**, \`$SHA\`, pinned when this step ran. Anything merged to main while you test cannot change what you approved."
+            else
+              echo "- **Test it. That is what this stage is for, and this run is finished.**"
+              echo "- Nothing is waiting on you and nothing is holding the queue."
+              echo
+              echo "When you are ready to go public, run **Release** again and pick **stage: prod**. Do not use *Re-run all jobs* -- a re-run repeats the same inputs, so it would only stage qa a second time. Use **Run workflow** on the Release page and choose the stage."
+              echo
+              echo '```'
+              echo "gh workflow run Release -f stage=prod"
+              echo '```'
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ---------------------------------------------------------------------------
@@ -269,7 +307,7 @@ jobs:
   # ---------------------------------------------------------------------------
   verify:
     name: What is about to ship
-    needs: state
+    needs: [state, qa]
     if: inputs.stage == 'prod'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -282,6 +320,10 @@ jobs:
       - name: Show what qa holds, and refuse if it did not come from main
         env:
           ALLOW_UNMERGED: ${{ inputs.allow_unmerged }}
+          # The commit the qa job just staged. Everything below reports on
+          # THIS, so the summary you read on the run page is the summary of
+          # the thing the approval will ship.
+          STAGED: ${{ needs.qa.outputs.sha }}
         run: |
           set -euo pipefail
 
@@ -291,26 +333,27 @@ jobs:
               | head -1
           }
 
-          QA=$(git rev-parse --short origin/qa)
+          QA=$(git rev-parse --short "$STAGED")
           PROD=$(git rev-parse --short origin/prod-css-is-awesome)
 
           # Commits on qa that main has never seen. Merge nodes are excluded on
           # purpose: promoting main into qa creates one ON qa every time, so
           # counting them would report ordinary history as a problem. Only real
           # commits can represent work that bypassed main.
-          mapfile -t UNMERGED < <(git log --no-merges --format='%h %s' origin/main..origin/qa)
+          mapfile -t UNMERGED < <(git log --no-merges --format='%h %s' origin/main.."$STAGED")
 
           {
             echo "## About to ship"
             echo
             echo "| Branch | Commit | Version |"
             echo "|---|---|---|"
-            printf '| `qa` (the source) | `%s` | %s |\n' "$QA" "$(version_of qa)"
+            printf '| `qa` (the source) | `%s` | %s |\n' "$QA" \
+              "$(git show "$STAGED:package.json" | sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
             printf '| `prod-css-is-awesome` (now) | `%s` | %s |\n' "$PROD" "$(version_of prod-css-is-awesome)"
             echo
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if git merge-base --is-ancestor origin/qa origin/prod-css-is-awesome; then
+          if git merge-base --is-ancestor "$STAGED" origin/prod-css-is-awesome; then
             {
               echo "### Nothing to ship"
               echo
@@ -322,10 +365,10 @@ jobs:
           fi
 
           {
-            echo "### The $(git rev-list --count --no-merges origin/prod-css-is-awesome..origin/qa) commit(s) this ships"
+            echo "### The $(git rev-list --count --no-merges origin/prod-css-is-awesome..$STAGED) commit(s) this ships"
             echo
             echo '```'
-            git log --oneline --no-decorate --no-merges origin/prod-css-is-awesome..origin/qa
+            git log --oneline --no-decorate --no-merges origin/prod-css-is-awesome.."$STAGED"
             echo '```'
             echo
           } >> "$GITHUB_STEP_SUMMARY"
@@ -334,7 +377,7 @@ jobs:
           # error - shipping only what was tested is the entire design - but it
           # has to be said out loud, because the natural assumption when
           # clicking "release to production" is that it ships the latest.
-          AHEAD=$(git rev-list --count --no-merges origin/qa..origin/main)
+          AHEAD=$(git rev-list --count --no-merges "$STAGED"..origin/main)
           if [ "$AHEAD" -gt 0 ]; then
             {
               echo "### NOT in this release: $AHEAD commit(s) on main"
@@ -345,7 +388,7 @@ jobs:
               echo "again, test, then release."
               echo
               echo '```'
-              git log --oneline --no-decorate --no-merges origin/qa..origin/main
+              git log --oneline --no-decorate --no-merges "$STAGED"..origin/main
               echo '```'
               echo
             } >> "$GITHUB_STEP_SUMMARY"
@@ -405,7 +448,7 @@ jobs:
     # standing between "qa holds a branch someone was looking at" and "that
     # branch is on npm". It also has to be a SEPARATE job, so its output
     # reaches the run page before the approval prompt rather than after it.
-    needs: [state, verify]
+    needs: [state, qa, verify]
     if: inputs.stage == 'prod'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -431,13 +474,17 @@ jobs:
 
       - name: Merge qa into prod-css-is-awesome
         env:
-          # Hard-coded, deliberately. `ref` is not read here at all: an
-          # override would be a way to put something into production that
-          # never passed through qa, which is the one thing this chain exists
-          # to prevent. If production needs something urgently, stage it to qa
-          # first with `ref` and then release qa - two clicks, same speed,
-          # and the staging branch still tells the truth about what shipped.
-          SRC_REF: qa
+          # The SHA the qa job staged in THIS run, not the branch name.
+          #
+          # `ref` is still not read here: an override would be a way to put
+          # something into production that never passed through qa, which is
+          # the one thing this chain exists to prevent. But a branch name was
+          # not safe either -- it resolves when the approval arrives, which
+          # can be hours after you looked at it, so main moving in the
+          # meantime changed what you were approving.
+          #
+          # A SHA cannot drift. What the qa step pushed is what this promotes.
+          SRC_REF: ${{ needs.qa.outputs.sha }}
           DEST: prod-css-is-awesome
           DRY_RUN: ${{ inputs.dry_run }}
         run: bash .github/scripts/promote.sh
