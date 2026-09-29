@@ -1,5 +1,9 @@
 # The release console. One workflow, one dropdown, the whole chain.
 #
+# SETUP GUIDE AND TRAPS: .github/RELEASE-PIPELINE.md — how to stand this up
+# in another repo, and the ten failures that shaped it. Read the traps before
+# changing anything here; most of them look like reasonable edits.
+#
 #     feature branch  ->  main  ->  qa  ->  prod-css-is-awesome
 #     (your work)         (CI)      (look    (public site + npm publish)
 #                                    at it)
