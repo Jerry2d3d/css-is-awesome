@@ -164,13 +164,12 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically.
-
-     --space-2xs was declared by boilerplate-light and boilerplate-dark but
-     missing here, so the base file took the library value while the two
-     variants used 0.25rem. Found by check-theme-parity. */
-  --space-2xs: 0.25rem;
+     --space-2xs is not here: space-scale() derives it from --space-unit like
+     every other step, and a literal would override the calc() and pin this
+     theme at 4px while the rest rescale. */
   --space-xs: var(--space-1);
   --space-sm: var(--space-2);
   --space-md: var(--space-4);
@@ -331,7 +330,6 @@
   --error-subtle: var(--shu-wash);
   --error-text: #fca5a5;
   /* Space scale */
-  --space-2xs: 0.25rem;
   --space-xs: var(--space-1);
   --space-sm: var(--space-2);
   --space-md: var(--space-4);
@@ -374,6 +372,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
 
   /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
   --page-hero-bg: #121e36;
@@ -511,7 +510,6 @@
   --error-subtle: var(--shu-wash);
   --error-text: #b91c1c;
   /* Space scale */
-  --space-2xs: 0.25rem;
   --space-xs: var(--space-1);
   --space-sm: var(--space-2);
   --space-md: var(--space-4);
@@ -554,6 +552,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
 
   /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
   --page-hero-bg: #f2f6fe;
@@ -702,6 +701,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -894,6 +894,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1098,6 +1099,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1330,6 +1332,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1518,6 +1521,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1725,6 +1729,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -1899,6 +1904,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2093,6 +2099,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2282,6 +2289,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2480,6 +2488,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2695,6 +2704,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -2911,6 +2921,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3106,6 +3117,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3292,6 +3304,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3481,6 +3494,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3658,6 +3672,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -3843,6 +3858,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -4067,6 +4083,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
 
   /* page surfaces — derived, see scripts/derive-page-surfaces.mjs */
   --page-hero-bg: #eae8e2;
@@ -4210,6 +4227,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -4410,6 +4428,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
@@ -4592,6 +4611,7 @@
   --space-7: calc(var(--space-unit) * 24);
   --space-8: calc(var(--space-unit) * 32);
   --space-9: calc(var(--space-unit) * 48);
+  --space-2xs: calc(var(--space-unit) * 2);
   /* T-shirt aliases - var() references into this theme's numbered scale,
      so re-tuning a numbered step re-tunes its alias automatically. */
   --space-xs: var(--space-1);
