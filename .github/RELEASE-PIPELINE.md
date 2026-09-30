@@ -1,7 +1,7 @@
 # The release pipeline — how it works, and how to set one up again
 
-One workflow moves code through three branches. You pick a stage, it stages to
-qa, it waits for you, you approve, it ships and publishes.
+One workflow, one run, one button. Start it, it deploys qa and stops. Test.
+Come back to that same run and approve. It ships and publishes.
 
 ```
 feature branch  →  main  →  qa  →  prod-css-is-awesome
@@ -17,40 +17,42 @@ reading twice, because every entry cost a real failure here.
 
 ## How you run it
 
-**Actions → Release → Run workflow**, then pick a stage.
+**Actions → Release → Run workflow.** Nothing to pick. Just run it.
 
-| stage | what happens |
-| --- | --- |
-| `status` | Changes nothing. Prints where all three branches sit and what is waiting. |
-| `qa` | Merges `main` into `qa` and stops. Go and test. |
-| `prod` | Merges `main` into `qa`, prints exactly what will ship, then **parks on your approval**. You test. You approve. The same run promotes to production and publishes to npm. |
+1. It deploys `qa`, then **stops and holds the run open**.
+2. Test qa. An hour, a day, a week — the run waits.
+3. Come back to that same run and press **Review deployments → Approve**.
+4. The same run promotes to production and publishes to npm.
 
-`prod` is one run, not two. The wait *is* the testing window — take an hour or
-take three days, the run is still there when you come back.
+One run from start to finish, with one button in the middle where you decide.
 
-### Do not use "Re-run all jobs" to advance a stage
-
-A re-run reuses the original inputs. There is no input form on a re-run, and
-[GitHub's documentation confirms it reuses the original event's `GITHUB_SHA`
-and `GITHUB_REF`](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs).
-
-So re-running a `status` run just runs `status` again — correctly doing
-nothing, and looking like a broken pipeline while it does. That cost three
-no-op runs here before anyone noticed.
-
-"Re-run" is for retrying a *failure* with the same inputs. To change stage, go
-back to the workflow page and use **Run workflow**.
+**Want a qa-only deploy?** Cancel the run at step 2. qa keeps what was staged;
+production is untouched.
 
 ```bash
-gh workflow run Release -f stage=qa
-gh workflow run Release -f stage=prod
-gh workflow run Release -f stage=prod -f dry_run=true   # rehearse, ship nothing
+gh workflow run Release                      # the whole thing
+gh workflow run Release -f dry_run=true      # rehearse, push nothing
 ```
+
+### There is deliberately no stage dropdown
+
+An earlier version had one — `status` / `qa` / `prod`. It was required, it
+defaulted to `status`, and `status` means "change nothing". So the default
+click did nothing at all, three times in a row, while reporting success.
+
+It also made a release two runs. And you **cannot** advance a stage by
+re-running: a re-run reuses the original inputs, and [GitHub's documentation
+confirms it reuses the original event's `GITHUB_SHA` and
+`GITHUB_REF`](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs).
+So the obvious button on the run page — *Re-run all jobs* — could never do it.
+
+The approval gate was always the real control. Now it is the only one, and it
+lives where you are already looking.
 
 ### Optional inputs
 
-- **`ref`** — stage something other than `main` to qa. Useful for looking at a
-  feature branch on a real deployment. Read by the qa stage only.
+- **`ref`** — stage something other than `main`. Good for putting a feature
+  branch on a real deployment; `verify` will then refuse to promote it.
 - **`allow_unmerged`** — let production ship commits that are not on `main`.
   Off by default; see *the verify gate* below.
 - **`dry_run`** — do every step including the merge, push nothing.
@@ -60,12 +62,15 @@ gh workflow run Release -f stage=prod -f dry_run=true   # rehearse, ship nothing
 ## The jobs, and why each one exists
 
 ```
-state    always                      prints the chain before anything moves
-qa       stage == qa || stage == prod   merges, pushes, PINS THE SHA
-verify   stage == prod               prints what ships; refuses bad states
-prod     stage == prod               waits for approval, then promotes
-publish  stage == prod && !dry_run   semantic-release → npm
+state    always        prints the chain before anything moves
+qa       always        merges, pushes, PINS THE SHA
+verify   always        prints what ships; refuses bad states
+prod     always        waits for your approval, then promotes
+publish  !dry_run      semantic-release → npm
 ```
+
+Nothing is conditional on an input. The environment's approval rule on `prod`
+is what holds the run, which is why there is no dropdown to get wrong.
 
 ### `qa` pins a SHA, and that is the load-bearing part
 
@@ -270,8 +275,12 @@ from the source, abort on anything else.
 
 ### 7. Re-run reuses the inputs
 
-Covered above. It is the single most confusing failure mode in this whole
-setup, because nothing goes red — the run succeeds, having done nothing.
+A re-run cannot change what a run does. If your workflow needs an input to
+decide anything important, the obvious button on the run page silently cannot
+help — and nothing goes red, because the run succeeds having done nothing.
+
+The fix here was to stop needing the input at all. If a workflow has one
+job, let it do that job.
 
 ### 8. The host's production-branch setting is the other half
 
@@ -305,8 +314,7 @@ after which promotions fast-forward and the count stays at zero.
 
 | symptom | cause |
 | --- | --- |
-| Run succeeds, nothing shipped, every job grey | Stage was `status`, or you re-ran a `status` run. Use **Run workflow**. |
-| `Release to production` shows skipped | Stage was `qa`. Skipped means the condition did not match — not a failure. |
+| Run succeeds, nothing shipped, every job grey | A required input defaulted to a no-op stage. Do not make "do nothing" the default. |
 | Run queued forever, never starts | An older run is parked on the approval gate holding the concurrency group. |
 | "There was a problem approving one of the gates" | Check **prevent self-review** on the environment, and that you are a listed reviewer. |
 | CI never ran on the promoted branch | Expected — `GITHUB_TOKEN` pushes do not trigger workflows. Call the workflow directly. |
@@ -318,7 +326,7 @@ after which promotions fast-forward and the count stays at zero.
 ## Testing it without shipping
 
 ```bash
-gh workflow run Release -f stage=prod -f dry_run=true
+gh workflow run Release -f dry_run=true
 ```
 
 That exercises the whole chain — staging, the verify gate, the approval prompt,

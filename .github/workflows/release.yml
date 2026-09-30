@@ -1,60 +1,59 @@
-# The release console. One workflow, one dropdown, the whole chain.
+# The release. One run, one button.
 #
 # SETUP GUIDE AND TRAPS: .github/RELEASE-PIPELINE.md — how to stand this up
-# in another repo, and the ten failures that shaped it. Read the traps before
+# in another repo, and the failures that shaped it. Read the traps before
 # changing anything here; most of them look like reasonable edits.
 #
 #     feature branch  ->  main  ->  qa  ->  prod-css-is-awesome
-#     (your work)         (CI)      (look    (public site + npm publish)
-#                                    at it)
+#     (your work)         (CI)     (test   (public site + npm publish)
+#                                   it)
 #
-# `main` is integration: merge into it freely, it reaches nobody. Releasing to
-# `qa` gives Vercel a branch deployment you can click through. Releasing to
-# `prod-css-is-awesome` updates the public website AND publishes to npm.
+# HOW YOU USE IT
 #
-# Pick a stage when you click "Run workflow":
+#   1. Actions -> Release -> Run workflow. Nothing to pick. Just run it.
+#   2. It deploys qa and then STOPS, holding the run open.
+#   3. Test qa. An hour, a day, a week — the run waits.
+#   4. Come back to that same run and press `Review deployments` -> Approve.
+#   5. The same run promotes to production and publishes to npm.
 #
-#   status  - change nothing, just print where every branch sits.
-#   qa      - merge main into qa, and stop there. Then go and test it.
-#   prod    - promote WHAT IS ALREADY ON QA to prod-css-is-awesome, after an
-#             approval. This one is public. It does not touch qa.
+# That is the whole thing. One run from start to finish, and one button in
+# the middle where you decide.
 #
-# TWO RUNS, NOT ONE, AND THAT IS THE POINT.
+# Changed your mind at step 3? Cancel the run. qa keeps what was staged and
+# production is untouched — which is also how you do a qa-only deploy.
 #
-#   Run 1:  stage: qa    ->  main lands on qa, Vercel builds it.
-#           (no run)     ->  you test https://qa.cssisawesome.com for as long
-#                            as you like. Days, if you like.
-#   Run 2:  stage: prod  ->  prints exactly what qa holds, waits for your
-#                            approval, then ships THAT.
+# WHY THERE IS NO STAGE DROPDOWN (removed 2026-09-30)
 #
-# WHY THIS CHANGED (2026-09-28). `prod` used to re-merge main into qa as its
-# own first step, in the same run, and treat the approval wait as the testing
-# window. That quietly broke the promise it was making. If anything landed on
-# main after you finished testing qa, the prod run pulled it into qa and then
-# asked you to approve a promotion carrying code you had never seen. The
-# approval meant "ship what I tested" and the run shipped whatever main
-# happened to hold at that moment.
+# There used to be one: status / qa / prod. It was required, it defaulted to
+# `status`, and `status` is defined as "change nothing" — so the default
+# click did nothing at all, three times in a row, while reporting success.
 #
-# So `prod` no longer writes to qa at all. It promotes the commit that is ON
-# qa, which is the commit you tested, and the `verify` job below prints that
-# commit and its contents BEFORE the approval prompt appears — so the thing
-# being approved is on screen at the moment of approving it.
+# It also meant a release took two runs: one to stage qa, another to promote.
+# You cannot advance a stage by re-running, because a re-run reuses the
+# original inputs, so the natural "Re-run all jobs" button on the run page
+# could never do it either. Every part of that was friction pretending to be
+# safety.
 #
-# THE CONSEQUENCE, STATED PLAINLY: if you merge to main after testing qa,
-# `prod` ships the OLDER, tested code, and says so in its summary. Getting
-# the newer work out is a second `stage: qa` run and more testing. That is
-# slower, and it is the trade this pipeline exists to make.
+# The approval gate on the Production environment was always the real
+# control. Now it is the ONLY control, and it lives where you are already
+# looking: on the run.
 #
-# `ref` applies to the qa stage only. The prod stage hard-codes `qa` as its
-# source and never reads the override, so there is no argument anyone can
-# pass that puts something into production without it passing through qa on
-# the way.
+# WHAT MAKES THE APPROVAL MEAN SOMETHING
 #
-# `ref` ALSO MEANS QA CAN HOLD SOMETHING MAIN DOES NOT — staging a feature
-# branch just to look at it is a real and useful thing to do. `verify`
-# REFUSES to promote in that case, because a branch staged to be looked at
-# must never be one approval away from npm. Tick `allow_unmerged` when the
-# unmerged thing is the whole point, as it is for a hotfix.
+# The qa job publishes the exact commit it staged as a job output, and prod
+# promotes THAT SHA rather than re-reading the branch:
+#
+#     SRC_REF: ${{ needs.qa.outputs.sha }}
+#
+# Without the pin, prod would resolve `qa` at approval time — hours after you
+# looked at it — so anything merged to main while you tested would ride along
+# unseen. A SHA cannot drift. What you approved is what ships.
+#
+# `ref` stages something other than main, which is a good way to put a
+# feature branch on a real deployment. `verify` then REFUSES to promote,
+# because a branch staged to be looked at must never be one click from npm.
+# Tick `allow_unmerged` when shipping it is the whole point, as with a
+# hotfix.
 #
 # WHY THERE IS A JOB PER STAGE
 # ----------------------------
@@ -84,15 +83,6 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      stage:
-        description: "Which stage to run"
-        required: true
-        type: choice
-        default: status
-        options:
-          - status
-          - qa
-          - prod
       ref:
         description: "qa stage only — stage a specific SHA, branch or tag instead of main. Ignored by prod, which always takes qa."
         required: false
@@ -199,14 +189,6 @@ jobs:
 
           cat "$GITHUB_STEP_SUMMARY"
 
-      - name: What to do next
-        if: inputs.stage == 'status'
-        run: |
-          {
-            echo "## Next"
-            echo
-            echo "Nothing changed. Run this again with **stage: qa** to stage main, or **stage: prod** to go public."
-          } >> "$GITHUB_STEP_SUMMARY"
 
   # ---------------------------------------------------------------------------
   # qa - staging. Runs for the `qa` stage and nothing else. No approval gate,
@@ -216,12 +198,9 @@ jobs:
   qa:
     name: Release to qa
     needs: state
-    # Runs for BOTH stages. Picking `prod` stages qa first, in the same run,
-    # then parks on the approval gate while you test -- so one run carries the
-    # whole release and you come back to it rather than starting another.
-    #
-    # What makes that safe is `outputs.sha` below, not the ordering.
-    if: inputs.stage == 'qa' || inputs.stage == 'prod'
+    # No condition. Every run stages qa, then the run parks on production's
+    # approval gate. One run carries the whole release and you come back to
+    # it -- there is no second run and nothing to pick up front.
     outputs:
       # The exact commit qa ended up at, pinned for the prod job.
       #
@@ -276,22 +255,20 @@ jobs:
             echo
             echo "- CI is now running on \`qa\`."
             echo "- Vercel builds a deployment for the \`qa\` branch, served at <https://qa.cssisawesome.com>. Preview deployments sit behind Vercel's login unless deployment protection is turned off, so a login page there is the protection working, not a broken build."
-            if [ "${{ inputs.stage }}" = "prod" ]; then
-              echo "- **This run is now waiting for your approval.** Scroll up on this page: the \`Review deployments\` button is there."
-              echo "- **That wait is the testing window.** Test qa now and take as long as you need -- hours, days. Nothing reaches the public site or npm until you approve, and the run is still here when you come back."
-              echo "- When you approve, this same run promotes to production and publishes to npm."
-              echo
-              echo "It ships **this exact commit**, \`$SHA\`, pinned when this step ran. Anything merged to main while you test cannot change what you approved."
-            else
-              echo "- **Test it. That is what this stage is for, and this run is finished.**"
-              echo "- Nothing is waiting on you and nothing is holding the queue."
-              echo
-              echo "When you are ready to go public, run **Release** again and pick **stage: prod**. Do not use *Re-run all jobs* -- a re-run repeats the same inputs, so it would only stage qa a second time. Use **Run workflow** on the Release page and choose the stage."
-              echo
-              echo '```'
-              echo "gh workflow run Release -f stage=prod"
-              echo '```'
-            fi
+            echo
+            echo "### This run is now waiting for you"
+            echo
+            echo "**Scroll up on this page. There is a \`Review deployments\` button.** That is the"
+            echo "whole release control -- one button, on this run, whenever you are ready."
+            echo
+            echo "- **Test qa now.** Take as long as you like: an hour, a day, a week. The run"
+            echo "  sits here and nothing reaches the public site or npm until you press it."
+            echo "- **Press Approve** and this same run promotes to production and publishes to npm."
+            echo "- **Changed your mind?** Cancel the run. qa keeps what was staged; production is"
+            echo "  untouched."
+            echo
+            echo "It will ship **this exact commit**, \`$SHA\`, pinned when this step ran."
+            echo "Anything merged to main while you test cannot change what you approved."
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ---------------------------------------------------------------------------
@@ -312,7 +289,6 @@ jobs:
   verify:
     name: What is about to ship
     needs: [state, qa]
-    if: inputs.stage == 'prod'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -453,7 +429,6 @@ jobs:
     # branch is on npm". It also has to be a SEPARATE job, so its output
     # reaches the run page before the approval prompt rather than after it.
     needs: [state, qa, verify]
-    if: inputs.stage == 'prod'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
@@ -518,7 +493,7 @@ jobs:
   publish:
     name: Publish to npm
     needs: prod
-    if: inputs.stage == 'prod' && inputs.dry_run != true && needs.prod.result == 'success'
+    if: inputs.dry_run != true && needs.prod.result == 'success'
     uses: ./.github/workflows/publish-npm.yml
     # MUST be listed here, and this is why the whole workflow refused to start.
     #
