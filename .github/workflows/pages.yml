@@ -48,9 +48,9 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       github.event.workflow_run.conclusion == 'success'
     steps:
-      # Pinned for the same reason as in release.yml: on a `workflow_run`
-      # event a bare checkout takes the default branch, which would mirror
-      # `main` to Pages while the public site served the promoted branch.
+      # Pinned, not bare. A bare checkout takes the DEFAULT BRANCH, which
+      # would mirror `main` to Pages while the public site served the
+      # promoted branch - the two would disagree and nothing would say so.
       - name: Checkout the promoted branch
         uses: actions/checkout@v7
         with:

@@ -43,10 +43,11 @@
 #                     CI cannot supply. Fix on the npm ACCOUNT: set two-factor
 #                     to "Authorization only", or use a Classic *Automation*
 #                     token, which bypasses 2FA by design.
-# RENAMED 2026-09-25: this was "Release". That name now belongs to the
-# workflow you RUN (.github/workflows/release.yml, the stage dropdown). This
-# one is never run by hand - it is a CONSEQUENCE of releasing to prod, and
-# "Publish to npm" says what it does rather than when it happens.
+# RENAMED TWICE. It was "Release", then "Publish to npm", and is now
+# "3 . Publish to npm" so the Actions sidebar shows the release order. It IS
+# run by hand: the single workflow that used to call it was deleted on
+# 2026-09-30 in favour of five numbered ones, because every mechanism for
+# chaining them together had failed silently at least once.
 #
 # Nothing follows this workflow automatically any more. pages.yml used to
 # watch it by NAME via `workflow_run`, which stopped firing the moment this
