@@ -1,7 +1,7 @@
 # The release pipeline — how it works, and how to set one up again
 
-One workflow, one run, one button. Start it, it deploys qa and stops. Test.
-Come back to that same run and approve. It ships and publishes.
+**Five workflows, one job each, run by hand in order.** Each does one thing,
+so when something fails you re-run that one rather than the whole chain.
 
 ```
 feature branch  →  main  →  qa  →  prod-css-is-awesome
@@ -17,60 +17,71 @@ reading twice, because every entry cost a real failure here.
 
 ## How you run it
 
-**Actions → Release → Run workflow.** Nothing to pick. Just run it.
+**Actions → pick the numbered workflow → Run workflow.** In order:
 
-1. It deploys `qa`, then **stops and holds the run open**.
-2. Test qa. An hour, a day, a week — the run waits.
-3. Come back to that same run and press **Review deployments → Approve**.
-4. The same run promotes to production and publishes to npm.
+| | workflow | what it does |
+| --- | --- | --- |
+| 1 | **Release to qa** | merges `main` into `qa`, then stops. Go and test. |
+| 2 | **Release to production** | shows what will ship, **asks for your approval**, merges `qa` into the production branch |
+| 3 | **Publish to npm** | semantic-release: version, CHANGELOG, tag, npm, GitHub Release |
+| 4 | **Mirror the site to GitHub Pages** | builds the docs site from the production branch |
+| 5 | **Attach CDN archives to the release** | tar.gz + zip onto the Release, jsDelivr links in the notes |
 
-One run from start to finish, with one button in the middle where you decide.
-
-**Want a qa-only deploy?** Cancel the run at step 2. qa keeps what was staged;
-production is untouched.
+1 and 2 are the release. 3, 4 and 5 are what a release consists of afterwards.
 
 ```bash
-gh workflow run Release                      # the whole thing
-gh workflow run Release -f dry_run=true      # rehearse, push nothing
+gh workflow run "1 · Release to qa"
+gh workflow run "2 · Release to production"
+gh workflow run "3 · Publish to npm"
 ```
 
-### There is deliberately no stage dropdown
+### Why five files and not one
 
-An earlier version had one — `status` / `qa` / `prod`. It was required, it
-defaulted to `status`, and `status` means "change nothing". So the default
-click did nothing at all, three times in a row, while reporting success.
+Because one file kept breaking in ways that were invisible.
 
-It also made a release two runs. And you **cannot** advance a stage by
-re-running: a re-run reuses the original inputs, and [GitHub's documentation
-confirms it reuses the original event's `GITHUB_SHA` and
-`GITHUB_REF`](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs).
-So the obvious button on the run page — *Re-run all jobs* — could never do it.
+A single workflow needs a stage input to know what to do, and every shape of
+that was wrong. Required-with-a-no-op-default meant the obvious click did
+nothing, successfully. Stages gated by `if:` meant skipped jobs that read like
+failures. And you cannot change an input by re-running, so the natural button
+on a failed run could never fix it.
 
-The approval gate was always the real control. Now it is the only one, and it
-lives where you are already looking.
+Five workflows have no stage to get wrong, no skipped jobs, and a failure in
+one is re-run on its own without redoing the promotion.
+
+### There is no automatic chaining, deliberately
+
+Every cross-workflow trigger this repo has ever had failed silently:
+
+| trigger | why it never fired |
+| --- | --- |
+| `workflow_run` on CI for the prod branch | `GITHUB_TOKEN` pushes do not start workflows. npm sat unpublished for weeks. |
+| `workflow_run` on "Publish to npm" | a `workflow_call`'d workflow runs *inside* its caller's run and produces no run to watch. Pages last deployed 2026-09-24. |
+| `release: published` | semantic-release creates that Release with `GITHUB_TOKEN`. Runs ever: **zero**. |
+
+Three mechanisms, three silent failures, each looking fine until someone went
+looking. Manual steps you can see are worth more than automatic ones you
+cannot.
 
 ### Optional inputs
 
-- **`ref`** — stage something other than `main`. Good for putting a feature
-  branch on a real deployment; `verify` will then refuse to promote it.
-- **`allow_unmerged`** — let production ship commits that are not on `main`.
-  Off by default; see *the verify gate* below.
-- **`dry_run`** — do every step including the merge, push nothing.
-
----
+- **`ref`** (workflow 1) — stage a branch or SHA other than `main`. Workflow 2
+  flags loudly if qa holds anything that is not on `main`.
+- **`dry_run`** (1 and 2) — do the merge, push nothing.
 
 ## The jobs, and why each one exists
 
+Workflow 2 has two jobs, and the split matters:
+
 ```
-state    always        prints the chain before anything moves
-qa       always        merges, pushes, PINS THE SHA
-verify   always        prints what ships; refuses bad states
-prod     always        waits for your approval, then promotes
-publish  !dry_run      semantic-release → npm
+show   no environment   prints what is about to ship
+prod   Production       waits for your approval, then merges
 ```
 
-Nothing is conditional on an input. The environment's approval rule on `prod`
-is what holds the run, which is why there is no dropdown to get wrong.
+`show` has to be a separate job. An environment's reviewer rule blocks a job
+**before its first step**, so a check written inside `prod` would run *after*
+you approved — making the approval a formality. A job with no environment runs
+first, putting the commit list on screen while the prompt is still
+unanswered.
 
 ### `qa` pins a SHA, and that is the load-bearing part
 

@@ -21,19 +21,17 @@
 # GitHub Release, so the `release: published` trigger is a safe point to query
 # jsDelivr (with retries to absorb 1-3 min CDN lag).
 
-name: CDN publish
+name: 5 · Attach CDN archives to the release
 
+# Builds the CSS bundles, packages them as tar.gz + zip, attaches them to the
+# newest GitHub Release and appends the jsDelivr links to its notes.
+#
+# Run it after npm, because it attaches to the Release that step creates.
+#
+# Run by hand, in order, from the Actions tab. Every cross-workflow trigger
+# this repo ever had failed silently -- see .github/RELEASE-PIPELINE.md.
 on:
-  # Called directly by Release once npm publish succeeds.
-  #
-  # The `release` trigger below has NEVER fired — zero runs, ever.
-  # semantic-release creates the GitHub Release with GITHUB_TOKEN, and GitHub
-  # does not start workflows from events raised by that token. So this job was
-  # wired to an event that could not reach it from the day it was written.
-  # Kept for a Release published by hand.
-  workflow_call:
-  release:
-    types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -44,12 +42,37 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
-      TAG: ${{ github.event.release.tag_name }}
+      TAG: ${{ github.event.release.tag_name }}   # informational only; steps use steps.tag.outputs.tag
     steps:
+      # Resolve the tag BEFORE checking anything out.
+      #
+      # On a `release` event the tag comes from the event. When Release calls
+      # this workflow there is no event, so ask the API for the newest
+      # release -- which semantic-release created moments earlier in the same
+      # run. Checking out a blank ref would silently take the default branch
+      # and package the wrong commit.
+      - name: Resolve the release tag
+        id: tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          TAG="$EVENT_TAG"
+          if [ -z "$TAG" ]; then
+            TAG=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 1 --json tagName --jq '.[0].tagName')
+          fi
+          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
+            echo "::error::no release tag to attach archives to"
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Attaching archives to $TAG"
+
       - name: Checkout release tag
         uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ steps.tag.outputs.tag }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -104,14 +127,33 @@ jobs:
           echo "tar=${BASENAME}.tar.gz" >> "$GITHUB_OUTPUT"
           echo "zip=${BASENAME}.zip"    >> "$GITHUB_OUTPUT"
 
-      - name: Attach archives to existing Release
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
-        with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: |
-            ${{ steps.archives.outputs.tar }}
-            ${{ steps.archives.outputs.zip }}
-          fail_on_unmatched_files: true
+      # `gh release upload` instead of softprops/action-gh-release.
+      #
+      # This repo's Actions policy allows only GitHub-owned and
+      # Marketplace-verified actions, and that action is neither, so it was
+      # refused outright the first time this workflow ever ran:
+      #
+      #   The action softprops/action-gh-release@3bb1273 is not allowed in
+      #   Jerry2d3d/css-is-awesome because all actions must be from a
+      #   repository owned by Jerry2d3d, created by GitHub, or verified in
+      #   the GitHub Marketplace.
+      #
+      # gh is pre-installed on every runner, needs no allowlist entry, and
+      # removes a third-party dependency from the release path. --clobber so
+      # a re-run replaces the assets rather than failing on a name collision.
+      - name: Attach archives to the Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          TARBALL: ${{ steps.archives.outputs.tar }}
+          ZIPFILE: ${{ steps.archives.outputs.zip }}
+        run: |
+          set -euo pipefail
+          test -f "$TARBALL" || { echo "::error::missing $TARBALL"; exit 1; }
+          test -f "$ZIPFILE" || { echo "::error::missing $ZIPFILE"; exit 1; }
+          gh release upload "$TAG" "$TARBALL" "$ZIPFILE" \
+            --repo "$GITHUB_REPOSITORY" --clobber
+          echo "Attached $TARBALL and $ZIPFILE to $TAG"
 
       - name: Smoke-check jsDelivr endpoints (best-effort)
         id: smoke
@@ -164,53 +206,42 @@ jobs:
 
       - name: Append "CDN ready" section to Release body (idempotent)
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          RELEASE_ID: ${{ github.event.release.id }}
+          TAG: ${{ steps.tag.outputs.tag }}
         run: |
           set -euo pipefail
 
-          # Fetch current release body.
-          CURRENT_BODY="$(curl -fsSL \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${REPO}/releases/${RELEASE_ID}" \
-            | node -e "let s=''; process.stdin.on('data',d=>s+=d); process.stdin.on('end',()=>{ const b=JSON.parse(s).body||''; process.stdout.write(b); })")"
+          # `gh release` works by TAG, so nothing here needs the numeric
+          # release id -- which is only available on a `release` event and is
+          # empty when Release calls this workflow.
+          CURRENT_BODY="$(gh release view "$TAG" --repo "$REPO" --json body --jq '.body // ""')"
 
           if printf '%s' "$CURRENT_BODY" | grep -q '<!-- cdn-published -->'; then
             echo "CDN ready section already present; skipping append."
             exit 0
           fi
 
-          # Build CDN section with printf so we don't need a column-0 heredoc
-          # terminator (which would break this YAML block scalar's indentation).
+          # jsDelivr addresses npm PACKAGE VERSIONS, which carry no leading
+          # `v`, while the git tag does. `@v1.22.0` is not a version npm
+          # knows, so every URL below would have 404'd -- never noticed,
+          # because this workflow had never run.
+          VERSION="${TAG#v}"
+
           CDN_BLOCK=$(printf '%s\n' \
             '<!-- cdn-published -->' \
             '### CDN ready' \
             '' \
             'Via jsDelivr (cached globally, no auth):' \
             '' \
-            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.min.css\`" \
-            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/theme.css\`" \
-            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/themes/<theme>/theme.css\`" \
+            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${VERSION}/dist/css-is-awesome.min.css\`" \
+            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${VERSION}/public/theme.css\`" \
+            "- \`https://cdn.jsdelivr.net/npm/css-is-awesome@${VERSION}/public/themes/<theme>/theme.css\`" \
             '' \
             'Or download the bundle attached to this release.')
 
-          # Join existing body + two newlines + CDN block, JSON-encode, PATCH.
-          NEW_BODY="$(printf '%s\n\n%s' "$CURRENT_BODY" "$CDN_BLOCK")"
-
-          PAYLOAD="$(node -e "
-            let body = process.argv[1];
-            process.stdout.write(JSON.stringify({ body }));
-          " "$NEW_BODY")"
-
-          curl -fsSL -X PATCH \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${REPO}/releases/${RELEASE_ID}" \
-            -d "$PAYLOAD" \
-            -o /dev/null
+          printf '%s\n\n%s' "$CURRENT_BODY" "$CDN_BLOCK" > release-notes.md
+          gh release edit "$TAG" --repo "$REPO" --notes-file release-notes.md
+          echo "Appended the CDN section to $TAG"
 
           echo "Release body updated with CDN ready section."

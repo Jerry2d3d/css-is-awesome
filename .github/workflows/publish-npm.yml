@@ -43,46 +43,29 @@
 #                     CI cannot supply. Fix on the npm ACCOUNT: set two-factor
 #                     to "Authorization only", or use a Classic *Automation*
 #                     token, which bypasses 2FA by design.
-# RENAMED 2026-09-25: this was "Release". That name now belongs to the
-# workflow you RUN (.github/workflows/release.yml, the stage dropdown). This
-# one is never run by hand - it is a CONSEQUENCE of releasing to prod, and
-# "Publish to npm" says what it does rather than when it happens.
+# RENAMED TWICE. It was "Release", then "Publish to npm", and is now
+# "3 . Publish to npm" so the Actions sidebar shows the release order. It IS
+# run by hand: the single workflow that used to call it was deleted on
+# 2026-09-30 in favour of five numbered ones, because every mechanism for
+# chaining them together had failed silently at least once.
 #
-# `workflow_run` triggers match by workflow NAME, so pages.yml follows this
-# file by its new name. Rename it again and rename it there too, or the Pages
-# mirror silently stops firing.
-name: Publish to npm
+# Nothing follows this workflow automatically any more. pages.yml used to
+# watch it by NAME via `workflow_run`, which stopped firing the moment this
+# became a called workflow -- a called workflow runs inside its caller's run
+# and produces no run to watch. Run 4 and 5 by hand after this one.
+name: 3 · Publish to npm
 
+# Runs semantic-release on `prod-css-is-awesome`: works out the version from
+# the commits, writes the CHANGELOG, tags, publishes to npm and creates the
+# GitHub Release.
+#
+# Idempotent. With no releasable commits it exits having done nothing, so
+# running it twice is safe.
+#
+# Run by hand, in order, from the Actions tab. Every cross-workflow trigger
+# this repo ever had failed silently -- see .github/RELEASE-PIPELINE.md.
 on:
-  # CALLED DIRECTLY by the Release workflow's prod stage. This is the path
-  # that actually runs.
-  #
-  # The workflow_run trigger below CANNOT fire for a normal release, and that
-  # is a GitHub rule rather than a bug here: a push made with the default
-  # GITHUB_TOKEN does not trigger workflows, to stop runs from recursively
-  # triggering themselves. The Release workflow pushes `prod-css-is-awesome`
-  # with exactly that token, so CI never runs on the push, so nothing
-  # downstream of CI ever fires.
-  #
-  # That cost a release on 2026-09-25: the promotion succeeded, Vercel
-  # rebuilt the public site (its own integration is unaffected), and npm
-  # silently stayed on the previous version because this workflow was waiting
-  # for a CI run that could never happen.
-  workflow_call:
-
-  # Kept for the case it still covers: a HUMAN pushing prod-css-is-awesome
-  # directly, which does trigger CI. Harmless alongside the call above — if
-  # both somehow ran, semantic-release finds no new releasable commits the
-  # second time and publishes nothing.
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    # Publishing follows the PROMOTED branch, not the integration branch.
-    # Merging to `main` no longer publishes; running the "Release"
-    # workflow with stage `prod` does. Reason: a website can be corrected by promoting
-    # again, an npm version cannot be unpublished after 72 hours and never
-    # once anyone depends on it — so the irreversible step gets the gate.
-    branches: [prod-css-is-awesome]
+  workflow_dispatch:
 
 concurrency:
   group: release-${{ github.ref }}
