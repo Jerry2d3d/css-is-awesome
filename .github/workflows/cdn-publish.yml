@@ -21,19 +21,17 @@
 # GitHub Release, so the `release: published` trigger is a safe point to query
 # jsDelivr (with retries to absorb 1-3 min CDN lag).
 
-name: CDN publish
+name: 5 · Attach CDN archives to the release
 
+# Builds the CSS bundles, packages them as tar.gz + zip, attaches them to the
+# newest GitHub Release and appends the jsDelivr links to its notes.
+#
+# Run it after npm, because it attaches to the Release that step creates.
+#
+# Run by hand, in order, from the Actions tab. Every cross-workflow trigger
+# this repo ever had failed silently -- see .github/RELEASE-PIPELINE.md.
 on:
-  # Called directly by Release once npm publish succeeds.
-  #
-  # The `release` trigger below has NEVER fired — zero runs, ever.
-  # semantic-release creates the GitHub Release with GITHUB_TOKEN, and GitHub
-  # does not start workflows from events raised by that token. So this job was
-  # wired to an event that could not reach it from the day it was written.
-  # Kept for a Release published by hand.
-  workflow_call:
-  release:
-    types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: write
