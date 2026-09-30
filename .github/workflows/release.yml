@@ -335,13 +335,17 @@ jobs:
 
           if git merge-base --is-ancestor "$STAGED" origin/prod-css-is-awesome; then
             {
-              echo "### Nothing to ship"
+              echo "### Nothing to promote — and that is fine"
               echo
-              echo "\`prod-css-is-awesome\` already contains everything on \`qa\`."
-              echo "Run **stage: qa** first to stage something, test it, then come back."
+              echo "\`prod-css-is-awesome\` already contains this commit, so the merge below"
+              echo "is a no-op. **The run continues anyway**, because the branch being current"
+              echo "does not mean the release finished: npm, the Pages mirror and the CDN"
+              echo "archives all come after the promotion and may still be behind."
+              echo
+              echo "If everything downstream is up to date too, semantic-release finds no"
+              echo "releasable commits and exits without publishing. Nothing happens twice."
             } >> "$GITHUB_STEP_SUMMARY"
-            echo "::error::qa holds nothing that prod does not already have"
-            exit 1
+            echo "::notice::prod already contains this commit; continuing so the publish steps can run"
           fi
 
           {
@@ -515,3 +519,37 @@ jobs:
       pull-requests: write
       id-token: write
     secrets: inherit
+
+  # ---------------------------------------------------------------------------
+  # The rest of the release.
+  #
+  # Both of these were wired to triggers that cannot fire, so both are called
+  # directly here for exactly the reason npm is:
+  #
+  #   pages.yml        watched for a "Publish to npm" workflow_run. Release
+  #                    invokes that workflow with workflow_call, and a called
+  #                    workflow runs INSIDE the caller's run rather than
+  #                    producing one of its own — so there was nothing to
+  #                    watch. Last deploy from that path: 2026-09-24.
+  #
+  #   cdn-publish.yml  waited on `release: published`. semantic-release creates
+  #                    that Release with GITHUB_TOKEN, and GitHub does not
+  #                    start workflows from that token's events. Runs ever: 0.
+  # ---------------------------------------------------------------------------
+  pages:
+    name: Mirror the site to GitHub Pages
+    needs: publish
+    if: inputs.dry_run != true && needs.publish.result == 'success'
+    uses: ./.github/workflows/pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+  cdn:
+    name: Attach CDN archives to the release
+    needs: publish
+    if: inputs.dry_run != true && needs.publish.result == 'success'
+    uses: ./.github/workflows/cdn-publish.yml
+    permissions:
+      contents: write

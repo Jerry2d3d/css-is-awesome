@@ -24,6 +24,14 @@
 name: CDN publish
 
 on:
+  # Called directly by Release once npm publish succeeds.
+  #
+  # The `release` trigger below has NEVER fired — zero runs, ever.
+  # semantic-release creates the GitHub Release with GITHUB_TOKEN, and GitHub
+  # does not start workflows from events raised by that token. So this job was
+  # wired to an event that could not reach it from the day it was written.
+  # Kept for a Release published by hand.
+  workflow_call:
   release:
     types: [published]
 
