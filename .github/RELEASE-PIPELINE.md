@@ -1,7 +1,6 @@
 # The release pipeline — how it works, and how to set one up again
 
-**Five workflows, one job each, run by hand in order.** Each does one thing,
-so when something fails you re-run that one rather than the whole chain.
+**One run, start to finish, with a review between the steps that matter.**
 
 ```
 feature branch  →  main  →  qa  →  prod-css-is-awesome
@@ -17,40 +16,54 @@ reading twice, because every entry cost a real failure here.
 
 ## How you run it
 
-**Actions → pick the numbered workflow → Run workflow.** In order:
+**Actions → Release → Run workflow.** Nothing to pick.
 
-| | workflow | what it does |
-| --- | --- | --- |
-| 1 | **Release to qa** | merges `main` into `qa`, then stops. Go and test. |
-| 2 | **Release to production** | shows what will ship, **asks for your approval**, merges `qa` into the production branch |
-| 3 | **Publish to npm** | semantic-release: version, CHANGELOG, tag, npm, GitHub Release |
-| 4 | **Mirror the site to GitHub Pages** | builds the docs site from the production branch |
-| 5 | **Attach CDN archives to the release** | tar.gz + zip onto the Release, jsDelivr links in the notes |
-
-1 and 2 are the release. 3, 4 and 5 are what a release consists of afterwards.
-
-```bash
-gh workflow run "1 · Release to qa"
-gh workflow run "2 · Release to production"
-gh workflow run "3 · Publish to npm"
+```
+qa  ──▶  [you test]  ──▶  prod  ──▶  npm  ──▶  pages
+                           ▲          ▲         cdn
+                      Review      Review
 ```
 
-### Why five files and not one
+1. It stages `qa` and keeps the run open.
+2. Test <https://qa.cssisawesome.com>. An hour, a day, a week.
+3. Come back to that run → **Review deployments → Approve**. Production updates.
+4. It asks once more, before npm. Approve.
+5. npm publishes, then Pages and the CDN archives finish on their own.
 
-Because one file kept breaking in ways that were invisible.
+### Two gates, and they are different decisions
 
-A single workflow needs a stage input to know what to do, and every shape of
-that was wrong. Required-with-a-no-op-default meant the obvious click did
-nothing, successfully. Stages gated by `if:` meant skipped jobs that read like
-failures. And you cannot change an input by re-running, so the natural button
-on a failed run could never fix it.
+| gate | why it is its own decision |
+| --- | --- |
+| **prod** | the public website changes |
+| **npm** | a published version **cannot be unpublished after 72 hours** |
 
-Five workflows have no stage to get wrong, no skipped jobs, and a failure in
-one is re-run on its own without redoing the promotion.
+Pages and CDN follow npm with no gate: by then you have approved going public
+twice, and neither does anything npm has not already done.
 
-### There is no automatic chaining, deliberately
+Each gate is a `required_reviewers` rule on an environment — `Production` and
+`npm`. **An environment with no reviewer rule is not a gate.** GitHub creates a
+missing environment on first use with no protection at all, so a typo in the
+name publishes straight through, silently. Check it:
 
-Every cross-workflow trigger this repo has ever had failed silently:
+```bash
+gh api repos/OWNER/REPO/environments/npm   --jq '[.protection_rules[]?|select(.type=="required_reviewers")]|length'
+```
+
+`0` means there is no gate.
+
+### What broke before, and what the actual lesson was
+
+This was one workflow, then five, now one again. The five-file detour drew the
+wrong lesson from the right evidence, so it is worth writing down.
+
+The single workflow kept breaking, and neither cause was *being one file*:
+
+**A stage input.** Required, defaulting to a no-op, so the obvious click did
+nothing — successfully — three times before anyone worked out why. And an
+input cannot be changed by re-running, so the button on the run page could
+never advance anything.
+
+**Cross-workflow triggers.** All three failed silently:
 
 | trigger | why it never fired |
 | --- | --- |
@@ -58,9 +71,21 @@ Every cross-workflow trigger this repo has ever had failed silently:
 | `workflow_run` on "Publish to npm" | a `workflow_call`'d workflow runs *inside* its caller's run and produces no run to watch. Pages last deployed 2026-09-24. |
 | `release: published` | semantic-release creates that Release with `GITHUB_TOKEN`. Runs ever: **zero**. |
 
-Three mechanisms, three silent failures, each looking fine until someone went
-looking. Manual steps you can see are worth more than automatic ones you
-cannot.
+Splitting into five files removed both — and cost the thing that was actually
+wanted: one place, one run, a review between steps.
+
+The chain has neither cause. **There is no input**, so there is nothing to pick
+and nothing a re-run cannot change. And the jobs are in **one run**, so nothing
+has to trigger anything: `needs:` is ordinary ordering, and `uses:` runs a
+reusable workflow inside this run rather than waiting for one to appear.
+
+The gate was never the problem. It is the only control now.
+
+### Re-running one step
+
+Each downstream step is dispatchable on its own — **Publish to npm**, **Mirror
+the site to GitHub Pages**, **Attach CDN archives to the release** — so a
+failure there is re-run without redoing the promotion.
 
 ### Optional inputs
 

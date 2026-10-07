@@ -12,7 +12,7 @@
 # subpath. For a custom domain, drop the env var and add a CNAME file
 # to public/ (Next.js copies public/* into out/ automatically).
 
-name: 4 · Mirror the site to GitHub Pages
+name: Mirror the site to GitHub Pages
 
 # Builds the docs site from `prod-css-is-awesome` and publishes it to Pages.
 #
@@ -20,9 +20,12 @@ name: 4 · Mirror the site to GitHub Pages
 # package.json) shows the release that just happened rather than the one
 # before it.
 #
-# Run by hand, in order, from the Actions tab. Every cross-workflow trigger
-# this repo ever had failed silently -- see .github/RELEASE-PIPELINE.md.
+# Normally runs as part of Release. Dispatchable on its own so a failure
+# here is re-run without redoing the promotion.
 on:
+  # Called by Release (runs inside that run — no trigger involved), and
+  # dispatchable on its own to re-run just this step after a failure.
+  workflow_call:
   workflow_dispatch:
 
 permissions:

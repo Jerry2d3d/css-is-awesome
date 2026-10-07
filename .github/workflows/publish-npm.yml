@@ -53,7 +53,7 @@
 # watch it by NAME via `workflow_run`, which stopped firing the moment this
 # became a called workflow -- a called workflow runs inside its caller's run
 # and produces no run to watch. Run 4 and 5 by hand after this one.
-name: 3 · Publish to npm
+name: Publish to npm
 
 # Runs semantic-release on `prod-css-is-awesome`: works out the version from
 # the commits, writes the CHANGELOG, tags, publishes to npm and creates the
@@ -62,9 +62,12 @@ name: 3 · Publish to npm
 # Idempotent. With no releasable commits it exits having done nothing, so
 # running it twice is safe.
 #
-# Run by hand, in order, from the Actions tab. Every cross-workflow trigger
-# this repo ever had failed silently -- see .github/RELEASE-PIPELINE.md.
+# Normally runs as part of Release. Dispatchable on its own so a failure
+# here is re-run without redoing the promotion.
 on:
+  # Called by Release (runs inside that run — no trigger involved), and
+  # dispatchable on its own to re-run just this step after a failure.
+  workflow_call:
   workflow_dispatch:
 
 concurrency:
@@ -90,6 +93,19 @@ jobs:
       issues: write
       pull-requests: write
       id-token: write
+    # SECOND GATE. A published version cannot be unpublished after 72
+    # hours, which makes this a different decision from updating the
+    # website — so it is asked separately.
+    #
+    # The rule lives here rather than on the caller because a job that
+    # `uses:` a reusable workflow cannot declare `environment:` itself.
+    #
+    # IF THE `npm` ENVIRONMENT HAS NO REQUIRED REVIEWER, THERE IS NO
+    # GATE. GitHub creates a missing environment on first use with no
+    # protection rules at all, so this would publish straight through.
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/css-is-awesome
     steps:
       # MUST be pinned. On a `workflow_run` event `github.sha` is the tip of
       # the DEFAULT branch, not the branch that triggered the run - so a bare
