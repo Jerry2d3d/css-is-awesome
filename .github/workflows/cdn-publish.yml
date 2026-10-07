@@ -21,16 +21,19 @@
 # GitHub Release, so the `release: published` trigger is a safe point to query
 # jsDelivr (with retries to absorb 1-3 min CDN lag).
 
-name: 5 · Attach CDN archives to the release
+name: Attach CDN archives to the release
 
 # Builds the CSS bundles, packages them as tar.gz + zip, attaches them to the
 # newest GitHub Release and appends the jsDelivr links to its notes.
 #
 # Run it after npm, because it attaches to the Release that step creates.
 #
-# Run by hand, in order, from the Actions tab. Every cross-workflow trigger
-# this repo ever had failed silently -- see .github/RELEASE-PIPELINE.md.
+# Normally runs as part of Release. Dispatchable on its own so a failure
+# here is re-run without redoing the promotion.
 on:
+  # Called by Release (runs inside that run — no trigger involved), and
+  # dispatchable on its own to re-run just this step after a failure.
+  workflow_call:
   workflow_dispatch:
 
 permissions:

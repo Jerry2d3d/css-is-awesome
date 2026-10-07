@@ -1,0 +1,318 @@
+# ============================================================================
+# Release
+# ============================================================================
+# One run, start to finish, with a review between the steps that matter.
+#
+#   qa  ──▶  [you test]  ──▶  prod  ──▶  npm  ──▶  pages
+#                              ▲          ▲         cdn
+#                         Review      Review
+#
+# Click Run workflow. It stages qa and keeps the run open. Test
+# https://qa.cssisawesome.com, then come back to this run and press
+# `Review deployments` → Approve. It promotes to production, asks you once
+# more before npm, and then finishes the rest on its own.
+#
+# TWO GATES, NOT FOUR, AND THEY ARE DIFFERENT DECISIONS
+#
+#   prod  — the public website changes.
+#   npm   — a published version cannot be unpublished after 72 hours.
+#
+# Pages and the CDN archives follow npm automatically: by then you have
+# approved going public twice, and neither can do anything npm has not
+# already done.
+#
+# ---------------------------------------------------------------------------
+# WHY THIS IS ONE FILE AGAIN (2026-10-07)
+# ---------------------------------------------------------------------------
+# It was one file, then five, now one. Worth writing down why, because the
+# obvious lesson from the five-file detour was the wrong one.
+#
+# The single workflow kept breaking, and neither cause was "one file":
+#
+#   1. A STAGE INPUT. It was required and defaulted to a no-op, so the
+#      obvious click did nothing — successfully — three times before anyone
+#      worked out why. And an input cannot be changed by re-running, so the
+#      button on the run page could never advance anything.
+#
+#   2. CROSS-WORKFLOW TRIGGERS. All three failed silently:
+#        workflow_run on CI/prod        GITHUB_TOKEN pushes start no workflow
+#        workflow_run on "Publish..."   a workflow_call'd workflow runs INSIDE
+#                                       its caller and produces no run to watch
+#        release: published             semantic-release creates it with
+#                                       GITHUB_TOKEN; runs ever: zero
+#
+# Splitting into five files removed both, and cost the thing that was
+# actually wanted: one place, one run, review between steps.
+#
+# This has neither cause. There is no stage input — nothing to pick. And the
+# jobs are in ONE RUN, so nothing has to trigger anything: `needs:` is
+# ordinary job ordering, and `uses:` runs a reusable workflow inside this run
+# rather than waiting for one to appear.
+#
+# The gate was never the problem. It is the only control here now.
+#
+# Setup and the full trap list: .github/RELEASE-PIPELINE.md
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Rehearse: do every merge, push nothing, publish nothing"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  # Never cancel a release midway — a cancelled merge can leave one branch
+  # pushed without its pair.
+  #
+  # KNOWN CONSEQUENCE: a run parked on a gate holds this group, so a later
+  # release cannot start behind it. That is the right trade, but it is also
+  # why a run stuck as "pending" is usually an older one still waiting on
+  # Review deployments. Look there first.
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1. qa — no gate. Not needing one is the point of a staging branch.
+  # ---------------------------------------------------------------------------
+  qa:
+    name: Stage to qa
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: qa
+      url: https://qa.cssisawesome.com
+    outputs:
+      # The exact commit qa ended up at, pinned for every later job.
+      #
+      # Without this, prod would resolve `qa` when the approval arrives —
+      # possibly hours later — and anything merged to main while you tested
+      # would ride along unseen. You would approve one thing and ship
+      # another. A SHA cannot drift.
+      sha: ${{ steps.staged.outputs.sha }}
+    steps:
+      - name: Checkout (full history, all branches)
+        uses: actions/checkout@v7
+        with:
+          # NEVER shallow, and never add a --depth fetch below. Every count in
+          # this workflow is a rev-list range, and a shallow clone collapses
+          # them silently: 21 commits once reported as 1, with no error.
+          fetch-depth: 0
+
+      - name: Merge main into qa
+        env:
+          SRC_REF: main
+          DEST: qa
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: bash .github/scripts/promote.sh
+
+      - name: Pin the staged commit
+        id: staged
+        run: |
+          set -euo pipefail
+          # From the REMOTE, not local HEAD: promote.sh exits early without
+          # pushing when qa already contains main, and a dry run resets the
+          # local branch. In both cases local HEAD is not what qa is.
+          git fetch origin qa
+          SHA=$(git rev-parse origin/qa)
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "qa is at $SHA"
+
+  # ---------------------------------------------------------------------------
+  # 2. preview — what the approval is about to approve.
+  #
+  # Its own job, with NO environment, deliberately. An environment's reviewer
+  # rule blocks a job BEFORE its first step, so a check written inside `prod`
+  # would run after you approved, which makes approving a formality. A job
+  # with no environment runs first and puts the list on screen while the
+  # prompt is still unanswered.
+  #
+  # It never fails the run. Failing here is what deadlocked the pipeline on
+  # 2026-09-30: prod was already current, so the check failed, so prod was
+  # skipped, so npm was skipped — and npm could never catch up. Being current
+  # on a branch is not the same as being released.
+  # ---------------------------------------------------------------------------
+  preview:
+    name: What is about to ship
+    needs: qa
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout (full history, all branches)
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Print it
+        env:
+          STAGED: ${{ needs.qa.outputs.sha }}
+        run: |
+          set -euo pipefail
+
+          version_of() {
+            git show "$1:package.json" \
+              | sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' \
+              | head -1
+          }
+
+          {
+            echo "## About to ship"
+            echo
+            echo "| | Commit | Version |"
+            echo "|---|---|---|"
+            printf '| staged on `qa` | `%s` | %s |\n' \
+              "$(git rev-parse --short "$STAGED")" "$(version_of "$STAGED")"
+            printf '| `prod-css-is-awesome` now | `%s` | %s |\n' \
+              "$(git rev-parse --short origin/prod-css-is-awesome)" \
+              "$(version_of origin/prod-css-is-awesome)"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # --no-merges throughout: promoting into a branch creates a merge
+          # commit ON that branch every time, so counting them reports
+          # ordinary history as a difference.
+          COUNT=$(git rev-list --count --no-merges origin/prod-css-is-awesome.."$STAGED")
+
+          if [ "$COUNT" -eq 0 ]; then
+            {
+              echo "### Nothing new to promote"
+              echo
+              echo "Production already contains this commit, so the merge is a no-op."
+              echo "**The run continues** — npm, Pages and the CDN archives come after the"
+              echo "promotion and may still be behind."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "### The $COUNT commit(s) this ships"
+              echo
+              echo '```'
+              git log --oneline --no-decorate --no-merges origin/prod-css-is-awesome.."$STAGED"
+              echo '```'
+              echo
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # Work on main this release does NOT carry. Not an error — shipping
+          # only what was tested is the point — but it has to be said, because
+          # the assumption when releasing is "I get the latest".
+          AHEAD=$(git rev-list --count --no-merges "$STAGED"..origin/main)
+          if [ "$AHEAD" -gt 0 ]; then
+            {
+              echo "### NOT in this release: $AHEAD commit(s) on main"
+              echo
+              echo "These landed after this run staged qa. Cancel and start again to include them."
+              echo
+              echo '```'
+              git log --oneline --no-decorate --no-merges "$STAGED"..origin/main
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          {
+            echo
+            echo "---"
+            echo
+            echo "### Your move"
+            echo
+            echo "Test <https://qa.cssisawesome.com>, then scroll up and press"
+            echo "**Review deployments → Approve** to promote to production."
+            echo
+            echo "Take as long as you like. Nothing public moves until you do."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          cat "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------------
+  # 3. prod — FIRST GATE. The public website.
+  # ---------------------------------------------------------------------------
+  prod:
+    name: Promote to production
+    needs: [qa, preview]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      # Capital P: Vercel's integration created this one, and GitHub matches
+      # environment names case-insensitively, so `production` would bind to
+      # the same box rather than making a second.
+      #
+      # The required-reviewer rule lives here and gates THIS job. Vercel
+      # deploys through the API, which does not pass through Actions
+      # protection rules, so Vercel is unaffected.
+      name: Production
+      url: https://cssisawesome.com
+    steps:
+      - name: Checkout (full history, all branches)
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Merge the staged commit into prod
+        env:
+          # The SHA this run staged, not the branch name. `ref` overrides do
+          # not exist here on purpose: there is no argument anyone can pass
+          # that puts something into production without passing through qa.
+          SRC_REF: ${{ needs.qa.outputs.sha }}
+          DEST: prod-css-is-awesome
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: bash .github/scripts/promote.sh
+
+      - name: What now
+        if: success() && inputs.dry_run != true
+        run: |
+          {
+            echo "## Next"
+            echo
+            echo "Production is updated and Vercel is rebuilding it."
+            echo
+            echo "**This run now asks you once more, before npm.** That is a separate"
+            echo "decision: a published version cannot be unpublished after 72 hours."
+            echo
+            echo "Approve and the rest — npm, the Pages mirror, the CDN archives — runs"
+            echo "without stopping again."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------------
+  # 4. npm — SECOND GATE, inside publish-npm.yml.
+  #
+  # A job that `uses:` a reusable workflow cannot declare `environment:`
+  # itself, so the gate lives on the job INSIDE that file. Same effect: the
+  # run stops and shows Review deployments.
+  # ---------------------------------------------------------------------------
+  npm:
+    name: Publish to npm
+    needs: [prod]
+    if: inputs.dry_run != true && needs.prod.result == 'success'
+    uses: ./.github/workflows/publish-npm.yml
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    secrets: inherit
+
+  # ---------------------------------------------------------------------------
+  # 5 + 6. After npm, no further gates. Both are consequences of publishing.
+  # ---------------------------------------------------------------------------
+  pages:
+    name: Mirror the site to GitHub Pages
+    needs: npm
+    if: needs.npm.result == 'success'
+    uses: ./.github/workflows/pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+  cdn:
+    name: Attach CDN archives to the release
+    needs: npm
+    if: needs.npm.result == 'success'
+    uses: ./.github/workflows/cdn-publish.yml
+    permissions:
+      contents: write
