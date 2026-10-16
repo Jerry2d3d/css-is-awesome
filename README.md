@@ -14,7 +14,7 @@
 
 **Read [`llm.txt`](./llm.txt) first.** One file, the whole system: install path, hard rules, the mixin vocabulary, and the traps that make agents write wrong cia code. It ships in the npm package, so it's at `node_modules/css-is-awesome/llm.txt` in any project that has cia.
 
-**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 34 tools covering themes, mixins, functions, tokens, recipes, components, theme validation, theme generation from design tokens and the token mapping itself.
+**Then connect the MCP server** and stop guessing at signatures. It answers from the real source — 35 tools covering themes, mixins, functions, tokens, recipes, components, theme validation, theme generation from design tokens, the token mapping itself, and a one-call `status` for version, counts and a surface hash.
 
 ```json
 {
@@ -312,7 +312,7 @@ The scope is kept narrow: 8 `!important` declarations — seven inside `@media p
 
 ## MCP server (for AI agents)
 
-cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) exposing **34 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) , `resolve_size` (snap design px values to cia's 4px grid) `validate_theme` (run the real theme validator on CSS you just wrote) `theme_from_tokens` (design-tokens JSON → a complete, validated theme.css) and `get_token_map` (that mapping as data, or how one path resolves). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
+cia ships a Model Context Protocol stdio server (JSON-RPC over stdio, protocol `2024-11-05`) exposing **35 tools** across 8 families (themes, mixins, functions, tokens · 127 required of them, animations, components, recipes, doc readers) plus `assemble_prompt` (context bundles) , `resolve_size` (snap design px values to cia's 4px grid) `validate_theme` (run the real theme validator on CSS you just wrote) `theme_from_tokens` (design-tokens JSON → a complete, validated theme.css) `get_token_map` (that mapping as data, or how one path resolves) and `status` (version, public-surface counts and a hash over every public name, in one ~40-token call). Any MCP-aware client (Claude Code, Cursor, Aider, Gemini, Copilot) can then query cia's real design system — mixin signatures, tokens, themes, recipes — instead of guessing, without grep-walking the repo. Full reference: [`/docs/mcp`](https://cssisawesome.com/docs/mcp/).
 
 **Recommended — zero install:** use the dedicated [`css-is-awesome-mcp`](https://www.npmjs.com/package/css-is-awesome-mcp) package. It depends on `css-is-awesome` and resolves your installed version's real source, so it's never out of sync — and the MCP SDK ships as a real dependency, not an optional peer you have to remember to add.
 
@@ -404,7 +404,7 @@ Twelve checks, all gated in CI on every PR. Each one exists because the failure 
 | `validate-api` | the `/api` barrel still emits zero CSS until a mixin is called |
 | `validate-package` | packs → installs into a temp project → compiles all **10** documented `@use` specifiers |
 | `coverage:api` | calls **188/188** public mixins + functions and asserts the output |
-| `coverage:mcp` | calls **34/34** MCP tools over stdio |
+| `coverage:mcp` | calls **35/35** MCP tools over stdio |
 | `validate-recipes` | every recipe's SCSS compiles and its documented mixin calls resolve |
 | `test` | Playwright — route smoke, axe a11y, per-theme visual snapshots, theme-editor behaviour, across three engines |
 

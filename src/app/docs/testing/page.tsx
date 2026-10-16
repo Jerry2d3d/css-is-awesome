@@ -87,7 +87,7 @@ export default function TestingPage() {
             <tr>
               <td><code>coverage:mcp</code></td>
               <td>
-                Spawns the MCP server over stdio and calls all 34 tools
+                Spawns the MCP server over stdio and calls all 35 tools
               </td>
             </tr>
             <tr>
@@ -136,7 +136,7 @@ export default function TestingPage() {
         value, mixins emit.
       </p>
       <p>
-        <strong>188 of 188 SCSS units and 34 of 34 MCP tools.</strong> CI fails
+        <strong>188 of 188 SCSS units and 35 of 35 MCP tools.</strong> CI fails
         below 98%. A mixin with no fixture counts as uncovered and lowers the
         number, so skipping a test is visible rather than invisible.
       </p>
