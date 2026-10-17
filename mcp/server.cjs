@@ -23,8 +23,9 @@
  *                   get_token_map     — the path → token mapping as data (or one path)
  *   Themes (fix):   fix_theme         — rewrite deprecated tokens to their replacements
  *   Prompt:        assemble_prompt(intent[, args])
+ *   Status:        status — version, counts, surface hash; one ~40-token call
  *
- * 34 tools total.
+ * 35 tools total.
  *
  * Discovery model: filesystem scan, no database. Parses SCSS files with
  * focused regex (no full SCSS AST). Tokens come from the authoritative
@@ -41,7 +42,7 @@
  *   }
  *
  * Aligned with the canonical sibling MCP shape used across our other servers.
- * Response envelope is `{ total, items }` for list/search;
+ * Response envelope is `{ total, items, store }` for list/search;
  * get_* tools return the full record.
  */
 
@@ -49,6 +50,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const SCSS_DIR = path.join(PROJECT_ROOT, 'scss');
@@ -68,6 +70,14 @@ const SERVER_VERSION = (function () {
     return '0.0.0';
   }
 })();
+
+// Where every answer comes from. This server reads the filesystem and nothing
+// else, so the fleet envelope's `store` is a constant: never `mongo`, and it
+// cannot be `unavailable` while the process is answering at all.
+const STORE = 'disk';
+
+// In this copy the server IS cia, so the two versions are one and the same.
+const CIA_VERSION = SERVER_VERSION;
 
 // Files that contribute mixins/functions to the public surface.
 // Order matters only for tie-breaking; we tag every parsed entry with its
@@ -643,6 +653,41 @@ function firstSentence(doc) {
 }
 
 const handlers = {
+  // ─── Status ────────────────────────────────────────────────────────────
+  // One cheap call (~40 tokens) for preflights and fleet checks: which
+  // version answered, how big the public surface is, and a hash that moves
+  // when any public name does — so a caller can tell "same cia as last time"
+  // without paging through list_* again. Names only go into the hash, not
+  // bodies: a doc-comment edit is not a surface change.
+  status() {
+    const decls = getAllDeclarations().filter((d) => !d.name.startsWith('_'));
+    const contract = getTokens();
+    const names = {
+      mixins: decls.filter((d) => d.kind === 'mixin').map((d) => d.name),
+      functions: decls.filter((d) => d.kind === 'function').map((d) => d.name),
+      tokens: [...contract.required, ...contract.optional],
+      themes: getThemes().map((t) => t.name),
+      components: getComponents().map((c) => c.name),
+      recipes: listRecipeFiles(RECIPES_DIR).map((f) => recipeInfo(f).name),
+      animations: Object.keys(getAnimations().vocabulary || {}),
+    };
+    const counts = {};
+    for (const k of Object.keys(names)) counts[k] = names[k].length;
+    const surface = Object.keys(names).sort()
+      .map((k) => `${k}:${[...names[k]].sort().join(',')}`)
+      .join('|');
+    const raw = readJsonSafe(THEME_CONTRACT_PATH);
+    return {
+      version: SERVER_VERSION,
+      cia: CIA_VERSION,
+      contractVersion: raw && raw.version != null ? String(raw.version) : null,
+      counts,
+      hash: crypto.createHash('sha256').update(surface).digest('hex').slice(0, 16),
+      store: STORE,
+      takenAt: new Date().toISOString(),
+    };
+  },
+
   // ─── Themes ────────────────────────────────────────────────────────────
 
   list_themes() {
@@ -654,7 +699,7 @@ const handlers = {
       tokenCount: t.tokenCount,
       path: t.path,
     }));
-    return { total: items.length, items };
+    return { total: items.length, items, store: STORE };
   },
 
   get_theme({ name } = {}) {
@@ -692,7 +737,7 @@ const handlers = {
         if (matches.length >= limit) break;
       }
     }
-    return { total: matches.length, items: matches };
+    return { total: matches.length, items: matches, store: STORE };
   },
 
   // Validates ANY theme CSS against the real token contract + a11y audit —
@@ -785,7 +830,7 @@ const handlers = {
       .filter((d) => !category || d.category === category)
       .filter((d) => !component || d.component === component)
       .map(declSummary);
-    return { total: all.length, items: all.slice(offset, offset + limit) };
+    return { total: all.length, items: all.slice(offset, offset + limit), store: STORE };
   },
 
   get_mixin({ name } = {}) {
@@ -825,7 +870,7 @@ const handlers = {
         if (matches.length >= limit) break;
       }
     }
-    return { total: matches.length, items: matches };
+    return { total: matches.length, items: matches, store: STORE };
   },
 
   // ─── Functions ─────────────────────────────────────────────────────────
@@ -836,7 +881,7 @@ const handlers = {
       .filter((d) => !d.name.startsWith('_'))
       .filter((d) => !category || d.category === category)
       .map(declSummary);
-    return { total: all.length, items: all.slice(offset, offset + limit) };
+    return { total: all.length, items: all.slice(offset, offset + limit), store: STORE };
   },
 
   get_function({ name } = {}) {
@@ -873,7 +918,7 @@ const handlers = {
         if (matches.length >= limit) break;
       }
     }
-    return { total: matches.length, items: matches };
+    return { total: matches.length, items: matches, store: STORE };
   },
 
   // ─── Tokens ────────────────────────────────────────────────────────────
@@ -884,7 +929,7 @@ const handlers = {
     if (category) items = items.filter((t) => t.category === category);
     if (typeof required === 'boolean') items = items.filter((t) => t.required === required);
     items = items.sort((a, b) => a.name.localeCompare(b.name));
-    return { total: items.length, items: items.slice(offset, offset + limit) };
+    return { total: items.length, items: items.slice(offset, offset + limit), store: STORE };
   },
 
   /**
@@ -1020,7 +1065,7 @@ const handlers = {
         if (matches.length >= limit) break;
       }
     }
-    return { total: matches.length, items: matches };
+    return { total: matches.length, items: matches, store: STORE };
   },
 
   // ─── Animations ────────────────────────────────────────────────────────
@@ -1036,6 +1081,7 @@ const handlers = {
     return {
       total: items.length,
       items,
+      store: STORE,
       speeds,
       effects,
       mixins: mixins.map((m) => ({
@@ -1090,7 +1136,7 @@ const handlers = {
       mixinCount: c.mixinCount,
       path: c.path,
     }));
-    return { total: items.length, items };
+    return { total: items.length, items, store: STORE };
   },
 
   get_component({ name } = {}) {
@@ -1136,7 +1182,7 @@ const handlers = {
         if (matches.length >= limit) break;
       }
     }
-    return { total: matches.length, items: matches };
+    return { total: matches.length, items: matches, store: STORE };
   },
 
   // ─── Recipes ───────────────────────────────────────────────────────────
@@ -1154,7 +1200,7 @@ const handlers = {
         usage: info.usage,
       };
     });
-    return { total: items.length, items };
+    return { total: items.length, items, store: STORE };
   },
 
   get_recipe({ name } = {}) {
@@ -1479,6 +1525,13 @@ async function startServer() {
   const COMPONENT_NAMES = getComponents().map((c) => c.name).join(', ');
 
   // Themes
+  // Status — the cheapest call on the server. Preflights (and anyone deciding
+  // whether a cached catalogue is stale) call this instead of a list_*.
+  server.registerTool('status', {
+    description: 'Version, public-surface counts (mixins, functions, tokens, themes, components, recipes, animations), a hash over every public name, and where answers come from (store — always "disk": this server reads the filesystem only). About 40 tokens. Call it first; page list_* only when the hash changed since you last looked.',
+    inputSchema: {},
+  }, async () => ok(handlers.status()));
+
   server.registerTool('list_themes', {
     description:
       `List all ${THEME_COUNT} shipped themes (${THEME_NAMES}). ` +

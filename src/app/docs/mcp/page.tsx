@@ -66,7 +66,7 @@ export default function McpPage() {
 }`}</Example.Code>
       </Example>
 
-      <h2 id="tools">Tools — 34 total: 28 across 8 families + 6 specialty tools</h2>
+      <h2 id="tools">Tools — 35 total: 28 across 8 families + 7 specialty tools</h2>
       <p>
         Every tool returns structured JSON. <code>list_*</code> tools return
         catalogs; <code>get_*</code> tools return a single record;{" "}
@@ -402,6 +402,32 @@ get_token_map()
 
 fix_theme({ css: ":root { --page-hero-bg: #eee; }" })
 // →  { unchanged: true, changes: [], summary: "No deprecated tokens found …" }`}</Example.Code>
+      </Example>
+      <h2 id="status">
+        <code>status</code>
+      </h2>
+      <p>
+        The cheapest call on the server, about forty tokens: which version
+        answered, how big the public surface is, and a hash over every public
+        name. Call it first. If the hash matches the one you saw last time,
+        nothing you cached from <code>list_*</code> has changed, so there is no
+        reason to page through those catalogues again. Only names go into the
+        hash, not bodies &mdash; a doc-comment edit is not a surface change.
+      </p>
+      <p>
+        <code>store</code> is always <code>&quot;disk&quot;</code>: this server
+        reads cia&apos;s files and nothing else, so there is no database to be
+        unavailable. The same field sits on every <code>list_*</code> and{" "}
+        <code>search_*</code> envelope, for callers that treat several MCP
+        servers alike. Reachable in-process as <code>handlers.status</code>.
+      </p>
+      <Example>
+        <Example.Code>{`status()
+// →  { version: "1.21.0", cia: "1.21.0", contractVersion: "1.3",
+//      counts: { mixins: 161, functions: 26, tokens: 176, themes: 24,
+//                components: 10, recipes: 33, animations: 12 },
+//      hash: "af41168486d63069", store: "disk",
+//      takenAt: "2026-10-16T19:57:03.639Z" }`}</Example.Code>
       </Example>
       <h2 id="security">Security + portability</h2>
       <p>

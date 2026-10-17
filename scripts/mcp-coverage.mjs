@@ -132,7 +132,8 @@ try {
   for (const fam of FAMILIES) {
     const body = await call(`list_${fam}`, {}, (b) => {
       const p = JSON.parse(b);
-      return typeof p.total === "number" && p.total > 0 ? null : `list_${fam} returned nothing`;
+      if (!(typeof p.total === "number" && p.total > 0)) return `list_${fam} returned nothing`;
+      return p.store === "disk" ? null : `list_${fam} envelope is missing store: "disk"`;
     });
     sample[fam] = firstName(body);
   }
@@ -189,6 +190,19 @@ try {
 
   // 5. Helpers.
   await call("resolve_size", { px: 17 }, (b) => (JSON.parse(b).px === 17 ? null : "did not echo px"));
+  // status — the cheap preflight call: real version, positive counts, a hash
+  // over the public surface, and the fleet envelope's store field.
+  await call("status", {}, (b) => {
+    const s = JSON.parse(b);
+    if (typeof s.version !== "string" || !s.version || s.version === "0.0.0") return "expected the real package version";
+    for (const k of ["mixins", "functions", "tokens", "themes", "components", "recipes"]) {
+      if (!(s.counts?.[k] > 0)) return `expected a positive count for ${k}`;
+    }
+    if (!/^[0-9a-f]{16}$/.test(s.hash)) return "expected a 16-hex surface hash";
+    if (s.store !== "disk") return "expected store: disk";
+    if (Number.isNaN(Date.parse(s.takenAt))) return "expected an ISO takenAt";
+    return null;
+  });
   await call("assemble_prompt", { intent: "overview" }, (b) =>
     b.length > 100 ? null : "prompt suspiciously short",
   );

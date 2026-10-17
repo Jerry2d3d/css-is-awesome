@@ -369,7 +369,7 @@ Or run this in-repo copy directly — needs its SDK peer deps installed manually
 }
 ```
 
-Either way it exposes **34 tools** across 8 families:
+Either way it exposes **35 tools** across 8 families:
 
 - **Themes** — `list_themes`, `get_theme`, `search_themes`
 - **Mixins** — `list_mixins`, `get_mixin`, `search_mixins` (real signatures — don't guess)
@@ -379,6 +379,7 @@ Either way it exposes **34 tools** across 8 families:
 - **Components** — `list_components`, `get_component`, `search_components`
 - **Recipes** — `list_recipes`, `get_recipe`
 - **Theme upgrades** — `fix_theme` (rewrite deprecated tokens to their replacements; returns text, never writes)
+- **Status** — `status` (version, public-surface counts, a hash over every public name, and `store`; ~40 tokens — call it first and page `list_*` only when the hash moved)
 - **Doc readers** — `read_llm_txt`, `read_changelog`, `read_migration`, `read_theming`, `read_agents`, `read_contract`, `read_three_tiers`, `read_readme`, `read_versioning`
 - **Helpers** — `assemble_prompt` (bundle context), `resolve_size` (snap a design px value to cia's 4px grid — call this whenever a design tool hands you a raw px value), `validate_theme` (run the real theme validator — contract + contrast — on a CSS string before you ship it), `theme_from_tokens` (DTCG / Tokens Studio / flat token JSON → a complete theme.css, base-inherited and validated; same function as `cia theme from-tokens`), `get_token_map` (that path → token mapping as data, or how one path resolves — read it instead of re-deriving the rules)
 
