@@ -1,9 +1,8 @@
 # Release pipeline — publishes css-is-awesome to npm and creates a GitHub Release.
 #
-# Trigger: runs after the CI workflow succeeds on a push to `prod-css-is-awesome`,
-# which is what the "Release" workflow's `prod` stage pushes to. Merging to `main`
-# publishes nothing. CI must be green first (we gate on workflow_run.conclusion
-# below), so promoting never skips verification.
+# Trigger: called by Release once production has been promoted, or dispatched by
+# hand to re-run just this step. Merging to `main` publishes nothing. CI ran on
+# `main` before anything was staged; the `npm` environment below is the gate.
 #
 # Secrets required (configure under repo Settings -> Secrets and variables -> Actions):
 #   NPM_TOKEN     — an npm automation token with publish rights on the
@@ -43,16 +42,8 @@
 #                     CI cannot supply. Fix on the npm ACCOUNT: set two-factor
 #                     to "Authorization only", or use a Classic *Automation*
 #                     token, which bypasses 2FA by design.
-# RENAMED TWICE. It was "Release", then "Publish to npm", and is now
-# "3 . Publish to npm" so the Actions sidebar shows the release order. It IS
-# run by hand: the single workflow that used to call it was deleted on
-# 2026-09-30 in favour of five numbered ones, because every mechanism for
-# chaining them together had failed silently at least once.
-#
-# Nothing follows this workflow automatically any more. pages.yml used to
-# watch it by NAME via `workflow_run`, which stopped firing the moment this
-# became a called workflow -- a called workflow runs inside its caller's run
-# and produces no run to watch. Run 4 and 5 by hand after this one.
+# Runs inside the Release run (`uses:`), so Pages and the CDN archives follow
+# it there as ordinary `needs:`. Nothing watches it from outside any more.
 name: Publish to npm
 
 # Runs semantic-release on `prod-css-is-awesome`: works out the version from
@@ -79,15 +70,15 @@ jobs:
     name: Publish to npm + GitHub Release
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    # A direct call from Release has already cleared the real gate: a human
-    # approved the production environment. The workflow_run path keeps its
-    # original condition, which only makes sense for that event.
-    if: >-
-      github.event_name == 'workflow_call' || (
-        github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.event == 'push' &&
-        github.event.workflow_run.head_branch == 'prod-css-is-awesome'
-      )
+    # NO `if:` HERE, ON PURPOSE. This job used to require
+    # `github.event_name == 'workflow_call'`. Inside a called workflow the
+    # `github` context is the CALLER's, so event_name is `workflow_dispatch`
+    # and that test is never true. On 2026-10-18 the first real release
+    # promoted production and then SKIPPED this job — grey, not red — and Pages
+    # and the CDN skipped behind it. A direct dispatch would have skipped too.
+    # The `on:` block only allows workflow_call and workflow_dispatch, both of
+    # which should publish, so there is nothing left for a condition to decide.
+    # The gate is the environment below, not an expression.
     permissions:
       contents: write
       issues: write

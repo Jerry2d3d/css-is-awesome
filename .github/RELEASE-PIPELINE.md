@@ -346,6 +346,17 @@ after which promotions fast-forward and the count stays at zero.
 
 ---
 
+### 11. Inside a called workflow, `github.event_name` is the caller's
+
+A reusable workflow runs inside its caller's run and inherits the caller's
+`github` context. `github.event_name == 'workflow_call'` is therefore never
+true — the value is whatever started the caller, `workflow_dispatch` here. A
+job guarded by that test is skipped, grey not red, and every job that
+`needs:` it skips behind it. The first real run of the one-file release did
+exactly this on 2026-10-18: production promoted, npm skipped, Pages and CDN
+skipped, run green. If a called workflow's `on:` already lists only the events
+that should run it, it needs no `if:` at all.
+
 ## Troubleshooting
 
 | symptom | cause |
@@ -356,6 +367,7 @@ after which promotions fast-forward and the count stays at zero.
 | CI never ran on the promoted branch | Expected — `GITHUB_TOKEN` pushes do not trigger workflows. Call the workflow directly. |
 | Commit counts look impossibly small | Something in the job made the clone shallow. |
 | Promotion fails on `.gitattributes` | Add it to the source-owned list. |
+| Production promoted, then npm / Pages / CDN all grey (skipped) and the run green | A called workflow's job is guarded by `github.event_name == 'workflow_call'`, which is never true (trap 11). |
 
 ---
 
