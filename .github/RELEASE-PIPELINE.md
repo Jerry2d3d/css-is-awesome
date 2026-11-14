@@ -357,6 +357,18 @@ exactly this on 2026-10-18: production promoted, npm skipped, Pages and CDN
 skipped, run green. If a called workflow's `on:` already lists only the events
 that should run it, it needs no `if:` at all.
 
+---
+
+### 12. semantic-release reads the branch from `GITHUB_REF`, not from git
+
+Checking out `prod-css-is-awesome` is not enough. In Actions, semantic-release
+takes the branch from `GITHUB_REF`, which is the ref the run was dispatched
+on — `main` for Release. It compared `main` with the one branch `.releaserc`
+allows, printed "a new version won't be published", and exited 0. The second
+real run on 2026-10-18 did this: the publish job was green and npm stayed on
+1.21.0. The publish step now exports `GITHUB_REF` for the promoted branch and
+fails if that sentence appears in the output.
+
 ## Troubleshooting
 
 | symptom | cause |
@@ -368,6 +380,7 @@ that should run it, it needs no `if:` at all.
 | Commit counts look impossibly small | Something in the job made the clone shallow. |
 | Promotion fails on `.gitattributes` | Add it to the source-owned list. |
 | Production promoted, then npm / Pages / CDN all grey (skipped) and the run green | A called workflow's job is guarded by `github.event_name == 'workflow_call'`, which is never true (trap 11). |
+| Publish job green, but no new version on npm, no tag, no GitHub Release | semantic-release saw the dispatch branch instead of the promoted one and declined (trap 12). Search the job log for "won't be published". |
 
 ---
 
