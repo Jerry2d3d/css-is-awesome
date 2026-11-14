@@ -1,5 +1,48 @@
 # Changelog
 
+# [1.22.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.21.0...v1.22.0) (2026-11-14)
+
+
+### Bug Fixes
+
+* **build:** press page surfaces landed outside any selector, and nothing compared themes ([d751af2](https://github.com/Jerry2d3d/css-is-awesome/commit/d751af2743a145a876403191f8f0b0fbd1687f6d))
+* **build:** three bugs in the token-consumer map generator ([a07274f](https://github.com/Jerry2d3d/css-is-awesome/commit/a07274faddc3d4c98af4d501dedf75d7ed010857))
+* **ci:** one release run again — stage qa, park, approve, ship ([763aa13](https://github.com/Jerry2d3d/css-is-awesome/commit/763aa13aa7f013396cc80583535626758bc4d279)), closes [#63](https://github.com/Jerry2d3d/css-is-awesome/issues/63)
+* **ci:** prod re-staged qa, so approval could ship untested code ([7d0875e](https://github.com/Jerry2d3d/css-is-awesome/commit/7d0875e6f693a5514b2e3dba9c0cfdfd68a61952))
+* **ci:** publishing never fired, and could not have ([5e416ad](https://github.com/Jerry2d3d/css-is-awesome/commit/5e416ade2d64f62b49524d9b3b920e80a0baa7d3))
+* **ci:** Release could not start at all after the publish job was added ([0bbe3e2](https://github.com/Jerry2d3d/css-is-awesome/commit/0bbe3e2a8cd00c58a022075bcd1243a54243a300))
+* **ci:** remove the stage dropdown — one run, one button ([0ac609e](https://github.com/Jerry2d3d/css-is-awesome/commit/0ac609e45a3f87341524df9c71c231edba8dfa44))
+* **ci:** the CDN job was blocked by policy and read an event it never gets ([a65a324](https://github.com/Jerry2d3d/css-is-awesome/commit/a65a324e845eb051e46c37252f53a6d323e76c0b))
+* **ci:** the npm publish was skipped on the first real release, and would be on every one ([661a21f](https://github.com/Jerry2d3d/css-is-awesome/commit/661a21fc6100820a83a743637facca1a3d1677bb))
+* **ci:** the publish job went green without publishing, because it read the wrong branch ([974e5cb](https://github.com/Jerry2d3d/css-is-awesome/commit/974e5cb710fea2f9d8019ec01686ef26d1338d8e))
+* **ci:** the release could promote but never finish ([6a97f70](https://github.com/Jerry2d3d/css-is-awesome/commit/6a97f701c075274d776e07a904d18fcfa8eebc67))
+* coverage claimed 183/183 and was 186/188, with a parser bug behind it ([a43f5f7](https://github.com/Jerry2d3d/css-is-awesome/commit/a43f5f7290de4ae7b82109febcb05c5a4837a8a2))
+* **mcp:** libraryDefault covered 34 tokens and claimed null for the rest ([c6ab1cb](https://github.com/Jerry2d3d/css-is-awesome/commit/c6ab1cbf0e7f1be1fd8f2bb485e1eab0eb305923))
+* parity check was blind in one direction, and it was hiding two things ([1868878](https://github.com/Jerry2d3d/css-is-awesome/commit/18688781c12f281ffc85035a7bc7736341ddd8e9))
+* **scss:** unknown scale keys were silently wrong in every accessor ([5a95849](https://github.com/Jerry2d3d/css-is-awesome/commit/5a958494bd34eb8a0ec9775afb994812bd58819c))
+* **site:** centre the form example in its preview box ([c918023](https://github.com/Jerry2d3d/css-is-awesome/commit/c918023531bdc4d274848c6f4949b5617f358cca))
+* **site:** centre the logo's lines on the box, not on the overflow ([aa60ce5](https://github.com/Jerry2d3d/css-is-awesome/commit/aa60ce596ca9d8f28b03a85274a761f1d2658843))
+* **site:** make /now's epic rows readable ([bce1100](https://github.com/Jerry2d3d/css-is-awesome/commit/bce1100aa10d5464660512f9861e44de770b7dcb))
+* **site:** note previews read the first paragraph, and the footer links /now ([a75f01c](https://github.com/Jerry2d3d/css-is-awesome/commit/a75f01cc827f96b45b7d6baa8007994537dc1d48))
+* **site:** use next/link for the About page's devlog links ([85ae399](https://github.com/Jerry2d3d/css-is-awesome/commit/85ae399081008d2dcefb0c2c947143f514b0a3a2))
+* **themes:** the density knob skipped 2xs, the one step that never scaled ([faa24cf](https://github.com/Jerry2d3d/css-is-awesome/commit/faa24cf61ee53ea48080708fa884f7137a065eed))
+
+
+### Features
+
+* **docs:** the recipe authoring guide gets a page ([7e50cfa](https://github.com/Jerry2d3d/css-is-awesome/commit/7e50cfadefd6d4bfa56e448404de8940e286bc8e))
+* **mcp:** status tool, store on every list envelope, a names-only .env.example ([54cc29e](https://github.com/Jerry2d3d/css-is-awesome/commit/54cc29e70b5c3dac613a8bdaf303626ba12313f5))
+* **prod:** go live - comingSoon off ([90ad283](https://github.com/Jerry2d3d/css-is-awesome/commit/90ad283c6c0e11b02f7d3dec4e4ab6e7de5714d0))
+* seven changes from a research handoff, two of them bug fixes ([20d69ad](https://github.com/Jerry2d3d/css-is-awesome/commit/20d69ad4030289ec3c66e00d69d0a678be7c7780))
+* **site:** fold Showcase and Now out of the top nav ([0af821d](https://github.com/Jerry2d3d/css-is-awesome/commit/0af821d11d5f0b39809f6e99322f27159253dcae))
+* **site:** the devlog — /now generated from the repo, plus working notes ([987981b](https://github.com/Jerry2d3d/css-is-awesome/commit/987981bec0db31491fb13a23f1127a0af5273af4))
+* **site:** theme editor gains an .scss export, per-row revert and a diff filter ([6a077c9](https://github.com/Jerry2d3d/css-is-awesome/commit/6a077c9ee0543ee78c8c718cda6e54ae02e64db4))
+
+
+### Performance Improvements
+
+* **themes:** the print note is a Sass comment, not a CSS one ([be11d8e](https://github.com/Jerry2d3d/css-is-awesome/commit/be11d8e1dcef1d3b75cd291b05262eb2138dd950))
+
 # [1.21.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.20.0...v1.21.0) (2026-09-23)
 
 
