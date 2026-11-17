@@ -381,6 +381,7 @@ fails if that sentence appears in the output.
 | Promotion fails on `.gitattributes` | Add it to the source-owned list. |
 | Production promoted, then npm / Pages / CDN all grey (skipped) and the run green | A called workflow's job is guarded by `github.event_name == 'workflow_call'`, which is never true (trap 11). |
 | Publish job green, but no new version on npm, no tag, no GitHub Release | semantic-release saw the dispatch branch instead of the promoted one and declined (trap 12). Search the job log for "won't be published". |
+| Run ends "cancelled" with npm and Pages green; CDN job log shows 404s for `css-is-awesome@/dist/...` | The CDN job read an empty tag from the event instead of the resolved one, and retried into its timeout. Fixed 2026-11-17; if it recurs, a step is reading `TAG` without taking it from `steps.tag.outputs.tag`. |
 
 ---
 
