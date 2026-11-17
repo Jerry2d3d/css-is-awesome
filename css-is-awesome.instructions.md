@@ -20,7 +20,9 @@ You only write per-component SCSS when you're deviating from a base mixin's defa
 
 ## File structure (React components)
 
-Convention for **your** app's components (and cia's own docs site) — the npm package itself ships no React. Each component lives in its own folder under `src/components/`:
+> **Scope: css-is-awesome's own docs site.** This section describes how this repository writes its React components. It is not a rule for apps that consume the library: the npm package ships no React, and how you name, structure and export your components is your choice.
+
+Convention for cia's own docs site — the npm package itself ships no React. Each component lives in its own folder under `src/components/`:
 
 ```
 src/components/Button/
@@ -273,6 +275,8 @@ Every element must earn its place. If removing it changes nothing visually or se
 
 ## TypeScript
 
+> **Scope: css-is-awesome's own docs site.** This section describes how this repository writes its React components. It is not a rule for apps that consume the library: the npm package ships no React, and how you name, structure and export your components is your choice.
+
 ### `type` for props, `interface` for data models
 
 ```ts
@@ -306,6 +310,8 @@ src/components/DataTable/
 ---
 
 ## Component authoring
+
+> **Scope: css-is-awesome's own docs site.** This section describes how this repository writes its React components. It is not a rule for apps that consume the library: the npm package ships no React, and how you name, structure and export your components is your choice.
 
 ### Arrow-function default export
 
