@@ -44,8 +44,13 @@ jobs:
     name: Bundle, upload, verify CDN
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    env:
-      TAG: ${{ github.event.release.tag_name }}   # informational only; steps use steps.tag.outputs.tag
+    # NO JOB-LEVEL `TAG`. There was one, set from `github.event.release.tag_name`,
+    # which is empty when Release calls this workflow. Two steps read it instead
+    # of the resolved tag: the archives were named `css-is-awesome--cdn-bundle`,
+    # and the smoke check asked jsDelivr for `css-is-awesome@/dist/...`, got 404
+    # twenty-five times, and ran into the job timeout. That is why the 1.22.0
+    # release run ended "cancelled" after npm and Pages had succeeded. Every
+    # step now takes TAG from the resolve step, and says so.
     steps:
       # Resolve the tag BEFORE checking anything out.
       #
@@ -117,6 +122,8 @@ jobs:
 
       - name: Create tar.gz + zip archives
         id: archives
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
         run: |
           set -euo pipefail
           STAGE="${{ steps.stage.outputs.stage }}"
@@ -161,16 +168,25 @@ jobs:
       - name: Smoke-check jsDelivr endpoints (best-effort)
         id: smoke
         continue-on-error: true
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
         run: |
           set -uo pipefail
 
+          # jsDelivr addresses npm versions, which have no leading `v`.
+          VERSION="${TAG#v}"
+          if [ -z "$VERSION" ]; then
+            echo "::error::no version to check; the tag did not resolve"
+            exit 1
+          fi
+
           # Canonical URLs consumers will paste into <link> tags.
           URLS=(
-            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.min.css"
-            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.core.min.css"
-            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/dist/css-is-awesome.utilities.min.css"
-            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/theme.css"
-            "https://cdn.jsdelivr.net/npm/css-is-awesome@${TAG}/public/themes/press-light/theme.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${VERSION}/dist/css-is-awesome.min.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${VERSION}/dist/css-is-awesome.core.min.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${VERSION}/dist/css-is-awesome.utilities.min.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${VERSION}/public/theme.css"
+            "https://cdn.jsdelivr.net/npm/css-is-awesome@${VERSION}/public/themes/press-light/theme.css"
           )
 
           SUMMARY="$GITHUB_STEP_SUMMARY"
@@ -186,19 +202,19 @@ jobs:
           OVERALL_OK=1
           for url in "${URLS[@]}"; do
             OK=""
-            for attempt in 1 2 3 4 5; do
+            for attempt in 1 2 3; do
               if curl -fsSL -o /dev/null "$url"; then
                 OK="yes"
-                echo "OK  ($attempt/5) $url"
+                echo "OK  ($attempt/3) $url"
                 break
               fi
-              echo "miss ($attempt/5) $url"
-              sleep 30
+              echo "miss ($attempt/3) $url"
+              sleep 20
             done
             if [ -n "$OK" ]; then
               echo "| \`$url\` | OK |" >> "$SUMMARY"
             else
-              echo "| \`$url\` | MISSING (after 5 retries) |" >> "$SUMMARY"
+              echo "| \`$url\` | MISSING (after 3 tries) |" >> "$SUMMARY"
               OVERALL_OK=0
             fi
           done
