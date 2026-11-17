@@ -90,7 +90,7 @@ The cia barrel re-exports every mixin: layout, typography, color, motion, helper
 - **Root / global** (once) — emit the tokens: `<link>` a theme CSS file, or `@use 'css-is-awesome';` in your global stylesheet. This prints `:root { --… }`.
 - **Each component** (`Card.module.scss`) — `@use 'css-is-awesome/api' as cia;` and only call mixins. **Never** `@use 'css-is-awesome'` (the bundle) from a component file — it re-emits `:root`, which CSS Modules pure mode rejects.
 
-**Next.js / Turbopack.** The forwarding barrel **works** under Turbopack. The Boiler showcase runs Next 16.1.1 on Turbopack and imports `css-is-awesome/api` in every stylesheet, on both its React and Angular arms. `css-is-awesome/scss/api` is the same module by its file path and stays supported. Do **not** steer consumers to the leaf module — `scss/mixins` exposes only the ~42 core mixins and none of `btn`, `card-base`, `stack`, `grid` or `animate`, so it forces hand-inlined CSS.
+**Next.js / Turbopack.** The forwarding barrel **works** under Turbopack. The Boiler showcase runs Next 16.1.1 on Turbopack with the barrel in every stylesheet, and builds byte-identical CSS from `css-is-awesome/api` and from `css-is-awesome/scss/api`. They are the same module: `api` is the public name, `scss/api` is its file path, and both stay supported. Do **not** steer consumers to the leaf module — `scss/mixins` exposes only the ~42 core mixins and none of `btn`, `card-base`, `stack`, `grid` or `animate`, so it forces hand-inlined CSS.
 
 Two real setup notes:
 
