@@ -42,7 +42,7 @@ they must set an attribute matching their theme file — if they swap the file a
 forget, older cia rendered a page with no tokens at all, and that failure was
 silent.
 
-**Two-import model.** `css-is-awesome/api` is a zero-emit authoring barrel — import it in each component/`.module.scss` and only call mixins; emit the tokens once from the root/global stylesheet (`@use 'css-is-awesome';` or a `<link>`ed theme file). **Next.js / Turbopack:** the barrel WORKS under Turbopack — the showcase app runs Next 16 on Turbopack for dev and build with `css-is-awesome/scss/api` in all 116 stylesheets. Do not steer consumers to the leaf module; `scss/mixins` lacks `btn`, `card-base`, `stack`, `grid` and `animate`. Two setup notes: Sass ignores package.json `exports`, so add `node_modules` to `sassOptions.loadPaths`; and if you hit `Two forwarded modules both define a mixin named stack`, drop your own styles dir from `loadPaths`. That was ONE consumer report and is NOT reproducible in standard Sass — cia's internal forwards are `./`-relative, which Sass resolves without consulting load paths (asserted by validate-package). Treat it as a bundler-resolver deviation, not a Sass rule.
+**Two-import model.** `css-is-awesome/api` is a zero-emit authoring barrel — import it in each component/`.module.scss` and only call mixins; emit the tokens once from the root/global stylesheet (`@use 'css-is-awesome';` or a `<link>`ed theme file). **Next.js / Turbopack:** the barrel WORKS under Turbopack — the showcase app runs Next 16 on Turbopack with `css-is-awesome/api` in every stylesheet (`css-is-awesome/scss/api` is the same module by its file path and stays supported). Do not steer consumers to the leaf module; `scss/mixins` lacks `btn`, `card-base`, `stack`, `grid` and `animate`. Two setup notes: Sass ignores package.json `exports`, so add `node_modules` to `sassOptions.loadPaths`; and if you hit `Two forwarded modules both define a mixin named stack`, drop your own styles dir from `loadPaths`. That was ONE consumer report and is NOT reproducible in standard Sass — cia's internal forwards are `./`-relative, which Sass resolves without consulting load paths (asserted by validate-package). Treat it as a bundler-resolver deviation, not a Sass rule.
 
 ## What cia provides (one-line each)
 
@@ -64,6 +64,8 @@ silent.
 4. **No Storybook.** Docs site + the `css-is-awesome-mcp` server cover both human and AI audiences.
 5. **One theme = one file.** Both light + dark inside via `light-dark()`.
 6. **`cia-` prefix is library-owned.** Consumer classes use their own naming.
+7. **Themes declare the numbered spacing scale.** `--space-0` … `--space-9`; the t-shirt names are optional `var()` aliases.
+8. **Generated theme files are never hand-edited.** `public/theme.css` and `public/themes/**/theme.css` come from `npm run build:css:themes` and are gated by `npm run check:theme-drift`.
 
 ## Themes are open — consumers CAN edit and create their own
 
@@ -119,9 +121,9 @@ Newspaper by day, hacker terminal by night. Most design systems give you dark mo
 ## Common AI agent traps
 
 - **Don't write BEM.** No `cia-card__title--large`.
-- **Don't hardcode breakpoints/colors/spacing.** Use `cia.media(md)`, `cia.color(primary)`, `cia.space(4)`.
+- **Don't hardcode breakpoints/colors/spacing.** Use `cia.media(md)`, `cia.color(primary)`, `cia.space(4)`. Full rule: AGENTS.md, "All values come from tokens".
 - **Don't suggest a JS dependency for components.** The native primitive does the work.
-- **Style semantic state off ARIA, not a parallel `data-*`.** `[aria-selected]`, `[aria-expanded]`, `[aria-invalid]`, `:disabled/[aria-disabled]`, `[aria-pressed]`, `[aria-checked]`, `[aria-current]`, `[role="tab"]` are the styling hooks for stateful components — accessible-by-construction (can't style the state without setting the ARIA a screen reader needs). Reserve `data-*` for cosmetic-only variants (`data-size`, `data-variant`).
+- **ARIA for state, `data-*` for looks.** Style a state off its ARIA attribute (`[aria-selected]`, `[aria-expanded]`, `[aria-current]`, …); keep `data-*` for cosmetic variants. Full rule: AGENTS.md, "ARIA for state, data-* for looks".
 - **Utility classes ARE emitted by default.** `@use 'css-is-awesome'` emits all 746 of them. There is no `$utilities` flag — `with ($utilities: true)` is a compile error. To emit fewer, import a narrower entry point: `css-is-awesome/scss/core` (tokens + resets, no utilities) or `css-is-awesome/api` (zero emit).
 - **v0.8 rename traps:** `cia.bp` → `cia.media`, `cia.cq` → `cia.contain`, `cia.inset` → `cia.pad`, `cia.squish` → `cia.pad-asym`, `cia.font-load` → `cia.font-face`, `cia.color-raw` → `cia.color-static`, layout `cia.container` → `cia.wrap`. No aliases.
 - **v0.8 theme rename:** `data-theme="press-light"` → `data-theme="press"`. Both modes are inside the single theme file now.

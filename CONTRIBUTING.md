@@ -1,5 +1,7 @@
 # Contributing to css-is-awesome
 
+> **Scope: this repository's own source.** Every rule here is about code inside css-is-awesome (the library's SCSS and its docs site). None of it is a rule for apps that consume the library; those are in [AGENTS.md](./AGENTS.md).
+
 Thanks for the interest. This project is a small, mixin-first SCSS design system with a one-file theme swap and a Next.js docs site that dogfoods the library. It is published on npm under strict SemVer and moves fast. See [README.md](./README.md) for what it is today and [ROADMAP.md](./ROADMAP.md) for what ships next. Epics and user stories live in [roadmap/epics/](./roadmap/epics/README.md).
 
 This guide is the single entry point for contributors. It covers setup, workflow, component and mixin authoring, PRs, and where to find the other contribution-adjacent docs.
@@ -119,8 +121,8 @@ Requirements:
 | `forwardRef`        | Forward the DOM ref for focus / measurement by callers                 |
 | `className` passthrough | Accept `className`, merge with internal class (see `Button.tsx`)   |
 | Spread extra props  | Forward HTML attributes so callers can add `id`, `aria-*`, handlers    |
-| CSS Modules         | `ComponentName.module.scss`, kebab or camelCase class names            |
-| Library mixins      | Use `@use 'mixins' as m;` and `@use 'components/<group>' as ...;`      |
+| CSS Modules         | `ComponentName.module.scss`, camelCase class names                     |
+| Library mixins      | Inside this repo: `@use 'mixins' as m;` and `@use 'components/<group>' as ...;` (consumers use `css-is-awesome/api`) |
 | No new tokens       | Reskin through the existing theme contract — do not add raw hex values |
 | Accessibility       | Keyboard-operable, visible focus, respects `prefers-reduced-motion`    |
 
@@ -225,7 +227,7 @@ ESLint and Stylelint do most of the work. Run `npm run lint:fix` and `npm run li
 | Global library classes | Single-class, no BEM. `cia-btn-primary` (one class, fully styled). Variants are mixin args — `@include btn(primary)` — not `--modifier` suffixes |
 | Tokens           | Snake-kebab custom properties (`--paper-raised`, `--ink-soft`)       |
 | Mixin params     | Leading `$`, short names with theme-sourced defaults                 |
-| Typescript       | No `any`, exhaustive prop unions, named exports from each component |
+| Typescript       | No `any`, exhaustive prop unions, default export from each component |
 | React            | Function components, `forwardRef`, no class components              |
 
 Do not add linting exceptions to silence a warning — fix the warning.

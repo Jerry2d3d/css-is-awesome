@@ -23,8 +23,8 @@ When asked to add a UI element, follow this order:
 1. **Mixin-first, inputs-first.** `.your-class { @include cia.btn(primary); }` — write your own selector, `@include` the mixin. Need a variation? **Pass it as an input** — `@include cia.flex($direction: column)`, `@include cia.card-base($shadow: 2, $r: xl)` — never hand-write the CSS an input already controls. Fewer SCSS lines always wins. This is the v0.8 primary API.
 2. **Match the project's tier.** If they are already on Tier 1 utilities (`<div class="cia-p-md cia-gap-4">`), stay there — but note Tier 1 has no component classes, so a button still comes from `cia.btn()` under the consumer's own selector.
 3. **Never invent `cia-*` class names.** That prefix is library-owned. Consumer code uses its own naming.
-4. **All values come from tokens.** Never hardcode `#3A5FCD`, `1rem`, `8px`. Use `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`.
-5. **No BEM.** No `__element` / `--modifier` chains. `cia-` is a single-class namespace prefix, not BEM.
+4. **All values come from tokens.** Full rule: [All values come from tokens](#all-values-come-from-tokens).
+5. **No BEM in css-is-awesome's own source.** No `__element` / `--modifier` chains in the library; `cia-` is a single-class namespace prefix, not BEM. Your own selector names are your choice.
 6. **No runtime JavaScript.** Nothing in the npm package is loaded by a page — the Node tooling (`cia` CLI, MCP server, validators) never reaches the browser. The 6 interactive components (accordion, modal, tooltip, dropdown, tabs, copy-button) use native HTML primitives — `<details name>`, `<dialog>`, `[popover]`, radio + `:has()`. Mobile navigation follows the same doctrine: the `hamburger` / `drawer` / `sheet` / `dock` mixin family rides `[popover]` + CSS Grid — see the `mobile-nav` recipe (hamburger + drawer) and the `bottom-nav` recipe (dock + sheets). **This rule binds cia, not you.** If you're *consuming* cia (building an app/component library on top of it), write JavaScript/framework components freely — React, SVG charts, interactivity, all of it — and use cia purely for styling (mixins + tokens). Compose the mixins to build any visual you want; you are not limited to cia's pre-made component mixins.
 7. **Grid is the skeleton; Flex is the quick moves.** Three levels, strictly:
    - **The page shell is CSS Grid with landmark-named areas.** The body's areas ARE the document's landmarks — `nav`, `main`, `footer` — so the area map reads like the page and screen readers get the structure for free. Declared once via `cia.page-layout(default | sidebar-left | sidebar-right | holy-grail)` (100dvh, sticky footer, auto mobile collapse) or `cia.layout((sidebar content toc), $tracks: …)`; children claim slots with `cia.page-header` / `cia.page-main` / `cia.page-footer` / `cia.area(name)`. Baseline since 2020.
@@ -33,7 +33,19 @@ When asked to add a UI element, follow this order:
 
    Mobile is just a different `grid-template-areas` map — restack, hide (with `display: none`; omitting an area does not hide its element), reorder — never a pile of margin overrides. Never hand-write `grid-template-areas`; the layout mixins own it.
 8. **On phones, things take the space they're in.** Below the mobile breakpoint an interactive surface fills its *container* — 100% of the column it lives in, inside the page's existing padding and formatting (never edge-to-edge past the page's gutters, never a floating mid-width popup). Triggers stretch to 100% with `justify-content: space-between` (label left, affordance right). A top-layer popover menu can't size to its container directly, so match its trigger via CSS anchor positioning (`anchor-name` on the trigger; `inset-inline: anchor(start) anchor(end)` under `@supports (anchor-name: --a)`) — opening directly under the trigger, with `position-try-fallbacks: flip-block` so it flips above when it would run off the bottom of the screen — with viewport-minus-gutters as the no-anchor fallback — and set it at `&[popover]` specificity, since the dropdown mixin's `inset: unset` reset otherwise wins. Also set `width: auto`: the UA's `[popover] { width: fit-content }` otherwise beats both inset edges and the menu hugs its content. `cia.sheet`, `cia.drawer($side: top|bottom)` and `cia.dock` already obey the rule. **Deliberate exception — code blocks:** on phones, code is allowed to run off into a horizontal scroll *inside its own box* (`white-space: pre; overflow-x: auto`) — never wrap, shrink, or reflow code to fit, and never let it widen the page; the copy button carries usability for long lines.
-9. **Style semantic state off ARIA, not a parallel `data-*`.** When a state has an ARIA source of truth, hook your styles to *that* attribute: `[aria-selected="true"]`, `[aria-expanded="true"]`, `[aria-invalid="true"]`, `:disabled, [aria-disabled="true"]`, `[aria-pressed="true"]`, `[aria-checked="true"]`, `[aria-current]`, `[role="tab"]`. Then the state can't be styled without setting the ARIA a screen reader needs — **accessible-by-construction**, one source of truth for looks + a11y. Reserve `data-*` for **cosmetic-only** variants (`data-size`, `data-variant`, `data-color`) that carry no ARIA meaning. cia's own components already do this where native HTML doesn't cover it (`[aria-current="page"]`, `[aria-selected="true"]`, `[role="option"]`).
+9. **ARIA for state, `data-*` for looks.** Full rule: [ARIA for state, data-* for looks](#aria-for-state-data--for-looks).
+
+## Rules for consumer code
+
+These two rules apply to any code that styles with css-is-awesome. Other documents point at these headings, so the headings do not change.
+
+### All values come from tokens
+
+Never hardcode a colour, a length or a radius. Every value comes from a token accessor: `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`. A hardcoded `#3A5FCD`, `1rem` or `8px` does not follow the theme, the density knob or dark mode. If no token fits, pass the value as a mixin input; if no input fits, the mixin is missing one.
+
+### ARIA for state, data-* for looks
+
+When a state has an ARIA attribute, style it off that attribute: `[aria-selected="true"]`, `[aria-expanded="true"]`, `[aria-invalid="true"]`, `:disabled, [aria-disabled="true"]`, `[aria-pressed="true"]`, `[aria-checked="true"]`, `[aria-current]`. The state then cannot be styled without setting what a screen reader needs. Use `data-*` only for variants with no ARIA meaning: `data-size`, `data-variant`, `data-color`.
 
 ## Install
 
@@ -78,7 +90,7 @@ The cia barrel re-exports every mixin: layout, typography, color, motion, helper
 - **Root / global** (once) — emit the tokens: `<link>` a theme CSS file, or `@use 'css-is-awesome';` in your global stylesheet. This prints `:root { --… }`.
 - **Each component** (`Card.module.scss`) — `@use 'css-is-awesome/api' as cia;` and only call mixins. **Never** `@use 'css-is-awesome'` (the bundle) from a component file — it re-emits `:root`, which CSS Modules pure mode rejects.
 
-**Next.js / Turbopack.** The forwarding barrel **works** under Turbopack. The Boiler showcase runs Next 16.1.1 on Turbopack for both `dev` and `build` and imports `css-is-awesome/scss/api` in all 116 of its stylesheets. Do **not** steer consumers to the leaf module — `scss/mixins` exposes only the ~42 core mixins and none of `btn`, `card-base`, `stack`, `grid` or `animate`, so it forces hand-inlined CSS.
+**Next.js / Turbopack.** The forwarding barrel **works** under Turbopack. The Boiler showcase runs Next 16.1.1 on Turbopack and imports `css-is-awesome/api` in every stylesheet, on both its React and Angular arms. `css-is-awesome/scss/api` is the same module by its file path and stays supported. Do **not** steer consumers to the leaf module — `scss/mixins` exposes only the ~42 core mixins and none of `btn`, `card-base`, `stack`, `grid` or `animate`, so it forces hand-inlined CSS.
 
 Two real setup notes:
 
