@@ -224,8 +224,45 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # WHY THE CACHE: `--with-deps` downloads about 125 MB of Ubuntu system
+      # libraries (mostly for WebKit) through apt. GitHub sometimes hands this
+      # job a runner whose Ubuntu mirror serves at about 120 kB/s; the download
+      # then takes 17 minutes and the job is cancelled at its 20-minute limit
+      # before a single test runs (2026-11-17 on main, 2026-11-18 on PR #99).
+      # Keeping the downloaded .deb files between runs means apt has nothing
+      # left to fetch, whichever mirror the runner got. The browsers come from
+      # Playwright's own CDN, which was fast on the slow runners, so they are
+      # not cached.
+      #
+      # The key carries the ISO week so the cache is rebuilt weekly and does not
+      # drift far behind Ubuntu's updates. A stale .deb is harmless: apt checks
+      # every file against the package index and re-downloads what changed.
+      - name: Cache key for Playwright's system packages
+        id: pw
+        run: |
+          echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "week=$(date -u +%G-%V)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore Playwright's system packages
+        uses: actions/cache@v6
+        with:
+          path: ~/apt-archives
+          key: playwright-apt-ubuntu-24.04-${{ steps.pw.outputs.version }}-${{ steps.pw.outputs.week }}
+          restore-keys: |
+            playwright-apt-ubuntu-24.04-${{ steps.pw.outputs.version }}-
+            playwright-apt-ubuntu-24.04-
+
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/apt-archives/partial"
+          echo "Dir::Cache::Archives \"$HOME/apt-archives\";" | sudo tee /etc/apt/apt.conf.d/99-ci-archives > /dev/null
+          echo "System packages restored from cache: $(find "$HOME/apt-archives" -maxdepth 1 -name '*.deb' | wc -l)"
+          npx playwright install --with-deps
+          # apt ran as root; hand the files back so the cache step can read them.
+          sudo chown -R "$(id -u):$(id -g)" "$HOME/apt-archives"
+          rm -f "$HOME/apt-archives/lock"
+          echo "System packages kept for the next run: $(find "$HOME/apt-archives" -maxdepth 1 -name '*.deb' | wc -l)"
 
       - name: Build docs site (Next.js static export)
         run: npm run build
