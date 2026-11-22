@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.22.1](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.22.0...v1.22.1) (2026-11-22)
+
+
+### Bug Fixes
+
+* **ci:** the CDN job asked jsDelivr for a version with no number, until it timed out ([93b0c70](https://github.com/Jerry2d3d/css-is-awesome/commit/93b0c70247095ee8385c5925ea9f41dc37028106))
+* **mcp:** the overview prompt printed two hard-rule lists that disagreed ([b2b6a63](https://github.com/Jerry2d3d/css-is-awesome/commit/b2b6a63101ce11767fea3eb527208c396a2b333a))
+
 # [1.22.0](https://github.com/Jerry2d3d/css-is-awesome/compare/v1.21.0...v1.22.0) (2026-11-14)
 
 
