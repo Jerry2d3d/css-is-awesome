@@ -14,6 +14,7 @@ Never record the other project's source, file paths, internal architecture, comp
 |---|---|---|---|
 | [2026-09-18](./2026-09-18-gremlin-forge-boilerplate.md) | Gremlin Forge (via boiler-project-ai) | `--space-unit` contract break; design tokens → theme; optional tokens by feature; in-process MCP handlers; mapping as data | All shipped: 1.16.1 · 1.17.0 · 1.18.0 · 1.19.0 · mcp 1.3.0 / 1.4.0 → [v1-4](../epics/v1-4/README.md) |
 | [2026-10-16](./2026-10-16-gremlin-forge-join-the-fleet.md) | Gremlin Forge (tool onboarding) | MCP `status` tool; `store` on list/search envelopes; `.env.example`; three 2026-09-19 items re-asked and withdrawn (shipped in 1.19.1) | `status` + `store` + `.env.example` on `main`, unreleased at time of writing; no epic — additive MCP change only |
+| [2026-11-23](./2026-11-23-gremlin-forge-everything-open.md) | Gremlin Forge | Every open prompt folded into one: flowchart, state-word search, standalone MCP parity, rules as records and tools, plus a proposed agent team, request inbox and gate | 1–5 accepted → [v1.4-06](../epics/v1-4/EPIC-06-flowchart.md) · [v1.4-07](../epics/v1-4/EPIC-07-mcp-current-and-findable.md) · [v1.4-08](../epics/v1-4/EPIC-08-rules-as-records.md); 6–13 declined (issues + Jerry as the approval instead); 14–15 done |
 
 ## Adding one
 
