@@ -43,6 +43,8 @@ These two rules apply to any code that styles with css-is-awesome. Other documen
 
 Never hardcode a colour, a length or a radius. Every value comes from a token accessor: `cia.color(primary)`, `cia.space(4)`, `cia.radius(md)`. A hardcoded `#3A5FCD`, `1rem` or `8px` does not follow the theme, the density knob or dark mode. If no token fits, pass the value as a mixin input; if no input fits, the mixin is missing one.
 
+**Spacing between things uses `cia.space(n)`; fixed geometry uses `cia.grid(n)`.** Padding, margin and `gap` are spacing: `cia.space(n)` resolves to `var(--space-n)`, so the theme and the density knob can re-proportion it. A size that must not scale with density, such as an icon box, a hairline offset or a fixed track, uses `cia.grid(n)`, which is `n × 0.25rem` and deliberately not themed. The `space()` scale is steps 0–9 and not linear (5 = 24px, 8 = 64px); an unknown step is emitted raw and the browser drops the declaration, so use `grid()` for any other multiple of 4px.
+
 ### ARIA for state, data-* for looks
 
 When a state has an ARIA attribute, style it off that attribute: `[aria-selected="true"]`, `[aria-expanded="true"]`, `[aria-invalid="true"]`, `:disabled, [aria-disabled="true"]`, `[aria-pressed="true"]`, `[aria-checked="true"]`, `[aria-current]`. The state then cannot be styled without setting what a screen reader needs. Use `data-*` only for variants with no ARIA meaning: `data-size`, `data-variant`, `data-color`.
